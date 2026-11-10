@@ -107,7 +107,8 @@ export default function Kiosk() {
     const homeSize = Math.max(120, Math.min(H * 0.92, W * 0.5))
     const dockSize = Math.min(Math.max(12.5 * u, 92), H * 0.42)
     const dockX = Math.max(3.5 * u, 14)
-    const dockY = Math.max(1.6 * u, 10)
+    // Short screens (phones on their side): leave room under the wheel for the "Spin again" tag.
+    const dockY = H < 520 ? 26 : Math.max(1.6 * u, 10)
     spots.current = {
       home: { size: homeSize, cx: Math.max(W * 0.29, homeSize / 2 + 2 * u), cy: H / 2 },
       dock: { size: dockSize, cx: dockX + dockSize / 2, cy: H - dockY - dockSize / 2 },
