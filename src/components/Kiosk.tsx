@@ -52,8 +52,6 @@ export default function Kiosk() {
   const active = useMemo(() => data.useCases.filter((u) => u.active), [data.useCases])
   const segments = useMemo(() => active.map((u) => ({ id: u.id, label: u.wheelLabel, tag: u.platform })), [active])
   const teams = useMemo(() => new Set(active.map((u) => u.team.trim()).filter(Boolean)).size, [active])
-  const byoa = useMemo(() => active.filter((u) => u.platform === 'BYOA').length, [active])
-  const byot = active.length - byoa
 
   const [phase, setPhaseState] = useState<Phase>('idle')
   const [winnerId, setWinnerId] = useState<string | null>(null)
@@ -120,7 +118,7 @@ export default function Kiosk() {
     // Short screens (phones on their side): leave room under the wheel for the "Spin again" tag.
     const dockY = H < 520 ? 26 : Math.max(1.6 * u, 10)
     spots.current = {
-      home: { size: homeSize, cx: Math.max(W * 0.29, homeSize / 2 + 2 * u), cy: H / 2 },
+      home: { size: homeSize, cx: Math.max(W * 0.31, homeSize / 2 + 6.5 * u), cy: H / 2 },
       dock: { size: dockSize, cx: dockX + dockSize / 2, cy: H - dockY - dockSize / 2 },
     }
     stage.style.setProperty('--dock', `${dockSize}px`)
@@ -502,10 +500,7 @@ export default function Kiosk() {
   return (
     <main className="kiosk pai-backdrop" data-phase={phase} data-ready={ready || undefined}>
       <header className="k-head">
-        <div className="k-head__brand">
-          <p className="k-head__eyebrow">BYOT · BYOA</p>
-          <p className="k-head__sub">Build Your Own Tech · Build Your Own Agents</p>
-        </div>        {/* eslint-disable-next-line @next/next/no-img-element */}
+{/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="k-head__logo"
           src="/brand/piramal-ai-lockup.png"
@@ -516,6 +511,12 @@ export default function Kiosk() {
       </header>
 
       <div className="stage" ref={stageRef}>
+        {/* The two platforms, named once, down the side of the wheel in the wheel's own colours. */}
+        <p className="side-mark" aria-label="BYOT, Build Your Own Tech, and BYOA, Build Your Own Agents">
+          <span className="side-mark__t">BYOT</span>
+          <span className="side-mark__bar" aria-hidden="true" />
+          <span className="side-mark__a">BYOA</span>
+        </p>
         <section className="spin-panel" ref={panelRef} aria-hidden={phase === 'detail' || phase === 'landed'}>
           <h1 className="spin-panel__title" data-out>
             <span className="line">Non-Tech people</span>
@@ -531,36 +532,12 @@ export default function Kiosk() {
                   {segments.length} small, practical fixes
                   {teams > 1 ? <> from {teams} functions</> : null}
                 </strong>
-                , each built with AI by the person who needed it.{' '}
-                <span className="spin-panel__more">None would have reached the top of a tech roadmap.</span>
+                , each built with AI by the person who needed it.
               </>
             ) : (
               <>Add at least two use cases in the admin page to set up the wheel.</>
             )}
           </p>
-          <ul className="legend" data-out aria-label="What is on the wheel">
-            {(
-              [
-                ['BYOT', 'Tools and apps', byot],
-                ['BYOA', 'AI agents', byoa],
-              ] as const
-            ).map(([platform, what, count]) => (
-              <li key={platform} className="legend__row" data-accent={accentForPlatform(platform)}>
-                <span className="legend__word">{platform}</span>
-                <span className="legend__text">
-                  <span className="legend__name">{PLATFORM_NAME[platform]}</span>
-                  <span className="legend__what">
-                    {what}
-                    <span className="legend__how">, built without writing code</span>
-                  </span>
-                </span>
-                <span className="legend__count">
-                  <b>{count}</b>
-                  <span>on the wheel</span>
-                </span>
-              </li>
-            ))}
-          </ul>
           <div className="spin-panel__action" data-out>
             <button
               type="button"

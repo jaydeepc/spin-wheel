@@ -215,7 +215,7 @@ button {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 58%;
+  left: 60%;
   right: var(--pad);
   display: flex;
   flex-direction: column;
@@ -647,3 +647,36 @@ button {
     animation: none;
   }
 }
+
+/* ---------- BYOT | BYOA, set vertically to the left of the wheel ---------- */
+.side-mark {
+  position: absolute;
+  left: max(calc(var(--u) * 3), 16px);
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.2);
+  /* Reads bottom to top, like the spine of a book. */
+  transform: translate(-50%, -50%) rotate(-90deg);
+  font-size: max(13px, calc(var(--u) * 2));
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  white-space: nowrap;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.side-mark__t { color: var(--flame-ink); }
+.side-mark__a { color: var(--azure-ink); }
+.side-mark__bar {
+  width: 2px;
+  height: 1.3em;
+  background: var(--line-rule);
+}
+/* It belongs to the wheel screen; the use case page takes that edge for the docked wheel. */
+.kiosk[data-phase='detail'] .side-mark,
+.kiosk[data-phase='returning'] .side-mark {
+  opacity: 0;
+}
+.k-head { justify-content: flex-end; }
