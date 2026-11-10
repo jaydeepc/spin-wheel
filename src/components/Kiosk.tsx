@@ -7,10 +7,11 @@ import gsap from 'gsap'
 import { useShowcase } from '@/data/store'
 import Detail from './Detail'
 import { playDetail, prepareDetail } from './detailTimeline'
-import Wheel, { accentFor } from './Wheel'
+import Wheel, { accentForPlatform } from './Wheel'
 import { playTick, playWin, unlockSound } from './sound'
 
-type Phase = 'idle' | 'spinning' | 'stopping' | 'detail' | 'returning'
+// 'landed' is the hold after the wheel stops: the result is announced beside the wheel before the page arrives.
+type Phase = 'idle' | 'spinning' | 'stopping' | 'landed' | 'detail' | 'returning'
 
 const DRIFT = 5 // deg/s the wheel idles at, so the screen is never still
 // deg/s at full spin. At 60Hz this is under 7° a frame: less than half the narrowest wedge (18° at 20 segments),
@@ -23,6 +24,10 @@ const MAX_FRAME_MS = 100 // a longer gap than this is a stall, not a frame: do n
 const SMEAR_FROM = 130
 const SMEAR_FULL = 370
 const SMEAR_MAX = 0.8
+// Seconds the result is held on screen, wheel still and winner lit, before the hand-over to the page.
+const HOLD_SECONDS = 2.6
+
+const PLATFORM_NAME = { BYOT: 'Build Your Own Tech', BYOA: 'Build Your Own Agents' } as const
 
 /** The stop, run by the ticker on frame timestamps: rot = from + distance · (1 − (1 − t/duration)³). */
 interface Coast {
@@ -47,6 +52,8 @@ export default function Kiosk() {
   const active = useMemo(() => data.useCases.filter((u) => u.active), [data.useCases])
   const segments = useMemo(() => active.map((u) => ({ id: u.id, label: u.wheelLabel, tag: u.platform })), [active])
   const teams = useMemo(() => new Set(active.map((u) => u.team.trim()).filter(Boolean)).size, [active])
+  const byoa = useMemo(() => active.filter((u) => u.platform === 'BYOA').length, [active])
+  const byot = active.length - byoa
 
   const [phase, setPhaseState] = useState<Phase>('idle')
   const [winnerId, setWinnerId] = useState<string | null>(null)
@@ -66,6 +73,9 @@ export default function Kiosk() {
   const detailRef = useRef<HTMLDivElement>(null)
   const rippleRef = useRef<HTMLDivElement>(null)
   const againRef = useRef<HTMLButtonElement>(null)
+  const landedRef = useRef<HTMLDivElement>(null)
+  // True from the moment the wheel stops until it has docked: nothing can be started or undone in between.
+  const busy = useRef(false)
 
   const motion = useRef({ rot: 0, vel: DRIFT, mode: 'drift' as 'drift' | 'free' | 'tween', lastIdx: 0, lastKick: 0 })
   const spots = useRef<{ home: Spot; dock: Spot }>({
@@ -259,28 +269,39 @@ export default function Kiosk() {
         return
       }
       if (soundRef.current) playWin()
-      // Mount the detail page now so the timeline can address its elements.
+      busy.current = true
+      // Mount the announcement and the detail page now so the timeline can address their elements.
       flushSync(() => {
         setWinnerId(chosen.id)
         setLit(true)
-        setPhase('detail')
+        setPhase('landed')
       })
 
       const rig = rigRef.current
       const view = detailRef.current
       const panel = panelRef.current
-      if (!rig || !view || !panel) return
+      const landed = landedRef.current
+      if (!rig || !view || !panel || !landed) {
+        busy.current = false
+        setPhase('detail')
+        return
+      }
       const { home, dock } = spots.current
       const leaving = Array.from(panel.querySelectorAll<HTMLElement>('[data-out]'))
+      const lines = Array.from(landed.querySelectorAll<HTMLElement>('[data-ann]'))
+      const meter = landed.querySelector<HTMLElement>('.landed__meter-fill')
 
       timeline.current?.kill()
       const tl = gsap.timeline()
       timeline.current = tl
 
-      // Everything on the detail page starts hidden.
-      gsap.set(view, { autoAlpha: 1 })
+      // Everything on the detail page starts hidden, and the page itself stays out until the hand-over.
+      gsap.set(view, { autoAlpha: 0 })
       prepareDetail(view)
       gsap.set(againRef.current, { autoAlpha: 0, y: 8 })
+      gsap.set(landed, { autoAlpha: 1 })
+      gsap.set(lines, { autoAlpha: 0, x: 0, y: 26 })
+      if (meter) gsap.set(meter, { scaleX: 0 })
 
       // 1 · The win: a breath and a ring that expands off the wheel.
       if (rippleRef.current) {
@@ -294,16 +315,28 @@ export default function Kiosk() {
       tl.to(rig, { scale: 1.04, duration: 0.32, ease: 'power2.out' }, 0)
       tl.to(rig, { scale: 1, duration: 0.34, ease: 'power2.inOut' }, 0.32)
 
-      // 2 · The invitation to spin steps aside.
-      tl.to(leaving, { autoAlpha: 0, x: 70, duration: 0.5, ease: 'power2.in', stagger: 0.05 }, 0.55)
+      // 2 · The invitation to spin steps aside and the result takes its place, large enough for the room.
+      tl.to(leaving, { autoAlpha: 0, x: 50, duration: 0.3, ease: 'power2.in', stagger: 0.03 }, 0.05)
+      tl.to(lines, { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out', stagger: 0.09 }, 0.42)
+      // A quiet meter runs under it for the length of the hold, so the room knows the page is on its way.
+      if (meter) tl.to(meter, { scaleX: 1, duration: HOLD_SECONDS - 0.7, ease: 'none' }, 0.7)
 
-      // 3 · The wheel shrinks first, then glides to its corner. Different eases on x and y bend the path.
-      const T = 0.85
+      // 3 · The hold ends. The announcement lifts away and the wheel hands the stage over.
+      const H = HOLD_SECONDS
+      tl.to(lines, { autoAlpha: 0, y: -22, duration: 0.36, ease: 'power2.in', stagger: 0.045 }, H)
+      tl.call(() => setPhase('detail'), [], H)
+      tl.set(landed, { autoAlpha: 0 }, H + 0.7)
+      tl.set(view, { autoAlpha: 1 }, H + 0.7)
+
+      // 4 · The wheel gathers itself, shrinks, then glides to its corner. Different eases on x and y bend the path.
+      const T = H + 0.45
+      tl.to(rig, { scale: 1.025, duration: 0.3, ease: 'power2.out' }, H + 0.12)
       tl.to(rig, { scale: dock.size / home.size, duration: 1.45, ease: 'power3.inOut' }, T)
       tl.to(rig, { x: dock.cx - home.size / 2, duration: 1.3, ease: 'power3.inOut' }, T + 0.16)
       tl.to(rig, { y: dock.cy - home.size / 2, duration: 1.3, ease: 'power2.inOut' }, T + 0.16)
+      tl.call(() => void (busy.current = false), [], T + 1.46)
 
-      // 4 · The use case takes the stage the wheel just left.
+      // 5 · The use case takes the stage the wheel just left.
       const C = T + 0.8
       const introLength = playDetail(view, tl, C)
       tl.to(againRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, C + Math.max(introLength - 0.5, 0))
@@ -377,6 +410,8 @@ export default function Kiosk() {
     const panel = panelRef.current
     if (!rig || !view || !panel) return
     setPhase('returning')
+    busy.current = false
+    gsap.set(landedRef.current, { autoAlpha: 0 })
     const { home } = spots.current
     const m = motion.current
     const entering = Array.from(panel.querySelectorAll<HTMLElement>('[data-out]'))
@@ -411,6 +446,7 @@ export default function Kiosk() {
 
   const primary = useCallback(() => {
     const p = phaseRef.current
+    if (busy.current) return
     if (p === 'idle') start()
     else if (p === 'spinning') stop()
     else if (p === 'detail') back()
@@ -424,7 +460,8 @@ export default function Kiosk() {
         e.preventDefault()
         primary()
       } else if (e.key === 'Escape') {
-        back()
+        // Ignored until the wheel has docked; after that it returns as usual.
+        if (!busy.current) back()
       }
     }
     window.addEventListener('keydown', onKey)
@@ -449,15 +486,18 @@ export default function Kiosk() {
   }, [refresh])
 
   const enough = segments.length >= 2
+  const maker = winner?.people?.find((p) => p.name.trim())?.name.trim()
+  const makerTeam = winner?.team?.trim()
+  const builtBy = maker ? `Built by ${maker}${makerTeam ? ` · ${makerTeam}` : ''}` : makerTeam ? `Built in ${makerTeam}` : ''
   const buttonLabel = phase === 'spinning' || phase === 'stopping' ? 'Stop' : 'Spin'
   const hint =
     phase === 'spinning'
       ? 'Hit it again to stop the wheel.'
       : phase === 'stopping'
         ? 'Wait for it…'
-        : 'Hit the red button to spin.'
+        : 'Hit the red button to meet one.'
   const rigLabel =
-    phase === 'detail' ? 'Back to the wheel' : phase === 'spinning' ? 'Stop the wheel' : 'Spin the wheel'
+    phase === 'detail' || phase === 'landed' ? 'Back to the wheel' : phase === 'spinning' ? 'Stop the wheel' : 'Spin the wheel'
 
   return (
     <main className="kiosk pai-backdrop" data-phase={phase} data-ready={ready || undefined}>
@@ -476,31 +516,58 @@ export default function Kiosk() {
       </header>
 
       <div className="stage" ref={stageRef}>
-        <section className="spin-panel" ref={panelRef} aria-hidden={phase === 'detail'}>
+        <section className="spin-panel" ref={panelRef} aria-hidden={phase === 'detail' || phase === 'landed'}>
           <h1 className="spin-panel__title" data-out>
-            <span className="act">Built</span> <span className="join">by the</span> <span className="who">people</span>
-            <br />
-            <span className="join">who do the</span> <span className="act">work.</span>
+            <span className="line">Non-Tech people</span>
+            <span className="line join">building their own</span>
+            <span className="line">
+              <span className="tech">tech</span> <span className="join">and</span> <span className="agents">agents.</span>
+            </span>
           </h1>
-          <div className="spin-panel__rule" data-out />
           <p className="spin-panel__lead" data-out>
             {enough ? (
               <>
-                <strong>{segments.length} solutions</strong>
-                {teams > 1 ? <> from {teams} functions</> : null}, each one built on BYOT and BYOA by the team that
-                lives the problem. Spin to meet one.
+                <strong>
+                  {segments.length} small, practical fixes
+                  {teams > 1 ? <> from {teams} functions</> : null}
+                </strong>
+                , each built with AI by the person who needed it.{' '}
+                <span className="spin-panel__more">None would have reached the top of a tech roadmap.</span>
               </>
             ) : (
               <>Add at least two use cases in the admin page to set up the wheel.</>
             )}
           </p>
+          <ul className="legend" data-out aria-label="What is on the wheel">
+            {(
+              [
+                ['BYOT', 'Tools and apps', byot],
+                ['BYOA', 'AI agents', byoa],
+              ] as const
+            ).map(([platform, what, count]) => (
+              <li key={platform} className="legend__row" data-accent={accentForPlatform(platform)}>
+                <span className="legend__word">{platform}</span>
+                <span className="legend__text">
+                  <span className="legend__name">{PLATFORM_NAME[platform]}</span>
+                  <span className="legend__what">
+                    {what}
+                    <span className="legend__how">, built without writing code</span>
+                  </span>
+                </span>
+                <span className="legend__count">
+                  <b>{count}</b>
+                  <span>on the wheel</span>
+                </span>
+              </li>
+            ))}
+          </ul>
           <div className="spin-panel__action" data-out>
             <button
               type="button"
               className="red-button"
               data-state={phase}
               onClick={primary}
-              disabled={!enough || phase === 'stopping' || phase === 'returning' || phase === 'detail'}
+              disabled={!enough || phase === 'stopping' || phase === 'landed' || phase === 'returning' || phase === 'detail'}
               aria-label={phase === 'spinning' ? 'Stop the wheel' : 'Spin the wheel'}
             >
               <span className="red-button__pulse" aria-hidden="true" />
@@ -513,10 +580,44 @@ export default function Kiosk() {
         </section>
 
         <section className="detail-view" ref={detailRef} aria-hidden={phase !== 'detail'}>
-          {winner && <Detail key={winner.id} useCase={winner} number={winnerIndex + 1} accent={accentFor(winnerIndex, active.length)} />}
+          {winner && <Detail key={winner.id} useCase={winner} number={winnerIndex + 1} accent={accentForPlatform(winner.platform)} />}
         </section>
 
-        <div className="ripple" ref={rippleRef} data-accent={winnerIndex >= 0 ? accentFor(winnerIndex, active.length) : undefined} aria-hidden="true" />
+        <div className="ripple" ref={rippleRef} data-accent={winner ? accentForPlatform(winner.platform) : undefined} aria-hidden="true" />
+
+        {/* Where the wheel stopped, held beside it before the page arrives. */}
+        <div
+          className="landed"
+          ref={landedRef}
+          data-accent={winner ? accentForPlatform(winner.platform) : undefined}
+          aria-hidden={phase !== 'landed'}
+        >
+          {winner && (
+            <>
+              <p className="landed__eyebrow" data-ann>
+                The wheel stopped on
+              </p>
+              <div className="landed__head" data-ann>
+                <span className="landed__num">{String(winnerIndex + 1).padStart(2, '0')}</span>
+                <span className="landed__platform">
+                  <b>{winner.platform}</b>
+                  <span>{PLATFORM_NAME[winner.platform]}</span>
+                </span>
+              </div>
+              <p className="landed__name" data-ann>
+                {winner.title || winner.wheelLabel}
+              </p>
+              {builtBy && (
+                <p className="landed__by" data-ann>
+                  {builtBy}
+                </p>
+              )}
+              <div className="landed__meter" data-ann>
+                <span className="landed__meter-fill" />
+              </div>
+            </>
+          )}
+        </div>
 
         <div
           className="rig"

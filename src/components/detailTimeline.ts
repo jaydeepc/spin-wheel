@@ -1,8 +1,8 @@
 import gsap from 'gsap'
 
 /**
- * The score for the use case page's entrance: title, then impact, then story,
- * then people. Every animated element carries a data-in role (see Detail.tsx).
+ * The score for the use case page's entrance: the title, then the person who
+ * built it, then what they say, then the story and the numbers. Every animated element carries a data-in role (see Detail.tsx).
  * Offsets are in em of the element's own font size, so the motion scales with
  * the screen. Transforms and opacity only.
  */
@@ -24,31 +24,41 @@ interface Cue {
 }
 
 const EASE = 'power3.out'
+/** When the story's first step arrives, the gap between steps, and when the second half follows the turn. */
+const STEP_AT = 2.06
+const STEP_GAP = 0.1
+const STEP_AFTER_AT = 2.38
+const FACT_AT = 2.38
 const POP = 'back.out(1.9)'
 
 const SCORE: Record<string, Cue> = {
+  // 1 · what it is
   eyebrow: { at: 0.0, dur: 0.5, fade: true, x: -0.8 },
-  word: { at: 0.1, step: 0.07, dur: 0.75, yPercent: 115 },
-  rule: { at: 0.45, dur: 0.6, fade: true, scaleX: 0, origin: '0 50%' },
-  summary: { at: 0.55, dur: 0.65, fade: true, y: 0.9 },
-  impact: { at: 0.85, dur: 0.7, fade: true, y: 1.2, scale: 0.985 },
-  'metric-from': { at: 1.1, dur: 0.5, fade: true, x: -0.12 },
-  'metric-arrow': { at: 1.25, dur: 0.45, fade: true, scaleX: 0, origin: '0 50%' },
-  'metric-hero': { at: 1.38, dur: 0.7, fade: true, y: 0.16, scale: 0.9, ease: POP },
-  'metric-label': { at: 1.55, dur: 0.5, fade: true, y: 0.6 },
-  metric: { at: 1.65, step: 0.1, dur: 0.55, fade: true, y: 0.8 },
-  sidehead: { at: 1.9, dur: 0.55, fade: true, x: -0.8 },
-  'group-wash': { at: [1.95, 2.42], dur: 0.8, fade: true },
-  'group-rule': { at: [1.95, 2.42], dur: 0.55, scaleX: 0, origin: '0 50%' },
-  'group-tag': { at: [2.0, 2.47], dur: 0.4, fade: true },
-  step: { at: 2.02, step: 0.12, dur: 0.6, fade: true, y: 0.9 },
-  'turn-line': { at: 2.2, dur: 0.5, scaleY: 0, origin: '50% 0' },
-  turn: { at: 2.3, dur: 0.5, fade: true, x: -0.6, scale: 0.6, ease: POP },
-  'people-label': { at: 2.72, dur: 0.5, fade: true, y: 0.6 },
-  person: { at: 2.82, step: 0.07, dur: 0.55, fade: true, y: 0.8 },
+  word: { at: 0.08, step: 0.06, dur: 0.7, yPercent: 115 },
+  rule: { at: 0.4, dur: 0.55, fade: true, scaleX: 0, origin: '0 50%' },
+  summary: { at: 0.5, dur: 0.6, fade: true, y: 0.9 },
+  // 2 · who built it
+  creator: { at: 0.8, dur: 0.7, fade: true, y: 1.1, scale: 0.985 },
+  'creator-label': { at: 0.95, dur: 0.45, fade: true, x: -0.8 },
+  portrait: { at: 1.0, step: 0.14, dur: 0.65, fade: true, scale: 0.82, ease: POP },
+  person: { at: 1.1, step: 0.14, dur: 0.6, fade: true, x: 1 },
+  claim: { at: 1.4, dur: 0.5, fade: true, y: 0.6 },
+  // 3 · what they say
+  'quote-mark': { at: 1.5, dur: 0.6, fade: true, scale: 0.5, origin: '0 100%', ease: POP },
+  quote: { at: 1.6, dur: 0.75, fade: true, y: 0.7 },
+  'quote-by': { at: 1.9, dur: 0.5, fade: true, x: -0.8 },
+  // 4 · how the work changed, and the numbers
+  'group-wash': { at: [2.0, 2.3], dur: 0.7, fade: true },
+  'group-rule': { at: [2.0, 2.3], dur: 0.5, scaleX: 0, origin: '0 50%' },
+  'group-tag': { at: [2.05, 2.35], dur: 0.4, fade: true },
+  step: { at: STEP_AT, step: STEP_GAP, dur: 0.55, fade: true, y: 0.9 },
+  'turn-line': { at: 2.15, dur: 0.45, scaleY: 0, origin: '50% 0' },
+  turn: { at: 2.22, dur: 0.5, fade: true, x: -0.6, scale: 0.6, ease: POP },
+  'facts-label': { at: 2.3, dur: 0.45, fade: true, x: -0.8 },
+  fact: { at: FACT_AT, step: 0.1, dur: 0.5, fade: true, y: 0.8 },
 }
 
-const COUNT_SECONDS = 0.95
+const COUNT_SECONDS = 0.7
 
 const reduced = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -73,7 +83,7 @@ function cast(view: HTMLElement) {
 function stepDelay(el: HTMLElement, i: number) {
   const after = el.closest('[data-side="after"]')
   const firstHalf = el.closest('.d-story')?.querySelectorAll('[data-side="before"] [data-in="step"]').length ?? 0
-  return after && firstHalf ? 2.5 + (i - firstHalf) * 0.12 : 2.02 + i * 0.12
+  return after && firstHalf ? STEP_AFTER_AT + (i - firstHalf) * STEP_GAP : STEP_AT + i * STEP_GAP
 }
 
 function hidden(el: HTMLElement, cue: Cue, still: boolean): gsap.TweenVars {
@@ -150,9 +160,8 @@ export function playDetail(view: HTMLElement, tl: gsap.core.Timeline, C: number)
       const full = value.dataset.count ?? ''
       const c = counter(full)
       if (!num || !c) return
-      const hero = value.querySelector<HTMLElement>('[data-in="metric-hero"]')
-      const holder = value.closest<HTMLElement>('[data-in="metric"]')
-      const at = hero ? (starts.get(hero) ?? 1.38) : (holder ? (starts.get(holder) ?? 1.65) : 1.65) + 0.05
+      const holder = value.closest<HTMLElement>('[data-in="fact"]')
+      const at = ((holder && starts.get(holder)) ?? FACT_AT) + 0.05
       const state = { v: 0 }
       num.textContent = c.format(0)
       tl.to(

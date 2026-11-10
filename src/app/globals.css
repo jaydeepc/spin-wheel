@@ -179,6 +179,7 @@ button {
   box-shadow: 0 0 0 6px #ffffff, 0 0 0 12px var(--line-strong);
 }
 .kiosk[data-phase='stopping'] .rig,
+.kiosk[data-phase='landed'] .rig,
 .kiosk[data-phase='returning'] .rig {
   cursor: default;
 }
@@ -209,7 +210,8 @@ button {
 .ripple[data-accent='navy'] { border-color: var(--ink); }
 
 /* ---------- Spin panel: the invitation, to the right of the wheel ---------- */
-.spin-panel {
+.spin-panel,
+.landed {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -218,28 +220,33 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  /* Type inside is sized against the column (cqi) as well as the screen, so a line never outgrows it. */
+  container-type: inline-size;
+}
+.spin-panel {
   gap: calc(var(--u) * 1.5);
   z-index: 2;
 }
+.kiosk[data-phase='landed'] .spin-panel,
 .kiosk[data-phase='detail'] .spin-panel {
   pointer-events: none;
 }
 .spin-panel__title {
-  font-size: calc(var(--u) * 4.5);
+  font-size: min(calc(var(--u) * 4.2), 10.2cqi);
   line-height: 1.08;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--ink-deep);
 }
-.spin-panel__title .act { color: var(--flame-deep); }
-.spin-panel__title .join { font-weight: 400; }
-.spin-panel__title .who { color: var(--sky); }
-.spin-panel__rule {
-  height: 1px;
-  background: var(--flame-rule);
+.spin-panel__title .line {
+  display: block;
+  white-space: nowrap;
 }
+.spin-panel__title .join { font-weight: 400; }
+.spin-panel__title .tech { color: var(--flame-deep); }
+.spin-panel__title .agents { color: var(--azure-ink); }
 .spin-panel__lead {
-  font-size: max(12px, calc(var(--u) * 1.5));
+  font-size: max(12px, calc(var(--u) * 1.45));
   line-height: 1.5;
   color: var(--ink-muted);
   max-width: 34em;
@@ -247,11 +254,90 @@ button {
 .spin-panel__lead strong {
   color: var(--ink);
 }
+
+/* The legend: the wheel's two colours, in words. Each row is a wedge laid flat: tint, accent edge, tag. */
+.legend {
+  list-style: none;
+  display: grid;
+  gap: calc(var(--u) * 0.6);
+  max-width: calc(var(--u) * 40);
+}
+.legend__row {
+  --tone: var(--flame);
+  --tone-ink: var(--flame-ink);
+  --tone-wash: var(--surface-warm);
+  --tone-line: var(--flame-border);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: calc(var(--u) * 1.3);
+  padding: calc(var(--u) * 0.7) calc(var(--u) * 1.2) calc(var(--u) * 0.7) calc(var(--u) * 1.1);
+  border: 1px solid var(--tone-line);
+  border-left: max(4px, calc(var(--u) * 0.4)) solid var(--tone);
+  border-radius: var(--radius-sm);
+  background: var(--tone-wash);
+}
+.legend__row[data-accent='azure'] {
+  --tone: var(--azure);
+  --tone-ink: var(--azure-ink);
+  --tone-wash: var(--surface-cool);
+  --tone-line: var(--sky-border);
+}
+.legend__word {
+  font-size: max(15px, calc(var(--u) * 2.1));
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--tone-ink);
+  /* BYOT and BYOA set to the same measure, so the two rows line up. */
+  min-width: 3.5em;
+}
+.legend__text {
+  display: grid;
+  gap: calc(var(--u) * 0.15);
+  min-width: 0;
+}
+.legend__name {
+  font-size: max(9.5px, calc(var(--u) * 0.9));
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-deep);
+  text-wrap: balance;
+}
+.legend__what {
+  font-size: max(11px, calc(var(--u) * 1.2));
+  line-height: 1.35;
+  color: var(--ink-body);
+  text-wrap: balance;
+}
+.legend__count {
+  display: grid;
+  justify-items: end;
+  gap: calc(var(--u) * 0.1);
+  font-size: max(8.5px, calc(var(--u) * 0.78));
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-muted);
+}
+.legend__count b {
+  font-size: max(18px, calc(var(--u) * 2.5));
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-deep);
+}
+
 .spin-panel__action {
   display: flex;
   align-items: center;
   gap: calc(var(--u) * 2.2);
-  margin-top: calc(var(--u) * 1.4);
+  margin-top: calc(var(--u) * 0.9);
 }
 .spin-panel__hint {
   font-size: max(11px, calc(var(--u) * 1.15));
@@ -261,6 +347,92 @@ button {
   text-transform: uppercase;
   color: var(--ink-deep);
   max-width: 14em;
+}
+
+/* ---------- Where the wheel stopped: held in the panel's place before the page arrives ---------- */
+.landed {
+  --tone: var(--flame);
+  --tone-ink: var(--flame-ink);
+  --tone-big: var(--flame-deep);
+  gap: calc(var(--u) * 1.3);
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+.landed[data-accent='azure'] {
+  --tone: var(--azure);
+  --tone-ink: var(--azure-ink);
+  --tone-big: var(--azure-ink);
+}
+.landed__eyebrow {
+  font-size: max(11px, calc(var(--u) * 1.25));
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.landed__head {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.6);
+}
+.landed__num {
+  font-size: min(calc(var(--u) * 10), 25cqi);
+  line-height: 0.86;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tone-big);
+}
+.landed__platform {
+  display: grid;
+  gap: calc(var(--u) * 0.3);
+  padding-left: calc(var(--u) * 1.4);
+  border-left: max(3px, calc(var(--u) * 0.3)) solid var(--tone);
+}
+.landed__platform b {
+  font-size: max(18px, calc(var(--u) * 2.8));
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--tone-ink);
+}
+.landed__platform span {
+  font-size: max(10px, calc(var(--u) * 1.05));
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-deep);
+}
+.landed__name {
+  font-size: min(calc(var(--u) * 3.7), 9cqi);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-deep);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.landed__by {
+  font-size: max(12px, calc(var(--u) * 1.5));
+  line-height: 1.4;
+  color: var(--ink-body);
+}
+.landed__meter {
+  height: max(2px, calc(var(--u) * 0.16));
+  margin-top: calc(var(--u) * 0.5);
+  max-width: calc(var(--u) * 40);
+  background: var(--line);
+  overflow: hidden;
+}
+.landed__meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--tone);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }
 
 /* The red button. A flat cap on a navy plate; the "depth" is a hard-edged offset, not a blur. */
@@ -373,6 +545,40 @@ button {
   }
   .spin-panel { gap: calc(var(--u) * 1.1); }
   .spin-panel__action { margin-top: 0; }
+  /* Less essential lines step out so the button keeps its room. */
+  .spin-panel__more,
+  .legend__how { display: none; }
+  .spin-panel__title { font-size: min(calc(var(--u) * 4.2), 9.2cqi); }
+  .legend { gap: 4px; }
+  .legend__row { padding-top: 4px; padding-bottom: 4px; column-gap: 8px; }
+  .legend__word { min-width: 3.3em; }
+  .legend__name { font-size: 9px; letter-spacing: 0.05em; white-space: nowrap; }
+  .landed { gap: calc(var(--u) * 1.6); }
+}
+
+/* ---------- Phones on their side inside a browser (very little height): the panel keeps only the essentials ---------- */
+@media (max-height: 430px) {
+  .spin-panel { gap: 8px; }
+  .spin-panel__title { font-size: min(26px, 8.4cqi); }
+  .spin-panel__lead { display: none; }
+  /* The two platforms sit side by side as small chips: colour, word, count. */
+  .legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    max-width: none;
+  }
+  .legend__row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: 6px;
+    padding: 5px 8px;
+  }
+  .legend__word { min-width: 0; font-size: 14px; }
+  .legend__what,
+  .legend__count span { display: none; }
+  .legend__name { font-size: 8px; letter-spacing: 0.04em; white-space: normal; line-height: 1.2; }
+  .legend__count b { font-size: 16px; }
+  .red-button { --size: 72px; }
+  .spin-panel__hint { font-size: 10px; }
 }
 
 /* ---------- Portrait phones and tablets: ask for landscape ---------- */

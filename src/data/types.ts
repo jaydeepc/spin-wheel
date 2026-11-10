@@ -6,10 +6,15 @@ export interface Metric {
   label: string
 }
 
+/** The person who built it. One, or at most two, per use case. */
 export interface Person {
   name: string
-  /** Role and function, e.g. "Area Collections Manager · Collections" */
+  /** Role and team, e.g. "Area Collections Manager · Collections" */
   role: string
+  /** A sentence or two on who they are and what they do day to day. Shows they are not from Tech. */
+  bio: string
+  /** Portrait as a small square data URL (resized in the admin page). Empty shows a placeholder. */
+  photo: string
 }
 
 export interface UseCase {
@@ -26,6 +31,8 @@ export interface UseCase {
   problem: string
   solution: string
   newWay: string
+  /** What the creator says about it, in their own words. Attributed to the first person. */
+  quote: string
   metrics: Metric[]
   people: Person[]
   /** Hidden use cases stay in admin but are left off the wheel. */
@@ -45,5 +52,22 @@ export interface Showcase {
 }
 
 export const MAX_USE_CASES = 20
-export const MAX_METRICS = 4
-export const MAX_PEOPLE = 6
+export const MAX_METRICS = 3
+export const MAX_PEOPLE = 2
+
+/** Character limits, shared by the admin form, the parser and the page layout. */
+export const LIMITS = {
+  wheelLabel: 24,
+  title: 60,
+  team: 40,
+  summary: 150,
+  story: 150,
+  quote: 200,
+  metricValue: 16,
+  metricLabel: 50,
+  personName: 40,
+  personRole: 60,
+  personBio: 170,
+  /** Longest photo data URL accepted (about 90 KB of image). */
+  photo: 120_000,
+} as const

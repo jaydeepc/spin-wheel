@@ -10,7 +10,7 @@ const KEY = 'byot-showcase-v1'
 const PENDING = 'byot-showcase-v1:pending'
 const API = '/api/showcase'
 
-export type SaveState = 'idle' | 'saving' | 'saved' | 'local-only' | 'locked'
+export type SaveState = 'idle' | 'saving' | 'saved' | 'local-only' | 'locked' | 'too-large'
 
 function loadLocal(): Showcase | null {
   try {
@@ -91,11 +91,14 @@ export function useShowcase({ writer = false }: { writer?: boolean } = {}) {
     queued.current = null
     const run = (async () => {
       try {
+        const body = JSON.stringify(next)
         const res = await fetch(API, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(next),
-          keepalive: true,
+          body,
+          // keepalive lets a save outlive a closing tab, but browsers refuse it above 64 KB,
+          // so it is only used while the content is small (before photos are added).
+          keepalive: body.length < 60_000,
         })
         if (res.ok) {
           // Only clean if nothing newer was queued while this one was in flight.
@@ -106,7 +109,7 @@ export function useShowcase({ writer = false }: { writer?: boolean } = {}) {
           }
           return true
         }
-        setSaveState(res.status === 401 ? 'locked' : 'local-only')
+        setSaveState(res.status === 401 ? 'locked' : res.status === 413 ? 'too-large' : 'local-only')
         return false
       } catch {
         setSaveState('local-only')

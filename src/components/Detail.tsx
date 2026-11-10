@@ -1,13 +1,13 @@
 'use client'
 
 import { memo, useLayoutEffect, useRef, type CSSProperties, type ReactNode } from 'react'
-import type { UseCase } from '@/data/types'
+import { MAX_METRICS, MAX_PEOPLE, type UseCase } from '@/data/types'
 import type { Accent } from './Wheel'
 import './detail.css'
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean)
-  if (!parts.length) return '·'
+  if (!parts.length) return ''
   return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase()
 }
 
@@ -20,6 +20,40 @@ const Arrow = () => (
   </svg>
 )
 
+/** A drawn quotation mark; the closing one is the same shape turned round. */
+const QuoteMark = () => (
+  <svg viewBox="0 0 46 36" fill="currentColor" aria-hidden="true">
+    <path d="M0 36V21.5C0 9.2 6.6 1.8 19 0v7.2c-5.6 1.3-8.6 4.9-9 10.8h9V36z" />
+    <path d="M27 36V21.5C27 9.2 33.6 1.8 46 0v7.2c-5.6 1.3-8.6 4.9-9 10.8h9V36z" />
+  </svg>
+)
+
+/** Stands in until a real photo is uploaded: a head and shoulders on a tinted tile, with the initials. */
+const Silhouette = ({ tag }: { tag: string }) => (
+  <>
+    <svg className="d-portrait__figure" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="39" r="17.5" />
+      <path d="M13 101c0-21 15.5-33.5 37-33.5S87 80 87 101z" />
+    </svg>
+    {tag && <span className="d-portrait__tag">{tag}</span>}
+  </>
+)
+
+/** "Area Collections Manager · Collections" is a role and a team; anything else is all role. */
+function splitRole(raw: string, fallbackTeam: string) {
+  const parts = raw.split(/\s*[·•|]\s*/).map((t) => t.trim()).filter(Boolean)
+  if (parts.length > 1) return { role: parts[0], team: parts.slice(1).join(' · ') }
+  return { role: parts[0] ?? '', team: fallbackTeam }
+}
+
+/** The quote is set larger the shorter it is. In units of --d. */
+function quoteSize(len: number) {
+  if (len <= 70) return 2.7
+  if (len <= 115) return 2.35
+  if (len <= 160) return 2.05
+  return 1.85
+}
+
 /**
  * A metric value is free text. Numerals are set large, words small, and a
  * "from → to" pair is split so the two halves can be weighted differently.
@@ -27,7 +61,7 @@ const Arrow = () => (
  * box before anything is measured) and, when the value is one plain number,
  * the numeral to count up to.
  */
-function buildValue(raw: string, hero: boolean) {
+function buildValue(raw: string) {
   const text = raw.trim()
   let parts = text.split(/\s*(?:→|⟶|➜|->)\s*/).filter(Boolean)
   if (parts.length !== 2) parts = [text]
@@ -68,13 +102,13 @@ function buildValue(raw: string, hero: boolean) {
     w += 1.36
     node = (
       <>
-        <span className="v-from" data-in={hero ? 'metric-from' : undefined}>{a}</span>
-        <span className="v-arrow" data-in={hero ? 'metric-arrow' : undefined}><Arrow /></span>
-        <span className="v-to" data-in={hero ? 'metric-hero' : undefined}>{b}</span>
+        <span className="v-from">{a}</span>
+        <span className="v-arrow"><Arrow /></span>
+        <span className="v-to">{b}</span>
       </>
     )
   } else {
-    node = <span className="v-to" data-in={hero ? 'metric-hero' : undefined}>{half(parts[0])}</span>
+    node = <span className="v-to">{half(parts[0])}</span>
   }
   const plain = parts.length === 1 && nums.length === 1 && /^(\d+|\d{1,3}(,\d{2,3})+)(\.\d+)?$/.test(nums[0])
   return { node, w: Math.max(w, 1.6).toFixed(2), count: plain ? nums[0] : undefined }
@@ -119,7 +153,6 @@ function fitDetail(root: HTMLElement) {
     root.style.setProperty('--k', k.toFixed(2))
     root.style.setProperty('--ks', ks.toFixed(2))
   }
-  root.removeAttribute('data-tight')
   set(1, 1)
   fixWidths(root)
   // Short screens scroll instead (see the media query in detail.css).
@@ -132,13 +165,15 @@ function fitDetail(root: HTMLElement) {
   const floor = height - (parseFloat(cs.paddingBottom) || 0)
   // The wheel's pointer stands a little proud of its circle.
   const dockTop = height - dockY - dock * 1.06
+  // Breathing room between the upper band and the wheel below it.
+  const clear = Math.max(8, dock * 0.07)
   const top = root.querySelector<HTMLElement>('.d-top')
   const last = root.lastElementChild as HTMLElement | null
   // Sub-pixel bottoms measured against the page itself. Neither the page nor these bands
   // carry a transform of their own, and anything above them only ever translates.
   const bottom = (el: HTMLElement) => el.getBoundingClientRect().bottom - root.getBoundingClientRect().top
   const over = () =>
-    (last ? bottom(last) > floor + 0.6 : false) || (top ? bottom(top) > dockTop - 4 : false)
+    (last ? bottom(last) > floor + 0.6 : false) || (top ? bottom(top) > dockTop - clear : false)
 
   let ks = 1
   let k = 1
@@ -152,10 +187,6 @@ function fitDetail(root: HTMLElement) {
     fixWidths(root)
   }
   fixWidths(root)
-
-  // The margin heading sits above the wheel; it must never reach it.
-  const side = root.querySelector<HTMLElement>('.d-sidehead')
-  if (side && side.offsetTop + side.offsetHeight > dockTop - 6) root.setAttribute('data-tight', '')
 }
 
 interface Props {
@@ -166,20 +197,25 @@ interface Props {
 }
 
 /**
- * The page a use case gets once the wheel has stopped on it: an editorial
- * spread. Everything that animates in carries a data-in role; detailTimeline.ts
- * holds the score.
+ * The page a use case gets once the wheel has stopped on it. The person who
+ * built the tool is the hero: who they are, what they say about it, then how
+ * the work changed and a few modest numbers. Everything that animates in
+ * carries a data-in role; detailTimeline.ts holds the score.
  */
 function Detail({ useCase: uc, number, accent }: Props) {
   const ref = useRef<HTMLElement>(null)
 
   const short = uc.platform === 'BYOA' ? 'BYOA' : 'BYOT'
+  // The platform decides the colour: BYOT is flame, BYOA is azure.
+  const tone: Accent = uc.platform === 'BYOA' ? 'azure' : uc.platform === 'BYOT' ? 'flame' : accent
   const chip = short === 'BYOA' ? 'BYOA · Build Your Own Agents' : 'BYOT · Build Your Own Tech'
   const title = uc.title.trim()
   const words = title.split(/\s+/).filter(Boolean)
   const summary = uc.summary.trim()
-  const metrics = uc.metrics.filter((m) => m.value.trim()).slice(0, 4)
-  const people = uc.people.filter((p) => p.name.trim()).slice(0, 6)
+  const team = uc.team.trim()
+  const metrics = uc.metrics.filter((m) => m.value.trim()).slice(0, MAX_METRICS)
+  const people = uc.people.filter((p) => p.name.trim()).slice(0, MAX_PEOPLE)
+  const quote = uc.quote.trim().replace(/^["'“”‘’\s]+|["'“”‘’\s]+$/g, '')
   const before = [
     { key: 'old', label: 'The old way', text: uc.oldWay.trim() },
     { key: 'problem', label: 'The problem', text: uc.problem.trim() },
@@ -190,6 +226,8 @@ function Detail({ useCase: uc, number, accent }: Props) {
   ].filter((s) => s.text)
   const hasStory = before.length + after.length > 0
   const both = before.length > 0 && after.length > 0
+  // The numbers sit under the creator when the quote fills the left column; otherwise they take the quote's place.
+  const factsBeside = people.length > 0 && quote.length > 0
 
   // Must be right on first paint: the kiosk hides everything straight after mount.
   useLayoutEffect(() => {
@@ -242,129 +280,154 @@ function Detail({ useCase: uc, number, accent }: Props) {
       </div>
     )
 
-  const hero = metrics.length ? buildValue(metrics[0].value, true) : null
-  const peopleCols = people.length === 4 ? 4 : 3
+  const facts = metrics.length > 0 && (
+    <section className="d-facts" aria-label="In numbers">
+      <p className="d-label" data-in="facts-label">In numbers</p>
+      <div className="d-facts__row" data-n={metrics.length} style={vars({ '--n': metrics.length })}>
+        {metrics.map((m, i) => {
+          const v = buildValue(m.value)
+          return (
+            <div className="d-fact" data-in="fact" key={i}>
+              <p className="d-value" style={vars({ '--w': v.w })} data-count={v.count} aria-label={m.value}>
+                {v.node}
+              </p>
+              {m.label.trim() && <p className="d-fact__label">{m.label}</p>}
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+
+  const first = people[0]
 
   return (
-    <article className="detail" ref={ref} data-accent={accent} data-nostory={!hasStory || undefined} data-nopeople={!people.length || undefined} aria-live="polite">
-      {/* Band 1: the title page and the figures */}
-      <header className="d-top" data-solo={!hero || undefined}>
-        <div className="d-intro">
-          <p className="d-eyebrow" data-in="eyebrow">
-            <span className="d-eyebrow__folio">{String(number).padStart(2, '0')}</span>
-            <span className="d-eyebrow__bar" aria-hidden="true" />
-            <span className="d-eyebrow__fn">{uc.team.trim() || 'Piramal Finance'}</span>
-            <span className="d-eyebrow__chip">{chip}</span>
-          </p>
-          {words.length > 0 && (
-            <h1 className="d-title" style={vars({ '--tl': titleMeasure(title) })} aria-label={title}>
-              {words.map((word, i) => (
-                <span className="d-title__word" key={i} aria-hidden="true">
-                  <span data-in="word">{word}</span>
-                </span>
-              ))}
-            </h1>
-          )}
-          <div className="d-rule" data-in="rule" />
-          {summary && (
-            <p className="d-summary" data-in="summary">
-              {summary}
+    <article className="detail" ref={ref} data-accent={tone} data-nostory={!hasStory || undefined} aria-live="polite">
+      {/* Band 1: the tool and what its maker says (left), the maker (right) */}
+      <div className="d-top" data-solo={!people.length || undefined}>
+        <div className="d-main">
+          <header className="d-intro">
+            <p className="d-eyebrow" data-in="eyebrow">
+              <span className="d-eyebrow__folio">{String(number).padStart(2, '0')}</span>
+              <span className="d-eyebrow__bar" aria-hidden="true" />
+              <span className="d-eyebrow__fn">{team || 'Piramal Finance'}</span>
+              <span className="d-eyebrow__chip">{chip}</span>
             </p>
+            {words.length > 0 && (
+              <h1 className="d-title" style={vars({ '--tl': titleMeasure(title) })} aria-label={title}>
+                {words.map((word, i) => (
+                  <span className="d-title__word" key={i} aria-hidden="true">
+                    <span data-in="word">{word}</span>
+                  </span>
+                ))}
+              </h1>
+            )}
+            <div className="d-rule" data-in="rule" />
+            {summary && (
+              <p className="d-summary" data-in="summary">
+                {summary}
+              </p>
+            )}
+          </header>
+
+          {quote && (
+            <figure className="d-quote" style={vars({ '--qs': quoteSize(quote.length) })}>
+              <span className="d-quote__mark" data-in="quote-mark">
+                <QuoteMark />
+              </span>
+              <blockquote className="d-quote__text" data-in="quote">
+                {quote}
+                <span className="d-quote__close">
+                  <QuoteMark />
+                </span>
+              </blockquote>
+              {first && (
+                <figcaption className="d-quote__by" data-in="quote-by">
+                  <span className="d-quote__dash" aria-hidden="true" />
+                  <span className="d-quote__name">{first.name.trim()}</span>
+                  {first.role.trim() && <span className="d-quote__role">{first.role.trim()}</span>}
+                </figcaption>
+              )}
+            </figure>
           )}
+
+          {!factsBeside && facts}
         </div>
 
-        {hero && (
-          <section className="d-impact" data-in="impact" aria-label="Impact">
-            <div>
-              <p className="d-label">The impact</p>
-              <div className="d-hero">
-                <p className="d-value" style={vars({ '--w': hero.w })} data-count={hero.count} aria-label={metrics[0].value}>
-                  {hero.node}
-                </p>
+        {people.length > 0 && (
+          <div className="d-side">
+            <section className="d-creator" data-n={people.length} data-in="creator" aria-label="Built by">
+              <div className="d-creator__head" data-in="creator-label">
+                <p className="d-label">Built by</p>
+                <p className="d-creator__flag">Non-Tech creator</p>
               </div>
-              {metrics[0].label.trim() && (
-                <p className="d-hero__label" data-in="metric-label">
-                  {metrics[0].label}
-                </p>
-              )}
-            </div>
-            {metrics.length > 1 && (
-              <div className="d-supports" data-n={metrics.length - 1} style={vars({ '--n': metrics.length - 1 })}>
-                {metrics.slice(1).map((m, i) => {
-                  const v = buildValue(m.value, false)
+              <ul className="d-creator__list">
+                {people.map((p, i) => {
+                  const r = splitRole(p.role, team)
+                  const bio = p.bio.trim()
                   return (
-                    <div className="d-metric" data-in="metric" key={i}>
-                      <p className="d-value" style={vars({ '--w': v.w })} data-count={v.count} aria-label={m.value}>
-                        {v.node}
-                      </p>
-                      <p className="d-metric__label">{m.label}</p>
-                    </div>
+                    <li className="d-person" key={i}>
+                      <span className="d-portrait" data-in="portrait" data-empty={!p.photo || undefined}>
+                        {p.photo ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={p.photo} alt={`Portrait of ${p.name.trim()}`} draggable={false} />
+                        ) : (
+                          <Silhouette tag={initials(p.name)} />
+                        )}
+                      </span>
+                      <div className="d-person__text" data-in="person">
+                        <p className="d-person__name">{p.name.trim()}</p>
+                        {r.role && <p className="d-person__role">{r.role}</p>}
+                        {r.team && (
+                          <p className="d-person__team">
+                            <span>Works in</span> {r.team}
+                          </p>
+                        )}
+                        {bio && <p className="d-person__bio">{bio}</p>}
+                      </div>
+                    </li>
                   )
                 })}
-              </div>
-            )}
-          </section>
-        )}
-      </header>
-
-      {/* Band 2: the story, set in from the margin the wheel sits in */}
-      {hasStory && (
-        <div className="d-lower">
-          <div className="d-sidehead" data-in="sidehead">
-            <p className="d-label">The story</p>
-            <p className="d-sidehead__line">
-              How the work <b>changed</b>
-            </p>
-          </div>
-          <section
-            className="d-story"
-            data-half={!both || undefined}
-            data-single={before.length + after.length === 1 || undefined}
-            style={vars({ '--b': `${before.length || 1}fr`, '--a': `${after.length || 1}fr` })}
-            aria-label="How it changed"
-          >
-            {group('before', 'Before', before)}
-            {both && (
-              <div className="d-turn" aria-hidden="true">
-                <div className="d-turn__line" data-in="turn-line" />
-                <div className="d-turn__mark" data-in="turn">
-                  <span className="d-turn__disc">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 10h13" />
-                      <path d="M11 4.5l5.5 5.5-5.5 5.5" />
-                    </svg>
+              </ul>
+              {people.length === 1 && (
+                <p className="d-claim" data-in="claim">
+                  <span className="d-claim__dot" aria-hidden="true" />
+                  <span>
+                    Built on <b>{short}</b> by the person who does the job, not by Tech.
                   </span>
-                  <span className="d-turn__tag">{short}</span>
-                </div>
-              </div>
-            )}
-            {group('after', 'After', after)}
-          </section>
-        </div>
-      )}
-
-      {/* Band 3: the authors, to the right of the docked wheel */}
-      {people.length > 0 && (
-        <section className="d-people" data-dense={people.length > 3 || undefined} aria-label="The people behind the solution">
-          <div className="d-people__head" data-in="people-label">
-            <p className="d-label">The people behind it</p>
-            <p className="d-people__note">
-              Built by the team that lives the problem, <span>not by an IT project.</span>
-            </p>
+                </p>
+              )}
+            </section>
+            {factsBeside && facts}
           </div>
-          <ul className="d-people__list" style={vars({ '--cols': peopleCols })}>
-            {people.map((p, i) => (
-              <li className="d-person" key={i} data-in="person">
-                <span className="d-person__disc" aria-hidden="true">
-                  {initials(p.name)}
+        )}
+      </div>
+
+      {/* Band 2: how the work changed, to the right of the docked wheel */}
+      {hasStory && (
+        <section
+          className="d-story"
+          data-half={!both || undefined}
+          data-single={before.length + after.length === 1 || undefined}
+          style={vars({ '--b': `${before.length || 1}fr`, '--a': `${after.length || 1}fr` })}
+          aria-label="How the work changed"
+        >
+          {group('before', 'Before', before)}
+          {both && (
+            <div className="d-turn" aria-hidden="true">
+              <div className="d-turn__line" data-in="turn-line" />
+              <div className="d-turn__mark" data-in="turn">
+                <span className="d-turn__disc">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 10h13" />
+                    <path d="M11 4.5l5.5 5.5-5.5 5.5" />
+                  </svg>
                 </span>
-                <span className="d-person__text">
-                  <span className="d-person__name">{p.name}</span>
-                  {p.role.trim() && <span className="d-person__role">{p.role}</span>}
-                </span>
-              </li>
-            ))}
-          </ul>
+                <span className="d-turn__tag">{short}</span>
+              </div>
+            </div>
+          )}
+          {group('after', 'After', after)}
         </section>
       )}
     </article>

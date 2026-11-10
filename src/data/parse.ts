@@ -1,5 +1,10 @@
 import type { Showcase, UseCase } from './types'
-import { MAX_METRICS, MAX_PEOPLE, MAX_USE_CASES } from './types'
+import { LIMITS, MAX_METRICS, MAX_PEOPLE, MAX_USE_CASES } from './types'
+
+/** Only small inline images are accepted as portraits; anything else is dropped. */
+function photo(v: unknown): string {
+  return typeof v === 'string' && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v) && v.length <= LIMITS.photo ? v : ''
+}
 
 function sanitiseUseCase(raw: Partial<UseCase>, i: number): UseCase {
   const s = (v: unknown) => (typeof v === 'string' ? v : '')
@@ -14,11 +19,12 @@ function sanitiseUseCase(raw: Partial<UseCase>, i: number): UseCase {
     problem: s(raw?.problem),
     solution: s(raw?.solution),
     newWay: s(raw?.newWay),
+    quote: s(raw?.quote),
     metrics: Array.isArray(raw?.metrics)
       ? raw.metrics.slice(0, MAX_METRICS).map((m) => ({ value: s(m?.value), label: s(m?.label) }))
       : [],
     people: Array.isArray(raw?.people)
-      ? raw.people.slice(0, MAX_PEOPLE).map((p) => ({ name: s(p?.name), role: s(p?.role) }))
+      ? raw.people.slice(0, MAX_PEOPLE).map((p) => ({ name: s(p?.name), role: s(p?.role), bio: s(p?.bio), photo: photo(p?.photo) }))
       : [],
     active: raw?.active !== false,
   }

@@ -24,7 +24,7 @@ export async function PUT(req: Request) {
   if (!validSession(jar.get(SESSION_COOKIE)?.value)) {
     return NextResponse.json({ error: 'locked' }, { status: 401 })
   }
-  const read = await readJson(req, 2 * 1024 * 1024)
+  const read = await readJson(req, 4 * 1024 * 1024)
   if (!read.ok) {
     return NextResponse.json({ error: read.status === 413 ? 'Too large' : 'Invalid JSON' }, { status: read.status })
   }

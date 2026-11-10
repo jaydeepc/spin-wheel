@@ -12,12 +12,9 @@ export interface WheelSegment {
 
 export type Accent = 'flame' | 'azure' | 'navy'
 
-const ACCENTS: Accent[] = ['flame', 'azure', 'navy']
-
-/** Three accents in rotation, with the last segment adjusted so no two neighbours match. */
-export function accentFor(i: number, n: number): Accent {
-  if (n > 1 && i === n - 1 && n % 3 === 1) return 'azure'
-  return ACCENTS[i % 3]
+/** Colour says which platform a solution was built on: BYOT is flame, BYOA is azure. */
+export function accentForPlatform(platform?: string | null): Accent {
+  return platform === 'BYOA' ? 'azure' : 'flame'
 }
 
 /* ---------- Geometry, in SVG user units. The wheel is radius 500 in a 1040 box centred on 0,0. ---------- */
@@ -167,13 +164,19 @@ const Wheel = forwardRef<HTMLDivElement, Props>(function Wheel({ segments, winne
     // Keep the labels close in size: a short name must not shout over its neighbours.
     const cap = Math.min(...fits.map((f) => f.size), SIZE_MAX) * 1.18
     const pad = n === 1 ? 0 : Math.min(1.7, seg * 0.12)
+    // Neighbours on the same platform share a colour, so they alternate between two close
+    // tints of it: the wheel reads as two kinds of thing, and still as separate segments.
+    const accents = segments.map((s) => accentForPlatform(s.tag))
+    const shades: boolean[] = []
+    accents.forEach((a, i) => shades.push(i > 0 && accents[i - 1] === a ? !shades[i - 1] : false))
     return segments.map((s, i) => {
       const a0 = i * seg
       const a1 = a0 + seg
       const size = Math.min(fits[i].size, cap)
       return {
         id: s.id,
-        accent: accentFor(i, n),
+        accent: accents[i],
+        tint: `t-${accents[i]}${shades[i] ? '-b' : ''}`,
         mid: a0 + seg / 2,
         body: ring(R_BODY_IN, R_TRACK_IN, a0, a1),
         lit: ring(R_BODY_IN, R_FACE, a0, a1),
@@ -245,7 +248,7 @@ const Wheel = forwardRef<HTMLDivElement, Props>(function Wheel({ segments, winne
     <div
       className="wheel"
       data-has-winner={win != null || undefined}
-      data-win-accent={win != null ? accentFor(win, n) : undefined}
+      data-win-accent={win != null ? accentForPlatform(segments[win].tag) : undefined}
     >
       {/* static, below the face */}
       <div className="wheel__plate" />
@@ -279,12 +282,12 @@ const Wheel = forwardRef<HTMLDivElement, Props>(function Wheel({ segments, winne
             {/* Radial gradients centred on the axle look the same at every angle. */}
             {(
               [
-                ['t-flame', '#fffaf8', '#ffeee7'],
-                ['t-azure', '#f8fbff', '#e6f0fd'],
-                ['t-navy', '#ffffff', '#f4f7fb'],
+                ['t-flame', '#fff6f2', '#ffe2d6'],
+                ['t-flame-b', '#fffbf9', '#fff0e9'],
+                ['t-azure', '#f3f8ff', '#d9e8fc'],
+                ['t-azure-b', '#f9fcff', '#eaf2fe'],
                 ['w-flame', '#b83815', '#cf4019'],
                 ['w-azure', '#2459b8', '#2d6ad1'],
-                ['w-navy', '#071a50', '#15244b'],
               ] as const
             ).map(([name, from, to]) => (
               <radialGradient key={name} id={g(name)} gradientUnits="userSpaceOnUse" cx={0} cy={0} r={R_FACE}>
@@ -300,7 +303,7 @@ const Wheel = forwardRef<HTMLDivElement, Props>(function Wheel({ segments, winne
           <circle r={R_FACE} fill="#ffffff" />
           {face.map((f, i) => (
             <g key={f.id} className="wheel__seg" data-accent={f.accent} data-winner={win === i || undefined}>
-              <path className="wheel__body" d={f.body} fill={url(`t-${f.accent}`)} />
+              <path className="wheel__body" d={f.body} fill={url(f.tint)} />
               <path className="wheel__lit" d={f.lit} fill={url(`w-${f.accent}`)} />
               <path className="wheel__arc" d={f.arc} />
               <g transform={`rotate(${f.mid.toFixed(3)})`}>
