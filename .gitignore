@@ -1,0 +1,9 @@
+node_modules
+.next
+next-env.d.ts
+# content saved from the admin page
+data/showcase.json
+.env*.local
+public/_concepts
+.vercel
+*.tsbuildinfo
