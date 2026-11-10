@@ -2,7 +2,8 @@ import type { Person, Showcase, UseCase } from './types'
 
 /**
  * SAMPLE CONTENT — every use case, number, name, bio and quote below is illustrative
- * placeholder copy written to show the layout and the tone. Replace it in /admin with
+ * placeholder copy written to show the layout and the tone. The names are invented and
+ * the four portraits in /public/people are AI-generated faces of people who do not exist. Replace it in /admin with
  * the real tools, verified figures, the actual creators, their photos and their own words
  * before the event.
  *
@@ -29,7 +30,7 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name One',
+        name: 'Abhishek Biswas',
         role: 'Area Collections Manager · Collections',
         bio: 'Runs a team of twelve field officers across two districts. Fifteen years in collections, most of it on a motorbike. Had never built an app.',
         photo: '',
@@ -56,10 +57,10 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name Two',
+        name: 'Priya Nair',
         role: 'Tele-calling Team Lead · Collections',
         bio: 'Leads 22 callers on the collections floor and started as one eight years ago. The only thing built before this was the shift roster.',
-        photo: '',
+        photo: '/people/priya-nair.jpg',
       },
     ],
   },
@@ -81,10 +82,10 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name Three',
+        name: 'Rohan Deshmukh',
         role: 'Talent Acquisition Lead · Human Resources',
         bio: 'Hires branch staff for the western region. Spends most days on the phone with candidates and branch managers.',
-        photo: '',
+        photo: '/people/rohan-deshmukh.jpg',
       },
     ],
   },
@@ -104,7 +105,7 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     metrics: [{ value: '8 in 10', label: 'joiner questions answered without HR' }],
     people: [
       {
-        name: 'Sample Name Four',
+        name: 'Ananya Iyer',
         role: 'HR Business Partner · Human Resources',
         bio: 'Looks after joining and day-to-day HR for thirty branches. Background in psychology and people work, not software.',
         photo: '',
@@ -129,13 +130,13 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name Five',
+        name: 'Suresh Patil',
         role: 'Regional Admin Manager · Administration',
         bio: 'Keeps 38 branches running: power, air conditioning, furniture, vendors. Knows every electrician in the region by first name.',
         photo: '',
       },
       {
-        name: 'Sample Name Six',
+        name: 'Farah Khan',
         role: 'Branch Operations Executive · Operations',
         bio: 'Works the front desk of a busy branch and raised most of the early requests. Tested every version on a phone between customers.',
         photo: '',
@@ -161,13 +162,13 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name Seven',
+        name: 'Meenakshi Rao',
         role: 'Disbursement Checker · Operations',
         bio: 'Has checked loan files for nine years and can spot a missing signature from across the room. Trained in commerce, not coding.',
         photo: '',
       },
       {
-        name: 'Sample Name Eight',
+        name: 'Vikram Sethi',
         role: 'Central Ops Manager · Operations',
         bio: 'Manages the checking desk of fourteen people. Wrote the paper checklist the agent now follows.',
         photo: '',
@@ -188,7 +189,7 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     metrics: [{ value: '12 → 3', label: 'emails to book a trip' }],
     people: [
       {
-        name: 'Sample Name Nine',
+        name: 'Kavita Joshi',
         role: 'Travel Desk Coordinator · Administration',
         bio: 'Books travel for about 900 employees with one colleague. Six years on the travel desk, and the person everyone calls from the airport.',
         photo: '',
@@ -214,10 +215,10 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name Ten',
+        name: 'Arjun Menon',
         role: 'Senior Legal Officer · Legal',
         bio: 'Drafts and reviews recovery notices for six states. A lawyer by training who had never written a line of code.',
-        photo: '',
+        photo: '/people/arjun-menon.jpg',
       },
     ],
   },
@@ -239,10 +240,10 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name Eleven',
+        name: 'Sunita Verma',
         role: 'Customer Service Lead · Operations',
         bio: 'Handles closure requests and the calls that follow. Twelve years in customer service, all of it across a counter or on a phone.',
-        photo: '',
+        photo: '/people/sunita-verma.jpg',
       },
     ],
   },
@@ -264,7 +265,7 @@ const cases: Omit<UseCase, 'id' | 'active'>[] = [
     ],
     people: [
       {
-        name: 'Sample Name Twelve',
+        name: 'Imran Sheikh',
         role: 'Compliance Manager · Compliance',
         bio: 'Reads every regulatory circular so that others do not have to. A company secretary by training.',
         photo: '',

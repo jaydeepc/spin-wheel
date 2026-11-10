@@ -73,11 +73,11 @@
 }
 .wheel__arc {
   fill: none;
-  stroke-width: 6;
+  stroke-width: 8;
   stroke-linecap: round;
 }
-.wheel__seg[data-accent='flame'] .wheel__arc { stroke: var(--flame); }
-.wheel__seg[data-accent='azure'] .wheel__arc { stroke: var(--azure); }
+.wheel__seg[data-accent='flame'] .wheel__arc { stroke: var(--flame-deep); }
+.wheel__seg[data-accent='azure'] .wheel__arc { stroke: var(--azure-ink); }
 .wheel__seg[data-accent='navy'] .wheel__arc { stroke: var(--ink); }
 .wheel__seg[data-accent='flame'] .wheel__bead { fill: var(--flame); }
 .wheel__seg[data-accent='azure'] .wheel__bead { fill: var(--azure); }

@@ -1,9 +1,14 @@
 import type { Showcase, UseCase } from './types'
 import { LIMITS, MAX_METRICS, MAX_PEOPLE, MAX_USE_CASES } from './types'
 
-/** Only small inline images are accepted as portraits; anything else is dropped. */
+/**
+ * A portrait is either a small inline image (uploaded in the admin page) or one of
+ * the sample files shipped in /public/people. Anything else is dropped.
+ */
 function photo(v: unknown): string {
-  return typeof v === 'string' && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v) && v.length <= LIMITS.photo ? v : ''
+  if (typeof v !== 'string') return ''
+  if (/^\/people\/[a-z0-9-]+\.(jpg|png|webp)$/.test(v)) return v
+  return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v) && v.length <= LIMITS.photo ? v : ''
 }
 
 function sanitiseUseCase(raw: Partial<UseCase>, i: number): UseCase {

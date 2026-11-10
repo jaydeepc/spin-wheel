@@ -282,10 +282,10 @@ const Wheel = forwardRef<HTMLDivElement, Props>(function Wheel({ segments, winne
             {/* Radial gradients centred on the axle look the same at every angle. */}
             {(
               [
-                ['t-flame', '#fff6f2', '#ffe2d6'],
-                ['t-flame-b', '#fffbf9', '#fff0e9'],
-                ['t-azure', '#f3f8ff', '#d9e8fc'],
-                ['t-azure-b', '#f9fcff', '#eaf2fe'],
+                ['t-flame', '#ffe6da', '#ffc4ab'],
+                ['t-flame-b', '#ffeee6', '#ffd5c2'],
+                ['t-azure', '#dfeafc', '#b4cff6'],
+                ['t-azure-b', '#e9f1fd', '#c9dcf8'],
                 ['w-flame', '#b83815', '#cf4019'],
                 ['w-azure', '#2459b8', '#2d6ad1'],
               ] as const
