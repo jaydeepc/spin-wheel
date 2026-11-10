@@ -7,3 +7,4 @@ data/showcase.json
 public/_concepts
 .vercel
 *.tsbuildinfo
+.env*

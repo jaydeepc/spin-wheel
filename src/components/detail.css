@@ -1,0 +1,623 @@
+/* Use case page (Detail.tsx): an editorial spread in three bands.
+   --u is the kiosk unit (globals.css). --d is the same unit inside the page,
+   multiplied by --k when the fitter in Detail.tsx has to tighten things;
+   --ks tightens only the reading text and is tried first. */
+.detail {
+  --k: 1;
+  --ks: 1;
+  --d: calc(var(--u) * var(--k));
+  /* The column the docked wheel stands in, measured from the page's left padding. */
+  --dock-col: calc(var(--dock-x, var(--pad)) + var(--dock, calc(var(--u) * 12.5)) - var(--pad));
+  --rail: calc(var(--dock-col) + var(--u) * 3);
+  position: relative;
+  height: 100%;
+  padding: calc(var(--u) * 0.5) var(--pad) var(--dock-y, calc(var(--u) * 1.6));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: auto;
+  align-content: space-between;
+  row-gap: calc(var(--d) * 1.25);
+  user-select: text;
+  -webkit-user-select: text;
+}
+/* No story: the title page is centred in the space above the credits. */
+.detail[data-nostory] {
+  grid-template-rows: minmax(0, 1fr);
+}
+.detail[data-nostory] .d-top {
+  align-self: center;
+}
+/* No credits: the story follows the title page instead of dropping to the foot of the page. */
+.detail[data-nopeople]:not([data-nostory]) {
+  align-content: start;
+  row-gap: calc(var(--d) * 3.4);
+}
+
+.d-label {
+  font-size: max(10px, calc(var(--d) * 0.95));
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--flame-ink);
+}
+
+/* ---------- Band 1: title page (left) and the figures (right) ---------- */
+.d-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.42fr) minmax(0, 1fr);
+  column-gap: calc(var(--d) * 4);
+  align-items: stretch;
+}
+.d-top[data-solo] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.d-intro {
+  container-type: inline-size;
+  min-width: 0;
+  padding-top: calc(var(--d) * 0.5);
+}
+.d-eyebrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: calc(var(--d) * 0.5) calc(var(--d) * 1.1);
+}
+.d-eyebrow__folio {
+  font-size: max(22px, calc(var(--d) * 2.7));
+  line-height: 0.9;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--flame-deep);
+}
+.detail[data-accent='azure'] .d-eyebrow__folio { color: var(--azure-ink); }
+.detail[data-accent='navy'] .d-eyebrow__folio { color: var(--ink-deep); }
+.d-eyebrow__bar {
+  width: 1px;
+  height: calc(var(--d) * 1.9);
+  min-height: 14px;
+  background: var(--line-rule);
+}
+.d-eyebrow__fn {
+  font-size: max(11px, calc(var(--d) * 1.1));
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-deep);
+  overflow-wrap: anywhere;
+}
+.d-eyebrow__chip {
+  padding: calc(var(--d) * 0.28) calc(var(--d) * 0.95);
+  border: 1px solid var(--sky-border);
+  border-radius: 999px;
+  background: rgba(243, 248, 254, 0.9);
+  font-size: max(10px, calc(var(--d) * 0.88));
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--azure-ink);
+  white-space: nowrap;
+}
+
+/* --tl is the number of characters the title is set to per line (derived from its length at render);
+   --ts is the fitter's correction when a line still runs wide. */
+.d-title {
+  margin-top: calc(var(--d) * 0.9);
+  font-size: calc(min(var(--u) * 6.2, 100cqw / (var(--tl, 12) * 0.6)) * var(--k) * var(--ts, 1));
+  line-height: 0.99;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--ink-deep);
+  text-wrap: balance;
+}
+/* Each word sits in a mask so it can rise into place. */
+.d-title__word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.1em 0.04em 0.16em;
+  margin: -0.1em 0.2em -0.16em -0.04em;
+}
+.d-title__word > span {
+  display: inline-block;
+}
+.d-rule {
+  width: calc(var(--d) * 5.2);
+  height: max(3px, calc(var(--d) * 0.2));
+  margin: calc(var(--d) * 1.2) 0 calc(var(--d) * 1.05);
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--flame-deep), var(--flame-rule));
+  transform-origin: left center;
+}
+.d-summary {
+  max-width: 35em;
+  font-size: max(12px, calc(var(--d) * 1.52 * var(--ks)));
+  line-height: 1.42;
+  font-weight: 300;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* The figures: one hero number, the rest in support. */
+.d-impact {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--d) * 1.5) calc(var(--d) * 1.9);
+  border: 1px solid var(--flame-border);
+  border-radius: calc(var(--d) * 1.3);
+  background: linear-gradient(150deg, #ffffff 35%, var(--surface-warm) 100%);
+  box-shadow:
+    0 calc(var(--d) * 1.5) calc(var(--d) * 3.2) calc(var(--d) * -1.6) rgba(200, 67, 28, 0.26),
+    0 calc(var(--d) * 0.15) calc(var(--d) * 0.5) rgba(21, 36, 75, 0.05);
+  overflow: hidden;
+}
+.d-impact::before {
+  /* soft light in the far corner */
+  content: '';
+  position: absolute;
+  right: -18%;
+  top: -40%;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(251, 214, 205, 0.75), rgba(251, 214, 205, 0));
+  pointer-events: none;
+}
+.d-impact::after {
+  /* the flame tab on the top edge */
+  content: '';
+  position: absolute;
+  left: calc(var(--d) * 1.9);
+  top: 0;
+  width: calc(var(--d) * 4.2);
+  height: max(3px, calc(var(--d) * 0.2));
+  border-radius: 0 0 99px 99px;
+  background: var(--flame-deep);
+}
+.d-impact > * {
+  position: relative;
+}
+.d-hero {
+  container-type: inline-size;
+  margin-top: calc(var(--d) * 0.7);
+}
+
+/* A metric value: numerals large, units small, "before → after" pairs drawn as a pair.
+   --w is its estimated width in em (set at render); --s is the fitter's correction. */
+.d-value {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+  line-height: 0.98;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink-deep);
+}
+.d-value .n { display: inline-block; }
+.d-value .unit,
+.d-value .sym { font-weight: 600; letter-spacing: 0; }
+.d-value .unit { font-size: max(0.34em, 10.5px); }
+.d-value .sym { font-size: max(0.56em, 11px); }
+.d-value .sp { margin-left: 0.4em; }
+.d-value .pre { margin-right: 0.12em; }
+.d-value .v-from,
+.d-value .v-to { display: inline-flex; align-items: baseline; }
+.d-value .v-from { font-weight: 300; color: var(--ink-soft); }
+.d-value .v-from .unit,
+.d-value .v-from .sym { font-weight: 400; }
+.d-value .v-arrow {
+  align-self: center;
+  flex: none;
+  display: inline-block;
+  width: 0.92em;
+  margin: 0 0.2em 0 0.22em;
+  color: var(--flame-rule);
+  transform-origin: left center;
+}
+.d-value .v-arrow svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.d-hero .d-value {
+  font-size: calc(min(var(--u) * 7.4, 100cqw / var(--w, 5)) * var(--k) * var(--s, 1));
+}
+.d-hero .v-to .n {
+  background: linear-gradient(180deg, var(--flame) 8%, var(--flame-deep) 55%, var(--flame-ink) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--flame-deep);
+  padding: 0 0.03em 0.04em;
+  margin: 0 -0.03em -0.04em;
+}
+.d-hero .v-to .unit,
+.d-hero .v-to .sym { color: var(--flame-ink); }
+.d-hero__label {
+  margin-top: calc(var(--d) * 0.45);
+  font-size: max(12px, calc(var(--d) * 1.32));
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.d-supports {
+  display: grid;
+  grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr));
+  margin-top: calc(var(--d) * 1.15);
+  padding-top: calc(var(--d) * 1.05);
+  border-top: 1px solid var(--flame-border);
+}
+.d-metric {
+  container-type: inline-size;
+  min-width: 0;
+  padding: 0 calc(var(--d) * 1.2);
+  border-left: 1px solid var(--line-warm);
+}
+.d-metric:first-child { padding-left: 0; border-left: 0; }
+.d-metric:last-child { padding-right: 0; }
+.d-metric .d-value {
+  font-size: calc(min(var(--u) * 3.1, 100cqw / var(--w, 4)) * var(--k) * var(--s, 1));
+}
+/* A unit never outgrows its numeral, even when the fitter has shrunk the value. */
+.d-metric .d-value .unit { font-size: max(0.4em, min(11px, 0.8em)); }
+/* Three supporting numbers on a squarer screen: two across and one below, so each keeps a readable width. */
+@media (max-aspect-ratio: 3/2) {
+  .d-supports[data-n='3'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: calc(var(--d) * 0.9);
+  }
+  .d-supports[data-n='3'] .d-metric:nth-child(3) {
+    grid-column: 1 / -1;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+.d-metric .v-arrow { color: var(--line-rule); }
+.d-metric .v-to .unit,
+.d-metric .v-to .sym { color: var(--azure-ink); }
+.d-metric__label {
+  margin-top: calc(var(--d) * 0.35);
+  font-size: max(10.5px, calc(var(--d) * 1.02));
+  line-height: 1.32;
+  color: var(--ink-body);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Band 2: the story, set in from the margin the wheel sits in ---------- */
+.d-lower {
+  display: grid;
+  grid-template-columns: var(--dock-col) minmax(0, 1fr);
+  column-gap: calc(var(--u) * 3);
+  align-items: start;
+}
+.d-sidehead {
+  grid-column: 1;
+  padding-top: calc(var(--d) * 0.1);
+}
+/* Set by the fitter when the heading would reach the wheel. */
+.detail[data-tight] .d-sidehead {
+  display: none;
+}
+.d-sidehead__line {
+  margin-top: calc(var(--d) * 0.55);
+  font-size: max(12px, calc(var(--d) * 1.62));
+  line-height: 1.18;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: var(--ink-deep);
+}
+.d-sidehead__line b { font-weight: 700; }
+
+/* --b and --a are each side's share (its number of steps, in fr), so columns of text stay the same width. */
+.d-story {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: minmax(0, var(--b, 1fr)) calc(var(--d) * 4) minmax(0, var(--a, 1fr));
+  align-items: stretch;
+}
+.d-story[data-half] {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* One step on its own: keep the measure readable (the font size here only gives the 46em its meaning). */
+.d-story[data-single] {
+  grid-template-columns: minmax(0, 46em);
+  font-size: max(11.5px, calc(var(--d) * 1.15 * var(--ks)));
+}
+.d-group {
+  position: relative;
+  padding: calc(var(--d) * 1.55) calc(var(--d) * 1.2) calc(var(--d) * 0.5);
+}
+.d-group__wash {
+  position: absolute;
+  inset: 0;
+  border-radius: 0 0 calc(var(--d) * 1) calc(var(--d) * 1);
+  pointer-events: none;
+}
+.d-group__rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  transform-origin: left center;
+}
+.d-group__tag {
+  position: absolute;
+  left: calc(var(--d) * 1.2);
+  top: 0;
+  transform: translateY(-50%);
+  padding: calc(var(--d) * 0.16) calc(var(--d) * 0.85);
+  border: 1px solid;
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: max(10px, calc(var(--d) * 0.86));
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  text-transform: uppercase;
+}
+.d-group[data-side='before'] .d-group__wash { background: linear-gradient(180deg, rgba(255, 247, 244, 0.95), rgba(255, 247, 244, 0) 92%); }
+.d-group[data-side='before'] .d-group__rule { background: var(--flame-rule); }
+.d-group[data-side='before'] .d-group__tag { color: var(--flame-ink); border-color: var(--flame-border); }
+.d-group[data-side='after'] .d-group__wash { background: linear-gradient(180deg, rgba(232, 242, 253, 0.98), rgba(243, 248, 254, 0) 92%); }
+.d-group[data-side='after'] .d-group__rule { background: var(--azure); }
+.d-group[data-side='after'] .d-group__tag { color: var(--azure-ink); border-color: var(--sky-border); }
+
+.d-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  column-gap: calc(var(--d) * 1.9);
+}
+.d-step { min-width: 0; }
+.d-step__head {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--d) * 0.7);
+}
+.d-step__num {
+  font-size: max(15px, calc(var(--d) * 1.9));
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.d-step__label {
+  font-size: max(10px, calc(var(--d) * 0.92));
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-deep);
+}
+.d-step__text {
+  margin-top: calc(var(--d) * 0.5);
+  max-width: 46em;
+  font-size: max(11.5px, calc(var(--d) * 1.15 * var(--ks)));
+  line-height: 1.45;
+  color: var(--ink-body);
+  overflow-wrap: anywhere;
+}
+.d-group[data-side='before'] .d-step__num { color: var(--flame-ink); }
+.d-group[data-side='after'] .d-step__num { color: var(--azure-ink); }
+.d-step[data-kind='problem'] .d-step__label { color: var(--flame-ink); }
+.d-step[data-kind='solution'] .d-step__label { color: var(--azure-ink); }
+.d-step[data-kind='new'] .d-step__text { color: var(--ink-deep); font-weight: 600; }
+
+/* The turn: the platform is what changes the story's direction. */
+.d-turn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.d-turn__line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, var(--flame-rule), var(--sky));
+  transform-origin: center top;
+}
+.d-turn__mark {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.d-turn__disc {
+  width: calc(var(--d) * 2.9);
+  height: calc(var(--d) * 2.9);
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, var(--ink) 0%, var(--ink-deep) 100%);
+  color: #ffffff;
+  box-shadow: 0 0 0 calc(var(--d) * 0.42) #ffffff, 0 calc(var(--d) * 0.7) calc(var(--d) * 1.5) rgba(7, 26, 80, 0.28);
+}
+.d-turn__disc svg { width: 46%; height: auto; display: block; }
+.d-turn__tag {
+  margin-top: calc(var(--d) * 0.75);
+  padding: calc(var(--d) * 0.1) calc(var(--d) * 0.25);
+  background: #ffffff;
+  border-radius: 4px;
+  font-size: max(10px, calc(var(--d) * 0.76));
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  color: var(--ink-deep);
+}
+
+/* ---------- Band 3: the authors, to the right of the docked wheel ---------- */
+.d-people {
+  margin-left: var(--rail);
+  min-width: 0;
+}
+.d-people__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: calc(var(--d) * 0.2) calc(var(--d) * 1.5);
+  padding-bottom: calc(var(--d) * 0.6);
+  border-bottom: 1px solid var(--line-rule);
+}
+.d-people__note {
+  font-size: max(11.5px, calc(var(--d) * 1.2));
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--ink-deep);
+}
+.d-people__note span { font-weight: 400; color: var(--ink-body); }
+.d-people__list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: calc(var(--d) * 0.85) calc(var(--d) * 2.2);
+  margin-top: calc(var(--d) * 1.05);
+}
+.d-person {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--d) * 1.05);
+  min-width: 0;
+}
+.d-person__disc {
+  flex: none;
+  width: calc(var(--d) * 3.9);
+  height: calc(var(--d) * 3.9);
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-size: max(11px, calc(var(--d) * 1.3));
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(145deg, var(--flame-deep), var(--flame-ink));
+  box-shadow: 0 0 0 calc(var(--d) * 0.2) #ffffff, 0 0 0 calc(var(--d) * 0.28) var(--flame-border), 0 calc(var(--d) * 0.6) calc(var(--d) * 1.2) rgba(200, 67, 28, 0.22);
+}
+.d-person:nth-child(3n + 2) .d-person__disc {
+  background: linear-gradient(145deg, var(--azure), var(--azure-ink));
+  box-shadow: 0 0 0 calc(var(--d) * 0.2) #ffffff, 0 0 0 calc(var(--d) * 0.28) var(--sky-border), 0 calc(var(--d) * 0.6) calc(var(--d) * 1.2) rgba(45, 106, 209, 0.22);
+}
+.d-person:nth-child(3n) .d-person__disc {
+  background: linear-gradient(145deg, var(--ink), var(--ink-deep));
+  box-shadow: 0 0 0 calc(var(--d) * 0.2) #ffffff, 0 0 0 calc(var(--d) * 0.28) var(--line-rule), 0 calc(var(--d) * 0.6) calc(var(--d) * 1.2) rgba(7, 26, 80, 0.2);
+}
+.d-person__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.d-person__name {
+  font-size: max(12px, calc(var(--d) * 1.36));
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-deep);
+  overflow-wrap: anywhere;
+}
+.d-person__role {
+  margin-top: calc(var(--d) * 0.15);
+  font-size: max(10.5px, calc(var(--d) * 1));
+  line-height: 1.3;
+  color: var(--ink-body);
+  overflow-wrap: anywhere;
+}
+.d-people[data-dense] .d-person__disc {
+  width: calc(var(--d) * 2.9);
+  height: calc(var(--d) * 2.9);
+  font-size: max(10px, calc(var(--d) * 1.02));
+}
+.d-people[data-dense] .d-person__name { font-size: max(11.5px, calc(var(--d) * 1.14)); }
+.d-people[data-dense] .d-person__role { font-size: max(10px, calc(var(--d) * 0.92)); }
+.d-people[data-dense] .d-person { gap: calc(var(--d) * 0.8); }
+
+/* ============================================================
+   Short screens (phones in landscape). globals.css makes the view scroll and
+   insets its left edge past the docked wheel, so the page becomes one simple
+   stacked column and the fitter stands down.
+   ============================================================ */
+@media (max-height: 560px) {
+  .detail {
+    --d: max(var(--u), 9px);
+    height: auto;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    row-gap: 0;
+    gap: 22px;
+    padding: 6px var(--pad) 26px 0;
+  }
+  .detail[data-nostory] .d-top { align-self: stretch; }
+  .detail[data-nopeople]:not([data-nostory]) { row-gap: 22px; }
+
+  .d-top,
+  .d-top[data-solo] {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 18px;
+  }
+  .d-eyebrow__folio { color: var(--flame-ink); }
+  .d-title { font-size: calc(min(max(26px, var(--u) * 5.2), 100cqw / (var(--tl, 12) * 0.6)) * var(--ts, 1)); }
+  .d-hero .d-value { font-size: calc(min(max(40px, var(--u) * 7.4), 100cqw / var(--w, 5)) * var(--s, 1)); }
+  .d-metric .d-value { font-size: calc(min(max(22px, var(--u) * 3.1), 100cqw / var(--w, 4)) * var(--s, 1)); }
+  .d-impact { padding: 14px 16px; border-radius: 12px; }
+  .d-supports { margin-top: 12px; padding-top: 12px; }
+  .d-metric { padding: 0 10px; }
+
+  .d-lower {
+    display: block;
+  }
+  .d-sidehead,
+  .detail[data-tight] .d-sidehead {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px 12px;
+    margin-bottom: 20px;
+  }
+  .d-sidehead__line { margin-top: 0; }
+  .d-story,
+  .d-story[data-half],
+  .d-story[data-single] {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .d-group { padding: 16px 12px 10px; }
+  .d-group__tag { left: 12px; }
+  .d-steps { column-gap: 18px; }
+  /* The turn lies down between the two halves. */
+  .d-turn {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 4px 12px 18px;
+  }
+  .d-turn__line { display: none; }
+  .d-turn__mark { flex-direction: row; gap: 10px; }
+  .d-turn__disc { box-shadow: none; }
+  .d-turn__disc svg { transform: rotate(90deg); }
+  .d-turn__tag { margin-top: 0; background: none; padding: 0; }
+
+  .d-people { margin-left: 0; }
+  .d-people__list,
+  .d-people[data-dense] .d-people__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 18px;
+    margin-top: 12px;
+  }
+}

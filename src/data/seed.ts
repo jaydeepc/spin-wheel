@@ -264,7 +264,7 @@ export function seedShowcase(): Showcase {
   return {
     version: 1,
     useCases: cases.map((c, i) => ({ ...c, id: `seed_${i + 1}`, active: true })),
-    settings: { sound: false, autoStopSeconds: 20, sampleContent: true },
+    settings: { sound: false, autoStopSeconds: 20 },
   }
 }
 

@@ -147,20 +147,6 @@ button {
   line-height: 1.4;
   color: var(--ink-muted);
 }
-.k-head__sample {
-  margin: 0 auto 0 calc(var(--u) * 2.4);
-  padding: calc(var(--u) * 0.3) calc(var(--u) * 1);
-  border: 1px solid var(--flame-ink);
-  border-radius: 999px;
-  background: #ffffff;
-  color: var(--flame-ink);
-  font-size: max(10px, calc(var(--u) * 0.9));
-  line-height: 1.5;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
 .k-head__logo {
   display: block;
   height: max(26px, calc(var(--u) * 3.4));
@@ -194,139 +180,28 @@ button {
   cursor: default;
 }
 
-.wheel,
-.wheel__spin,
-.wheel__spin svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.wheel__spin {
-  will-change: transform;
-}
-.wheel__spin svg {
-  display: block;
-  overflow: visible;
-}
-
-.wheel__plate {
-  fill: #ffffff;
-}
-.wheel__rim {
-  fill: none;
-  stroke: var(--ink-deep);
-  stroke-width: 17;
-}
-.wheel__peg {
-  fill: #ffffff;
-}
-.wheel__hub-ring {
-  fill: #ffffff;
-  stroke: var(--ink-deep);
-  stroke-width: 8;
-}
-.wheel__body {
-  stroke: var(--line);
-  stroke-width: 2;
-  transition: fill 0.5s ease;
-}
-.wheel__band {
-  transition: fill 0.5s ease;
-}
-.wheel__band--full {
-  fill: none;
-  stroke-width: 50;
-}
-.wheel__label {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  fill: var(--ink-deep);
-  transition: fill 0.5s ease;
-}
-.wheel__num {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 25px;
-  letter-spacing: 0.04em;
-  fill: #ffffff;
-}
-.wheel__seg {
-  transition: opacity 0.5s ease;
-}
-
-.wheel__seg[data-accent='flame'] .wheel__body { fill: var(--surface-warm); }
-.wheel__seg[data-accent='azure'] .wheel__body { fill: var(--surface-cool); }
-.wheel__seg[data-accent='navy'] .wheel__body { fill: #ffffff; }
-.wheel__seg[data-accent='flame'] .wheel__band { fill: var(--flame-deep); stroke: var(--flame-deep); }
-.wheel__seg[data-accent='azure'] .wheel__band { fill: var(--azure); stroke: var(--azure); }
-.wheel__seg[data-accent='navy'] .wheel__band { fill: var(--ink); stroke: var(--ink); }
-
-/* The segment the wheel stopped on fills with its accent; the others step back. */
-.wheel[data-has-winner] .wheel__seg:not([data-winner]) {
-  opacity: 0.4;
-}
-.wheel__seg[data-winner][data-accent='flame'] .wheel__body { fill: var(--flame-deep); }
-.wheel__seg[data-winner][data-accent='azure'] .wheel__body { fill: var(--azure); }
-.wheel__seg[data-winner][data-accent='navy'] .wheel__body { fill: var(--ink); }
-.wheel__seg[data-winner] .wheel__label {
-  fill: #ffffff;
-}
-
-.wheel__hub {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 19%;
-  height: 19%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-}
-/* The flame mark, shown from the left of the supplied lockup (the mark is its first 26.5%). */
-.wheel__mark {
-  display: block;
-  height: 76%;
-  aspect-ratio: 495 / 848;
-  background: url('/brand/piramal-ai-lockup.png') left center / auto 100% no-repeat;
-}
-
-.pointer {
-  position: absolute;
-  left: 50%;
-  top: -3.2%;
-  width: 7.2%;
-  margin-left: -3.6%;
-  transform-origin: 50% 31%;
-  pointer-events: none;
-}
-.pointer svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-.pointer__body {
-  fill: var(--ink-deep);
-  stroke: #ffffff;
-  stroke-width: 4;
-  stroke-linejoin: round;
-}
-.pointer__dot {
-  fill: var(--flame);
-}
-
 .ripple {
   position: absolute;
   left: 0;
   top: 0;
   border-radius: 50%;
-  border: 3px solid var(--flame);
+  border: 2px solid var(--flame);
+  color: var(--flame);
   visibility: hidden;
   pointer-events: none;
   z-index: 1;
 }
+/* A second, finer ring just outside the first, so the win reads as a wave rather than a hoop. */
+.ripple::after {
+  content: '';
+  position: absolute;
+  inset: -3.5%;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0.55;
+}
+.ripple[data-accent='azure'] { color: var(--azure); }
+.ripple[data-accent='navy'] { color: var(--ink); }
 .ripple[data-accent='azure'] { border-color: var(--azure); }
 .ripple[data-accent='navy'] { border-color: var(--ink); }
 
@@ -458,271 +333,6 @@ button {
   visibility: hidden;
   z-index: 2;
 }
-.detail {
-  height: 100%;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: calc(var(--u) * 1.5);
-  padding: calc(var(--u) * 0.6) var(--pad) 0;
-  user-select: text;
-  -webkit-user-select: text;
-}
-
-.detail__top {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: calc(var(--u) * 4);
-  align-items: end;
-}
-.detail__eyebrow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: calc(var(--u) * 0.8);
-  font-size: max(11px, calc(var(--u) * 1.3));
-  line-height: 1.3;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-deep);
-}
-.detail__num {
-  font-size: calc(var(--u) * 2.1);
-  letter-spacing: 0.02em;
-  color: var(--flame);
-}
-.detail[data-accent='azure'] .detail__num { color: var(--azure); }
-.detail__dot { color: var(--ink-soft); }
-.detail__chip {
-  margin-left: calc(var(--u) * 0.6);
-  padding: calc(var(--u) * 0.35) calc(var(--u) * 1);
-  border-radius: 999px;
-  background: var(--ink);
-  color: #ffffff;
-  font-size: max(10px, calc(var(--u) * 0.95));
-  letter-spacing: 0.1em;
-}
-.detail__title {
-  margin-top: calc(var(--u) * 0.6);
-  font-size: calc(var(--u) * 4.6);
-  line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: -0.012em;
-  color: var(--ink-deep);
-}
-/* Each word sits in a mask so it can rise into place. */
-.detail__word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.12em;
-  margin-right: 0.26em;
-}
-.detail__word > span {
-  display: inline-block;
-}
-.detail__rule {
-  height: 1px;
-  margin: calc(var(--u) * 1.1) 0;
-  background: var(--flame-rule);
-}
-.detail__summary {
-  font-size: max(12px, calc(var(--u) * 1.5));
-  line-height: 1.45;
-  color: var(--ink-muted);
-  max-width: 44em;
-}
-.detail__label {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: calc(var(--u) * 1.2);
-  padding-bottom: calc(var(--u) * 0.6);
-  border-bottom: 2px solid var(--flame-rule);
-  font-size: max(10px, calc(var(--u) * 1.05));
-  line-height: 1.4;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--flame-ink);
-}
-
-.detail__metrics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: calc(var(--u) * 1.2) calc(var(--u) * 2.4);
-  margin-top: calc(var(--u) * 1.1);
-}
-.detail__impact[data-count='1'] .detail__metrics { grid-template-columns: 1fr; }
-.detail__impact[data-count='3'] .metric:first-child { grid-column: 1 / -1; }
-.metric__value {
-  font-size: calc(var(--u) * 3.3);
-  line-height: 1.05;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  color: var(--flame-deep);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.detail__impact[data-count='3'] .metric:first-child .metric__value,
-.detail__impact[data-count='1'] .metric__value {
-  font-size: calc(var(--u) * 4.6);
-}
-.metric__label {
-  margin-top: calc(var(--u) * 0.3);
-  font-size: max(11px, calc(var(--u) * 1.12));
-  line-height: 1.35;
-  color: var(--ink-body);
-}
-
-/* The journey: old way → problem → solution → new way. */
-.journey {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(var(--steps, 4), minmax(0, 1fr));
-  gap: calc(var(--u) * 1.2);
-  align-items: stretch;
-  min-height: 0;
-  max-height: calc(var(--u) * 21);
-  align-self: center;
-  height: 100%;
-}
-.journey__line {
-  position: absolute;
-  left: calc(var(--u) * 2);
-  right: calc(var(--u) * 2);
-  top: calc(var(--u) * 2.75);
-  height: 2px;
-  background: var(--line-rule);
-  z-index: 0;
-}
-.step {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--u) * 1);
-  padding: calc(var(--u) * 1.5);
-  border-radius: var(--radius-md);
-  background: #ffffff;
-  box-shadow: 0 0 0 1px var(--line);
-  min-height: 0;
-  overflow: hidden;
-}
-.step__head {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.9);
-  font-size: max(10px, calc(var(--u) * 1.05));
-  line-height: 1.3;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-deep);
-}
-.step__disc {
-  flex: none;
-  width: calc(var(--u) * 2.5);
-  height: calc(var(--u) * 2.5);
-  min-width: 20px;
-  min-height: 20px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--ink);
-  color: #ffffff;
-  font-size: max(10px, calc(var(--u) * 1.15));
-  letter-spacing: 0;
-}
-.step__text {
-  font-size: max(11.5px, calc(var(--u) * 1.42));
-  line-height: 1.45;
-  color: var(--ink-body);
-}
-.step[data-kind='problem'] {
-  background: var(--surface-warm);
-  box-shadow: 0 0 0 1px var(--flame-border);
-}
-.step[data-kind='problem'] .step__head { color: var(--flame-ink); }
-.step[data-kind='problem'] .step__disc { background: var(--flame); }
-.step[data-kind='solution'] {
-  background: var(--surface-cool);
-  box-shadow: 0 0 0 1px var(--sky-border);
-}
-.step[data-kind='solution'] .step__head { color: var(--azure-ink); }
-.step[data-kind='solution'] .step__disc { background: var(--azure); }
-/* The pay-off speaks in navy. */
-.step[data-kind='new'] {
-  background: var(--ink-deep);
-  box-shadow: none;
-}
-.step[data-kind='new'] .step__head { color: #ffffff; }
-.step[data-kind='new'] .step__disc { background: #ffffff; color: var(--ink-deep); }
-.step[data-kind='new'] .step__text { color: #e6ebf7; font-weight: 600; }
-
-.detail__foot {
-  display: grid;
-  grid-template-columns: var(--dock, 12vw) minmax(0, 1fr);
-  gap: calc(var(--u) * 3.5);
-  align-items: end;
-  padding-bottom: var(--dock-y, 1vh);
-}
-/* The corner kept clear for the docked wheel. */
-.detail__dock {
-  height: var(--dock, 12vw);
-}
-.people {
-  align-self: center;
-  min-width: 0;
-}
-.people__note {
-  font-size: max(10px, calc(var(--u) * 1));
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--ink-soft);
-}
-.people__list {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(var(--u) * 1.1) calc(var(--u) * 2.6);
-  margin-top: calc(var(--u) * 1.2);
-}
-.person {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.9);
-  min-width: 0;
-}
-.person__disc {
-  flex: none;
-  width: calc(var(--u) * 3.4);
-  height: calc(var(--u) * 3.4);
-  min-width: 26px;
-  min-height: 26px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--flame);
-  color: #ffffff;
-  font-size: max(10px, calc(var(--u) * 1.2));
-  font-weight: 700;
-}
-.person__disc[data-alt] { background: var(--azure); }
-.person__text { display: flex; flex-direction: column; min-width: 0; }
-.person__name {
-  font-size: max(12px, calc(var(--u) * 1.35));
-  line-height: 1.25;
-  font-weight: 700;
-  color: var(--ink);
-}
-.person__role {
-  font-size: max(10px, calc(var(--u) * 1.02));
-  line-height: 1.35;
-  color: var(--ink-soft);
-}
 
 /* "Spin again" tag pinned to the docked wheel. */
 .again {
@@ -754,29 +364,6 @@ button {
     overscroll-behavior: contain;
     left: calc(var(--dock-x, 0px) * 2 + var(--dock, 0px));
   }
-  .detail {
-    height: auto;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: 4px var(--pad) 18px 0;
-  }
-  .detail__top { gap: 18px; align-items: start; }
-  .detail__title { font-size: max(22px, calc(var(--u) * 4.2)); }
-  .metric__value { font-size: max(18px, calc(var(--u) * 3)); }
-  .detail__impact[data-count='3'] .metric:first-child .metric__value,
-  .detail__impact[data-count='1'] .metric__value { font-size: max(22px, calc(var(--u) * 4)); }
-  .journey {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-height: none;
-    height: auto;
-    gap: 8px;
-  }
-  .journey__line { display: none; }
-  .step { padding: 10px; gap: 6px; }
-  .detail__foot { display: block; padding-bottom: 0; }
-  .detail__dock { display: none; }
   .spin-panel { gap: calc(var(--u) * 1.1); }
   .spin-panel__action { margin-top: 0; }
 }

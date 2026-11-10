@@ -6,15 +6,34 @@ import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 import { useShowcase } from '@/data/store'
 import Detail from './Detail'
+import { playDetail, prepareDetail } from './detailTimeline'
 import Wheel, { accentFor } from './Wheel'
 import { playTick, playWin, unlockSound } from './sound'
 
 type Phase = 'idle' | 'spinning' | 'stopping' | 'detail' | 'returning'
 
 const DRIFT = 5 // deg/s the wheel idles at, so the screen is never still
-const CRUISE = 600 // deg/s at full spin
-const MIN_STOP_SPEED = 300
+// deg/s at full spin. At 60Hz this is under 7° a frame: less than half the narrowest wedge (18° at 20 segments),
+// so the dividers can never alias into a strobe or appear to run backwards.
+const CRUISE = 400
+const MIN_STOP_SPEED = 240
 const COAST_SECONDS = 4.6
+const MAX_FRAME_MS = 100 // a longer gap than this is a stall, not a frame: do not jump the wheel across it
+// The face cross-fades toward its symmetric "smear" layer between these speeds (deg/s).
+const SMEAR_FROM = 130
+const SMEAR_FULL = 370
+const SMEAR_MAX = 0.8
+
+/** The stop, run by the ticker on frame timestamps: rot = from + distance · (1 − (1 − t/duration)³). */
+interface Coast {
+  from: number
+  distance: number
+  duration: number
+  t: number
+  done: () => void
+}
+
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
 
 interface Spot {
   cx: number
@@ -22,29 +41,11 @@ interface Spot {
   size: number
 }
 
-/** "₹4.2 Cr" → counts 0 → 4.2 and keeps the rest. Values with two numbers ("45 → 8 min") are left as they are. */
-function countable(text: string) {
-  const matches = text.match(/\d[\d,]*(?:\.\d+)?/g)
-  if (!matches || matches.length !== 1) return null
-  const raw = matches[0]
-  const at = text.indexOf(raw)
-  const decimals = raw.includes('.') ? raw.split('.')[1].length : 0
-  const grouped = raw.includes(',')
-  const target = parseFloat(raw.replace(/,/g, ''))
-  if (!Number.isFinite(target) || target === 0) return null
-  const format = (v: number) => {
-    const fixed = v.toFixed(decimals)
-    const shown = grouped ? Number(fixed).toLocaleString('en-IN', { minimumFractionDigits: decimals }) : fixed
-    return text.slice(0, at) + shown + text.slice(at + raw.length)
-  }
-  return { target, format }
-}
-
 export default function Kiosk() {
   const router = useRouter()
   const { data, ready, refresh } = useShowcase()
   const active = useMemo(() => data.useCases.filter((u) => u.active), [data.useCases])
-  const segments = useMemo(() => active.map((u) => ({ id: u.id, label: u.wheelLabel })), [active])
+  const segments = useMemo(() => active.map((u) => ({ id: u.id, label: u.wheelLabel, tag: u.platform })), [active])
   const teams = useMemo(() => new Set(active.map((u) => u.team.trim()).filter(Boolean)).size, [active])
 
   const [phase, setPhaseState] = useState<Phase>('idle')
@@ -135,30 +136,106 @@ export default function Kiosk() {
     }
   }, [measure, place])
 
-  /* ---------- the spin: one ticker turns the wheel and flicks the pointer on every peg ---------- */
+  /* ---------- the spin: one ticker turns the wheel, fades the speed smear and moves the pointer ---------- */
+
+  const coast = useRef<Coast | null>(null)
 
   useEffect(() => {
-    const setRotation = spinRef.current ? gsap.quickSetter(spinRef.current, 'rotation', 'deg') : null
+    const spinEl = spinRef.current
+    const pointerEl = pointerRef.current
+    const smearEl = rigRef.current?.querySelector<SVGElement>('.wheel__smear') ?? null
+    const pointer = { lean: 0, bump: 0, shown: 0 }
+    let lastFrame = -1
+    let lastRot = motion.current.rot
+    let shownRot = NaN
+    let smear = 0
+    let shownSmear = 0
+
     const tick = (_time: number, delta: number) => {
       const m = motion.current
-      if (m.mode !== 'tween') m.rot += (m.vel * Math.min(delta, 50)) / 1000
-      setRotation?.(m.rot)
-      const n = activeRef.current.length
-      if (n < 2 || m.mode === 'drift' || phaseRef.current === 'detail' || phaseRef.current === 'returning') return
-      const idx = Math.floor(m.rot / (360 / n))
-      if (idx === m.lastIdx) return
-      m.lastIdx = idx
-      const now = performance.now()
-      if (now - m.lastKick < 45) return
-      m.lastKick = now
-      if (pointerRef.current) {
-        gsap.fromTo(
-          pointerRef.current,
-          { rotation: -20 },
-          { rotation: 0, duration: 0.3, ease: 'elastic.out(1, 0.45)', overwrite: true },
-        )
+
+      // Step by the frame's own timestamp (the vsync clock), not by when this callback happened to run.
+      // GSAP's delta is wall-clock time read inside the callback, which wobbles by a few milliseconds
+      // under load; multiplied by the spin speed that wobble is a visible judder at the rim.
+      const frame = typeof document.timeline?.currentTime === 'number' ? document.timeline.currentTime : -1
+      let ms = lastFrame >= 0 && frame > lastFrame ? frame - lastFrame : delta
+      lastFrame = frame
+      ms = Math.min(Math.max(ms, 0), MAX_FRAME_MS)
+      const dt = ms / 1000
+
+      const c = coast.current
+      let landed: Coast | null = null
+      if (c) {
+        // The stop: a cubic ease-out whose first-frame speed equals the free-spin speed it takes over from.
+        c.t = Math.min(c.t + dt, c.duration)
+        const k = 1 - c.t / c.duration
+        m.rot = c.from + c.distance * (1 - k * k * k)
+        m.vel = ((3 * c.distance) / c.duration) * k * k
+        if (k <= 0) {
+          coast.current = null
+          landed = c
+        }
+      } else if (m.mode !== 'tween') {
+        m.rot += m.vel * dt
       }
-      if (soundRef.current) playTick()
+
+      // The wheel: one transform on one layer, written only when it has changed.
+      if (spinEl && m.rot !== shownRot) {
+        shownRot = m.rot
+        spinEl.style.transform = `rotate(${(((m.rot % 360) + 360) % 360).toFixed(3)}deg)`
+      }
+
+      // Speed as actually shown, whoever is driving the rotation (free spin, the stop, or the turn on the way back).
+      const speed = dt > 0 ? Math.abs(m.rot - lastRot) / dt : 0
+      lastRot = m.rot
+
+      // Smear: as speed rises the labels and dividers give way to a still, rotationally symmetric wash.
+      // It is a separate static layer, so this is a compositor-only opacity change.
+      // Only while the visitor's spin is running: the lazy turn on the way back stays crisp.
+      const spinningNow = phaseRef.current === 'spinning' || phaseRef.current === 'stopping'
+      const s = spinningNow ? clamp01((speed - SMEAR_FROM) / (SMEAR_FULL - SMEAR_FROM)) : 0
+      const smearTarget = s * s * (3 - 2 * s) * SMEAR_MAX
+      smear += (smearTarget - smear) * (1 - Math.exp(-dt * 12))
+      const smearOut = smear < 0.004 ? 0 : Math.round(smear * 250) / 250
+      if (smearEl && smearOut !== shownSmear) {
+        shownSmear = smearOut
+        smearEl.style.opacity = String(smearOut)
+      }
+
+      // Pointer: at speed it leans into the pins and only flutters; as the wheel slows each pin becomes a distinct tick.
+      const n = activeRef.current.length
+      const live = n >= 2 && (phaseRef.current === 'spinning' || phaseRef.current === 'stopping')
+      let leanTarget = 0
+      if (n >= 2) {
+        const seg = 360 / n
+        const idx = Math.floor(m.rot / seg)
+        if (idx !== m.lastIdx) {
+          const dir = idx > m.lastIdx ? 1 : -1
+          m.lastIdx = idx
+          if (live) {
+            const rate = speed / seg // pins per second
+            const fast = clamp01((rate - 3) / 9)
+            pointer.bump = dir * (13 - 10.5 * fast)
+            const now = performance.now()
+            if (soundRef.current && now - m.lastKick >= 45) {
+              m.lastKick = now
+              playTick()
+            }
+          }
+        }
+        if (live) leanTarget = Math.sign(m.vel) * 7 * clamp01((speed / seg - 2) / 8)
+      }
+      pointer.lean += (leanTarget - pointer.lean) * (1 - Math.exp(-dt * 9))
+      pointer.bump *= Math.exp(-dt * 15)
+      let angle = -(pointer.lean + pointer.bump)
+      if (Math.abs(angle) < 0.02) angle = 0
+      angle = Math.round(angle * 50) / 50
+      if (pointerEl && angle !== pointer.shown) {
+        pointer.shown = angle
+        pointerEl.style.transform = angle ? `rotate(${angle}deg)` : ''
+      }
+
+      landed?.done()
     }
     gsap.ticker.add(tick)
     return () => gsap.ticker.remove(tick)
@@ -193,7 +270,6 @@ export default function Kiosk() {
       const panel = panelRef.current
       if (!rig || !view || !panel) return
       const { home, dock } = spots.current
-      const q = (sel: string) => Array.from(view.querySelectorAll<HTMLElement>(sel))
       const leaving = Array.from(panel.querySelectorAll<HTMLElement>('[data-out]'))
 
       timeline.current?.kill()
@@ -202,14 +278,7 @@ export default function Kiosk() {
 
       // Everything on the detail page starts hidden.
       gsap.set(view, { autoAlpha: 1 })
-      gsap.set(q('[data-in="fade"]'), { autoAlpha: 0, y: 10 })
-      gsap.set(q('[data-in="word"]'), { yPercent: 118 })
-      gsap.set(q('[data-in="rule"]'), { scaleX: 0, transformOrigin: '0 50%' })
-      gsap.set(q('[data-in="rise"]'), { autoAlpha: 0, y: 26 })
-      gsap.set(q('[data-in="metric"]'), { autoAlpha: 0, y: 30 })
-      gsap.set(q('[data-in="line"]'), { scaleX: 0, transformOrigin: '0 50%' })
-      gsap.set(q('[data-in="step"]'), { autoAlpha: 0, y: 44 })
-      gsap.set(q('[data-in="person"]'), { autoAlpha: 0, x: -22 })
+      prepareDetail(view)
       gsap.set(againRef.current, { autoAlpha: 0, y: 8 })
 
       // 1 · The win: a breath and a ring that expands off the wheel.
@@ -235,38 +304,8 @@ export default function Kiosk() {
 
       // 4 · The use case takes the stage the wheel just left.
       const C = T + 0.8
-      tl.to(q('.detail__intro [data-in="fade"]'), { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, C)
-      tl.to(q('[data-in="word"]'), { yPercent: 0, duration: 0.95, ease: 'power4.out', stagger: 0.07 }, C + 0.1)
-      tl.to(q('[data-in="rule"]'), { scaleX: 1, duration: 0.9, ease: 'power3.inOut' }, C + 0.35)
-      tl.to(q('[data-in="rise"]'), { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' }, C + 0.5)
-
-      tl.to(q('.detail__impact [data-in="fade"]'), { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, C + 0.6)
-      tl.to(q('[data-in="metric"]'), { autoAlpha: 1, y: 0, duration: 0.75, ease: 'power3.out', stagger: 0.14 }, C + 0.7)
-      q('[data-count-to]').forEach((el, i) => {
-        const full = el.dataset.countTo ?? ''
-        const c = countable(full)
-        if (!c) return
-        const state = { v: 0 }
-        el.textContent = c.format(0)
-        tl.to(
-          state,
-          {
-            v: c.target,
-            duration: 1.5,
-            ease: 'power2.out',
-            onUpdate: () => (el.textContent = c.format(state.v)),
-            onComplete: () => (el.textContent = full),
-          },
-          C + 0.7 + i * 0.14,
-        )
-      })
-
-      tl.to(q('[data-in="line"]'), { scaleX: 1, duration: 1.3, ease: 'power2.inOut' }, C + 1.0)
-      tl.to(q('[data-in="step"]'), { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.16 }, C + 1.0)
-
-      tl.to(q('.people [data-in="fade"]'), { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, C + 1.7)
-      tl.to(q('[data-in="person"]'), { autoAlpha: 1, x: 0, duration: 0.6, ease: 'power3.out', stagger: 0.08 }, C + 1.8)
-      tl.to(againRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, C + 2.0)
+      const introLength = playDetail(view, tl, C)
+      tl.to(againRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, C + Math.max(introLength - 0.5, 0))
     },
     [setPhase],
   )
@@ -277,13 +316,15 @@ export default function Kiosk() {
     const m = motion.current
     setPhase('spinning')
     m.mode = 'free'
+    coast.current = null
     m.lastIdx = Math.floor(m.rot / (360 / activeRef.current.length))
     gsap.killTweensOf(m)
-    // A small wind-up backwards, then away.
+    // A small wind-up backwards, then away. Only the velocity is tweened; the ticker integrates it,
+    // so the wheel's position stays continuous through every change of pace.
     gsap
       .timeline()
-      .to(m, { vel: -110, duration: 0.2, ease: 'power2.out' })
-      .to(m, { vel: CRUISE + Math.random() * 90, duration: 1.3, ease: 'power2.in' })
+      .to(m, { vel: -90, duration: 0.22, ease: 'power2.out' })
+      .to(m, { vel: CRUISE + Math.random() * 30, duration: 1.25, ease: 'power2.inOut' })
     clearAutoStop()
     autoStop.current = setTimeout(() => stopRef.current(), data.settings.autoStopSeconds * 1000)
   }, [data.settings.autoStopSeconds, setPhase])
@@ -295,20 +336,32 @@ export default function Kiosk() {
     const n = activeRef.current.length
     if (n < 2) return
     gsap.killTweensOf(m)
-    const seg = 360 / n
-    const v = Math.max(m.vel, MIN_STOP_SPEED)
-    // power3.out starts at 3× its average speed, so this distance keeps the hand-off from free spin seamless.
-    let target = m.rot + (v * COAST_SECONDS) / 3
-    const local = (((-target % 360) + 360) % 360)
-    const index = Math.min(n - 1, Math.floor(local / seg))
-    // Never rest on a divider: settle inside the middle 60% of the segment.
-    const within = local - index * seg
-    const settled = Math.min(Math.max(within, seg * 0.2), seg * 0.8)
-    target -= settled - within
-    const duration = (3 * (target - m.rot)) / v
-    m.mode = 'tween'
     setPhase('stopping')
-    gsap.to(m, { rot: target, duration, ease: 'power3.out', onComplete: () => reveal(index) })
+    const land = () => {
+      const count = activeRef.current.length
+      if (count < 2) {
+        reveal(-1)
+        return
+      }
+      const seg = 360 / count
+      const v = m.vel
+      // A cubic ease-out starts at 3× its average speed, so this distance at this duration
+      // begins at exactly the speed the wheel has now: no step in velocity at the hand-off.
+      let target = m.rot + (v * COAST_SECONDS) / 3
+      const local = ((-target % 360) + 360) % 360
+      const index = Math.min(count - 1, Math.floor(local / seg))
+      // Never rest on a divider: settle inside the middle 60% of the segment.
+      const within = local - index * seg
+      const settled = Math.min(Math.max(within, seg * 0.2), seg * 0.8)
+      target -= settled - within
+      const distance = target - m.rot
+      // The nudge changes the distance, so the duration follows it and the starting speed stays v.
+      m.mode = 'tween'
+      coast.current = { from: m.rot, distance, duration: (3 * distance) / v, t: 0, done: () => reveal(index) }
+    }
+    if (m.vel >= MIN_STOP_SPEED) land()
+    // Stopped during the wind-up: carry on up to a fair speed first, rather than jumping to it.
+    else gsap.to(m, { vel: MIN_STOP_SPEED, duration: 0.45, ease: 'power1.inOut', onComplete: land })
   }, [reveal, setPhase])
 
   const stopRef = useRef(stop)
@@ -338,7 +391,7 @@ export default function Kiosk() {
     tl.to(rig, { x: home.cx - home.size / 2, duration: 1.2, ease: 'power2.inOut' }, 0.2)
     tl.to(rig, { scale: 1, duration: 1.3, ease: 'power3.inOut' }, 0.25)
     // One lazy turn on the way back, so it arrives looking ready to go again.
-    tl.to(m, { rot: m.rot + 360, duration: 1.7, ease: 'power2.inOut' }, 0.2)
+    tl.to(m, { rot: m.rot + 360, duration: 1.8, ease: 'sine.inOut' }, 0.2)
     tl.fromTo(
       entering,
       { autoAlpha: 0, x: 70 },
@@ -411,9 +464,7 @@ export default function Kiosk() {
         <div className="k-head__brand">
           <p className="k-head__eyebrow">BYOT · BYOA</p>
           <p className="k-head__sub">Build Your Own Tech · Build Your Own Agents</p>
-        </div>
-        {data.settings.sampleContent && <p className="k-head__sample">Sample content</p>}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        </div>        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="k-head__logo"
           src="/brand/piramal-ai-lockup.png"
@@ -476,9 +527,24 @@ export default function Kiosk() {
         >
           <Wheel ref={spinRef} segments={segments} winner={lit && winnerIndex >= 0 ? winnerIndex : null} />
           <div className="pointer" ref={pointerRef} aria-hidden="true">
-            <svg viewBox="0 0 60 84">
-              <path d="M30 82 L6 26 A26 26 0 1 1 54 26 Z" className="pointer__body" />
-              <circle cx="30" cy="26" r="9" className="pointer__dot" />
+            <svg viewBox="-40 -40 80 130">
+              <defs>
+                <linearGradient id="pointer-fill" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#27469a" />
+                  <stop offset="0.45" stopColor="#071a50" />
+                  <stop offset="1" stopColor="#000e4f" />
+                </linearGradient>
+                <radialGradient id="pointer-jewel" cx="0.38" cy="0.32" r="0.75">
+                  <stop offset="0" stopColor="#ffe2d4" />
+                  <stop offset="0.35" stopColor="#ff7a45" />
+                  <stop offset="0.75" stopColor="#ef4123" />
+                  <stop offset="1" stopColor="#d13518" />
+                </radialGradient>
+              </defs>
+              <path d="M-14 2A14 14 0 1 1 14 2L2.4 60Q0 65 -2.4 60Z" className="pointer__shade" transform="translate(2.5 4.5)" />
+              <path d="M-14 2A14 14 0 1 1 14 2L2.4 60Q0 65 -2.4 60Z" className="pointer__body" fill="url(#pointer-fill)" />
+              <circle cx="0" cy="2" r="8.6" className="pointer__ring" />
+              <circle cx="0" cy="2" r="6.2" fill="url(#pointer-jewel)" />
             </svg>
           </div>
         </div>

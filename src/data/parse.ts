@@ -35,7 +35,6 @@ export function parseShowcase(input: unknown): Showcase | null {
     useCases: obj.useCases.slice(0, MAX_USE_CASES).map(sanitiseUseCase),
     settings: {
       sound: Boolean(obj.settings?.sound),
-      sampleContent: Boolean(obj.settings?.sampleContent),
       autoStopSeconds: Number.isFinite(auto) && auto >= 5 ? Math.min(auto, 120) : 20,
     },
   }

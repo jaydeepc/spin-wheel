@@ -36,8 +36,6 @@ export interface Settings {
   sound: boolean
   /** Seconds the wheel spins before stopping on its own if nobody hits the button. */
   autoStopSeconds: number
-  /** Shows a "Sample content" tag on the kiosk. On for the built-in examples; switch off once the real use cases are in. */
-  sampleContent: boolean
 }
 
 export interface Showcase {

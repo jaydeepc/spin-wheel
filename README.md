@@ -27,4 +27,4 @@ npm run dev                  # http://localhost:5183
 
 Content saved from the admin page goes to Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set, otherwise to
 `data/showcase.json` beside the app. Until something is saved, the kiosk shows the built-in examples in
-`src/data/seed.ts`, which are illustrative placeholders and are labelled "Sample content" on screen.
+`src/data/seed.ts`, which are illustrative placeholders.

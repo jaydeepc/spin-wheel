@@ -62,7 +62,7 @@ export default function Admin() {
   const cases = data.useCases
   const selected = cases.find((u) => u.id === selectedId) ?? cases[0] ?? null
   const active = useMemo(() => cases.filter((u) => u.active), [cases])
-  const segments = useMemo(() => active.map((u) => ({ id: u.id, label: u.wheelLabel })), [active])
+  const segments = useMemo(() => active.map((u) => ({ id: u.id, label: u.wheelLabel, tag: u.platform })), [active])
   const teams = useMemo(() => Array.from(new Set(cases.map((u) => u.team.trim()).filter(Boolean))).sort(), [cases])
   const full = cases.length >= MAX_USE_CASES
 
@@ -257,14 +257,6 @@ export default function Admin() {
                 onChange={(e) => update((p) => ({ ...p, settings: { ...p.settings, sound: e.target.checked } }))}
               />
               <span>Play ticks and a chime while the wheel spins</span>
-            </label>
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={data.settings.sampleContent}
-                onChange={(e) => update((p) => ({ ...p, settings: { ...p.settings, sampleContent: e.target.checked } }))}
-              />
-              <span>Label the kiosk “Sample content” (switch off once the real use cases and numbers are in)</span>
             </label>
             <Field label="Stop by itself after" hint="seconds, if nobody hits the button again">
               <input
