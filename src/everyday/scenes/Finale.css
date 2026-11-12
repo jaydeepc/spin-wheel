@@ -456,18 +456,26 @@
 /* ---------- a phone on its side: the whole height above Priya's line, and every word at 11 px or more ---------- */
 @media (max-height: 480px) {
   .ev-scene--finale {
-    --fin-top: calc(var(--u) * -17);
-    --fin-h: calc(var(--u) * 34.6);
+    --fin-top: calc(var(--u) * -17.2);
+    --fin-h: calc(var(--u) * 34.8);
     --fin-hs: calc(var(--u) * 3.7);
     --fin-ns: calc(var(--u) * 2.7);
-    --fin-ss: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+    --fin-ss: max(calc(var(--u) * 1.32), calc(var(--fl) * 11.4));
     --fin-ps: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
     --fin-vs: calc(var(--u) * 3.3);
     --fin-ls: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    --fin-pad: calc(var(--u) * 1);
+    --fin-pad: calc(var(--u) * 0.9);
     --fin-gap: max(calc(var(--u) * 1.05), 9px); /* five touch targets side by side: 8 px or more between them */
     --fin-play: calc(var(--u) * 2.1);
-    --fin-ll: 3;
+    /* each number stands on its own card's foot: the cards are too narrow here to keep a spare line for all five */
+    --fin-ll: 2;
+  }
+  .fin-card[data-track='engineering'] {
+    flex: 1.16 1 0;
+    margin-left: calc(var(--u) * 1.2);
+  }
+  .fin-divider {
+    left: calc((var(--u) * 1.2 + var(--fin-gap)) / -2);
   }
   .fin-bar {
     margin-top: calc(var(--u) * 0.2);
@@ -480,17 +488,27 @@
   .fin-hint {
     font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11));
   }
+  /* On the narrowest phones every small word is at its floor and a card is full to the brim:
+     the gaps give a little, so the last line keeps its margin over the card's foot. */
   .fin-names {
-    margin-top: calc(var(--u) * 0.8);
+    margin-top: calc(var(--u) * 0.6);
   }
   .fin-card-in {
-    padding: calc(var(--u) * 0.8) var(--fin-pad) calc(var(--u) * 0.9);
+    padding: calc(var(--u) * 0.65) var(--fin-pad) calc(var(--u) * 0.8);
   }
+  /* the row of the times never gives way, in any card: the five names stay on one line */
   .fin-when {
+    flex: none;
     font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
   }
+  /* The pill is as tall as its floored type needs (15 px for 11 px letters). It stands centred on
+     the row the four times stand on, and may reach a pixel past it: the row keeps its height,
+     so the five names stay on one line. */
   .fin-tag {
+    height: max(calc(var(--u) * 1.7), calc(var(--fl) * 15));
+    border-radius: 999px;
     font-size: max(calc(var(--u) * 1.25), calc(var(--fl) * 11));
+    line-height: 1;
     letter-spacing: 0;
     text-transform: none;
   }
@@ -503,21 +521,22 @@
   }
   .fin-promise {
     margin-top: calc(var(--u) * 0.4);
-    padding-bottom: calc(var(--u) * 0.6);
+    padding-bottom: calc(var(--u) * 0.45);
     line-height: 1.3;
   }
   .fin-stat {
-    padding-top: calc(var(--u) * 0.5);
+    padding-top: calc(var(--u) * 0.4);
   }
   .fin-post--word {
     font-size: max(0.5em, calc(var(--fl) * 11.5));
   }
   .fin-play {
     right: calc(var(--u) * 0.7);
-    top: calc(var(--u) * 0.65);
+    top: calc(var(--u) * 0.5);
   }
   /* Watch again: a full fingertip with its halo */
   .fin-again {
+    z-index: 2; /* its halo lies over the row under it */
     height: max(calc(var(--u) * 4.3), calc(var(--fl) * 34));
     font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 12));
   }

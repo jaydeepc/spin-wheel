@@ -555,6 +555,16 @@
 
 /* the canvas: 21.6u × 12.15u, a slide at full size */
 .prastuti-main {
+  /* The finished deck, laid out (animate() reads these): how large the cover, the bars and the
+     rising line lie on the canvas, as a share of a full slide; and a nudge for the stamp, as a
+     share of the canvas. The bars lie low on the left, the line high on the right. */
+  --out-title: 0.52;
+  --out-bars: 0.62;
+  --out-trend: 0.61;
+  /* 1: the spread takes the filmstrip's room too, and the filmstrip steps aside */
+  --out-wide: 0;
+  --stamp-dx: 0.02;
+  --stamp-dy: 0;
   position: absolute;
   left: calc(var(--u) * 6.6);
   top: calc(var(--u) * 0.55);
@@ -605,8 +615,7 @@
 }
 
 /* ---------- A SLIDE. Everything inside is drawn in its own unit, --s: a hundredth of its width. ---------- */
-.prastuti-slide,
-.prastuti-back {
+.prastuti-slide {
   --s: calc(var(--u) * 0.216);
   position: absolute;
   left: 0;
@@ -619,19 +628,6 @@
     0 0 0 1px rgba(7, 26, 80, 0.08);
   visibility: hidden;
   will-change: transform, opacity;
-}
-.prastuti-cover {
-  z-index: 20;
-}
-.prastuti-back {
-  /* the slides behind the cover of the finished deck */
-  background: #ffffff;
-}
-.prastuti-back--2 {
-  background: #ffeee7;
-}
-.prastuti-back--3 {
-  background: #fbd6cd;
 }
 .prastuti-f {
   position: absolute;
@@ -763,6 +759,8 @@
     #ffffff;
 }
 .prastuti-bars {
+  /* --lab: the height of a branch's label; the bars stand on the line above it */
+  --lab: calc(var(--s) * 5.4);
   position: absolute;
   left: calc(var(--s) * 8);
   right: calc(var(--s) * 8);
@@ -774,18 +772,18 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(var(--s) * 14.4);
+  bottom: calc(var(--lab) + var(--s) * 9);
   height: 0;
   border-top: 1px dashed #dbe3ef;
 }
 .prastuti-bars-grid + .prastuti-bars-grid {
-  bottom: calc(var(--s) * 22.2);
+  bottom: calc(var(--lab) + var(--s) * 16.8);
 }
 .prastuti-bars-base {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(var(--s) * 6.3);
+  bottom: calc(var(--lab) + var(--s) * 0.9);
   height: calc(var(--s) * 0.36);
   border-radius: calc(var(--s) * 0.18);
   background: #b7c5da;
@@ -819,12 +817,12 @@
 }
 .prastuti-bar-l {
   flex: none;
-  height: calc(var(--s) * 5.4);
+  height: var(--lab);
   padding: 0 calc(var(--s) * 1.6);
-  border-radius: calc(var(--s) * 2.7);
+  border-radius: calc(var(--lab) / 2);
   font-size: calc(var(--s) * 3.05);
   font-weight: 600;
-  line-height: calc(var(--s) * 5.4);
+  line-height: var(--lab);
   color: var(--ev-body);
   white-space: nowrap;
 }
@@ -1060,6 +1058,38 @@
   white-space: nowrap;
 }
 
+/* ---------- The finished deck, laid out ----------
+   The cover and the two charts once more, as real slides, lying on the canvas at a little over
+   half their size (--out-* on .prastuti-main). Their small print is set a little larger for
+   that, so the branch names and the callout can still be read. */
+.prastuti-out .prastuti-trend-pill {
+  /* nothing builds here: the slide is finished */
+  visibility: inherit;
+}
+.prastuti-out .prastuti-head-en,
+.prastuti-out .prastuti-t-en {
+  font-size: calc(var(--s) * 3.3);
+  letter-spacing: 0.1em;
+}
+.prastuti-out .prastuti-bars {
+  --lab: calc(var(--s) * 6.2);
+  left: calc(var(--s) * 6);
+  right: calc(var(--s) * 6);
+  top: calc(var(--s) * 20.4);
+}
+.prastuti-out .prastuti-bar-l {
+  padding: 0 calc(var(--s) * 1.5);
+  font-size: calc(var(--s) * 3.8);
+}
+.prastuti-out .prastuti-trend-pill {
+  height: calc(var(--s) * 7.6);
+  border-radius: calc(var(--s) * 3.8);
+}
+.prastuti-out .prastuti-trend-pill .prastuti-hi {
+  font-size: calc(var(--s) * 4);
+  line-height: calc(var(--s) * 7.6);
+}
+
 /* ---------- The place to talk: the one control, her voice, the tracker ---------- */
 .prastuti-talk {
   position: absolute;
@@ -1227,11 +1257,13 @@
   height: calc(var(--u) * 1.6);
 }
 
-/* ---------- प्रस्तुति तैयार ---------- */
+/* ---------- प्रस्तुति तैयार ----------
+   On the laptop, not in its screen. animate() sets it down on the corner of the canvas that
+   the laid-out deck leaves free (low on the right), so it never covers a chart. */
 .prastuti-stamp {
   position: absolute;
-  right: calc(var(--u) * -1.9);
-  top: calc(var(--u) * 3.3);
+  left: 0;
+  top: 0;
   padding: calc(var(--u) * 0.3) calc(var(--u) * 1.2) calc(var(--u) * 0.55);
   border-radius: calc(var(--u) * 0.8);
   border: calc(var(--u) * 0.2) solid var(--acc-ink);
@@ -1533,10 +1565,6 @@
     --ev-dh: calc((var(--prastuti-w) - var(--u) * 4) * 0.64828 + var(--u) * 2.6);
     --ev-dx: calc(var(--u) * 6.4);
   }
-  /* the stamp keeps to the laptop's edge: the photo is close */
-  .prastuti-stamp {
-    right: calc(var(--u) * -0.6);
-  }
 }
 
 /* ---------- Narrower than 16:9 (a 16:10 laptop, a 4:3 tablet) ----------
@@ -1562,11 +1590,10 @@
     width: calc(var(--u) * 33);
   }
   .prastuti-stamp {
-    right: calc(var(--u) * 0.2);
-    padding: calc(var(--u) * 0.2) calc(var(--u) * 0.9) calc(var(--u) * 0.45);
+    padding: calc(var(--u) * 0.15) calc(var(--u) * 0.8) calc(var(--u) * 0.4);
   }
   .prastuti-stamp .prastuti-hi {
-    font-size: calc(var(--u) * 1.4);
+    font-size: calc(var(--u) * 1.3);
   }
   .prastuti-stamp > span:last-child {
     font-size: calc(var(--u) * 0.72);
@@ -1583,6 +1610,77 @@
     bottom: calc(var(--u) * 0.55);
     padding: calc(var(--u) * 0.3) calc(var(--u) * 0.6);
     font-size: calc(var(--u) * 0.76);
+  }
+}
+
+/* ---------- Where the laptop is small: the spread is the two charts ----------
+   Narrower than 16:9, and on a phone on its side, the laptop's screen is too small to lay three
+   slides out and still read the branch names. So there the finished deck is the two charts,
+   larger: the bars at four fifths of a slide, the rising line at three fifths, over the bars'
+   empty corner. The filmstrip steps aside for them (--out-wide; animate() reads it) and the
+   cover stays with it. Their small print is set larger still, in sentence case; what could
+   not be read at that size (the arrow in the callout) is left out. */
+@media (max-aspect-ratio: 17/10), (max-height: 480px) {
+  .prastuti-main {
+    --out-title: 0;
+    --out-bars: 0.8;
+    --out-trend: 0.6;
+    --out-wide: 1;
+    --stamp-dx: 0.012;
+    --stamp-dy: -0.02;
+  }
+  .prastuti-out--title {
+    display: none;
+  }
+  .prastuti-out .prastuti-head {
+    top: calc(var(--s) * 4.4);
+  }
+  .prastuti-out .prastuti-head-en {
+    font-size: calc(var(--s) * 4);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1.3;
+  }
+  .prastuti-out--trend .prastuti-head-t {
+    font-size: calc(var(--s) * 6);
+  }
+  .prastuti-out--trend .prastuti-head-en {
+    font-size: calc(var(--s) * 5);
+  }
+  .prastuti-out--bars .prastuti-bars {
+    --lab: calc(var(--s) * 7.4);
+    left: calc(var(--s) * 3.5);
+    right: calc(var(--s) * 3.5);
+    top: calc(var(--s) * 19.5);
+  }
+  .prastuti-out--bars .prastuti-bar {
+    /* a little lower, for the taller labels under them and the rising line over the corner */
+    height: calc(var(--s) * 0.19 * var(--v));
+  }
+  .prastuti-out--bars .prastuti-bar-mark {
+    width: calc(var(--s) * 6);
+    height: calc(var(--s) * 6);
+    margin-bottom: calc(var(--s) * 1);
+  }
+  .prastuti-out--bars .prastuti-bar-l {
+    padding: 0 calc(var(--s) * 0.6);
+    font-size: calc(var(--s) * 4.6);
+  }
+  .prastuti-out--bars .prastuti-barcol--flag .prastuti-bar-l {
+    padding: 0 calc(var(--s) * 1.4);
+  }
+  .prastuti-out--trend .prastuti-trend-pill {
+    height: calc(var(--s) * 9.6);
+    padding: 0 calc(var(--s) * 2.2);
+    border-radius: calc(var(--s) * 5);
+  }
+  .prastuti-out--trend .prastuti-trend-pill svg {
+    display: none;
+  }
+  .prastuti-out--trend .prastuti-trend-pill .prastuti-hi {
+    font-size: calc(var(--s) * 5.8);
+    line-height: calc(var(--s) * 9.6);
   }
 }
 
@@ -1655,15 +1753,35 @@
     font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11));
   }
 
-  /* ----- before: the editor at night (drawn 1.2× by the shared frame) ----- */
+  /* ----- before: the editor at night (drawn 1.2× by the shared frame) -----
+     It is a picture, not a device: what is read in it stands at 11 px on the screen (9.2 px
+     before the enlargement). What was only decoration is left out, not shrunk: the window's
+     title, and the letters on the B / I / U buttons (they stay, as blank keys). */
   .prastuti-b-top span {
-    font-size: max(calc(var(--u) * 1), var(--dt));
+    display: none;
   }
-  .prastuti-b-tool {
-    font-size: max(calc(var(--u) * 1), var(--dt));
+  .prastuti-b-tool--b,
+  .prastuti-b-tool--i,
+  .prastuti-b-tool--u {
+    font-size: 0;
+  }
+  .prastuti-b-tool--b::before,
+  .prastuti-b-tool--i::before,
+  .prastuti-b-tool--u::before {
+    content: '';
+    width: calc(var(--u) * 0.7);
+    height: calc(var(--u) * 0.7);
+    border-radius: calc(var(--u) * 0.18);
+    background: #c5d1e2;
+  }
+  .prastuti-b-time {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 9.2));
+  }
+  .prastuti-b-ph--title {
+    padding: 0 calc(var(--u) * 0.5);
   }
   .prastuti-b-ph--title span {
-    font-size: max(calc(var(--u) * 1.1), var(--dt));
+    font-size: max(calc(var(--u) * 1.1), calc(var(--fl) * 9.2));
   }
 
   /* ----- Prastuti on the laptop ----- */
@@ -1709,6 +1827,42 @@
   .prastuti-app .prastuti-p-text {
     font-size: max(calc(var(--s) * 4.4), var(--pdt));
   }
+  /* ----- the finished deck, laid out: the two charts (see the block above this one) -----
+     Here every word on them stands at the 9 px floor or over it. --pf is that floor for a slide
+     lying at less than full size: --pdt divided by the size it lies at. */
+  .prastuti-out--bars {
+    --pf: calc(var(--pdt) / var(--out-bars));
+  }
+  .prastuti-out--trend {
+    --pf: calc(var(--pdt) / var(--out-trend));
+  }
+  .prastuti-out--bars .prastuti-head-t {
+    font-size: max(calc(var(--s) * 5.5), var(--pf));
+  }
+  .prastuti-out--bars .prastuti-head-en {
+    font-size: max(calc(var(--s) * 4), var(--pf));
+    letter-spacing: 0;
+  }
+  .prastuti-out--trend .prastuti-head-t {
+    font-size: max(calc(var(--s) * 6), var(--pf));
+  }
+  .prastuti-out--trend .prastuti-head-en {
+    font-size: max(calc(var(--s) * 5), var(--pf));
+    letter-spacing: 0;
+  }
+  .prastuti-out--bars .prastuti-bars {
+    --lab: max(calc(var(--s) * 7.4), calc(var(--pf) * 1.6));
+  }
+  .prastuti-out--bars .prastuti-bar-l {
+    font-size: max(calc(var(--s) * 4.6), var(--pf));
+  }
+  .prastuti-out--trend .prastuti-trend-pill {
+    height: max(calc(var(--s) * 9.6), calc(var(--pf) * 1.6));
+  }
+  .prastuti-out--trend .prastuti-trend-pill .prastuti-hi {
+    font-size: max(calc(var(--s) * 5.8), var(--pf));
+    line-height: max(calc(var(--s) * 9.6), calc(var(--pf) * 1.6));
+  }
   .prastuti-talk {
     gap: calc(var(--u) * 0.6);
   }
@@ -1739,10 +1893,7 @@
     font-size: max(calc(var(--u) * 0.82), var(--pdt));
     letter-spacing: -0.01em;
   }
-  /* the stamp, inside the laptop's corner: the laptop stands at the edge of the screen */
   .prastuti-stamp {
-    right: calc(var(--u) * 0.9);
-    top: calc(var(--u) * 2.4);
     padding: calc(var(--u) * 0.2) calc(var(--u) * 1) calc(var(--u) * 0.45);
   }
   .prastuti-stamp .prastuti-hi {
@@ -1762,6 +1913,13 @@
   }
   .prastuti-clock-num {
     font-size: 16px;
+  }
+  /* (its words are at their floor here, so the box is taller: it hangs a little lower, clear of the dial's "15") */
+  .prastuti-callout-in {
+    margin-top: calc(var(--fl) * 6);
+  }
+  .prastuti-callout-in::after {
+    margin-top: calc(var(--u) * -0.4 - var(--fl) * 6);
   }
   .prastuti-callout-in .prastuti-hi {
     font-size: max(calc(var(--u) * 1.6), calc(var(--fl) * 12));

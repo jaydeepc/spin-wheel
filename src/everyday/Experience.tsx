@@ -9,7 +9,7 @@
 
 import { Component, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import gsap from 'gsap'
-import { productByKey } from './content'
+import { PRIYA, PRODUCTS, PROMPTS, productByKey } from './content'
 import { readDebug } from './core/debug'
 import { director } from './core/director'
 import { motion } from './core/motion'
@@ -24,6 +24,19 @@ import Priya from './scenes/Priya'
 import { Backdrop, Header, Rail, RotatePrompt, Subtitle } from './shell/Shell'
 import { isEngineering, isProduct, useEveryday } from './store'
 import './everyday.css'
+
+/**
+ * The film's photographs, asked for when the page boots and kept here, so that each is already
+ * decoded when its scene first shows it (and still there if the connection is lost afterwards).
+ */
+const photos: HTMLImageElement[] = []
+function fetchPhoto(src: string): HTMLImageElement {
+  const img = new Image()
+  img.decoding = 'async'
+  img.src = src
+  photos.push(img)
+  return img
+}
 
 /** A scene that throws while rendering is dropped, and the film moves on to the next one. The shell stays up. */
 class SceneBoundary extends Component<{ name: string; children: ReactNode }, { failed: boolean }> {
@@ -65,6 +78,8 @@ export default function Experience() {
     const ripples = Array.from(root.querySelectorAll('.ev-ripple'))
     let rippleIdx = 0
     const onDown = (e: PointerEvent) => {
+      // somebody is there: the next demo control waits for them (core/director.ts)
+      director.noteTouch()
       const r = ripples[rippleIdx++ % ripples.length]
       if (!r) return
       gsap.fromTo(r, { x: e.clientX, y: e.clientY, scale: 0.15, autoAlpha: 1 }, { scale: 1, autoAlpha: 0, duration: 0.7, ease: 'power2.out', overwrite: true })
@@ -76,12 +91,16 @@ export default function Experience() {
       lx((e.clientX / window.innerWidth - 0.5) * -2.8 * stage.U)
       ly((e.clientY / window.innerHeight - 0.5) * -2.8 * stage.U)
     }
+    // The keyboard, and a presenter's clicker (most send PageDown and PageUp; some send the arrows
+    // or Enter). Enter on a focused button is left to that button.
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return
-      if (e.key === ' ' || e.key === 'ArrowRight') {
+      const k = e.key
+      if (k === 'Enter' && (e.target as Element | null)?.closest?.('button, a, [data-own]')) return
+      if (k === ' ' || k === 'ArrowRight' || k === 'PageDown' || k === 'Enter') {
         e.preventDefault()
         director.next()
-      } else if (e.key === 'ArrowLeft') {
+      } else if (k === 'ArrowLeft' || k === 'PageUp') {
         e.preventDefault()
         director.back()
       }
@@ -96,9 +115,14 @@ export default function Experience() {
     // The film waits behind it, and is not rebuilt for a shape nobody sees: turned back, it
     // carries on from the same frame.
     const upright = window.matchMedia('(orientation: portrait) and (max-width: 1023px)')
+    /** The scene on stage was measured at another size than the page has now (see director.builtFor). */
+    const stale = () => {
+      const built = director.builtFor()
+      return !!built && built !== sizeNow()
+    }
     const rebuild = () => {
       const now = sizeNow()
-      if (!alive || now === size) return
+      if (!alive || (now === size && !stale())) return
       size = now
       stage.measure()
       useEveryday.getState().relayout()
@@ -122,26 +146,34 @@ export default function Experience() {
         if (alive) onTurn()
       }, 160)
     }
-    // The film is the whole page: it never pans, bounces or zooms under a finger, and a long
-    // press brings up no menu. (Taps are untouched: they are clicks.)
-    const coarse = window.matchMedia('(pointer: coarse)')
+    // The film is the whole page, on a screen strangers will press and hold: it never pans,
+    // bounces or zooms under a finger or a wheel, and a long press (or a right click) brings up
+    // no browser menu, whatever kind of pointer the screen says it has. Only a debug URL
+    // (?scene=… or ?debug) keeps the menu, for whoever is developing. Taps are untouched: they are clicks.
     const noGesture = (e: Event) => {
       if (e.cancelable) e.preventDefault()
     }
     const noMenu = (e: Event) => {
-      if (coarse.matches) e.preventDefault()
+      if (!debug.dev) e.preventDefault()
+    }
+    const noWheelZoom = (e: WheelEvent) => {
+      if (e.ctrlKey && e.cancelable) e.preventDefault()
     }
     const watcher = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onResize) : null
     // Resize events and observers are only delivered with a painted frame. A host that has stopped
     // painting (see core/pump.ts) still changes size, so the size is also read on a slow timer.
     const sizePoll = setInterval(() => {
-      if (sizeNow() !== size || upright.matches !== held) onResize()
+      if (sizeNow() !== size || upright.matches !== held || (!upright.matches && stale())) onResize()
     }, 400)
 
     const boot = () => {
       if (!alive) return
       stage.measure()
-      director.mount({ root, wrap: $('.ev-wrap'), ghost: $('.ev-ghost'), ghostRing: $('.ev-ghost i'), ring: $<SVGCircleElement>('[data-ev="ring"]') }, stage, debug)
+      director.mount(
+        { root, wrap: $('.ev-wrap'), ghost: $('.ev-ghost'), ghostRing: $('.ev-ghost i'), ring: $<SVGCircleElement>('[data-ev="ring"]'), turn: $<HTMLElement>('.ev-turn'), hint: $<HTMLElement>('.ev-taphint') },
+        stage,
+        debug,
+      )
       setBooted(true)
       root.addEventListener('pointerdown', onDown)
       window.addEventListener('pointermove', onMove)
@@ -155,11 +187,39 @@ export default function Experience() {
       root.addEventListener('contextmenu', noMenu)
       document.addEventListener('gesturestart', noGesture)
       document.addEventListener('gesturechange', noGesture)
+      window.addEventListener('wheel', noWheelZoom, { passive: false })
     }
+    // Every photograph is asked for now, not when its scene mounts. The film waits for the first
+    // one it shows large (Priya, standing in the branch) as it waits for the fonts, but never
+    // longer than two seconds: a slow picture must not hold the film.
+    if (!photos.length) {
+      fetchPhoto(PRIYA.portrait)
+      PRODUCTS.forEach((p) => {
+        if (p.photo) fetchPhoto(p.photo)
+      })
+    }
+    const hero = photos.find((img) => img.src.endsWith(PRIYA.photo)) ?? fetchPhoto(PRIYA.photo)
+    const heroIn = new Promise<void>((done) => {
+      const timer = setTimeout(done, 2000)
+      const settle = () => {
+        clearTimeout(timer)
+        done()
+      }
+      if (typeof hero.decode === 'function') hero.decode().then(settle, settle)
+      else if (hero.complete) settle()
+      else {
+        hero.addEventListener('load', settle, { once: true })
+        hero.addEventListener('error', settle, { once: true })
+      }
+    })
     const fonts = document.fonts
-    if (fonts?.ready) {
-      Promise.all([fonts.load('800 40px "Open Sans"'), fonts.load('300 40px "Open Sans"'), fonts.load('600 40px "Open Sans"'), fonts.ready]).then(boot, boot)
-    } else boot()
+    const fontsIn = fonts?.ready
+      ? Promise.all([fonts.load('800 40px "Open Sans"'), fonts.load('300 40px "Open Sans"'), fonts.load('600 40px "Open Sans"'), fonts.ready]).then(
+          () => undefined,
+          () => undefined,
+        )
+      : Promise.resolve()
+    Promise.all([fontsIn, heroIn]).then(boot, boot)
 
     return () => {
       alive = false
@@ -174,6 +234,7 @@ export default function Experience() {
       root.removeEventListener('contextmenu', noMenu)
       document.removeEventListener('gesturestart', noGesture)
       document.removeEventListener('gesturechange', noGesture)
+      window.removeEventListener('wheel', noWheelZoom)
       watcher?.disconnect()
       gsap.killTweensOf([light, ...ripples])
       director.unmount()
@@ -234,9 +295,16 @@ export default function Experience() {
         </div>
       </div>
 
-      {/* over the stage, through every scene: Priya's line, the two controls, the ghost fingertip */}
+      {/* over the stage, through every scene: Priya's line, the two controls, "Your turn", the ghost fingertip */}
       <div className="ev-shellstage">
         <Subtitle />
+        {/* placed beside a demo's control while it waits for a visitor who is there (core/director.ts) */}
+        <div className="ev-turn" data-side="right" aria-hidden="true">
+          <svg viewBox="0 0 12 12" aria-hidden="true">
+            <path d="M7.6 2.2 3.8 6l3.8 3.8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>{PROMPTS.yourTurn}</span>
+        </div>
         <i className="ev-ghost" aria-hidden="true">
           <i />
         </i>

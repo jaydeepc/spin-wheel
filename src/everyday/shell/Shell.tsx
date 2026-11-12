@@ -9,7 +9,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
 import gsap from 'gsap'
-import { CLOSING, ENGINEERING, OPENING, PRIYA, PRODUCTS, STEPS, productByKey, type Product, type ProductKey } from '../content'
+import { CLOSING, ENGINEERING, OPENING, PRIYA, PRODUCTS, PROMPTS, STEPS, productByKey, type Product, type ProductKey } from '../content'
 import { director } from '../core/director'
 import { INTRO_TIME } from '../core/timing'
 import { CodeGlyph, withName } from '../moments/parts'
@@ -177,13 +177,42 @@ export function Subtitle() {
           </div>
         ) : null}
       </div>
+      <TapHint />
       <Controls />
     </div>
   )
 }
 
+// ---------------------------------------------------------------------- manual mode says what it wants
+/**
+ * In manual mode the film stops after every step. While it rests on one that a plain tap moves
+ * on from, it says so, quietly, beside the two controls (on a phone on its side: at the end of
+ * Priya's line). Not on the opening screen and not while a demo's control is waiting: there the
+ * control itself, and "Your turn", are the prompt. The director decides when (`tapHint`).
+ */
+export function TapHint() {
+  const on = useEveryday((s) => s.tapHint)
+  return (
+    <div className="ev-taphint" data-on={on ? '1' : '0'} role="status" aria-hidden={!on}>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle className="ev-taphint-ring" cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
+        <circle cx="12" cy="12" r="4.2" fill="currentColor" />
+      </svg>
+      <span>{PROMPTS.tapOn}</span>
+    </div>
+  )
+}
+
 // ---------------------------------------------------------------------- the two quiet controls
-/** One capsule, two halves: how the film plays (by itself, or a tap at every step), and start again. */
+/**
+ * One capsule, two halves: how the film plays (by itself, or a tap at every step), and start again.
+ *
+ * The first half works as a player's button does: its ICON is what pressing it will do (two bars
+ * while the film plays by itself: press to hold it at every step; a triangle in manual: press to
+ * let it play), and the WORD beside it is the state it is in now ("Auto" / "Manual"). On a phone
+ * on its side there is no room for the word, and the icon alone still reads the way every player
+ * does: bars while it is playing.
+ */
 export function Controls() {
   const mode = useEveryday((s) => s.mode)
   return (
@@ -191,17 +220,17 @@ export function Controls() {
       <button
         type="button"
         className="ev-ctl-btn ev-ctl-mode"
-        aria-label={mode === 'auto' ? 'Playing by itself. Switch to manual: wait for a tap at every step' : 'Manual. Switch to auto: play by itself'}
-        title="Auto or manual"
+        aria-label={mode === 'auto' ? 'Playing by itself. Switch to manual: wait for a tap at every step' : 'Manual: waiting for a tap at every step. Switch to auto: play by itself'}
+        title={mode === 'auto' ? 'Playing by itself. Press for manual' : 'Manual. Press to play by itself'}
         onClick={own(() => useEveryday.getState().toggleMode())}
       >
         <svg viewBox="0 0 40 40" aria-hidden="true">
           <circle className="ev-ctl-track" cx="20" cy="20" r="17" />
           <circle className="ev-ctl-ring" data-ev="ring" cx="20" cy="20" r="17" />
           {mode === 'auto' ? (
-            <path d="M16.2 13.4v13.2l10.8-6.6z" fill="currentColor" />
-          ) : (
             <path d="M15.5 14v12M24.5 14v12" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" fill="none" />
+          ) : (
+            <path d="M16.2 13.4v13.2l10.8-6.6z" fill="currentColor" />
           )}
         </svg>
         <span className="ev-ctl-label">{mode === 'auto' ? 'Auto' : 'Manual'}</span>
@@ -342,9 +371,12 @@ export function Rail() {
         className="ev-stop ev-stop--cap ev-stop--first"
         data-own
         data-state={stateOf('intro')}
+        // while the first name of her day is the large one, the cap beside it is only its dot
+        data-tight={DAY[0]?.key === scene ? '1' : '0'}
         aria-label={`${OPENING.title}: what it is`}
         onClick={own(() => {
-          if (scene !== 'intro') director.jump('intro')
+          // back to the opening as the next visitor should find it (auto), like Start again
+          if (scene !== 'intro') director.restart()
         })}
       >
         <span className="ev-stop-time">Start</span>

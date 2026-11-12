@@ -7,17 +7,41 @@
    ============================================================ */
 
 /* ---------- Shared layout, for this moment only ---------- */
+.ev-moment[data-key='mind'] {
+  /* the board: its width, and how much of it is Piramal Mind (set again where it is compact) */
+  --mind-w: calc(var(--u) * 56);
+  --mind-pw: calc(var(--u) * 19.4);
+  /* how far the board reaches above its box (a phone that is short of width has height to spare) */
+  --mind-up: 0px;
+}
 /* The centrepiece draws back to 0.84 for the result, which leaves the headline this much room.
    The sentence is the longest of the five and has the second ability under it, so it is set a
-   little smaller: four lines, and the proof stays clear of Priya's line. */
+   little smaller. Between 3:2 and 16:9 it takes four lines, a little closer together and a
+   little higher, and the proof under it keeps to one line, clear of Priya's line. */
 .ev-moment[data-key='mind'][data-device='none'] .ev-col--result {
   width: calc(var(--u) * 33);
+  top: calc(var(--u) * -5.4);
 }
 .ev-moment[data-key='mind'] .ev-col--result .ev-sentence {
   font-size: calc(var(--u) * 3.3);
+  line-height: 1.16;
 }
 .ev-moment[data-key='mind'] .ev-col--result .ev-proof {
-  margin-top: calc(var(--u) * 1.4);
+  margin-top: calc(var(--u) * 1.2);
+}
+/* A 16:9 screen (the content is at its full 92u): the headline has the whole width up to the
+   drawn-back board, so it takes three lines, and the proof under it is set at reading size. */
+@media (min-aspect-ratio: 16/9) and (min-height: 481px) {
+  .ev-moment[data-key='mind'][data-device='none'] .ev-col--result {
+    width: calc(var(--u) * 42.5);
+    top: calc(var(--u) * -4.6);
+  }
+  .ev-moment[data-key='mind'] .ev-col--result .ev-sentence {
+    line-height: 1.2;
+  }
+  .ev-moment[data-key='mind'] .ev-col--result .ev-proof {
+    margin-top: calc(var(--u) * 1.7);
+  }
 }
 /* Navy's own ink is the headline's colour, so the phrase is picked out in azure. */
 .ev-moment[data-key='mind'] .ev-col--result .ev-sentence .ev-hl {
@@ -272,11 +296,11 @@
 /* ---------- THE CENTREPIECE: a board of 56u × 31.6u ---------- */
 .mind-board {
   position: absolute;
-  top: 0;
   /* placed from the right edge of its box; animate() centres it on a wide screen and fits it on a squarer one */
   right: 0;
-  width: calc(var(--u) * 56);
-  height: calc(var(--u) * 31.6);
+  top: calc(var(--mind-up) * -1);
+  width: var(--mind-w);
+  height: calc(var(--u) * 31.6 + var(--mind-up));
 }
 
 /* ---------- the engineer's session ---------- */
@@ -284,7 +308,8 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: calc(var(--u) * 34.4);
+  /* the board, less Piramal Mind and the 2.2u the answer travels between them */
+  width: calc(var(--mind-w) - var(--mind-pw) - var(--u) * 2.2);
   height: 100%;
   border-radius: calc(var(--u) * 1.5);
   background: #ffffff;
@@ -532,7 +557,8 @@
   visibility: hidden;
   will-change: transform, opacity;
 }
-.mind-accept {
+/* (two classes: the shared sheet is loaded after this one, and its .ev-touch is round) */
+.ev-touch.mind-accept {
   /* the touch pulse reads on white */
   --acc: #65a9f5;
   width: 100%;
@@ -889,10 +915,12 @@
 
 /* ---------- the thread ---------- */
 .mind-wires {
+  /* drawn for a board of 56u × 31.6u; it keeps to Piramal Mind's edge when the board is wider or narrower */
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  left: calc(var(--mind-w) - var(--mind-pw) - var(--u) * 36.6);
+  top: var(--mind-up);
+  width: calc(var(--u) * 56);
+  height: calc(var(--u) * 31.6);
   overflow: visible;
   z-index: 3;
   pointer-events: none;
@@ -903,6 +931,10 @@
   stroke-width: 1.6;
   stroke-linecap: round;
 }
+.mind-intake {
+  /* shown by the timeline once the thread is drawn; what moves inside it is idle motion (CSS) */
+  visibility: hidden;
+}
 .mind-spine-flow {
   /* quiet traffic into the Mind, all the time */
   fill: none;
@@ -911,7 +943,32 @@
   stroke-linecap: round;
   stroke-dasharray: 0.1 11.5;
   animation: mind-flow 1.5s linear infinite;
-  visibility: hidden;
+}
+.mind-bead {
+  /* auto-ingested: something new leaves each stream in turn and travels down into the core */
+  fill: #ffffff;
+  stroke: rgba(140, 194, 251, 0.55);
+  stroke-width: 3.4;
+  opacity: 0;
+  animation: mind-ingest 2.7s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  animation-delay: calc(var(--i) * 0.9s);
+}
+@keyframes mind-ingest {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  9% {
+    opacity: 1;
+  }
+  52% {
+    opacity: 1;
+  }
+  62%,
+  100% {
+    transform: translateY(var(--d));
+    opacity: 0;
+  }
 }
 @keyframes mind-flow {
   from {
@@ -951,9 +1008,9 @@
 /* ---------- Piramal Mind ---------- */
 .mind-panel-bg {
   position: absolute;
-  left: calc(var(--u) * 36.6);
+  left: calc(var(--mind-w) - var(--mind-pw));
   top: 0;
-  width: calc(var(--u) * 19.4);
+  width: var(--mind-pw);
   height: 100%;
   border-radius: calc(var(--u) * 1.9);
   background: linear-gradient(170deg, #1a2c5c 0%, #0b1e55 38%, #071a50 100%);
@@ -984,10 +1041,10 @@
 }
 .mind-panel {
   position: absolute;
-  left: calc(var(--u) * 36.6);
-  top: 0;
-  width: calc(var(--u) * 19.4);
-  height: 100%;
+  left: calc(var(--mind-w) - var(--mind-pw));
+  top: var(--mind-up);
+  width: var(--mind-pw);
+  height: calc(var(--u) * 31.6);
   z-index: 4;
   pointer-events: none;
 }
@@ -1029,6 +1086,53 @@
   top: calc(var(--u) * 17.5);
   color: #fbb9a6;
   visibility: hidden;
+}
+.mind-auto {
+  /* beside "Memory": it fills by itself */
+  position: absolute;
+  right: calc(var(--u) * 1.15);
+  top: calc(var(--u) * 3.98);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.32);
+  height: calc(var(--u) * 1.58);
+  padding: 0 calc(var(--u) * 0.68) 0 calc(var(--u) * 0.48);
+  border-radius: calc(var(--u) * 0.79);
+  background: rgba(185, 226, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(185, 226, 255, 0.5);
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  line-height: 1;
+  color: #e6f2ff;
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-auto svg {
+  flex: none;
+  width: calc(var(--u) * 1);
+  height: calc(var(--u) * 1);
+  color: #b9e2ff;
+  overflow: visible;
+}
+.mind-auto-in {
+  /* the arrow keeps dropping into the tray */
+  animation: mind-drop 1.8s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+@keyframes mind-drop {
+  0% {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* memory: what flows in, by itself */
@@ -1141,6 +1245,27 @@
   inset: 0;
   border-radius: 50%;
   border: calc(var(--u) * 0.2) solid #8cc2fb;
+}
+.mind-core-take {
+  /* each pulse that comes down the thread is taken in (in step with .mind-bead) */
+  position: absolute;
+  inset: calc(var(--u) * -0.5);
+  border-radius: 50%;
+  border: calc(var(--u) * 0.16) solid #b9e2ff;
+  opacity: 0;
+  animation: mind-take 0.9s ease-out infinite;
+  animation-delay: 0.68s;
+}
+@keyframes mind-take {
+  0% {
+    transform: scale(0.86);
+    opacity: 0.75;
+  }
+  70%,
+  100% {
+    transform: scale(1.28);
+    opacity: 0;
+  }
 }
 .mind-core-ring {
   /* both accents, turning slowly around the core */
@@ -1280,7 +1405,7 @@
   display: flex;
   align-items: center;
   gap: calc(var(--u) * 0.9);
-  font-size: calc(var(--u) * 1.46);
+  font-size: calc(var(--u) * 1.6);
   font-weight: 800;
   letter-spacing: -0.015em;
   line-height: 1.3;
@@ -1290,8 +1415,8 @@
 .mind-defect-pic {
   flex: none;
   order: 2;
-  width: calc(var(--u) * 5.7);
-  height: calc(var(--u) * 1.8);
+  width: calc(var(--u) * 6.65);
+  height: calc(var(--u) * 2.1);
   overflow: visible;
 }
 .mind-defect-tk {
@@ -1322,6 +1447,25 @@
   color: var(--ev-body);
   /* one line: it may run a little past the headline's column, never as far as the centrepiece */
   white-space: nowrap;
+}
+/* 16:9: under a three-line headline it is set at reading size, in two short lines that keep well
+   clear of the board while it is still drawing back */
+@media (min-aspect-ratio: 16/9) and (min-height: 481px) {
+  .mind-defect-h {
+    font-size: calc(var(--u) * 1.85);
+  }
+  .mind-defect-pic {
+    width: calc(var(--u) * 7.3);
+    height: calc(var(--u) * 2.3);
+  }
+  .mind-defect .mind-defect-p {
+    margin-top: calc(var(--u) * 0.2);
+    max-width: calc(var(--u) * 28);
+    font-size: calc(var(--u) * 1.55);
+    line-height: 1.32;
+    white-space: normal;
+    text-wrap: balance;
+  }
 }
 
 /* ---------- STAT: a hundred tiles of AI cost; eighty fall away ---------- */
@@ -1465,20 +1609,44 @@
 }
 
 /* ============================================================
-   A phone on its side. The board keeps its shape (its thread is
-   drawn to it), but it is set again in fewer, larger words:
-   the code editor goes, the preview becomes one line under the
-   talk-back, the ticket numbers on the three links go. Nothing on
-   the board is under 9 px, nothing around it under 11 px.
+   Idle motion is decoration: a visitor who has asked for less
+   motion gets the board still. (The story is on the timeline.)
    ============================================================ */
-@media (max-height: 480px) {
+@media (prefers-reduced-motion: reduce) {
+  .mind-spine-flow,
+  .mind-bead,
+  .mind-auto-in,
+  .mind-core-take,
+  .mind-core-ring,
+  .mind-panel-light,
+  .mind-in-node::after {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   COMPACT: a phone on its side, and a squarer screen (3:2 and
+   under), where the board has to be drawn smaller than its 56u.
+   It keeps its shape (its thread is drawn to it) but is set again
+   in fewer, larger words: the code editor goes, the preview
+   becomes one line under the talk-back, the question stands over
+   the one control, the ticket numbers on the three links go, and
+   "Auto-ingested" stands beside the core, where the thread comes
+   in. On a phone: Memory, Intelligence, the six pills, the
+   talk-back and the control are at 11 px or more, what else is
+   read on the board at 10.5 px, its small print at 9 px.
+   ============================================================ */
+@media (max-height: 480px), (max-aspect-ratio: 3/2) {
   .ev-moment[data-key='mind'] {
-    --md-k: max(calc(var(--u) * 1.15), calc(var(--fl) * 9)); /* the board's small print */
-    --md-v: max(calc(var(--u) * 1.25), calc(var(--fl) * 9.4)); /* what is read */
+    /* animate() reads this: the caption under the name makes way for the headline */
+    --mind-compact: 1;
+    --md-k: max(calc(var(--u) * 1.15), calc(var(--fl) * 9.2)); /* the board's small print */
+    --md-v: max(calc(var(--u) * 1.3), calc(var(--fl) * 10.5)); /* what is read */
+    --md-s: max(calc(var(--u) * 1.42), calc(var(--fl) * 11.2)); /* what states the idea */
   }
 
   /* ----- around the board ----- */
-  /* the promise under the docked name takes two lines, so the board can stand at full size beside it */
+  /* the promise under the docked name takes two lines, so the board can stand as wide as the name lets it */
   .ev-moment[data-key='mind'] .ev-dockcap {
     width: calc(var(--u) * 27);
     white-space: normal;
@@ -1487,49 +1655,43 @@
   .ev-moment[data-key='mind'] .ev-col--demo {
     top: calc(var(--u) * -2.7);
   }
-  .ev-moment[data-key='mind'] .ev-col--result {
-    top: calc(var(--u) * -4.5);
-    width: calc(var(--u) * 31);
-  }
-  /* four lines of headline and two of proof, above Priya's line: set a size down, and closer */
-  .ev-moment[data-key='mind'] .ev-sentence {
-    font-size: calc(var(--u) * 2.8);
-    line-height: 1.12;
-  }
-  .ev-moment[data-key='mind'] .ev-proof {
-    margin-top: calc(var(--u) * 0.3);
-  }
+  /* …and the number stands a little lower, clear of the caption's second line */
   .ev-moment[data-key='mind'] .ev-stat {
     top: calc(var(--u) * -5.4);
   }
+  /* the caption leaves when the headline arrives (animate), and the headline starts where it stood */
+  .ev-moment[data-key='mind'][data-device='none'] .ev-col--result {
+    top: calc(var(--u) * -7.8);
+  }
+  .ev-moment[data-key='mind'] .ev-col--result .ev-sentence {
+    line-height: 1.18;
+  }
+  .ev-moment[data-key='mind'] .ev-col--result .ev-proof {
+    margin-top: calc(var(--u) * 1.5);
+  }
   .mind-defect-h {
-    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+    font-size: calc(var(--u) * 1.7);
   }
   .mind-defect .mind-defect-p {
-    margin-top: 0;
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
-    line-height: 1.22;
+    margin-top: calc(var(--u) * 0.15);
+    font-size: calc(var(--u) * 1.5);
+    line-height: 1.3;
     white-space: normal;
+    text-wrap: balance;
   }
 
-  /* ----- before: three pieces, three loose ends (drawn 1.2× by the shared frame) ----- */
-  .mind-b-cap {
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    letter-spacing: 0.1em;
-  }
-
-  /* ----- the engineer's session: a little narrower, so Piramal Mind has room for its words ----- */
-  .mind-win {
-    width: calc(var(--u) * 33.4);
-  }
+  /* ----- the engineer's session ----- */
   .mind-win-dot {
     display: none;
   }
+  .mind-win-bar {
+    gap: calc(var(--u) * 0.8);
+    padding: 0 calc(var(--u) * 1);
+  }
   .mind-win-who {
-    min-width: 0;
+    /* a line of the script: it is never cut (see the narrow phones below) */
+    flex: none;
     margin-left: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-size: var(--md-v);
   }
   .mind-win-who i {
@@ -1537,7 +1699,6 @@
   }
   .mind-win-tag {
     flex: none;
-    padding-left: calc(var(--u) * 0.8);
     font-size: var(--md-k);
     letter-spacing: 0.06em;
   }
@@ -1547,30 +1708,36 @@
   }
   .mind-prompt {
     top: calc(var(--u) * 3.05);
-    gap: calc(var(--u) * 0.8);
-    padding: calc(var(--u) * 0.45) calc(var(--u) * 0.7) calc(var(--u) * 0.5) calc(var(--u) * 1);
+    gap: calc(var(--u) * 0.7);
+    padding: calc(var(--u) * 0.45) calc(var(--u) * 0.6) calc(var(--u) * 0.5) calc(var(--u) * 0.9);
   }
   .mind-prompt-text {
     font-size: var(--md-v);
-    line-height: 1.3;
+    line-height: 1.26;
   }
   .mind-talk {
     top: calc(var(--u) * 8.3);
-    height: calc(var(--u) * 18.8);
-    padding: calc(var(--u) * 0.6) calc(var(--u) * 0.9) 0;
+    height: calc(var(--u) * 18.8 + var(--mind-up));
+    padding: calc(var(--u) * 0.6) calc(var(--u) * 0.85) calc(var(--u) * 0.6);
+    /* the question and the control keep to its foot, whatever the lines above them take */
+    display: flex;
+    flex-direction: column;
   }
   .mind-talk-port {
-    top: calc(var(--u) * 6.7);
+    top: calc(var(--u) * 6.7 + var(--mind-up));
   }
   .mind-talk-head {
-    height: calc(var(--u) * 1.9);
+    flex: none;
+    height: calc(var(--u) * 1.8);
+    gap: calc(var(--u) * 0.5);
   }
   .mind-talk-head b {
     font-size: var(--md-v);
   }
   .mind-talk-lead {
+    margin-left: 0;
     font-size: var(--md-k);
-    padding: calc(var(--u) * 0.15) calc(var(--u) * 0.6) calc(var(--u) * 0.2);
+    padding: calc(var(--u) * 0.15) calc(var(--u) * 0.5) calc(var(--u) * 0.2);
   }
   .mind-talk .mind-talk-text {
     margin-top: calc(var(--u) * 0.3);
@@ -1578,14 +1745,20 @@
     line-height: 1.18;
   }
   .mind-src {
+    flex: none;
     margin-top: calc(var(--u) * 0.45);
     height: auto;
-    min-height: calc(var(--u) * 4.1);
-    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.7) calc(var(--u) * 0.45) calc(var(--u) * 0.6);
-    gap: calc(var(--u) * 0.7);
+    min-height: calc(var(--u) * 4);
+    padding: calc(var(--u) * 0.35) calc(var(--u) * 0.6) calc(var(--u) * 0.4) calc(var(--u) * 0.5);
+    gap: calc(var(--u) * 0.6);
+  }
+  .mind-src-ico {
+    width: calc(var(--u) * 2);
+    height: calc(var(--u) * 2);
   }
   .mind-src-txt > b {
     font-size: var(--md-v);
+    line-height: 1.15;
     white-space: normal;
   }
   .mind-src-txt > span {
@@ -1599,30 +1772,46 @@
   .mind-ask {
     display: block;
     height: auto;
-    margin-top: calc(var(--u) * 0.45);
+    margin-top: auto;
+    padding-top: calc(var(--u) * 0.35);
   }
   .mind-ask-q {
-    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 9.6));
-    line-height: 1.3;
+    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 10.5));
+    line-height: 1.2;
   }
   .mind-acceptWrap {
     width: 100%;
-    height: calc(var(--u) * 3.3);
+    height: calc(var(--u) * 3.1);
     margin-top: calc(var(--u) * 0.35);
   }
-  .mind-accept {
-    border-radius: calc(var(--u) * 1.65);
+  .ev-touch.mind-accept {
+    border-radius: calc(var(--u) * 1.55);
   }
   .mind-accept-face {
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 10));
+    font-size: var(--md-s);
+  }
+  /* the stamp on one line, so it lands on the control and leaves the question above it alone */
+  .mind-stamp {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--u) * 0.55);
+    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.9) calc(var(--u) * 0.45);
+  }
+  .mind-stamp b {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+    letter-spacing: 0.14em;
+    text-indent: 0;
   }
   .mind-stamp span {
-    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.4));
+    margin-top: 0;
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 10.5));
   }
   /* the code he would have written is too small to be read here: the app it makes says it, on one line */
   .mind-work {
-    top: calc(var(--u) * 27.75);
+    top: calc(var(--u) * 27.75 + var(--mind-up));
     height: calc(var(--u) * 3);
+    left: calc(var(--u) * 1);
+    right: calc(var(--u) * 1);
   }
   .mind-code {
     display: none;
@@ -1630,9 +1819,9 @@
   .mind-pre {
     display: flex;
     align-items: stretch;
-    gap: calc(var(--u) * 0.4);
+    gap: calc(var(--u) * 0.3);
     border-radius: calc(var(--u) * 0.9);
-    padding-right: calc(var(--u) * 0.4);
+    padding-right: calc(var(--u) * 0.3);
   }
   .mind-pre .mind-pre-strip {
     display: none;
@@ -1640,7 +1829,7 @@
   .mind-pre-band {
     flex: none;
     height: auto;
-    padding: 0 calc(var(--u) * 0.9);
+    padding: 0 calc(var(--u) * 0.65);
   }
   .mind-pre-band span {
     font-size: var(--md-v);
@@ -1649,63 +1838,159 @@
     flex: 1 1 0;
     height: auto;
     margin: calc(var(--u) * 0.4) 0;
-    gap: calc(var(--u) * 0.4);
+    gap: calc(var(--u) * 0.35);
+    padding: 0 calc(var(--u) * 0.4);
     font-size: var(--md-k);
   }
   .mind-pre-row--new {
-    flex: 1.3 1 0;
+    flex: 1.32 1 0;
+    padding: 0;
   }
   .mind-pre-rowin {
-    gap: calc(var(--u) * 0.4);
+    gap: calc(var(--u) * 0.35);
+    padding: 0 calc(var(--u) * 0.4);
   }
   .mind-pre-dot {
     width: calc(var(--u) * 1.2);
     height: calc(var(--u) * 1.2);
   }
 
-  /* ----- the thread, and Piramal Mind: both one unit to the left with the session's edge ----- */
-  .mind-wires {
-    left: calc(var(--u) * -1);
-  }
-  .mind-panel-bg,
-  .mind-panel {
-    left: calc(var(--u) * 35.6);
-    width: calc(var(--u) * 20.4);
-  }
+  /* ----- Piramal Mind: the idea is stated here, so its words are at the story's own size ----- */
   .mind-panel-name {
-    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 10));
+    /* (where the board reaches up, the name and "Memory" share the room it gains) */
+    top: calc(var(--u) * 1.2 - var(--mind-up) * 0.55);
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.2));
   }
   .mind-eyebrow {
-    font-size: var(--md-k);
-    letter-spacing: 0.16em;
+    left: calc(var(--u) * 4.2);
+    font-size: var(--md-s);
+    letter-spacing: 0.14em;
+    line-height: 1;
   }
   .mind-eyebrow--mem {
-    top: calc(var(--u) * 3.95);
+    top: calc(var(--u) * 3.85 - var(--mind-up) * 0.2);
   }
   .mind-eyebrow--int {
-    top: calc(var(--u) * 17.2);
+    top: calc(var(--u) * 17.25);
   }
   .mind-in-pill,
   .mind-fly {
     gap: calc(var(--u) * 0.4);
     padding: 0 calc(var(--u) * 0.7) 0 calc(var(--u) * 0.5);
-    font-size: var(--md-v);
+    font-size: var(--md-s);
     letter-spacing: -0.01em;
   }
   .mind-in-pill {
     left: calc(var(--u) * 4.1);
   }
+  /* there is no room beside "Memory" at this size: it stands where the thread enters the core */
+  .mind-auto {
+    left: calc(var(--u) * 6.2);
+    right: auto;
+    top: calc(var(--u) * 14);
+    height: calc(var(--u) * 2);
+    border-radius: calc(var(--u) * 1);
+    gap: calc(var(--u) * 0.3);
+    padding: 0 calc(var(--u) * 0.65) 0 calc(var(--u) * 0.45);
+    font-size: var(--md-s);
+    letter-spacing: -0.005em;
+  }
+  .mind-auto svg {
+    width: calc(var(--u) * 1.25);
+    height: calc(var(--u) * 1.25);
+  }
   .mind-link-card b {
-    font-size: var(--md-v);
+    font-size: var(--md-s);
   }
   /* the ticket numbers are on the session beside it; the three links keep their names */
   .mind-link-card span {
     display: none;
   }
   .mind-close {
-    top: calc(var(--u) * 27.6);
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 9.8));
-    line-height: 1.18;
+    top: calc(var(--u) * 27.3);
+    font-size: max(calc(var(--u) * 1.42), calc(var(--fl) * 11.2));
+    line-height: 1.14;
+  }
+}
+
+/* ----- a squarer screen that is not a phone: no pixel floors, the board as narrow as its words allow ----- */
+@media (max-aspect-ratio: 3/2) and (min-height: 481px) {
+  .ev-moment[data-key='mind'] {
+    --fl: 0px;
+    --mind-w: calc(var(--u) * 56);
+    --mind-pw: calc(var(--u) * 20.4);
+  }
+  /* what Piramal Mind says is the moment: here it has the room to be as large as the copy beside the board */
+  .mind-talk .mind-talk-text {
+    font-size: calc(var(--u) * 1.95);
+  }
+}
+
+/* ============================================================
+   A phone on its side. Nothing that is read around the board is
+   under 11 px. The board is as wide as the docked name lets it
+   be (59.4u on a phone with width to spare, 55.4u on a 16:9 one,
+   which has height to spare instead: there it reaches up).
+   ============================================================ */
+@media (max-height: 480px) {
+  .ev-moment[data-key='mind'] {
+    --mind-w: calc(var(--hx) * 2 - var(--u) * 32.6);
+    --mind-pw: calc(var(--hx) * 0.5 - var(--u) * 1);
+    --mind-up: max(0px, min(calc(var(--u) * 2), calc((var(--room) - var(--u) * 38.9) / 2 - 3px)));
+  }
+
+  /* ----- around the board ----- */
+  .ev-moment[data-key='mind'][data-device='none'] .ev-col--result {
+    width: calc(var(--u) * 31);
+  }
+  .ev-moment[data-key='mind'] .ev-col--result .ev-sentence {
+    line-height: 1.16;
+  }
+  .ev-moment[data-key='mind'] .ev-col--result .ev-proof {
+    margin-top: calc(var(--u) * 1.4);
+  }
+  .mind-defect-h {
+    gap: calc(var(--u) * 0.7);
+    font-size: max(calc(var(--u) * 1.6), calc(var(--fl) * 11.5));
+  }
+  .mind-defect-pic {
+    width: calc(var(--u) * 5);
+    height: calc(var(--u) * 1.58);
+  }
+  .mind-defect .mind-defect-p {
+    margin-top: calc(var(--u) * 0.1);
+    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11));
+    line-height: 1.24;
+  }
+
+  /* ----- before: three pieces, three loose ends (drawn 1.2× by the shared frame, so 9.2 px here is 11 px on the screen) ----- */
+  .mind-b-card {
+    padding: calc(var(--u) * 0.7) calc(var(--u) * 0.8) 0;
+  }
+  .mind-b-card--head {
+    left: calc(var(--u) * 0.4);
+    width: calc(var(--u) * 13.6);
+  }
+  .mind-b-cap {
+    gap: calc(var(--u) * 0.35);
+    font-size: max(calc(var(--u) * 1), calc(var(--fl) * 9.2));
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .mind-b-cap svg {
+    width: calc(var(--u) * 1.15);
+    height: calc(var(--u) * 1.15);
+  }
+  .mind-b .mind-b-id {
+    margin-top: calc(var(--u) * 0.4);
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 9.2));
+  }
+  .mind-b .mind-b-code {
+    margin-top: calc(var(--u) * 0.45);
+    font-size: max(calc(var(--u) * 1.18), calc(var(--fl) * 9.2));
+  }
+  .mind-b-skel {
+    margin-top: calc(var(--u) * 0.45);
   }
 
   /* ----- the number's picture ----- */
@@ -1715,5 +2000,13 @@
   }
   .mind-cost-tag-in b {
     font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+}
+
+/* A phone short of width (16:9 and thereabouts): the window's title line is a line of the script and
+   takes the bar to itself. Priya's line and the talk-back already say he is building with AI. */
+@media (max-height: 480px) and (max-aspect-ratio: 41/20) {
+  .mind-win-tag {
+    display: none;
   }
 }

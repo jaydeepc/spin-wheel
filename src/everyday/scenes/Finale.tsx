@@ -134,9 +134,10 @@ export default function Finale() {
 
     // ============================================================ SAY: the line takes the stage
     t.addLabel('start', 0)
-      .to(words, { yPercent: 0, duration: 0.8, stagger: 0.085 }, 0.06)
-      .to(emWords, { scale: 1.05, duration: 0.18, ease: 'power2.out', transformOrigin: '50% 80%' }, 0.72)
-      .to(emWords, { scale: 1, duration: 0.24, ease: 'power2.inOut' }, 0.9)
+      // (all of it is over by FINALE_TIME.say: the line rests whole, not caught in its own pulse)
+      .to(words, { yPercent: 0, duration: 0.7, stagger: 0.08 }, 0.06)
+      .to(emWords, { scale: 1.05, duration: 0.18, ease: 'power2.out', transformOrigin: '50% 80%' }, 0.58)
+      .to(emWords, { scale: 1, duration: 0.22, ease: 'power2.inOut' }, 0.76)
     const tS = FINALE_TIME.say
     t.addLabel('say', tS)
 

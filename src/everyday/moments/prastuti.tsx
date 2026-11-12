@@ -13,8 +13,10 @@
  * Run      she speaks, in Hindi (her words under the photo, each sentence with its English
  *          beneath). Four slides build themselves on the big canvas, one after another, in
  *          Hindi: a cover, the branch bars (the lagging one picked out), the rising line,
- *          the three points. Each takes its place in the filmstrip. Then the deck gathers,
- *          cover on top, stamped प्रस्तुति तैयार.
+ *          the three points. The two charts stay longest. Each takes its place in the
+ *          filmstrip. Then the finished deck is laid out on the canvas, not closed: the
+ *          cover, the bars and the rising line side by side, stamped प्रस्तुति तैयार. That
+ *          spread is the picture the moment rests on.
  * Result   Sunday, 11 pm, struck through, becomes प्रस्तुति तैयार
  * Stat     a stopwatch that fills to 18 minutes as the number counts; the laptop flies
  *          into the deck at its centre
@@ -50,8 +52,17 @@ const WAVE = [0.4, 0.8, 0.55, 1, 0.35, 0.7, 0.95, 0.45, 0.6, 0.9, 0.3, 0.75, 1, 
 const DIAL = { size: 340, c: 170, ring: 114, tickIn: 132, tickOut: 138, tickMajor: 142, num: 157 }
 
 const minutesOf = (value: string) => parseInt(value, 10) || 0
-/** Hindi ends a sentence with a danda (।); English with a full stop. */
-const sentencesOf = (text: string) => text.split(/(?<=[।.?!])\s+/).filter(Boolean)
+/**
+ * Hindi ends a sentence with a danda (।); English with a full stop. No lookbehind here:
+ * Safari before 16.4 refuses to parse one, and with it the whole page.
+ */
+const sentencesOf = (text: string) =>
+  text
+    .match(/[^.?!।]+[.?!।]*\s*/g)
+    ?.map((sentence) => sentence.trim())
+    .filter(Boolean) ?? [text]
+/** The slides the finished deck is laid out with, back to front: the cover, then the two charts. */
+const SPREAD: PrastutiSlide['kind'][] = ['title', 'bars', 'trend']
 const bare = (word: string) => word.normalize('NFC').replace(/[।.,!?]/g, '')
 /**
  * The words of a sentence that the deck uses as they were said: the longest run of two or
@@ -268,7 +279,9 @@ function BarsFace({ slide }: { slide: PrastutiSlide }) {
 }
 
 /** 3 · The line that draws upward, and the callout on its last point. */
-function TrendFace({ slide }: { slide: PrastutiSlide }) {
+function TrendFace({ slide, copy }: { slide: PrastutiSlide; copy?: boolean }) {
+  // the slide is drawn twice (on the canvas, and in the finished spread): each has its own gradient
+  const light = copy ? 'prastuti-trend-light-2' : 'prastuti-trend-light'
   const pts = trendPoints(slide.trend ?? [])
   if (!pts.length) return null
   const last = pts[pts.length - 1]
@@ -287,12 +300,12 @@ function TrendFace({ slide }: { slide: PrastutiSlide }) {
       <div className="prastuti-trend-fill">
         <svg className="prastuti-trend-svg" viewBox={box} aria-hidden="true">
           <defs>
-            <linearGradient id="prastuti-trend-light" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={light} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stopColor="#f16443" stopOpacity="0.42" />
               <stop offset="1" stopColor="#f16443" stopOpacity="0" />
             </linearGradient>
           </defs>
-          <path d={area} fill="url(#prastuti-trend-light)" />
+          <path d={area} fill={`url(#${light})`} />
         </svg>
       </div>
       <svg className="prastuti-trend-svg" viewBox={box} aria-hidden="true">
@@ -355,10 +368,10 @@ function PointsFace({ slide }: { slide: PrastutiSlide }) {
   )
 }
 
-function SlideFace({ slide }: { slide: PrastutiSlide }) {
+function SlideFace({ slide, copy }: { slide: PrastutiSlide; copy?: boolean }) {
   if (slide.kind === 'title') return <TitleFace slide={slide} />
   if (slide.kind === 'bars') return <BarsFace slide={slide} />
-  if (slide.kind === 'trend') return <TrendFace slide={slide} />
+  if (slide.kind === 'trend') return <TrendFace slide={slide} copy={copy} />
   return <PointsFace slide={slide} />
 }
 
@@ -366,7 +379,6 @@ function SlideFace({ slide }: { slide: PrastutiSlide }) {
 /** Prastuti on her laptop: set to Hindi, four places for slides, one big canvas, one place to talk. */
 function Screen({ product }: P) {
   const d = product.demo
-  const cover = d.slides.find((s) => s.kind === 'title') ?? d.slides[0]
   return (
     <div className="prastuti-app">
       <div className="prastuti-appbar">
@@ -423,21 +435,20 @@ function Screen({ product }: P) {
             </span>
             <span className="prastuti-empty-p">Your deck appears here, in the same language.</span>
           </div>
-          {d.slides
-            .slice(1)
-            .reverse()
-            .map((s, i) => (
-              <i className={`prastuti-back prastuti-back--${d.slides.length - 1 - i}`} key={s.kind} />
-            ))}
           {d.slides.map((s, i) => (
             <div className={`prastuti-slide prastuti-slide--${s.kind}`} style={{ zIndex: 10 - i }} key={s.kind}>
               <SlideFace slide={s} />
             </div>
           ))}
-          {/* the finished deck: its cover, once more, on top */}
-          <div className="prastuti-slide prastuti-cover">
-            <TitleFace slide={cover} />
-          </div>
+          {/* the finished deck, laid out: the cover and the two charts once more, as real slides */}
+          {SPREAD.map((kind, i) => {
+            const at = d.slides.findIndex((s) => s.kind === kind)
+            return at < 0 ? null : (
+              <div className={`prastuti-slide prastuti-out prastuti-out--${kind}`} data-slide={at} style={{ zIndex: 20 + i }} key={kind}>
+                <SlideFace slide={d.slides[at]} copy />
+              </div>
+            )
+          })}
         </div>
 
         <div className="prastuti-talk">
@@ -487,7 +498,7 @@ function Screen({ product }: P) {
   )
 }
 
-/** The stamp sits on the laptop's edge, over the corner of the deck, and travels with it. */
+/** The stamp lies on the laptop, over the corner the laid-out deck leaves free, and travels with it (animate() places it). */
 function OnDevice({ product }: P) {
   return (
     <div className="prastuti-stamp">
@@ -686,10 +697,13 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   const phs = $$('.prastuti-b-ph')
   const cursor = $('.prastuti-b-cursor')
   // she tries one formatting button after another: the highlight hops between them
-  const toolsBox = loc($('.prastuti-b-tools'))
+  const toolsEl = $('.prastuti-b-tools')
+  const toolsBox = loc(toolsEl)
+  // on a phone on its side the picture is drawn 1.2×: the hops are in the toolbar's own pixels
+  const drawn = toolsBox.w / (toolsEl.offsetWidth || 1) || 1
   const pressAt = pressOn.map((el) => {
     const b = loc(el)
-    return { x: b.cx - toolsBox.x, y: b.cy - toolsBox.y }
+    return { x: (b.cx - toolsBox.x) / drawn, y: (b.cy - toolsBox.y) / drawn }
   })
   gsap.set(night, { autoAlpha: 0, y: 2 * U, rotation: 9 })
   gsap.set(moon, { scale: 0, rotation: -40, transformOrigin: '50% 50%' })
@@ -750,10 +764,10 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   const rings = $$('.prastuti-thumb-ring')
   const oks = $$('.prastuti-thumb-ok')
   const empty = $('.prastuti-empty')
-  const slides = $$('.prastuti-slide:not(.prastuti-cover)')
-  const cover = $('.prastuti-cover')
-  // drawn deepest first: here the one nearest the cover comes first
-  const backs = $$('.prastuti-back').reverse()
+  const slides = $$('.prastuti-slide:not(.prastuti-out)')
+  // the finished deck, laid out: the cover and the two charts once more
+  const outs = $$('.prastuti-out')
+  const strip = $('.prastuti-strip')
   const micWrap = $('.prastuti-micWrap')
   const hints = $$('.prastuti-hint span')
   const attachOutline = $('.prastuti-attach-outline')
@@ -817,9 +831,50 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   gsap.set(saidLine, { scaleY: 0, transformOrigin: '50% 0%' })
   gsap.set(saidWave, { scaleY: 0.25 })
   gsap.set(slides, { transformOrigin: '0 0', autoAlpha: 0, x: W * 0.02, y: H * 0.02, scale: 0.96 })
+
+  // The finished deck is laid out on the canvas, not closed: the bars low on the left, the rising
+  // line high on the right and over the bars' empty corner, the cover behind them both. How large
+  // each lies is said once, in prastuti.css (--out-*; 0 leaves that slide in the filmstrip). Where
+  // the laptop is small (--out-wide) the spread is the two charts, and the filmstrip gives them
+  // its room.
+  const mainCss = getComputedStyle(main)
+  const sizeOf = (kind: string) => parseFloat(mainCss.getPropertyValue(`--out-${kind}`)) || 0
+  const wide = sizeOf('wide') > 0
+  const fieldX = wide ? within(strip).x - mainAt.x : 0
+  const lieAt = (kind: string | undefined) => {
+    const k = sizeOf(kind ?? '')
+    if (kind === 'bars') return { x: fieldX, y: H * (1 - k), scale: k }
+    if (kind === 'trend') return { x: W * (1 - k), y: 0, scale: k }
+    return { x: fieldX, y: 0, scale: k }
+  }
+  const spread = outs.map((el) => {
+    const from = Number(el.dataset.slide) || 0
+    return { el, from, ...lieAt(product.demo.slides[from]?.kind) }
+  })
+
+  // The stamp comes down on the corner the spread leaves free, low on the right. It lives on the
+  // laptop (not inside its screen), so that place is worked out in the laptop's own pixels.
+  const onDevice = stamp.parentElement as HTMLElement
+  const deviceBox = loc(onDevice)
+  const mainBox = loc(main)
+  const perStage = deviceBox.w / (onDevice.offsetWidth || 1) || 1
+  const perMain = mainBox.w / (W || 1)
+  const stampNudge = { x: parseFloat(mainCss.getPropertyValue('--stamp-dx')) || 0, y: parseFloat(mainCss.getPropertyValue('--stamp-dy')) || 0 }
+  const free = {
+    x: (fieldX + W * sizeOf('bars') + W) / 2 + stampNudge.x * W,
+    y: (H * sizeOf('trend') + H) / 2 + stampNudge.y * H,
+  }
+  const stampAt = {
+    x: (mainBox.x + free.x * perMain - deviceBox.x) / perStage,
+    y: (mainBox.y + free.y * perMain - deviceBox.y) / perStage,
+  }
   // it comes down from over the laptop, not from over her photo
-  gsap.set(stamp, { autoAlpha: 0, scale: 2.3, rotation: -22, transformOrigin: '88% 60%' })
+  gsap.set(stamp, { x: stampAt.x, y: stampAt.y, xPercent: -50, yPercent: -50, autoAlpha: 0, scale: 2.3, rotation: -22, transformOrigin: '80% 50%' })
   gsap.set(burst, { autoAlpha: 0 })
+
+  // her words come whole words at a time; the first slide starts as she ends her first sentence
+  const WORD = 0.042
+  const firstSaid = 0.1 + (sents[0] ? inside(sents[0], '.prastuti-w').length : 0) * WORD
 
   run
     // the touch: she starts to talk
@@ -831,7 +886,8 @@ function animate(env: MomentEnv<PrastutiProduct>) {
     .to(hints[1], { autoAlpha: 1, duration: 0.2 }, 0.1)
     .to(wave, { autoAlpha: 1, duration: 0.2 }, 0.05)
     .to(saidLine, { scaleY: 1, duration: 0.6, ease: 'power2.out' }, 0.04)
-    .to(empty, { autoAlpha: 0, scale: 0.97, duration: 0.2, ease: 'power1.in' }, 0.04)
+    // the canvas keeps saying where the deck will appear until the first slide is on its way
+    .to(empty, { autoAlpha: 0, scale: 0.97, duration: 0.16, ease: 'power1.in' }, firstSaid - 0.08)
   waveBars.forEach((b, i) => {
     run.to(b, { scaleY: WAVE[i % WAVE.length], duration: 0.14, repeat: 5, yoyo: true, ease: 'sine.inOut' }, 0.08 + (i % 7) * 0.022)
   })
@@ -848,10 +904,10 @@ function animate(env: MomentEnv<PrastutiProduct>) {
     gsap.set(words, { autoAlpha: 0, y: 0.4 * U })
     gsap.set(gloss, { autoAlpha: 0, y: 0.3 * U })
     words.forEach((w) => {
-      run.to(w, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' }, 0.1 + wordIndex * 0.042)
+      run.to(w, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' }, 0.1 + wordIndex * WORD)
       wordIndex += 1
     })
-    spokenEnd = 0.1 + wordIndex * 0.042
+    spokenEnd = 0.1 + wordIndex * WORD
     run.to(gloss, { autoAlpha: 1, y: 0, duration: 0.26, ease: 'power2.out' }, spokenEnd + 0.02)
     // the words the deck keeps exactly as she said them warm to the accent
     const kept = inside(sent, '.prastuti-w-kept')
@@ -868,22 +924,29 @@ function animate(env: MomentEnv<PrastutiProduct>) {
     .to(hints[1], { autoAlpha: 0, duration: 0.14 }, spokenEnd + 0.14)
     .to(hints[2], { autoAlpha: 1, duration: 0.2 }, spokenEnd + 0.24)
 
-  // each slide arrives on the canvas, builds itself, and takes its place in the filmstrip
-  const ARRIVE = [0.04, 0.44, 0.96, 1.48]
-  const STAY = [0.38, 0.5, 0.5, 0.48]
-  const PARK = 0.28
-  const arrive = (i: number) => ARRIVE[Math.min(i, ARRIVE.length - 1)] + Math.max(0, i - (ARRIVE.length - 1)) * 0.5
+  // Each slide arrives on the canvas, builds itself, and takes its place in the filmstrip. The
+  // two charts are the picture the visitor came for: they stay longest. The cover and the three
+  // points pass quickly (the cover is seen again in the finished spread).
+  const STAY: Record<PrastutiSlide['kind'], number> = { title: 0.27, bars: 0.7, trend: 0.7, points: 0.26 }
+  const PARK = 0.26
+  const arrivals: number[] = []
+  let lastLeave = firstSaid
+  slides.forEach((_, i) => {
+    arrivals.push(lastLeave)
+    lastLeave += STAY[product.demo.slides[i]?.kind ?? 'points']
+  })
+  const arrive = (i: number) => arrivals[i]
   slides.forEach((slide, i) => {
     const at = arrive(i)
-    const leave = at + STAY[Math.min(i, STAY.length - 1)]
+    const leave = arrivals[i + 1] ?? lastLeave
     const land = leave + PARK
     run
       .to(slide, { autoAlpha: 1, duration: 0.12, ease: 'none' }, at)
-      .to(slide, { x: 0, y: 0, scale: 1, duration: 0.3, ease: E.snap }, at)
+      .to(slide, { x: 0, y: 0, scale: 1, duration: 0.26, ease: E.snap }, at)
       .to(rings[i], { autoAlpha: 1, duration: 0.14 }, at)
       .to(slide, { x: park[i].x, y: park[i].y, scale: park[i].scale, duration: PARK, ease: E.inOut }, leave)
-      .to(rings[i], { autoAlpha: 0, duration: 0.2 }, land)
-      .to(oks[i], { scale: 1, duration: 0.26, ease: 'back.out(3)' }, land - 0.04)
+      .to(rings[i], { autoAlpha: 0, duration: 0.16 }, land)
+      .to(oks[i], { scale: 1, duration: 0.22, ease: 'back.out(3)' }, land - 0.04)
   })
 
   slides.forEach((slide, i) => {
@@ -906,13 +969,13 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       gsap.set(lines, { autoAlpha: 0, y: 0.7 * U })
       gsap.set(rule, { scaleX: 0, transformOrigin: '0 50%' })
       run
-        .to(sun, { scale: 1, duration: 0.4, ease: 'back.out(1.5)' }, at + 0.03)
-        .to(orbits, { drawSVG: '100%', duration: 0.38, stagger: 0.05, ease: 'power2.out' }, at + 0.08)
-        .to(moons, { scale: 1, duration: 0.2, stagger: 0.05, ease: 'back.out(3)' }, at + 0.28)
-        .to(caption, { autoAlpha: 1, x: 0, duration: 0.22 }, at + 0.06)
-        .to(lines, { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.06, ease: 'power3.out' }, at + 0.1)
-        .to(rule, { scaleX: 1, duration: 0.2, ease: 'power2.out' }, at + 0.24)
-        .to(sub, { autoAlpha: 1, x: 0, duration: 0.22 }, at + 0.26)
+        .to(sun, { scale: 1, duration: 0.24, ease: 'back.out(1.5)' }, at + 0.02)
+        .to(orbits, { drawSVG: '100%', duration: 0.2, stagger: 0.03, ease: 'power2.out' }, at + 0.04)
+        .to(moons, { scale: 1, duration: 0.12, stagger: 0.03, ease: 'back.out(3)' }, at + 0.14)
+        .to(caption, { autoAlpha: 1, x: 0, duration: 0.14 }, at + 0.03)
+        .to(lines, { autoAlpha: 1, y: 0, duration: 0.18, stagger: 0.04, ease: 'power3.out' }, at + 0.04)
+        .to(rule, { scaleX: 1, duration: 0.12, ease: 'power2.out' }, at + 0.12)
+        .to(sub, { autoAlpha: 1, x: 0, duration: 0.12 }, at + 0.14)
       return
     }
 
@@ -941,9 +1004,9 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       run
         .to(base, { scaleX: 1, duration: 0.22, ease: 'power2.out' }, at + 0.04)
         .to(grid, { autoAlpha: 1, duration: 0.22 }, at + 0.08)
-        .to(bars, { scaleY: 1, duration: 0.28, stagger: 0.055, ease: 'back.out(1.7)' }, at + 0.08)
-        .to(labels, { autoAlpha: 1, y: 0, duration: 0.18, stagger: 0.055 }, at + 0.13)
-        .to(mark, { scale: 1, y: 0, duration: 0.2, ease: 'back.out(3)' }, at + 0.36)
+        .to(bars, { scaleY: 1, duration: 0.3, stagger: 0.065, ease: 'back.out(1.7)' }, at + 0.08)
+        .to(labels, { autoAlpha: 1, y: 0, duration: 0.18, stagger: 0.065 }, at + 0.13)
+        .to(mark, { scale: 1, y: 0, duration: 0.2, ease: 'back.out(3)' }, at + 0.42)
     } else if (kind === 'trend') {
       // 3 · the line draws upward, the light follows under it, and the last point is called out
       const line = inside<SVGPathElement>(slide, '.prastuti-trend-line')
@@ -953,7 +1016,7 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       const grid = inside<SVGPathElement>(slide, '.prastuti-trend-grid, .prastuti-trend-floor')
       const pill = inside(slide, '.prastuti-trend-pill')
       const drawAt = at + 0.07
-      const drawFor = 0.34
+      const drawFor = 0.42
       gsap.set(line, { drawSVG: '0%' })
       gsap.set(fill, { clipPath: 'inset(0% 100% 0% 0%)' })
       gsap.set(dots, { scale: 0, transformOrigin: '50% 50%' })
@@ -985,43 +1048,44 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       gsap.set(tiles, { scale: 0 })
       gsap.set(texts, { autoAlpha: 0, x: -0.6 * U })
       run
-        .to(band, { xPercent: 0, duration: 0.26, ease: 'power3.out' }, at + 0.02)
-        .to(arc, { scale: 1, duration: 0.32, ease: 'back.out(1.6)' }, at + 0.08)
-        .to(rule, { scaleX: 1, duration: 0.18, ease: 'power2.out' }, at + 0.1)
-        .to(bandBits, { autoAlpha: 1, y: 0, duration: 0.22, stagger: 0.04, ease: 'power3.out' }, at + 0.1)
-        .to(tiles, { scale: 1, duration: 0.2, stagger: 0.055, ease: 'back.out(2.6)' }, at + 0.12)
-        .to(texts, { autoAlpha: 1, x: 0, duration: 0.18, stagger: 0.055 }, at + 0.16)
+        .to(band, { xPercent: 0, duration: 0.18, ease: 'power3.out' }, at + 0.02)
+        .to(arc, { scale: 1, duration: 0.2, ease: 'back.out(1.6)' }, at + 0.05)
+        .to(rule, { scaleX: 1, duration: 0.12, ease: 'power2.out' }, at + 0.06)
+        .to(bandBits, { autoAlpha: 1, y: 0, duration: 0.14, stagger: 0.03, ease: 'power3.out' }, at + 0.06)
+        .to(tiles, { scale: 1, duration: 0.14, stagger: 0.03, ease: 'back.out(2.6)' }, at + 0.07)
+        .to(texts, { autoAlpha: 1, x: 0, duration: 0.12, stagger: 0.03 }, at + 0.09)
     }
   })
 
-  // the four gather into a deck on the canvas, the cover on top, and it is stamped
-  const lastLeave = arrive(slides.length - 1) + STAY[Math.min(slides.length - 1, STAY.length - 1)]
-  // the cover comes up out of the filmstrip as the last slide goes down into it: the canvas is never empty
+  // The deck is finished, and it is laid out, not closed. As the last slide goes down into the
+  // filmstrip, the cover and the two charts come up out of their places in it and lie side by
+  // side on the canvas: the charts are the picture the moment rests on.
   const tG = lastLeave
-  const DECK = { scale: 0.86, dx: W * 0.0448, dy: H * 0.042 }
-  const deckY = H * (1 - DECK.scale)
-  gsap.set(cover, { transformOrigin: '0 0', x: park[0].x, y: park[0].y, scale: park[0].scale, autoAlpha: 0 })
-  gsap.set(backs, { transformOrigin: '0 0', x: (i) => park[Math.min(i + 1, park.length - 1)].x, y: (i) => park[Math.min(i + 1, park.length - 1)].y, scale: (i) => park[Math.min(i + 1, park.length - 1)].scale, autoAlpha: 0 })
-  run.to(cover, { autoAlpha: 1, duration: 0.06, ease: 'none' }, tG).to(cover, { x: 0, y: deckY, scale: DECK.scale, duration: 0.36, ease: E.inOut }, tG)
-  backs.forEach((back, i) => {
-    // the last of them waits for its slide to reach the filmstrip
-    const leave = tG + [0.04, 0.1, 0.2][Math.min(i, 2)]
-    run
-      .to(back, { autoAlpha: 1, duration: 0.06, ease: 'none' }, leave)
-      .to(back, { x: (i + 1) * DECK.dx, y: deckY - (i + 1) * DECK.dy, scale: DECK.scale, duration: 0.28, ease: E.inOut }, leave)
+  spread.forEach((s) => {
+    const home = park[Math.min(s.from, park.length - 1)]
+    gsap.set(s.el, { transformOrigin: '0 0', x: home.x, y: home.y, scale: home.scale, autoAlpha: 0 })
   })
-  const hit = tG + 0.42
+  spread
+    .filter((s) => s.scale > 0)
+    .forEach((s, i) => {
+      const leave = tG + i * 0.03
+      run.to(s.el, { autoAlpha: 1, duration: 0.06, ease: 'none' }, leave).to(s.el, { x: s.x, y: s.y, scale: s.scale, duration: 0.3, ease: E.inOut }, leave)
+    })
+  if (wide) {
+    // a small laptop: the filmstrip steps aside, and the two charts have the whole canvas
+    run.to(thumbs, { autoAlpha: 0, x: -0.7 * U, duration: 0.16, ease: 'power1.in' }, tG + 0.1).to(slides, { autoAlpha: 0, duration: 0.14, ease: 'none' }, tG + 0.12)
+  }
+  const hit = tG + 0.36
   run
     .to(stopGlyph, { autoAlpha: 0, scale: 0.4, duration: 0.14, ease: 'power2.in' }, tG)
     .to(checkGlyph, { drawSVG: '100%', duration: 0.3, ease: 'power2.out' }, tG + 0.1)
     .to(hints[2], { autoAlpha: 0, duration: 0.14 }, tG)
     .to(hints[3], { autoAlpha: 1, duration: 0.2 }, tG + 0.1)
     // प्रस्तुति तैयार
-    .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.24)
-    .to(stamp, { scale: 1, rotation: -7, duration: 0.24, ease: E.slam }, hit - 0.24)
+    .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.22)
+    .to(stamp, { scale: 1, rotation: -7, duration: 0.22, ease: E.slam }, hit - 0.22)
     .to(burst, { autoAlpha: 0.8, duration: 0.01 }, hit)
-    .to(burst, { scale: 1.6, autoAlpha: 0, duration: 0.2, ease: 'power2.out' }, hit + 0.01)
-  env.bump(run, hit, 3)
+    .to(burst, { scale: 1.6, autoAlpha: 0, duration: 0.13, ease: 'power2.out' }, hit + 0.01)
 
   // ---------------------------------------------------------------- result: Sunday, 11 pm, struck through
   const strike = $('.prastuti-compare-old i')

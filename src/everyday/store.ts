@@ -50,6 +50,8 @@ interface EverydayState {
   hold: boolean
   /** Fonts are in and the first scene has been built. */
   ready: boolean
+  /** Manual mode, resting on a step a plain tap moves on from: the shell shows "Tap anywhere to continue". */
+  tapHint: boolean
   /** On the opening screen, the product being previewed from the rail. */
   preview: ProductKey | null
   /** Bumped after a resize has settled: scenes rebuild their timelines. */
@@ -59,6 +61,7 @@ interface EverydayState {
   setStep(step: string, resting: boolean): void
   setCue(cue: string | null): void
   setMode(mode: Mode): void
+  setTapHint(on: boolean): void
   toggleMode(): void
   setPreview(key: ProductKey | null): void
   patch(p: Partial<Pick<EverydayState, 'mode' | 'hold' | 'ready'>>): void
@@ -74,6 +77,7 @@ export const useEveryday = create<EverydayState>((set) => ({
   mode: 'auto',
   hold: false,
   ready: false,
+  tapHint: false,
   preview: null,
   layoutTick: 0,
 
@@ -81,6 +85,7 @@ export const useEveryday = create<EverydayState>((set) => ({
   setStep: (step, resting) => set({ step, resting }),
   setCue: (cue) => set({ cue }),
   setMode: (mode) => set({ mode }),
+  setTapHint: (tapHint) => set({ tapHint }),
   toggleMode: () => set((s) => ({ mode: s.mode === 'auto' ? 'manual' : 'auto' })),
   setPreview: (preview) => set({ preview }),
   patch: (p) => set(p),

@@ -43,15 +43,17 @@ opening), `pr-` (Meet Priya), `eng-` (the chapter card), `fin-` (the closing).
 | before | the card: your picture, the word "Before", `product.before.detail` as the line | `Before`: the little picture of the old way |
 | name | THE NAME: lands, opens (expansion / Devanagari / underline), closes, promise under it | nothing |
 | demo | the name docks top-left with its caption; the device rises to centre stage; the left column (`demoTitle`, `demoLine`); the photo on the right | `Screen`: what is inside the device, with the one control |
-| run | sends the ghost fingertip to your control, plays your `run` timeline when it is touched | the demo itself |
-| result | `product.after` as the headline (your `highlight` phrase in the accent colour); the device slides aside | optionally `Proof` |
+| run | makes your control pressable as soon as it can be seen, says "Your turn" beside it for a visitor, sends the ghost fingertip to it when nobody is there, plays your `run` timeline when it is pressed | the demo itself |
+| result | `product.after` as the headline (your `highlight` phrase in the accent colour), your `Proof` in with it; the device slides aside | optionally `Proof` |
 | stat | the huge counting number and its label; the device leaves (into your picture if you ask) | `Stat`: the picture of the number |
 | hand-over | clears the stage, files the name into the rail, starts the next scene | nothing |
 
 Also done: Priya's subtitle (her `before` line, which stays on while the name lands for as
-long as it takes to read; then `tool`; then `after` from the touch on), the header (the clock of her Tuesday, or the engineering mark), the
-rail and its step pips, the backdrop light in your accent, the tap ripple, auto and manual
-modes, start again, resizing, the debug URLs. `before.headline` is deliberately not shown:
+long as it takes to read; then `tool`, through the demo; then `after`, which arrives with the
+outcome, 70% of the way through your `run`, never at the touch), the header (the clock of her
+Tuesday, or the engineering mark), the rail and its step pips, the backdrop light in your
+accent, the tap ripple, auto and manual modes and their two prompts ("Your turn", "Tap anywhere
+to continue"), start again, resizing, the debug URLs. `before.headline` is deliberately not shown:
 Priya says the same thing in the subtitle beside it.
 
 ## The contract (`types.ts`)
@@ -95,7 +97,7 @@ timelines, one per step. `t = 0` on each is the instant its step begins:
 | `env.before` | the before card starts to arrive (frame landed by 0.6) | 0.85 s | bring your picture to life |
 | `env.demo` | the name starts to dock, the device starts to rise (landed by 1.0) | 1.25 s | assemble the screen; the control must be ready at the end |
 | `env.run` | **the touch** | 2.8 s | the demo: what pressing the control does |
-| `env.result` | the headline starts to rise | 0.95 s | your `Proof` |
+| `env.result` | the headline starts to rise (your `Proof` box fades in from 0.2) | 0.95 s | the inside of your `Proof` |
 | `env.stat` | the stat begins (number counts 0.35 → 1.3; device gone by 0.85) | 1.5 s | draw your picture |
 
 A timeline that runs over its budget is played faster by the director (and warns in the
@@ -104,8 +106,9 @@ console), so the moment never exceeds 16 seconds. Shorter is fine.
 Return `{ control, deviceLandsOn? }`:
 
 - `control`: your `<TouchControl>` element, `env.$('[data-ev-control]')`. Exactly one per
-  moment. The shared frame makes it pulse and touchable only while the film waits on it.
-  Do not add your own click handlers anywhere.
+  moment. The shared frame makes it pulse and pressable from the instant it can be seen (on
+  screen, not hidden, at least 0.6 opaque: so while the device is still arriving), and spent
+  once it has been pressed. Do not add your own click handlers anywhere. See "Touch" below.
 - `deviceLandsOn`: an element inside your `Stat` picture that the device should fly into and
   become (BYOT: the phone shrinks into its own tile). Leave it out and the device sinks away.
 
@@ -144,11 +147,15 @@ device when something lands in it).
 From `./parts`:
 
 - `<TouchControl label="…" className="…">glyph</TouchControl>`: the one control. Size it
-  with your class; put your own face inside it (see `.byot-mic-face`) and animate that,
-  not the control itself.
+  with your class (write the rule as `.ev-touch.your-class`, so a radius of your own wins
+  whatever order the stylesheets load in); put your own face inside it (see `.byot-mic-face`)
+  and animate that, not the control itself.
 - `<Rise>…</Rise>`: a line that rises through a mask.
 - `withName(text, product.name)`: bolds the product name inside a sentence.
 - `sentences(text)`: each sentence on its own line, no breaks at hyphens.
+- `splitSentences(text, enders?)`: the same cut as plain strings (`'.?!।'` adds the danda).
+  Use it instead of `text.split(/(?<=[.?!])\s+/)`: a lookbehind stops the whole page from
+  loading in Safari before 16.4. No regular expression in the film may use one.
 - `statusClock(time)`: `"10:30 am"` → `"10:30"`.
 
 GSAP: `CustomEase`, `DrawSVGPlugin`, `SplitText`, `MotionPathPlugin` and `Flip` are
@@ -225,12 +232,28 @@ scarce, so the film is laid out around it. All of it lives behind the one media 
 - **What is dropped there** (the story must not need it): `Under`, the small print inside
   the devices (app subtitles, "on BYOA"), Prastuti's photo and its `demoLine`, the code
   editor on Piramal Mind's board (its preview stays, as one line) and the ticket numbers on
-  its three links, the word "Priya" over her line.
-- **The page is the film.** It never scrolls, bounces, zooms or selects (`touch-action`,
-  `overscroll-behavior`, the route's `viewport` export, the gesture guards in
-  `Experience.tsx`). Held upright, a phone shows "Turn your device sideways" and the film
+  its three links, the word "Priya" over her line, "Priya says" over BYOT's note, "Listening"
+  in BYOT's voice-note header, the clock icon in BYOA's before tags, the ticket number in
+  SmartHelp's proof row, and "Coding with AI" on Piramal Mind's window on the narrower phones.
+- **Where the devices stand.** BYOT's and BYOA's phones stand 2u right of centre there
+  (`--ev-dx` in their own `.css`), SmartHelp's 7.4u: that is what keeps Priya's line, which
+  runs to `hx - 16.5u` during the demo and the result, clear of the phone. Do not narrow
+  that band: BYOA's `after` line is already four lines at 640 × 360.
+- **Prastuti's deck.** The run ends on a spread of real slides, not a closed deck. On a phone
+  on its side (and on any screen narrower than 17:10) the spread is the two charts only, and
+  the filmstrip steps aside for them; the cover joins them on wider screens.
+- **Piramal Mind's board.** The compact board is used on a phone on its side and also on any
+  screen at 3:2 or squarer. On it the caption under the docked name leaves for the result and
+  returns for the number, and the "Auto-ingested" tag stands beside the core. Its type:
+  `--md-k` 9.2 px (ids and small print), `--md-v` 10.5 px, `--md-s` 11.2 px (the words that
+  state the idea); on 16:9 phones the board reaches up to 2u above its box (`--mind-up`).
+- **The page is the film.** It never scrolls, bounces, zooms or selects, at any size
+  (`touch-action: none`, `overscroll-behavior`, the route's `viewport` export, the gesture
+  guards in `Experience.tsx`: see "Touch"). Held upright, a phone shows "Turn your device sideways" and the film
   waits (`director.freeze`): turned back, it carries on from the same frame. A resize (the
-  browser's bar coming or going) rebuilds the scene and resumes its step.
+  browser's bar coming or going) rebuilds the scene and resumes its step. A scene that was
+  built while the page was passing through another size is built again even if the page ends
+  at the size it had before (`director.builtFor()`, compared in `Experience.tsx`).
 
 Check a moment at 780 × 360 first, then 640 × 360 and 740 × 340 (the tightest: every floor is
 at full strength there), 667 × 375, 844 × 390 and 932 × 430.
@@ -250,7 +273,11 @@ What stays on screen through the whole film. It only reads the store.
 - **The two controls,** one capsule at the right end of the subtitle row: auto / manual
   (the ring counts down to the film's next move) and Start again. Everything left of them
   belongs to her line. On a phone on its side they are two round buttons at the right end of
-  the bar, and her line has the whole width.
+  the bar, and her line has the whole width. The first one works as a player's button does:
+  its icon is what pressing it will do (two bars while the film plays by itself, a triangle
+  in manual), and the word beside it is the state it is in ("Auto" / "Manual"; no word on a
+  phone on its side).
+- **The two prompts** (`PROMPTS` in `content.ts`): see "Touch".
 - **The rail: the film as one line, in two tracks.** A cap for the opening ("Everyday AI"),
   the four stops of her Tuesday with their times, **a break in the line**, Piramal Mind on
   its own stretch under an "Engineering" tag instead of a time, and a cap for the closing
@@ -261,7 +288,53 @@ What stays on screen through the whole film. It only reads the store.
 
 `data-track="day|engineering"` on `.ev-root` says which chapter is on stage, next to
 `data-scene`, `data-step`, `data-resting`, `data-mode`, `data-accent`, `data-device`,
-`data-hold`. Hindi anywhere in the shell takes the class `ev-hi`.
+`data-hold`. Hindi anywhere in the shell takes the class `ev-hi` and `lang="hi"` (the caption
+under Prastuti's docked name included: `Moment.tsx`).
+
+## Touch (`core/director.ts`, `Experience.tsx`)
+
+The film runs unattended on a touch screen, so every rule here is about a stranger's finger.
+
+- **A tap on the empty stage** moves the film on a step when it is resting. During a move it
+  is nearly always a second tap ("did that register?"), so it does nothing for the first
+  1.5 s of any move (`TOUCH.settle`) and nothing at all while a demo that a control started
+  is running; after that it finishes the move. On the film's last frame it does nothing.
+- **Keys are the deliberate skip:** Space, →, PageDown and Enter step on (during a move they
+  finish it, the demo included); ← and PageUp step back. A presenter's clicker sends
+  PageDown / PageUp. Enter on a focused button is left to the button.
+- **The one control of a demo** is live (`data-live="1"`: it pulses and can be pressed) from
+  the instant it can be seen, not from the end of the step. Pressed while its step is still
+  arriving, the arrival is finished at once and the demo runs. Once pressed it is spent
+  (`data-spent="1"`): it still takes the taps that land on it, and does nothing with them.
+- **The ghost fingertip.** Nobody there: it sets off `TOUCH.wait` (0.6 s) after the step has
+  come to rest and presses 0.95 s later, so the film keeps time. Somebody has touched the
+  screen in the last 20 s (`TOUCH.attendedFor`): the control waits `TOUCH.waitAttended` (4 s)
+  for them first, and **"Your turn"** (`PROMPTS.yourTurn`) stands beside it. A real press
+  cancels the ghost. In manual mode there is no ghost: "Your turn" stays until it is pressed.
+  The director works out where the caption goes from what is on screen at that instant: next
+  to the control if there is clear room, otherwise beside the device, never over text, a
+  photo or the edge of a device (if no such place exists it is not shown).
+- **Manual mode says what it wants.** While the film rests on a finished step that a plain
+  tap moves on from, **"Tap anywhere to continue"** (`PROMPTS.tapOn`) stands beside the two
+  controls, and Priya's line gives it the room (in manual mode only). Not on the opening
+  screen, not on the last frame, and not while a demo's control is waiting: there the control
+  and "Your turn" are the prompt. The store's `tapHint` says when. On a phone on its side it
+  stands at the end of Priya's row, right above the two round buttons (the stylesheet seats
+  it there, so the buttons are not something it keeps clear of); the stage reaches down into
+  that row there, so the director checks (`placeHint`): if the place is taken it tries just
+  above, then the top corners, and if nothing is clear it is not shown (today: SmartHelp's
+  result, where the "Ticket closed" stamp hangs there) rather than laid over something that
+  is being read.
+- **The next visitor gets a film that plays.** `director.restart()` (Start again, Watch
+  again, the closing's idle return, the end of the film, the rail's first stop, the 90 s
+  manual fallback) sets the mode back to auto. Back does not.
+- **Nothing of the browser shows through.** The context menu is suppressed always (not only
+  for a coarse pointer: a touch monitor with a mouse attached reports a fine one); only a
+  debug URL (`?scene=…` or `?debug`) keeps it. `touch-action: none`, `user-select: none` and
+  `-webkit-touch-callout: none` are on `.ev-root` at every size; pinch and pan
+  (`gesturestart`, `gesturechange`, `touchmove`) and ctrl + wheel zoom are prevented.
+- **Photos are ready before they are shown.** `Experience.tsx` asks for every photograph at
+  boot and waits for Priya's large one with the fonts, for 2 s at the most.
 
 ## Holding a frame
 
@@ -273,6 +346,8 @@ A dev server is already running on port 5183.
 /everyday-ai?scene=byot&at=<before|name|demo|result|stat|done>                           HOLDS the end of that step
 /everyday-ai?scene=byot&at=demo&dt=1.2                                                   1.2 s into the run
 /everyday-ai?scene=byot&at=name&dt=-1.5                                                  1.5 s before the name has finished
+/everyday-ai?scene=byot&at=demo&touched                                                  the demo frame as a visitor who is there sees it: "Your turn"
+/everyday-ai?scene=byot&at=before&manual                                                 manual mode's frame: "Tap anywhere to continue"
 ```
 
 `at` is a label on the scene's timeline; `dt` moves on from it (or back, if negative):
@@ -295,8 +370,11 @@ A dev server is already running on port 5183.
 | | `done` | **the last frame of the film** |
 | any scene | `start` | time 0 |
 
-While holding, nothing advances by itself; Space / → and ← still step. The one other switch
-is `?manual` (start in manual mode: wait for a tap at every step).
+While holding, nothing advances by itself; Space / → and ← still step. The other switches:
+`?manual` (start in manual mode: wait for a tap at every step), `?touched` (as if somebody
+had just touched the screen: a held demo frame shows "Your turn", and a film that is playing
+waits for the visitor at its first control) and `?debug` (keeps the right-click menu, which
+the film otherwise suppresses; `?scene=…` keeps it too).
 
 Look at every step's end frame and several frames inside your `before`, `demo`, `run` and
 `stat` at 1600 × 900, 1024 × 768 and 780 × 360 (and the other phone sizes listed under
@@ -304,18 +382,28 @@ Look at every step's end frame and several frames inside your `before`, `demo`, 
 
 ## Timing (`core/timing.ts`)
 
-One moment, unattended: before 0.85 + rest 0.65 · name 2.85 + 0.25 · demo 1.25 · the control
-waits 1.0, the ghost fingertip takes 0.95 · run 2.8 · result 0.95 + rest 0.95 · stat 1.5 +
-rest 1.0 · hand-over 0.7 = 15.7 s (measured: 15.7 to 15.8 s; the limit is 16). Every name
-gets the same 3.1 s at centre stage, whichever of the three choreographies it has. A moment
-fits inside these budgets; it does not change them.
+One moment, unattended: before 0.85 + rest 1.15 · name 2.2 + 0.25 · demo 1.25 · the control
+waits 0.6, the ghost fingertip takes 0.95 · run 2.8 · result 0.95 + rest 1.8 · stat 1.5 +
+rest 0.7 · hand-over 0.7 = 15.7 s (measured: 15.7 to 15.9 s from a moment's first frame to
+the next scene's; the limit is 16). A moment fits inside these budgets; it does not change them.
 
-The film is silent, so every line is read. Priya's `before` line is given about 4.5 words a
-second (`READ` in `timing.ts`): what the before step does not give it, it takes from the
-name step, staying on while the name lands; her `tool` line arrives after it, and always
-before the name has finished. This is a cue on the moment's timeline (`SceneHandle.cues`,
-read by the director from the playhead), so it holds under a debug URL and when stepping
-back. It changes no duration.
+The film is silent, so the time goes where the sentences are. The old way (a picture, a line
+and Priya's line) has 2.0 s, the result (the headline and its proof, which come in together)
+2.75 s, of which 1.8 s at rest. The name is one word that then stays docked for the rest of
+the moment: every name gets the same 2.45 s at centre stage, whichever of the three
+choreographies it has (each is written on a 2.85 s clock, `NAME_SCORE`, and laid into the
+timeline in exactly `CAP.name`, so `at=name&dt=…` is in real seconds).
+
+Priya's `before` line is given about 4.5 words a second (`READ` in `timing.ts`): what the
+before step does not give it, it takes from the name step, staying on while the name lands;
+her `tool` line arrives after it, and always before the name has finished. Her `after` line
+is the outcome in the past tense, so it arrives when the demo has all but shown it
+(`READ.afterAt`: 70% of the way through the run). These are cues on the moment's timeline
+(`SceneHandle.cues`, read by the director from the playhead), so they hold under a debug URL
+and when stepping back. They change no duration.
+
+A visitor who is there changes one number: the control waits 4 s for them instead of 0.6
+(see "Touch"). That is their time, not the film's.
 
 The whole film, unattended, from the first tap on the opening to the closing's last frame:
 
@@ -324,14 +412,15 @@ The whole film, unattended, from the first tap on the opening to the closing's l
 | the opening clears (`INTRO_TIME.out`) | 0.6 |
 | Meet Priya (`PRIYA_TIME`: in 1.5, rest 4.4, out 1.1) | 7.0 |
 | her Tuesday: four moments | 63.2 |
-| the chapter card (`CHAPTER_TIME`: in 1.4, rest 4.0, out 0.45) | 5.9 |
+| the chapter card (`CHAPTER_TIME`: in 1.4, rest 5.0, out 0.45) | 6.85 |
 | Piramal Mind | 15.8 |
 | the closing (`FINALE_TIME`: say 1.0, rest 1.3, names 3.2) | 5.5 |
-| **in all (measured: 97.9 s; the limit is 1 min 55)** | **98** |
+| **in all (measured: 98.9 s; the limit is 1 min 55)** | **99** |
 
-Waiting: the opening starts by itself after `INTRO_TIME.attract` (9 s, auto mode); the
-closing returns to the opening after `FINALE_TIME.idle` (40 s); a film left in manual mode
-goes back to auto, and to the opening, after `IDLE.manual` (90 s).
+Waiting: the opening, the screen that explains, starts the film by itself after
+`INTRO_TIME.attract` (13 s, auto mode: its 59 words at reading pace); the closing returns to
+the opening after `FINALE_TIME.idle` (20 s); a film left in manual mode goes back to auto,
+and to the opening, after `IDLE.manual` (90 s).
 
 ## The scenes that are not product moments
 
@@ -355,10 +444,13 @@ useScene('engineering', ref, (root, stage, ease) => {
 ```
 
 A stop is a label where the film rests (`core/director.ts → SceneStop`): `hold` (auto mode
-moves on after this long), `control` (wait for a touch; the ghost presses it, after
-`ghostAfter`), `idle` (return to the opening screen after this long), `cap` (longest travel
-time), `exit` (arriving here leaves for the next scene at once), `stay` (a tap on the empty
-stage does nothing: the film's last frame). The same rules as for a moment apply: one
+moves on after this long), `control` (wait for a touch; it is live as soon as it can be
+seen, and the ghost presses it `ghostAfter` after the film has come to rest: default
+`TOUCH.wait`, at least `TOUCH.waitAttended` if somebody has just touched the screen),
+`invite` (say "Your turn" beside the control for a visitor: a moment's demo), `idle` (return
+to the opening screen after this long), `cap` (longest travel time), `exit` (arriving here
+leaves for the next scene at once), `stay` (a tap on the empty stage does nothing: the
+film's last frame). The same rules as for a moment apply: one
 timeline, `gsap.set` then `.to`, every state reachable by seeking.
 
 - **`intro`** rests on `idle` with the start control (`OPENING.start`) as its `control` and
@@ -381,7 +473,10 @@ timeline, `gsap.set` then `.to`, every state reachable by seeking.
 - `npx tsc --noEmit` passes; the console is clean (no budget warnings from your moment).
 - Every word and number comes from `content.ts`; small interface words ("Tap to speak")
   are the only additions.
-- One `TouchControl`; touching it and waiting for the ghost both give the same result.
+- One `TouchControl`; touching it and waiting for the ghost both give the same result, and a
+  second tap anywhere, half a second after the first, changes nothing.
+- No regular expression uses a lookbehind; every `color-mix()` has a plain `rgba()` beside
+  it (see the `@supports` block at the end of `everyday.css` for why it is written that way).
 - All five end frames and the in-between frames hold at the three sizes, text contrast is
   at least 4.5:1, nothing overlaps the docked name, the subtitle, the two controls or the rail.
 - On a phone on its side: nothing that is read is under 11 px (9 px inside a device), the

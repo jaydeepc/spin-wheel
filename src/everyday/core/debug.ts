@@ -17,12 +17,20 @@ import { SCENES, type SceneId } from '../store'
  *        any scene          start (time 0)
  *
  *   ?manual   manual mode: wait for a tap at every step
+ *   ?touched  as if somebody had just touched the screen: a held demo frame shows "Your turn"
+ *             beside its control, and a film that is playing waits for the visitor at its first one
+ *   ?debug    leaves the browser's right-click menu alone (the film suppresses it for visitors);
+ *             ?scene=… does the same. ?manual alone does not: a presenter may use it at the venue.
  */
 export interface DebugParams {
   scene: SceneId | null
   at: string | null
   dt: number
   manual: boolean
+  /** Somebody is there (see above). */
+  touched: boolean
+  /** A developer is looking: the browser's own menu is left alone. */
+  dev: boolean
 }
 
 const flag = (p: URLSearchParams, name: string) => p.has(name) && p.get(name) !== '0' && p.get(name) !== 'false'
@@ -36,5 +44,7 @@ export function readDebug(): DebugParams {
     at: at || null,
     dt: Number(p.get('dt') ?? 0) || 0,
     manual: flag(p, 'manual'),
+    touched: flag(p, 'touched'),
+    dev: p.has('scene') || flag(p, 'debug'),
   }
 }

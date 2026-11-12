@@ -31,11 +31,35 @@ export function withName(text: string, name: string): ReactNode {
 }
 
 /**
+ * A text cut into its sentences: at the white space after a full stop, a question mark or an
+ * exclamation mark (pass `enders` for other scripts: '.?!।' adds the Devanagari danda). The
+ * same result as `text.split(/(?<=[.?!])\s+/)`, written without a lookbehind: Safari before
+ * 16.4 refuses to parse one, and with it the whole page.
+ */
+export function splitSentences(text: string, enders = '.?!'): string[] {
+  const out: string[] = []
+  const isSpace = (ch: string) => /\s/.test(ch)
+  let from = 0
+  let i = 0
+  while (i < text.length) {
+    if (enders.includes(text[i]) && i + 1 < text.length && isSpace(text[i + 1])) {
+      let j = i + 1
+      while (j < text.length && isSpace(text[j])) j++
+      out.push(text.slice(from, i + 1))
+      from = j
+      i = j
+    } else i++
+  }
+  out.push(text.slice(from))
+  return out
+}
+
+/**
  * Sentences as lines: each sentence starts a new line, and a hyphenated word never breaks
  * at its hyphen. For short display copy ("Details slip. Follow-ups are late.").
  */
 export function sentences(text: string): ReactNode {
-  return text.split(/(?<=[.?!])\s+/).map((sentence, i) => (
+  return splitSentences(text).map((sentence, i) => (
     <span className="ev-sentence-line" key={i}>
       {sentence.split(' ').map((word, k) => (
         <span key={k}>
@@ -49,8 +73,9 @@ export function sentences(text: string): ReactNode {
 
 /**
  * THE ONE CONTROL of a demo. Put exactly one in your Screen (or Extras) and draw your glyph
- * inside it. The shared frame makes it pulse and touchable only while the film waits on it,
- * sends the ghost fingertip to it, and plays your `run` timeline when it is pressed.
+ * inside it. The shared frame makes it pulse and pressable from the moment it can be seen,
+ * says "Your turn" beside it when somebody is there, sends the ghost fingertip to it when
+ * nobody is, and plays your `run` timeline when it is pressed.
  * Size it from your own class (width / height); it is round unless you give it a radius.
  */
 export function TouchControl({
@@ -74,8 +99,10 @@ export function TouchControl({
       className={className ? `ev-touch ${className}` : 'ev-touch'}
       style={style}
       onClick={(e) => {
+        // The control takes every tap that lands on it, so none falls through to the stage. It
+        // acts only while it is live: once pressed it is spent, and a second tap does nothing.
         e.stopPropagation()
-        director.touch()
+        if (e.currentTarget.getAttribute('data-live') === '1') director.touch()
       }}
     >
       <i className="ev-touch-ring" />

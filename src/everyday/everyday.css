@@ -32,6 +32,10 @@
   --acc-g1: #f16443; /* the wordmark's gradient, top to bottom */
   --acc-g2: #eb542c;
   --acc-g3: #d6411a;
+  /* the accent and its haze at part strength, as plain rgba(): what a browser without color-mix() draws */
+  --acc-a32: rgba(241, 100, 67, 0.32);
+  --acc-a40: rgba(241, 100, 67, 0.4);
+  --acc-haze-a45: rgba(251, 214, 205, 0.45);
 
   --ev-flame: #f16443;
   --ev-flame-deep: #eb542c;
@@ -57,7 +61,11 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  /* A touch screen that strangers press, hold and pinch: nothing in the film scrolls, so no
+     gesture is the browser's (a tap is still a click), a long press selects nothing and calls
+     up nothing. At every size, not only on a phone. See also the guards in Experience.tsx. */
+  touch-action: none;
+  -webkit-touch-callout: none;
   cursor: default;
 }
 @media (min-aspect-ratio: 3/2) {
@@ -80,6 +88,9 @@
   --acc-g1: #65a9f5;
   --acc-g2: #4384d4;
   --acc-g3: #2d6ad1;
+  --acc-a32: rgba(67, 132, 212, 0.32);
+  --acc-a40: rgba(67, 132, 212, 0.4);
+  --acc-haze-a45: rgba(185, 226, 255, 0.45);
 }
 .ev-root[data-accent='navy'],
 .ev-moment[data-accent='navy'],
@@ -94,6 +105,9 @@
   --acc-g1: #2a3f7e;
   --acc-g2: #15244b;
   --acc-g3: #071a50;
+  --acc-a32: rgba(21, 36, 75, 0.32);
+  --acc-a40: rgba(21, 36, 75, 0.4);
+  --acc-haze-a45: rgba(201, 214, 242, 0.45);
 }
 .ev-moment[data-accent='flame'],
 .ev-acc[data-accent='flame'] {
@@ -107,6 +121,9 @@
   --acc-g1: #f16443;
   --acc-g2: #eb542c;
   --acc-g3: #d6411a;
+  --acc-a32: rgba(241, 100, 67, 0.32);
+  --acc-a40: rgba(241, 100, 67, 0.4);
+  --acc-haze-a45: rgba(251, 214, 205, 0.45);
 }
 .ev-root *,
 .ev-root *::before,
@@ -457,7 +474,7 @@
   width: calc(var(--u) * 76);
   height: calc(var(--u) * 44);
   border-radius: 50%;
-  background: radial-gradient(closest-side, var(--acc-haze) 0%, color-mix(in srgb, var(--acc-haze) 45%, transparent) 50%, rgba(255, 255, 255, 0) 100%);
+  background: radial-gradient(closest-side, var(--acc-haze) 0%, var(--acc-haze-a45) 50%, rgba(255, 255, 255, 0) 100%); /* color-mix(): see the @supports block at the end of this file */
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
@@ -558,6 +575,22 @@
   font-weight: 800;
   letter-spacing: 0.34em;
   text-transform: uppercase;
+}
+/* A Hindi name's caption (प्रस्तुति · Hindi for “presentation”). The Devanagari word hangs from
+   its headline, with marks above it and below the Latin baseline, so its mask is given head-room
+   (and the same foot-room as every mask), taken back by the margins: the line stands exactly
+   where the other captions do. 0.22em is as much as the mask may have and still hide the line
+   completely when it has risen out (yPercent -118 of a 1.3 line). The word keeps the caption's
+   own leading, so the line box is no taller than a Latin one. */
+.ev-dockcap--hi .ev-mask {
+  padding-top: 0.22em;
+  margin-top: -0.22em;
+  padding-bottom: 0.22em;
+  margin-bottom: -0.22em;
+}
+.ev-dockcap--hi .ev-hi {
+  line-height: inherit;
+  font-weight: 700;
 }
 
 /* A name that is one word (SmartHelp, Piramal Mind, Prastuti): a single giant wordmark. */
@@ -1268,6 +1301,17 @@
 .ev-stop--cap[data-state='current'] .ev-stop-dot {
   border-color: var(--ev-navy);
 }
+/* While the first name of her day is the current one it is drawn large, right up against the
+   opening's label ("EVERYDAY AI SmartHelp" read as one string). The label steps back for that
+   moment and the cap is its dot and "Start", as it always is on squarer screens. */
+.ev-stop--cap .ev-stop-name {
+  transition:
+    color 0.5s,
+    opacity 0.45s;
+}
+.ev-stop--first[data-tight='1'] .ev-stop-name {
+  opacity: 0;
+}
 
 /* ---------- Touch feedback ---------- */
 .ev-ghost {
@@ -1409,7 +1453,10 @@
   border-radius: 50%;
   pointer-events: none;
 }
-.ev-touch[data-live='1'] {
+/* live: it can be pressed. spent: it has just been pressed; it still takes the taps that land on
+   it (and does nothing with them), so a second tap never falls through to the stage. */
+.ev-touch[data-live='1'],
+.ev-touch[data-spent='1'] {
   pointer-events: auto;
 }
 .ev-touch::after {
@@ -1436,7 +1483,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: color-mix(in srgb, var(--acc) 32%, transparent);
+  background: var(--acc-a32); /* color-mix(): see the @supports block at the end of this file */
   opacity: 0;
 }
 .ev-touch[data-live='1'] .ev-touch-ring {
@@ -1680,6 +1727,140 @@
   background: var(--ev-line);
 }
 
+/* ---------- The two prompts: the screen is waiting for you ----------
+   "Tap anywhere to continue": manual mode, resting on a finished step. It stands beside the two
+   controls, in the subtitle row, and Priya's line gives it the room (in manual mode only).
+   --ctl-w is the capsule's width: it does not change (see .ev-ctl-mode .ev-ctl-label). */
+.ev-taphint {
+  --ctl-w: calc(var(--u) * 19);
+  position: absolute;
+  right: calc(var(--ctl-w) + var(--u) * 0.9);
+  top: calc(var(--u) * 0.1);
+  height: calc(var(--u) * 3.6);
+  width: max-content;
+  max-width: calc(var(--u) * 12.6);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  padding: 0 calc(var(--u) * 1.1) 0 calc(var(--u) * 0.75);
+  border-radius: calc(var(--u) * 1.8);
+  background: var(--acc-soft);
+  box-shadow: 0 0 0 1px var(--acc-line);
+  color: var(--acc-text);
+  font-size: calc(var(--u) * 0.98);
+  font-weight: 800;
+  line-height: 1.22;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s,
+    visibility 0s 0.3s,
+    background 0.8s,
+    color 0.8s;
+}
+.ev-taphint[data-on='1'] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.3s,
+    background 0.8s,
+    color 0.8s;
+}
+/* on a phone on its side the director moves it to a clear place (its transform), or, if the
+   frame has none, keeps it off (core/director.ts → placeHint) */
+.ev-taphint[data-fit='0'] {
+  opacity: 0;
+  visibility: hidden;
+}
+.ev-taphint svg {
+  flex: none;
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 1.7);
+  overflow: visible;
+}
+.ev-taphint-ring {
+  transform-origin: 12px 12px;
+  opacity: 0.55;
+}
+.ev-taphint[data-on='1'] .ev-taphint-ring {
+  animation: ev-taphint 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+@keyframes ev-taphint {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+/* manual mode: her line keeps clear of the hint as well as of the two controls */
+.ev-root[data-mode='manual'] .ev-sub-lines {
+  right: calc(var(--u) * 33.6);
+}
+
+/* "Your turn": beside a demo's control while it waits for a visitor who is there. The director
+   places it (x / y, and which side of the control it stands on) and shows it: core/director.ts. */
+.ev-turn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.35);
+  height: calc(var(--u) * 2.5);
+  padding: 0 calc(var(--u) * 1.05) 0 calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 1.25);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.1) var(--acc-line),
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.12);
+  color: var(--acc-text);
+  font-size: calc(var(--u) * 1.12);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.ev-turn svg {
+  flex: none;
+  width: calc(var(--u) * 1.05);
+  height: calc(var(--u) * 1.05);
+  overflow: visible;
+  animation: ev-turn 1.2s ease-in-out infinite alternate;
+}
+/* the chevron points at the control: the caption stands to its right (the default), left, above or below */
+.ev-turn[data-side='left'] {
+  flex-direction: row-reverse;
+  padding: 0 calc(var(--u) * 0.7) 0 calc(var(--u) * 1.05);
+}
+.ev-turn[data-side='left'] svg {
+  rotate: 180deg;
+}
+.ev-turn[data-side='above'] svg {
+  rotate: -90deg;
+}
+.ev-turn[data-side='below'] svg {
+  rotate: 90deg;
+}
+@keyframes ev-turn {
+  from {
+    transform: translateX(calc(var(--u) * 0.1));
+  }
+  to {
+    transform: translateX(calc(var(--u) * -0.22));
+  }
+}
+
 /* ---------- The opening screen: touch a product on the rail to preview it ----------
    The preview docks in one place, under the start control and clear of the two controls
    at every screen size: see the whole film, or play just this one. */
@@ -1766,7 +1947,7 @@
   height: calc(var(--u) * 4);
   border-radius: 50%;
   background: linear-gradient(140deg, var(--acc-g1) 0%, var(--acc-g3) 100%);
-  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) color-mix(in srgb, var(--acc) 40%, transparent);
+  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) var(--acc-a40); /* color-mix(): see the @supports block at the end of this file */
   transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 .ev-preview-go:active {
@@ -1883,8 +2064,6 @@
     --fl: min(1px, calc(var(--u) / 6.9));
     /* type inside a device has its own floor: 9 px on the glass once the phone is enlarged 1.2× (core/buildMoment.ts) */
     --dt: calc(var(--fl) * 7.5);
-    /* no pinch, no pan: the film is the whole page */
-    touch-action: none;
   }
   .ev-stage,
   .ev-shellstage {
@@ -2071,6 +2250,42 @@
     font-size: max(calc(var(--u) * 1.55), calc(var(--fl) * 11.5));
     max-width: none;
   }
+  /* "Tap anywhere to continue" stands at the right end of her line's row (the two controls are
+     down in the bar), and her line gives it the room, in manual mode only */
+  .ev-taphint {
+    right: 0;
+    top: auto;
+    bottom: 0;
+    height: auto;
+    min-height: calc(var(--u) * 3.8);
+    max-width: calc(var(--fl) * 136);
+    gap: calc(var(--fl) * 6);
+    padding: calc(var(--fl) * 3) calc(var(--fl) * 11) calc(var(--fl) * 3) calc(var(--fl) * 8);
+    border-radius: calc(var(--fl) * 17);
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+    line-height: 1.18;
+  }
+  .ev-taphint svg {
+    width: calc(var(--fl) * 15);
+    height: calc(var(--fl) * 15);
+  }
+  .ev-root[data-mode='manual'] .ev-sub-lines {
+    right: calc(var(--fl) * 144);
+  }
+  .ev-turn {
+    height: max(calc(var(--u) * 2.9), calc(var(--fl) * 24));
+    padding: 0 calc(var(--fl) * 10) 0 calc(var(--fl) * 7);
+    border-radius: calc(var(--fl) * 14);
+    gap: calc(var(--fl) * 4);
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11.5));
+  }
+  .ev-turn[data-side='left'] {
+    padding: 0 calc(var(--fl) * 7) 0 calc(var(--fl) * 10);
+  }
+  .ev-turn svg {
+    width: calc(var(--fl) * 10);
+    height: calc(var(--fl) * 10);
+  }
   /* the phone is enlarged during the demo and reaches down past Priya's line: the line keeps to the left of it */
   .ev-root[data-device='phone'][data-step='demo'] .ev-sub-line p,
   .ev-root[data-device='phone'][data-step='result'] .ev-sub-line p {
@@ -2094,7 +2309,9 @@
     width: calc(var(--u) * 30);
     height: calc(var(--u) * 24);
   }
-  .ev-before-pic > * {
+  /* (.ev-moment in front: a module's own picture class (.byot-b { inset: 0 }) weighs the same as
+     .ev-before-pic > *, and must not win by the order the stylesheets happen to load in) */
+  .ev-moment .ev-before-pic > * {
     inset: 0 auto auto 0;
     width: calc(var(--u) * 25);
     height: calc(var(--u) * 20);
@@ -2200,6 +2417,10 @@
 .ev-root[data-hold='1'] .ev-preview {
   animation: none !important;
 }
+.ev-root[data-hold='1'] .ev-turn svg,
+.ev-root[data-hold='1'] .ev-taphint .ev-taphint-ring {
+  animation: none !important;
+}
 .ev-root[data-hold='1'] .ev-touch[data-live='1'] .ev-touch-ring {
   animation: none;
   opacity: 0.5;
@@ -2254,4 +2475,23 @@ html:has(.ev-root) body {
 .ev-root img {
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
+}
+
+/* ---------- color-mix(), for the browsers that have it ----------
+   color-mix() needs Safari 16.2 / Chrome 111. A declaration that holds a var() is never thrown
+   out when the sheet is read, so an older browser would not fall back to a plain line written
+   before it: it would draw nothing. So each of the three rules above carries the plain rgba()
+   colour (--acc-a32, --acc-a40, --acc-haze-a45: set with every accent at the top of this file),
+   and the color-mix() line is added here, after them, only for a browser that can read it: the
+   same colour, worked out from --acc itself. Keep this block last. */
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  .ev-flash {
+    background: radial-gradient(closest-side, var(--acc-haze) 0%, color-mix(in srgb, var(--acc-haze) 45%, transparent) 50%, rgba(255, 255, 255, 0) 100%);
+  }
+  .ev-touch-ring {
+    background: color-mix(in srgb, var(--acc) 32%, transparent);
+  }
+  .ev-preview-go {
+    box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) color-mix(in srgb, var(--acc) 40%, transparent);
+  }
 }

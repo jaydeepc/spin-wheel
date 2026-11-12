@@ -20,7 +20,7 @@
  */
 
 import gsap from 'gsap'
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import { productByKey, type SmartHelpProduct } from '../content'
 import { TouchControl } from './parts'
 import type { MomentEnv, MomentModule, PartProps } from './types'
@@ -38,6 +38,14 @@ const lead = (text: string): [string, string] => {
   const [first, ...rest] = text.split('. ')
   return [first.replace(/\.$/, ''), rest.join('. ')]
 }
+/** A label that may wrap, but never inside a hyphenated word: "Safe, pre-approved command" keeps "pre-approved" whole. */
+const unbroken = (text: string): ReactNode[] =>
+  text.split(' ').map((word, i) => (
+    <Fragment key={i}>
+      {i ? ' ' : null}
+      {word.includes('-') ? <span className="ev-nobreak">{word}</span> : word}
+    </Fragment>
+  ))
 /** The last sentence of a line, without its full stop: "… No back-and-forth." → "No back-and-forth" */
 const lastSentence = (text: string) => (text.split('. ').pop() ?? text).replace(/\.$/, '')
 
@@ -315,7 +323,7 @@ function OnDevice({ product }: P) {
         <span className="smarthelp-safe-ico">
           <Shield check="smarthelp-safe-check" />
         </span>
-        {d.safe}
+        <span className="smarthelp-safe-txt">{unbroken(d.safe)}</span>
       </div>
       <div className="smarthelp-stamp">
         <i className="smarthelp-stamp-burst" />
@@ -477,16 +485,18 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
   gsap.set(status, { autoAlpha: 0, scale: 0.7, transformOrigin: '0 50%' })
   gsap.set(msgs, { autoAlpha: 0, scale: 0.6, y: 0.9 * U, transformOrigin: (i) => (msgs[i].classList.contains('smarthelp-b-msg--team') ? '0% 100%' : '100% 100%') })
   gsap.set(still, { autoAlpha: 0, scale: 1.9, rotation: -16 })
+  // The whole to-and-fro is in place in the first half second: the card then rests, and that rest
+  // is for reading it. Only "Still open" lands late, on what has piled up.
   before
-    .to(ticket, { autoAlpha: 1, y: 0, rotation: -3, duration: 0.6, ease: E.snap }, 0.04)
-    .to(eyebrow, { autoAlpha: 1, x: 0, duration: 0.28 }, 0.2)
-    .to(ticketId, { yPercent: 0, duration: 0.4, ease: E.out }, 0.22)
-    .to(status, { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'back.out(2.4)' }, 0.3)
-    // …and the to-and-fro piles up, message by message
-    .to(msgs, { autoAlpha: 1, scale: 1, y: 0, duration: 0.26, ease: 'back.out(2)', stagger: 0.1 }, 0.27)
+    .to(ticket, { autoAlpha: 1, y: 0, rotation: -3, duration: 0.5, ease: E.snap }, 0)
+    .to(eyebrow, { autoAlpha: 1, x: 0, duration: 0.24 }, 0.08)
+    .to(ticketId, { yPercent: 0, duration: 0.34, ease: E.out }, 0.08)
+    .to(status, { autoAlpha: 1, scale: 1, duration: 0.26, ease: 'back.out(2.4)' }, 0.12)
+    // …message by message, each on the heels of the last
+    .to(msgs, { autoAlpha: 1, scale: 1, y: 0, duration: 0.2, ease: 'back.out(2)', stagger: 0.045 }, 0.02)
     // still open
-    .to(still, { autoAlpha: 1, duration: 0.08, ease: 'none' }, 0.66)
-    .to(still, { scale: 1, rotation: -4, duration: 0.18, ease: E.slam }, 0.66)
+    .to(still, { autoAlpha: 1, duration: 0.08, ease: 'none' }, 0.5)
+    .to(still, { scale: 1, rotation: -4, duration: 0.18, ease: E.slam }, 0.5)
 
   // ---------------------------------------------------------------- demo: "Smart" gives the two ways, "Help" gives her ticket
   const raiseWrap = $('.smarthelp-raiseWrap')
@@ -704,9 +714,10 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
   const hit = 2.4
   run
     .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.22)
-    .to(stamp, { scale: 1, rotation: -7, duration: 0.22, ease: E.slam }, hit - 0.22)
+    // on a phone on its side it lands less askew: a tilted stamp is taller, and there it stands between the tag and the bar
+    .to(stamp, { scale: 1, rotation: env.small ? -4 : -7, duration: 0.22, ease: E.slam }, hit - 0.22)
     .to(burst, { autoAlpha: 0.8, duration: 0.01 }, hit)
-    .to(burst, { scale: 1.6, autoAlpha: 0, duration: 0.4, ease: 'power2.out' }, hit + 0.01)
+    .to(burst, { scale: 1.6, autoAlpha: 0, duration: 0.39, ease: 'power2.out' }, hit + 0.01)
     .to(claims[1], { clipPath: clipOpen, duration: 0.38, ease: E.inOut }, hit - 0.02)
   env.bump(run, hit, 2.6)
 

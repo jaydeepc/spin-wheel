@@ -1316,17 +1316,39 @@
     --sh-v: max(calc(var(--u) * 1.1), var(--dt));
   }
 
-  /* ----- before: the ticket and its to-and-fro (drawn 1.2× by the shared frame) ----- */
+  /* ----- before: the ticket and its to-and-fro (drawn 1.2× by the shared frame) -----
+     This picture is not a device: its words are the story (who has the ticket, and the back
+     and forth), so they keep the story's floor, 11 px on the screen. That is 9.2 px here,
+     before the enlargement. The ticket grows to hold its status at that size. */
+  .ev-moment[data-key='smarthelp'] {
+    --sh-b: max(calc(var(--u) * 1.1), calc(var(--fl) * 9.2));
+  }
+  .smarthelp-b-ticket {
+    width: max-content;
+    min-width: calc(var(--u) * 19.4);
+  }
+  .smarthelp-b-paper {
+    padding-top: calc(var(--u) * 0.65);
+    padding-bottom: calc(var(--u) * 0.75);
+  }
   .smarthelp-b-eyebrow {
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    letter-spacing: 0.12em;
+    font-size: var(--sh-b);
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+  }
+  .smarthelp-b-id {
+    font-size: calc(var(--u) * 2.4);
+    line-height: 1.05;
+  }
+  .smarthelp-b-status {
+    margin-top: calc(var(--u) * 0.3);
   }
   .smarthelp-b-status,
   .smarthelp-b-msg span {
-    font-size: max(calc(var(--u) * 1.05), var(--dt));
+    font-size: var(--sh-b);
   }
   .smarthelp-b-still {
-    font-size: max(calc(var(--u) * 1.12), var(--dt));
+    font-size: max(calc(var(--u) * 1.15), calc(var(--fl) * 9.2));
   }
 
   /* ----- the two ways, beside the phone: a wider column, words at reading size ----- */
@@ -1334,7 +1356,10 @@
     left: calc(var(--hx) - var(--u) * 23.5);
     width: calc(var(--u) * 23.5);
   }
-  .ev-moment[data-key='smarthelp'] .ev-deviceMover {
+  /* The phone stands 7.4u right of centre, not the 9u of a moment without a photo: clear of the
+     wider column beside it, and where the result wants it, so it does not step sideways when
+     the headline arrives. ([data-photo='0'] is here to outrank the shared rule, which loads later.) */
+  .ev-moment[data-key='smarthelp'][data-photo='0'] .ev-deviceMover {
     --ev-dx: calc(var(--u) * 7.4);
   }
   .smarthelp-ways {
@@ -1555,12 +1580,13 @@
   }
 
   /* ----- on the phone's edge ----- */
-  /* two lines, so it stays on the screen beside the phone */
+  /* two lines, so it stays on the screen beside the phone. Its width follows the type, not the
+     unit, once the type is at its floor: "Safe, pre-approved" always has its line. */
   .smarthelp-safe {
     left: calc(100% - var(--u) * 1.6);
     top: calc(var(--u) * 21.2);
     width: max-content;
-    max-width: calc(var(--u) * 17);
+    max-width: max(calc(var(--u) * 17), calc(var(--fl) * 142));
     height: auto;
     min-height: calc(var(--u) * 3.4);
     padding: calc(var(--u) * 0.5) calc(var(--u) * 1.2) calc(var(--u) * 0.55) calc(var(--u) * 0.5);
@@ -1572,10 +1598,11 @@
   .smarthelp-safe-ring {
     border-radius: calc(var(--u) * 2.2);
   }
-  /* the stamp keeps clear of the bar under it */
+  /* the stamp keeps clear of the tag above it and of the bar under it (it is also set less
+     askew here: see animate) */
   .smarthelp-stamp {
     left: calc(100% - var(--u) * 1.4);
-    bottom: calc(var(--u) * 0.9);
+    bottom: calc(var(--u) * 0.7);
     padding: calc(var(--u) * 0.4) calc(var(--u) * 0.8) calc(var(--u) * 0.45);
   }
   .smarthelp-stamp b {
@@ -1585,21 +1612,26 @@
     font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.4));
   }
 
-  /* ----- under the result headline: no room under four lines, so it sits beside the headline's last word ----- */
+  /* ----- under the result headline: one line of its own. The ticket's number goes (it is on the
+     phone beside it), so "With the backend team → No human needed." fits on a single row. ----- */
   .smarthelp-compare {
-    position: relative;
-    left: calc(var(--u) * 10);
-    top: calc(var(--u) * -6);
-    margin-top: 0;
-    display: inline-grid;
-    grid-template-columns: auto auto;
-    justify-content: start;
-    gap: calc(var(--u) * 0.1) calc(var(--u) * 0.7);
+    display: flex;
+    margin-top: calc(var(--u) * -0.6);
+    gap: calc(var(--u) * 0.55);
+    line-height: 1.2;
   }
   .smarthelp-compare-old {
-    grid-column: 1 / -1;
-    justify-self: start;
     font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
+  }
+  .smarthelp-compare-old b {
+    display: none;
+  }
+  .smarthelp-compare-old i {
+    left: 0;
+    right: -3%;
+  }
+  .smarthelp-compare svg {
+    width: calc(var(--u) * 1.5);
   }
   .smarthelp-compare-new {
     font-size: max(calc(var(--u) * 1.55), calc(var(--fl) * 12));

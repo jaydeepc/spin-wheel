@@ -31,6 +31,8 @@ export interface Stage {
    * left:0; top:0 in the stage (or in a moment's Extras layer).
    */
   loc(el: Element): Box
+  /** The same, for a rectangle already read from the screen (a text range, say). */
+  box(r: { left: number; top: number; width: number; height: number }): Box
 }
 
 export function createStage(stageEl: HTMLElement): Stage {
@@ -51,7 +53,9 @@ export function createStage(stageEl: HTMLElement): Stage {
       origin = { left: r.left, top: r.top }
     },
     loc(el) {
-      const r = el.getBoundingClientRect()
+      return stage.box(el.getBoundingClientRect())
+    },
+    box(r) {
       const x = (r.left - origin.left) / stage.Z
       const y = (r.top - origin.top) / stage.Z
       const w = r.width / stage.Z

@@ -31,8 +31,12 @@ const TITLE = OPENING.title.split(' ')
 const LEAD = OPENING.headline.lead.trim().split(' ')
 const LEAD_HEAD = LEAD.slice(0, -2).join(' ')
 const LEAD_TAIL = LEAD.slice(-2).join(' ')
-/** The teaser, a sentence to a line. */
-const TEASER = OPENING.teaser.split(/(?<=[.?!])\s+/)
+/** The teaser, a sentence to a line. (No lookbehind: Safari before 16.4 will not parse one.) */
+const TEASER: string[] =
+  OPENING.teaser
+    .match(/[^.?!।]+[.?!।]*\s*/g)
+    ?.map((s) => s.trim())
+    .filter(Boolean) ?? [OPENING.teaser]
 /** The three pillars wear the brand's three colours, in the order the film uses them. */
 const PILLAR_ACCENT: Accent[] = ['flame', 'azure', 'navy']
 

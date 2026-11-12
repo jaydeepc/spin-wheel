@@ -4,28 +4,40 @@
  * One product moment, unattended, is the sum of CAP (the longest each stretch of
  * animation may take) + HOLD (the rests) + the touch wait:
  *
- *   before 0.85 + 0.65 · name 2.85 + 0.25 · demo 1.25 + touch 1.95 · run 2.8
- *   · result 0.95 + 0.95 · stat 1.5 + 1.0 · hand-over 0.7    = 15.7 s   (limit: 16)
+ *   before 0.85 + 1.15 · name 2.2 + 0.25 · demo 1.25 + touch 1.55 (0.6 + 0.95) · run 2.8
+ *   · result 0.95 + 1.8 · stat 1.5 + 0.7 · hand-over 0.7    = 15.7 s   (limit: 16)
  *
- * Measured, a moment takes about 0.15 s longer than that sum (timers, and mounting the next
- * scene), so the sum is kept a quarter of a second inside the limit.
+ * Measured from its first frame to the next scene's, a moment takes up to 0.2 s longer than
+ * that sum (timers, and mounting the next scene: 15.7 to 15.9 s), so the sum is kept 0.3 s
+ * inside the limit.
+ *
+ * Where the time goes is decided by what has to be READ, because the film is silent. The two
+ * steps that are sentences get the rests: the old way (a card and a line: 2.0 s in all) and
+ * the result (a headline and its proof: 2.75 s, of which 1.8 s at rest). The name is one word
+ * that then stays docked for the rest of the moment, and the number is one number: they get
+ * less.
  *
  * Every name gets the same time at centre stage: all three name choreographies (core/name.ts)
- * run the full CAP.name.
+ * are written to one length (NAME_SCORE) and played in exactly CAP.name.
  *
- * The film is silent: every line on it is read. So the two scenes that are mostly words (Meet
- * Priya, the chapter card) rest long enough to be read, and in a moment Priya's 'before' line
- * stays on while the name lands (READ, below).
+ * In a moment Priya's 'before' line stays on while the name lands (READ, below). The two scenes
+ * that are mostly words (Meet Priya, the chapter card) rest long enough to be read.
  *
  * The whole unattended run, from the first tap on the opening to the closing's last frame:
  *
  *   the opening clears              0.6
  *   Meet Priya                      1.5 + 4.4 + 1.1   =  7.0
  *   her Tuesday, four moments       4 x 15.8          = 63.2
- *   the chapter card                1.4 + 4.0 + 0.45  =  5.85
+ *   the chapter card                1.4 + 5.0 + 0.45  =  6.85
  *   Piramal Mind                                        15.8
  *   the closing                     1.0 + 1.3 + 3.2   =  5.5
- *                                                     = about 98 s   (limit: 115)
+ *                                                     = about 99 s   (limit: 115)
+ *
+ * Before that first tap the opening screen waits INTRO_TIME.attract, and after the last frame
+ * the closing waits FINALE_TIME.idle: neither is part of the run.
+ *
+ * A visitor who is there changes one thing: a demo control waits TOUCH.waitAttended for them
+ * instead of TOUCH.wait (see TOUCH). That is their time, not the film's.
  *
  * A moment's own animation can be shorter than its cap, never longer: the director plays
  * a stretch that runs over its cap faster, so the film always keeps time.
@@ -35,7 +47,7 @@ export const CAP = {
   /** The before card arrives. */
   before: 0.85,
   /** The name lands, opens, closes. */
-  name: 2.85,
+  name: 2.2,
   /** The name docks, the device arrives, the control is ready. */
   demo: 1.25,
   /** The demo itself, from the touch to its end state. The moment's own budget. */
@@ -48,12 +60,20 @@ export const CAP = {
   done: 0.7,
 } as const
 
+/**
+ * The three name choreographies in core/name.ts are scored on this many seconds (their own
+ * clock: where the letters land, when the word opens and closes) and played in CAP.name.
+ */
+export const NAME_SCORE = 2.85
+
 /** How long the film rests on a finished step before it moves on by itself (auto mode). */
 export const HOLD = {
-  before: 0.65,
+  /** The old way: a picture, a line, and Priya's own line. */
+  before: 1.15,
   name: 0.25,
-  result: 0.95,
-  stat: 1.0,
+  /** The new way, in one sentence, with its proof under it. */
+  result: 1.8,
+  stat: 0.7,
 } as const
 
 /**
@@ -69,22 +89,37 @@ export const READ = {
   wordsPerSecond: 4.5,
   /** Her next line is always in before the name has finished: at least this long before. */
   nameTail: 0.3,
+  /** Her 'after' line arrives with the outcome: this far through the demo's run, not at the touch. */
+  afterAt: 0.7,
 } as const
 
 export const TOUCH = {
-  /** A control waits this long for a visitor before the ghost fingertip sets off… */
-  wait: 1.0,
-  /** …and the fingertip takes this long to travel and press. The control has already been in view
-   *  for a good third of a second by then: about 2.5 s in all. */
+  /**
+   * A demo control can be pressed from the moment it is visible (while the device is still
+   * arriving). Nobody there: once the step has come to rest the ghost fingertip sets off after
+   * this long, so the film keeps time…
+   */
+  wait: 0.6,
+  /** …and takes this long to travel and press. */
   travel: 0.95,
-  /** Taps closer together than this are one tap (a tap during a move finishes the move). */
+  /** Somebody has touched the screen within this long: they are still there… */
+  attendedFor: 20,
+  /** …so the control waits this long for them, with "Your turn" beside it, before the ghost sets off. */
+  waitAttended: 4,
+  /** Taps closer together than this are one tap (a key during a move finishes the move). */
   debounce: 0.3,
+  /**
+   * A tap on the empty stage does nothing for this long after a move has begun, and nothing at all
+   * while a demo is running: a second tap ("did it register?") must not throw the demo away.
+   * Space, Right, PageDown and Enter still skip.
+   */
+  settle: 1.5,
 } as const
 
 /** The opening: what Everyday AI is. Also the screen that waits between visitors. */
 export const INTRO_TIME = {
-  /** The opening screen waits this long, then starts the film by itself (auto mode). */
-  attract: 9,
+  /** The opening screen waits this long (its 59 words, read), then starts the film by itself (auto mode). */
+  attract: 13,
   /** A product preview on the opening screen closes by itself after this long. */
   preview: 7,
   /** On start, the opening clears the stage for Priya. */
@@ -105,7 +140,7 @@ export const PRIYA_TIME = {
 export const CHAPTER_TIME = {
   in: 1.4,
   /** The card that sets Piramal Mind apart from her day: it is all words, so it rests until they are read. */
-  hold: 4.0,
+  hold: 5.0,
   out: 0.45,
 } as const
 
@@ -117,8 +152,8 @@ export const FINALE_TIME = {
   hold: 1.3,
   /** …then docks, and the five names lift off the rail into their cards. */
   names: 3.2,
-  /** The closing returns to the opening screen for the next visitor. */
-  idle: 40,
+  /** The closing returns to the opening screen, the one that explains, for the next visitor. */
+  idle: 20,
 } as const
 
 export const IDLE = {

@@ -27,7 +27,7 @@ import type { SceneHandle } from './director'
 import type { Eases } from './motion'
 import { prepareName } from './name'
 import type { Stage } from './stage'
-import { CAP, HOLD, READ, TOUCH } from './timing'
+import { CAP, HOLD, NAME_SCORE, READ } from './timing'
 
 /**
  * How much a device is enlarged on a phone on its side, so its text can be read. The phone
@@ -146,8 +146,9 @@ export function buildMoment(
     { autoAlpha: 1, scale: 1, duration: 1.1 },
     tN + 0.1,
   )
+  // every name takes exactly CAP.name: its choreography is scored on NAME_SCORE seconds (core/name.ts)
   const nameDur = name.addTo(t, tN)
-  t.to(promise, { yPercent: 0, duration: 0.6 }, tN + (name.opens ? 1.35 : 1.0))
+  t.to(promise, { yPercent: 0, duration: 0.6 }, tN + ((name.opens ? 1.35 : 1.0) * CAP.name) / NAME_SCORE)
   const tD = tN + nameDur
   t.addLabel('name', tD)
 
@@ -220,7 +221,9 @@ export function buildMoment(
     { yPercent: 0, duration: 0.65, stagger: 0.07 },
     tR + 0.16,
   )
-  if (proof) t.to(proof, { autoAlpha: 1, y: 0, duration: 0.4 }, tR + 0.5)
+  // the proof comes in with the headline, so it has the whole step to be read (for Piramal Mind
+  // it is the other half of the product: the defect, traced back to its change)
+  if (proof) t.to(proof, { autoAlpha: 1, y: 0, duration: 0.4 }, tR + 0.2)
   t.add(sec.result.paused(false), tR)
   const tT = tR + Math.max(0.95, sec.result.duration())
   t.addLabel('result', tT)
@@ -268,15 +271,29 @@ export function buildMoment(
     const top = parseFloat(nameCs.top) || 0
     const lh = parseFloat(nameCs.lineHeight) || 0
     const railFont = (parseFloat(nameCs.fontSize) * grow) / stage.Z
-    t.to(nameGroup, { ...name.rail(sb.cx + (lean * U) / stage.Z, sb.y + (top + lh / 2) / stage.Z, railFont), duration: 0.66, ease: E.inOut }, tH + 0.04)
+    const railWidth = (railName.offsetWidth * grow) / stage.Z
+    t.to(nameGroup, { ...name.rail(sb.cx + (lean * U) / stage.Z, sb.y + (top + lh / 2) / stage.Z, railFont, railWidth), duration: 0.58, ease: E.inOut }, tH + 0.04)
+    // ONE name, not two. The rail already shows this name, so its own copy steps aside for the
+    // flight, and is back in the frame the flying one has landed on it (tH + 0.62) and goes.
+    t.to(railName, { autoAlpha: 0, duration: 0.14, ease: 'none' }, tH + 0.02).to(railName, { autoAlpha: 1, duration: 0.02, ease: 'none' }, tH + 0.62)
+    // Nothing of the rail cuts through it on the way down. What stands over its stop (the time,
+    // or Piramal Mind's "Engineering" tag, which is the name's own colour) steps aside too and
+    // comes back as it lands; and for the flight the stage is drawn over the rail, so the line
+    // and the dots pass behind the word. Everything else on the stage is leaving, clear of the rail.
+    const over = railStop.querySelector<HTMLElement>('.ev-stop-time')
+    if (over) t.to(over, { autoAlpha: 0, duration: 0.14, ease: 'none' }, tH + 0.02).to(over, { autoAlpha: 1, duration: 0.2, ease: 'none' }, tH + 0.52)
+    const wrapEl = root.closest<HTMLElement>('.ev-wrap')
+    if (wrapEl) t.set(wrapEl, { zIndex: 9 }, tH + 0.02).set(wrapEl, { zIndex: 0 }, tH + 0.74)
   }
-  t.to(nameGroup, { autoAlpha: 0, duration: 0.1, ease: 'none' }, tH + 0.62)
+  t.to(nameGroup, { autoAlpha: 0, duration: 0.06, ease: 'none' }, tH + 0.64)
   t.addLabel('done', tH + 0.75)
 
   // ================================================================ PRIYA'S LINE, on the same clock
   // Her 'before' line is read, not heard: it stays on screen while the name lands, for as long
   // as it takes to read (see READ in timing.ts), and her next line arrives after it. The longest
   // lines hand over just before the name has finished, so the name always ends with her saying it.
+  // Her 'after' line is the outcome, in the past tense: it arrives when the demo has all but
+  // shown it (READ.afterAt of the way through the run), never at the touch.
   const beforeWords = product.priya.before.trim().split(/\s+/).length
   const readFor = READ.settle + beforeWords / READ.wordsPerSecond
   const lag = Math.min(Math.max(readFor - (tN + HOLD.before), 0), Math.max(0, nameDur - READ.nameTail))
@@ -286,12 +303,13 @@ export function buildMoment(
     cues: [
       { at: 0, id: 'before' },
       { at: tN + lag, id: 'tool' },
-      { at: tU, id: 'after' },
+      { at: tU + READ.afterAt * (tR - tU), id: 'after' },
     ],
     stops: [
       { label: 'before', cap: CAP.before, hold: HOLD.before },
       { label: 'name', cap: CAP.name, hold: HOLD.name },
-      handles.control ? { label: 'demo', cap: CAP.demo, control: handles.control, ghostAfter: TOUCH.wait } : { label: 'demo', cap: CAP.demo, hold: 1 },
+      // the one control: live as soon as it can be seen; "Your turn" beside it when somebody is there
+      handles.control ? { label: 'demo', cap: CAP.demo, control: handles.control, invite: true } : { label: 'demo', cap: CAP.demo, hold: 1 },
       {
         label: 'result',
         legs: [

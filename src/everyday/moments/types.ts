@@ -37,6 +37,8 @@ export interface MomentSections {
   /**
    * t = 0: the name starts to dock top-left and the device starts to rise (it has landed by 1.0).
    * Assemble your screen; the control must be visible and ready at the end. Budget: 1.25 s.
+   * The control can be pressed from the instant it can be seen (on screen, not hidden, at least
+   * 0.6 opaque), so bring it in when the screen around it makes sense, not before.
    */
   demo: gsap.core.Timeline
   /**
@@ -45,8 +47,9 @@ export interface MomentSections {
    */
   run: gsap.core.Timeline
   /**
-   * t = 0: the result headline starts to rise (the device slides aside over 0.9).
-   * Animate your Proof, if you have one. Budget: 0.95 s.
+   * t = 0: the result headline starts to rise (the device slides aside over 0.9). Your Proof
+   * box fades in with it, from 0.2 to 0.6, and then rests with the headline for 1.8 s.
+   * Animate the inside of your Proof, if you have one. Budget: 0.95 s.
    */
   result: gsap.core.Timeline
   /**
@@ -102,8 +105,9 @@ export interface MomentHandles {
   /**
    * The one control that does the thing. Render it with <TouchControl> (moments/parts.tsx)
    * inside your Screen or Extras and return its element: env.$('[data-ev-control]').
-   * The shared frame gives it its living pulse, sends the ghost fingertip to it, and plays
-   * your `run` timeline when it is touched.
+   * The shared frame makes it pulse and pressable as soon as it can be seen, says "Your turn"
+   * beside it when a visitor is there, sends the ghost fingertip to it when nobody is, and plays
+   * your `run` timeline when it is pressed. Once pressed it is spent: further taps on it do nothing.
    */
   control: HTMLElement | null
   /**

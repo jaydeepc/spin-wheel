@@ -29,7 +29,20 @@ export default function Moment({ product, module }: { product: Product; module: 
   const nameSize = Math.min(26, 74 / (product.name.length * 0.6))
   const [pre, num, post] = splitStat(product.stat.value)
   const { Before, Screen, Stat, Under, Beside, Proof, Extras, OnDevice } = module
-  const dockLine = product.expansion ? product.expansion.join(' ') : product.devanagari ? `${product.devanagari} · ${product.meaning}` : product.promise
+  // The caption under the docked name. A Hindi name's caption is the word itself, in Devanagari
+  // (its own face and language, never the Latin stack), and what it means.
+  const dockLine = product.expansion ? (
+    product.expansion.join(' ')
+  ) : product.devanagari ? (
+    <>
+      <span className="ev-hi" lang="hi">
+        {product.devanagari}
+      </span>
+      {` · ${product.meaning}`}
+    </>
+  ) : (
+    product.promise
+  )
 
   return (
     <div
@@ -101,7 +114,7 @@ export default function Moment({ product, module }: { product: Product; module: 
         <Rise>{product.promise}</Rise>
       </p>
       <i className="ev-dock" />
-      <p className={kind === 'acronym' ? 'ev-dockcap ev-dockcap--caps' : 'ev-dockcap'}>
+      <p className={kind === 'acronym' ? 'ev-dockcap ev-dockcap--caps' : kind === 'hindi' ? 'ev-dockcap ev-dockcap--hi' : 'ev-dockcap'}>
         <Rise>{dockLine}</Rise>
       </p>
 

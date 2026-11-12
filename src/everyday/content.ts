@@ -135,6 +135,8 @@ export interface MindProduct extends ProductBase {
   demo: {
     /** What flows into it by itself, all the time. This is the memory. */
     ingests: string[]
+    /** The small tag that says the memory fills by itself, all the time. */
+    ingested: string
     /** The change Priya's team asked for. */
     request: { id: string; from: string; text: string }
     developer: string
@@ -334,6 +336,7 @@ export const PRODUCTS: Product[] = [
     stat: { value: '80%', label: 'lower AI cost' },
     demo: {
       ingests: ['Every codebase', 'Every Jira ticket', 'Every discussion'],
+      ingested: 'Auto-ingested',
       request: { id: 'SC-2291', from: 'From the Lucknow sales team', text: 'Add a co-applicant step to the home-loan journey.' },
       developer: 'Arjun, engineer, journey apps',
       prompt: 'Add the co-applicant step. Use the blue header theme.',
@@ -395,6 +398,14 @@ export const CLOSING = {
   again: 'Watch again',
   /** Her own words on this screen (the subtitle). */
   said: 'That was my Tuesday.',
+} as const
+
+/** The two small prompts that tell a visitor the screen is waiting for them. */
+export const PROMPTS = {
+  /** Beside a demo control, while it waits to be pressed. */
+  yourTurn: 'Your turn',
+  /** In manual mode, while the film rests on a finished step. */
+  tapOn: 'Tap anywhere to continue',
 } as const
 
 /** Brand colours per accent (CSS variables from globals.css are also available: --flame, --azure, --ink-deep…). */

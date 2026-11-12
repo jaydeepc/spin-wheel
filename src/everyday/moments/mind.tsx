@@ -4,7 +4,9 @@
  * Piramal Mind · its own chapter, after Priya's day · with the engineering team.
  *
  * The one idea: PIRAMAL MIND IS THE ENGINEERING TEAM'S MEMORY AND INTELLIGENCE.
- * Memory: every codebase, every Jira ticket and every discussion flows into it by itself.
+ * Memory: every codebase, every Jira ticket and every discussion flows into it by itself
+ * (the client's word: it is auto-ingested). The tag beside "Memory" says so, and a slow
+ * pulse keeps travelling down the thread into the core for as long as the board is up.
  * Intelligence: it connects them, so it talks back before something is built the old way.
  *
  * Before   what was decided, and why, is scattered: an old ticket, old code, somebody's head,
@@ -21,6 +23,8 @@
  *
  * There is no device frame here (device: 'none'): the Screen is the centrepiece itself, a
  * board of 56u × 31.6u with the coding session on the left and Piramal Mind on the right.
+ * On a phone on its side and on a squarer screen (3:2 and under) the board is set again in
+ * fewer, larger words (mind.css, "compact"): the motion below is the same for both.
  */
 
 import gsap from 'gsap'
@@ -50,7 +54,12 @@ const COST_ROWS = 10
 /** 80% lower: the top eight rows of ten fall away. */
 const COST_GONE = 8
 
-const lines = (text: string) => text.split(/(?<=[.?!])\s+/)
+/** Each sentence on its own line. (No lookbehind: Safari before 16.4 cannot parse one.) */
+const lines = (text: string): string[] => {
+  const found = text.match(/[^.?!]+[.?!]*/g)
+  const out = found ? found.map((s) => s.trim()).filter(Boolean) : []
+  return out.length ? out : [text]
+}
 
 // ====================================================================== GLYPHS
 type GlyphKind = 'code' | 'ticket' | 'talk'
@@ -311,7 +320,20 @@ function Screen({ product }: P) {
       {/* ---------- the thread: what flows in, what it says, what it joins ---------- */}
       <svg className="mind-wires" viewBox={`0 0 ${BOARD.w} ${BOARD.h}`} aria-hidden="true">
         <path className="mind-spine" d={`M${SPINE} ${IN_Y[0]}V${CORE.y - CORE.r}`} />
-        <path className="mind-spine-flow" d={`M${SPINE} ${IN_Y[0]}V${CORE.y - CORE.r}`} />
+        {/* auto-ingested: quiet traffic down the thread, and a pulse from each stream into the core, all the time */}
+        <g className="mind-intake">
+          <path className="mind-spine-flow" d={`M${SPINE} ${IN_Y[0]}V${CORE.y - CORE.r}`} />
+          {IN_Y.map((y, i) => (
+            <circle
+              className="mind-bead"
+              key={y}
+              cx={SPINE}
+              cy={y}
+              r="3.3"
+              style={{ ['--i' as string]: i, ['--d' as string]: `${CORE.y - CORE.r + 4 - y}px` }}
+            />
+          ))}
+        </g>
         <path className="mind-spine mind-spine--low" d={`M${SPINE} ${CORE.y + CORE.r}V${LINK_Y[LINK_Y.length - 1]}`} />
         <path className="mind-wire" d={`M${SPINE - CORE.r - 3} ${CORE.y}H${TALK_X + 3}`} />
         <circle className="mind-wire-pulse" cx={SPINE - CORE.r - 3} cy={CORE.y} r="4.4" />
@@ -327,6 +349,14 @@ function Screen({ product }: P) {
           {product.name}
         </p>
         <p className="mind-eyebrow mind-eyebrow--mem">Memory</p>
+        {/* it fills by itself: the client's own word for it */}
+        <span className="mind-auto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path className="mind-auto-in" d="M12 3.2v10M7.6 9.2l4.4 4.4 4.4-4.4" />
+            <path d="M4.2 14.6v3.6a2 2 0 0 0 2 2h11.6a2 2 0 0 0 2-2v-3.6" />
+          </svg>
+          {d.ingested}
+        </span>
         {d.ingests.map((t, i) => (
           <div className="mind-in" style={{ ['--i' as string]: i }} key={t}>
             <i className="mind-in-node" />
@@ -338,6 +368,7 @@ function Screen({ product }: P) {
         ))}
         <div className="mind-core">
           <i className="mind-core-halo" />
+          <i className="mind-core-take" />
           <i className="mind-core-burst" />
           <i className="mind-core-ring" />
           <span className="mind-core-face">
@@ -459,12 +490,17 @@ function animate(env: MomentEnv<MindProduct>) {
 
   // The board keeps clear of the docked name and its caption (the promise, which is a long line here):
   // it stands at the right edge of the content, and on a squarer screen it is drawn a little smaller.
-  const boardW = BOARD_W * U
-  const cap = loc($('.ev-dockcap'))
+  // Its width is the stylesheet's to say (56u; set again for a phone on its side and a squarer screen).
+  const board = $('.mind-board')
+  const dockcap = $('.ev-dockcap')
+  const boardW = board.offsetWidth || BOARD_W * U
+  /** mind.css sets this where the board is laid out again in fewer, larger words. */
+  const compact = getComputedStyle(board).getPropertyValue('--mind-compact').trim() === '1'
+  const cap = loc(dockcap)
   const capRight = cap.w > 0 ? cap.x + cap.w : 35 * U - hx
   const room = hx - Math.max(capRight, 31 * U - hx) - 1.5 * U
   const fit = Math.min(1, room / boardW)
-  gsap.set($('.mind-board'), { scale: fit, transformOrigin: '100% 50%' })
+  gsap.set(board, { scale: fit, transformOrigin: '100% 50%' })
 
   // ---------------------------------------------------------------- before: three pieces, three loose ends
   const bCards = $$('.mind-b-card')
@@ -489,7 +525,8 @@ function animate(env: MomentEnv<MindProduct>) {
   const pills = $$('.mind-in-pill')
   const inNodes = $$('.mind-in-node')
   const flies = $$('.mind-fly')
-  const spineFlow = $<SVGPathElement>('.mind-spine-flow')
+  const intake = $<SVGGElement>('.mind-intake')
+  const auto = $('.mind-auto')
   const spine = $<SVGPathElement>('.mind-spine')
   const core = $('.mind-core')
   const halo = $('.mind-core-halo')
@@ -522,7 +559,8 @@ function animate(env: MomentEnv<MindProduct>) {
   gsap.set(eyebrowInt, { autoAlpha: 0, y: 0.5 * U })
   gsap.set(linkSlots, { autoAlpha: 0, x: -0.8 * U })
   gsap.set(linkHoles, { scale: 0 })
-  gsap.set(spineFlow, { autoAlpha: 0 })
+  gsap.set(intake, { autoAlpha: 0 })
+  gsap.set(auto, { autoAlpha: 0, x: -0.7 * U })
   gsap.set(core, { scale: 0, autoAlpha: 0 })
   gsap.set(halo, { autoAlpha: 0, scale: 0.6 })
   gsap.set(burst, { autoAlpha: 0, scale: 1 })
@@ -561,7 +599,9 @@ function animate(env: MomentEnv<MindProduct>) {
     .to(core, { scale: 1, duration: 0.4, ease: 'back.out(2.2)' }, 0.5)
     .to(halo, { autoAlpha: 1, scale: 1, duration: 0.45 }, 0.52)
     .to(spine, { drawSVG: '100%', duration: 0.3, ease: 'power2.inOut' }, 0.66)
-    .to(spineFlow, { autoAlpha: 1, duration: 0.25 }, 0.86)
+    // from here on the traffic never stops (CSS, on what is inside this group): it is auto-ingested
+    .to(intake, { autoAlpha: 1, duration: 0.25 }, 0.86)
+    .to(auto, { autoAlpha: 1, x: 0, duration: 0.28 }, 0.96)
     // below the core: room for what it will join up
     .to(spineLow, { drawSVG: '100%', duration: 0.34, ease: 'power2.inOut' }, 0.72)
     .to(eyebrowInt, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.74)
@@ -638,7 +678,7 @@ function animate(env: MomentEnv<MindProduct>) {
     // Built in the new theme
     .to(face, { autoAlpha: 0, duration: 0.16, ease: 'power1.in' }, hit - 0.26)
     .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.24)
-    .to(stamp, { scale: 1, rotation: -6, duration: 0.24, ease: E.slam }, hit - 0.24)
+    .to(stamp, { scale: 1, rotation: compact ? -3.5 : -6, duration: 0.24, ease: E.slam }, hit - 0.24)
     .to(stampBurst, { autoAlpha: 0.8, duration: 0.01 }, hit)
     .to(stampBurst, { scale: 1.5, autoAlpha: 0, duration: 0.44, ease: 'power2.out' }, hit + 0.01)
   env.bump(run, hit, 2.4)
@@ -664,7 +704,22 @@ function animate(env: MomentEnv<MindProduct>) {
   const cause = $$<SVGElement>('.mind-defect-cause, .mind-defect-pm')
   gsap.set(trace, { drawSVG: '0%' })
   gsap.set(cause, { scale: 0, transformOrigin: '50% 50%' })
-  result.to(trace, { drawSVG: '100%', duration: 0.3, ease: 'power2.inOut' }, 0.56).to(cause, { scale: 1, duration: 0.26, ease: 'back.out(3)' }, 0.68)
+  result.to(trace, { drawSVG: '100%', duration: 0.3, ease: 'power2.inOut' }, 0.5).to(cause, { scale: 1, duration: 0.26, ease: 'back.out(3)' }, 0.66)
+  if (!env.small) {
+    // The shared frame draws a centrepiece back to this for the result (core/buildMoment.ts). Where the
+    // board is already smaller than that (a squarer screen), it gives back what the headline does not need.
+    const FRAME_BACK = 0.84
+    const rc = loc($('.ev-col--result'))
+    const free = hx - (rc.x + rc.w) - 1.5 * U
+    const own = Math.min(fit, FRAME_BACK, free / boardW) / FRAME_BACK
+    if (Math.abs(own - fit) > 0.004) result.to(board, { scale: own, duration: 0.85, ease: E.inOut }, 0)
+  }
+  if (compact) {
+    // The promise under the name has been read since the name step; here it is on two lines, and the
+    // headline needs its place. It is back for the number.
+    result.to(dockcap, { autoAlpha: 0, duration: 0.2, ease: 'power1.in' }, 0)
+    stat.to(dockcap, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' }, 0.24)
+  }
 
   // ---------------------------------------------------------------- stat: 80 of every 100 fall away
   const tiles = $$('.mind-tile')

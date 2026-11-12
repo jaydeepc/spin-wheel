@@ -962,21 +962,57 @@
    it under 11 px.
    ============================================================ */
 @media (max-height: 480px) {
-  /* ----- before: the pile of leads (drawn 1.2× by the shared frame) ----- */
+  /* ----- before: the pile of leads (drawn 1.2× by the shared frame). It is a picture, not a
+     device: its words are read, so they are held at 11 px on the screen, which is 9.2 px
+     before the enlargement. ----- */
+  /* room for a name and its tag at that size; the form in front keeps its width, so its
+     boxes stay clear of the counter */
+  .byoa-b-sheet:not(.byoa-b-front) {
+    width: calc(var(--u) * 18.4);
+  }
+  /* each form shows a slightly taller strip, so a tag is not tucked under the next form */
+  .byoa-b-sheet {
+    top: calc(var(--u) * 2.05 * var(--j));
+  }
+  .byoa-b-front {
+    height: calc(var(--u) * 11.2);
+  }
+  .byoa-b-strip {
+    height: calc(var(--u) * 2.05);
+    gap: calc(var(--u) * 0.5);
+    padding: 0 calc(var(--u) * 0.8);
+  }
   .byoa-b-strip b {
-    font-size: max(calc(var(--u) * 1.05), var(--dt));
+    font-size: max(calc(var(--u) * 1.05), calc(var(--fl) * 9.2));
   }
   .byoa-b-ready {
-    height: calc(var(--u) * 1.5);
-    font-size: max(calc(var(--u) * 1), var(--dt));
+    height: max(calc(var(--u) * 1.5), calc(var(--fl) * 12.2));
+    padding: 0 calc(var(--u) * 0.55);
+    border-radius: 999px;
+    font-size: max(calc(var(--u) * 1), calc(var(--fl) * 9.2));
+    line-height: 1;
+    letter-spacing: 0;
   }
+  /* the small clock in the tag is decoration: its room goes to the words */
   .byoa-b-ready svg {
-    width: calc(var(--u) * 1);
-    height: calc(var(--u) * 1);
+    display: none;
+  }
+  .byoa-b-head span {
+    font-size: max(calc(var(--u) * 1.15), calc(var(--fl) * 9.2));
+  }
+  .byoa-b-check {
+    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.2));
+  }
+  .byoa-b-count {
+    padding-left: calc(var(--u) * 0.95);
+    padding-right: calc(var(--u) * 0.95);
   }
   .byoa-b-count span {
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    letter-spacing: 0.12em;
+    font-size: max(calc(var(--u) * 1), calc(var(--fl) * 9.2));
+    letter-spacing: 0.04em;
+  }
+  .byoa-b-count small {
+    font-size: max(calc(var(--u) * 1.15), calc(var(--fl) * 9.2));
   }
 
   /* ----- the agent on the phone ----- */
@@ -1112,6 +1148,20 @@
   }
 
   /* ----- around the phone ----- */
+  /* Priya's line keeps to the left of the enlarged phone and may run right up to where a
+     centred phone begins: the phone stands 2u right of centre, so the gap has a real size.
+     (Everything that flies to it is measured from loc(), and follows.) */
+  .ev-moment[data-key='byoa'] .ev-deviceMover {
+    --ev-dx: calc(var(--u) * 2);
+  }
+  /* The headline runs to four lines here and Priya's line under it to three (four on the
+     narrowest phones): the headline is set a little smaller and closer, with the same four
+     line breaks, so her line always starts clear of it. */
+  .ev-moment[data-key='byoa'] .ev-sentence {
+    max-width: 9.86em;
+    font-size: calc(var(--u) * 3.3);
+    line-height: 1.16;
+  }
   .byoa-part {
     font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
   }
