@@ -4,6 +4,11 @@
    Sizes are in --u; colours come from the accent variables
    (--acc, --acc-ink, --acc-soft…). Azure is "ready"; the brand's
    flame marks the leads that still need documents.
+
+   THE BUDGET: outside the phone BYOA draws nothing at rest. What
+   it has to say is on the glass: the agent's name and who built
+   it, the three things she told it, five leads waiting. At the
+   result: two lists, and ONE tag.
    ============================================================ */
 
 .byoa-said {
@@ -13,7 +18,7 @@
   fill: var(--acc);
 }
 
-/* ---------- BEFORE: a pile of lead forms, ticked off by hand ---------- */
+/* ---------- BEFORE: a pile of lead forms, ticked off by hand (laid out for 25u × 20u) ---------- */
 .byoa-b {
   position: absolute;
   inset: 0;
@@ -36,68 +41,43 @@
 .byoa-b-strip {
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.7);
   height: calc(var(--u) * 1.9);
   padding: 0 calc(var(--u) * 1.1);
   white-space: nowrap;
 }
 .byoa-b-strip b {
-  font-size: calc(var(--u) * 0.98);
+  font-size: calc(var(--u) * 1.08);
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--ev-ink);
-}
-.byoa-b-ready {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.3);
-  height: calc(var(--u) * 1.3);
-  padding: 0 calc(var(--u) * 0.65) 0 calc(var(--u) * 0.4);
-  border-radius: calc(var(--u) * 0.65);
-  background: var(--acc-ink);
-  font-size: calc(var(--u) * 0.76);
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: #ffffff;
-}
-.byoa-b-ready svg {
-  width: calc(var(--u) * 0.82);
-  height: calc(var(--u) * 0.82);
+  color: var(--ev-muted);
 }
 .byoa-b-front {
-  height: calc(var(--u) * 11.6);
-  padding: calc(var(--u) * 1) calc(var(--u) * 1.4) 0;
+  height: calc(var(--u) * 12.2);
+  padding: calc(var(--u) * 0.7) calc(var(--u) * 1.4) 0;
   box-shadow:
     0 calc(var(--u) * 1.1) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.17),
     0 0 0 1px rgba(7, 26, 80, 0.08);
 }
 .byoa-b-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  height: calc(var(--u) * 2.9);
+  align-items: center;
+  height: calc(var(--u) * 3.1);
   border-bottom: 1px solid #e3eaf3;
   white-space: nowrap;
 }
 .byoa-b-head b {
-  font-size: calc(var(--u) * 1.6);
+  font-size: calc(var(--u) * 1.9);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--ev-navy);
-}
-.byoa-b-head span {
-  font-size: calc(var(--u) * 1.15);
-  font-weight: 600;
-  color: var(--ev-muted);
-  font-variant-numeric: tabular-nums;
 }
 .byoa-b-check {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: calc(var(--u) * 2.4);
+  height: calc(var(--u) * 2.7);
   border-bottom: 1px solid #e3eaf3;
-  font-size: calc(var(--u) * 1.2);
+  font-size: calc(var(--u) * 1.42);
   font-weight: 600;
   color: var(--ev-ink);
   white-space: nowrap;
@@ -108,10 +88,10 @@
 .byoa-b-box {
   position: relative;
   flex: none;
-  width: calc(var(--u) * 1.3);
-  height: calc(var(--u) * 1.3);
-  border-radius: calc(var(--u) * 0.3);
-  border: calc(var(--u) * 0.13) solid #a9bcd8;
+  width: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 1.5);
+  border-radius: calc(var(--u) * 0.34);
+  border: calc(var(--u) * 0.14) solid #a9bcd8;
   background: #ffffff;
 }
 .byoa-b-box svg {
@@ -126,8 +106,8 @@
 .byoa-b-pencil {
   /* its tip rests on the second box */
   position: absolute;
-  left: calc(var(--u) * 15.4);
-  top: calc(var(--u) * 7.5);
+  left: calc(var(--u) * 15.3);
+  top: calc(var(--u) * 7.85);
   width: 0;
   height: 0;
   visibility: hidden;
@@ -136,9 +116,9 @@
 .byoa-b-pencil svg {
   position: absolute;
   left: 0;
-  top: calc(var(--u) * -0.5);
-  width: calc(var(--u) * 6);
-  height: calc(var(--u) * 1);
+  top: calc(var(--u) * -0.55);
+  width: calc(var(--u) * 6.6);
+  height: calc(var(--u) * 1.1);
   transform-origin: 0 50%;
   transform: rotate(-32deg);
   overflow: visible;
@@ -159,7 +139,7 @@
 }
 .byoa-b-count span {
   display: block;
-  font-size: calc(var(--u) * 0.72);
+  font-size: calc(var(--u) * 0.8);
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -168,101 +148,19 @@
 .byoa-b-count b {
   display: block;
   margin-top: calc(var(--u) * 0.15);
-  font-size: calc(var(--u) * 2.7);
+  font-size: calc(var(--u) * 3);
   font-weight: 800;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 .byoa-b-count small {
-  font-size: calc(var(--u) * 1.15);
+  font-size: calc(var(--u) * 1.3);
   font-weight: 600;
   letter-spacing: 0;
   color: #dbe7fb;
 }
 
-/* ---------- The left column: the whole build, three things said ---------- */
-.byoa-kit {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(var(--u) * 0.55);
-  max-width: calc(var(--u) * 25);
-}
-.byoa-kit-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.5);
-  height: calc(var(--u) * 2.3);
-  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 0.8);
-  border-radius: calc(var(--u) * 0.7);
-  border: 1px solid var(--acc-line);
-  background: rgba(255, 255, 255, 0.82);
-  font-size: calc(var(--u) * 1);
-  font-weight: 700;
-  color: var(--ev-ink);
-  white-space: nowrap;
-}
-.byoa-kit-chip--solid {
-  padding: 0 calc(var(--u) * 0.95);
-  border-color: var(--ev-navy);
-  background: var(--ev-navy);
-  color: #ffffff;
-}
-
-/* ---------- Under the result headline: 5 leads → 3 Ready to call · 2 Needs documents ---------- */
-.byoa-proof {
-  /* the headline runs to four lines: the proof sits close under it, clear of Priya's line below */
-  margin-top: calc(var(--u) * -0.2);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.85);
-  font-size: calc(var(--u) * 1.4);
-  font-weight: 600;
-  line-height: 1.3;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-@media (max-height: 480px) {
-  /* a phone on its side: Priya's line needs the room, and the tag on the phone says it */
-  .byoa-proof {
-    display: none;
-  }
-}
-.byoa-proof-item {
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.byoa-proof b {
-  font-weight: 800;
-}
-.byoa-proof-in {
-  color: var(--ev-muted);
-}
-.byoa-proof svg {
-  flex: none;
-  width: calc(var(--u) * 2);
-  height: calc(var(--u) * 1);
-}
-.byoa-proof-ready {
-  font-weight: 800;
-  color: var(--acc-text);
-}
-.byoa-proof-needs {
-  position: relative;
-  padding-left: calc(var(--u) * 1);
-  font-weight: 700;
-  color: var(--ev-flame-text);
-}
-.byoa-proof-needs::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 22%;
-  bottom: 18%;
-  width: 1px;
-  background: #b7c9e2;
-}
-
-/* ---------- The agent on the phone: Lead Screener ---------- */
+/* ---------- The agent on the phone: Lead Screener (the glass is 14.4u × 28.35u) ---------- */
 .byoa-app {
   position: absolute;
   inset: 0;
@@ -274,7 +172,7 @@
   /* the empty place a part will drop into */
   position: absolute;
   inset: calc(var(--u) * 0.06);
-  border-radius: calc(var(--u) * 0.55);
+  border-radius: calc(var(--u) * 0.6);
   border: calc(var(--u) * 0.09) dashed #a9cbf2;
   background: rgba(255, 255, 255, 0.6);
 }
@@ -282,23 +180,30 @@
   position: relative;
   will-change: transform, opacity;
 }
+
+/* its name, and who built it: the one place that says so */
 .byoa-slot--id {
-  margin: calc(var(--u) * 0.25) calc(var(--u) * 0.55) calc(var(--u) * 0.3);
+  position: absolute;
+  left: calc(var(--u) * 0.55);
+  right: calc(var(--u) * 0.55);
+  top: calc(var(--u) * 0.15);
+  height: calc(var(--u) * 3.3);
 }
 .byoa-id {
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.42);
-  padding: calc(var(--u) * 0.2) calc(var(--u) * 0.25);
+  gap: calc(var(--u) * 0.55);
+  height: 100%;
+  padding: 0 calc(var(--u) * 0.2);
 }
 .byoa-avatar {
   position: relative;
   flex: none;
   display: grid;
   place-items: center;
-  width: calc(var(--u) * 1.95);
-  height: calc(var(--u) * 1.95);
-  border-radius: calc(var(--u) * 0.58);
+  width: calc(var(--u) * 2.5);
+  height: calc(var(--u) * 2.5);
+  border-radius: calc(var(--u) * 0.72);
   background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
   box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.7) rgba(45, 106, 209, 0.38);
 }
@@ -314,318 +219,181 @@
   border-radius: inherit;
   border: calc(var(--u) * 0.14) solid var(--acc);
   pointer-events: none;
+  visibility: hidden;
 }
 .byoa-apptitle {
   display: grid;
-  line-height: 1.15;
+  line-height: 1.18;
   min-width: 0;
   flex: 1;
 }
 .byoa-apptitle b {
-  font-size: calc(var(--u) * 0.92);
+  font-size: calc(var(--u) * 1.3);
   font-weight: 800;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   color: var(--ev-navy);
   white-space: nowrap;
+  will-change: transform;
 }
-.byoa-apptitle span {
-  font-size: calc(var(--u) * 0.62);
-  font-weight: 600;
-  color: var(--ev-muted);
-  white-space: nowrap;
-}
-.byoa-appbadge {
-  flex: none;
-  padding: calc(var(--u) * 0.2) calc(var(--u) * 0.4);
-  border-radius: calc(var(--u) * 0.4);
-  background: var(--acc-soft);
-  border: 1px solid var(--acc-line);
-  font-size: calc(var(--u) * 0.54);
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: var(--acc-ink);
-  white-space: nowrap;
-}
-
-/* what she told it: the agent's whole brain */
-.byoa-brain {
-  position: relative;
-  margin: 0 calc(var(--u) * 0.75);
-  padding: calc(var(--u) * 0.42) calc(var(--u) * 0.45) calc(var(--u) * 0.45);
-  border-radius: calc(var(--u) * 0.9);
-  background: var(--acc-soft);
-  border: 1px solid var(--acc-line);
-  overflow: hidden;
-}
-.byoa-brain-sweep {
-  /* a lead passing through */
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(67, 132, 212, 0) 0%, rgba(67, 132, 212, 0.26) 50%, rgba(67, 132, 212, 0) 100%);
-  pointer-events: none;
-}
-.byoa-brain-head {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.35);
-  height: calc(var(--u) * 0.8);
-  margin: 0 calc(var(--u) * 0.15) calc(var(--u) * 0.35);
-  font-size: calc(var(--u) * 0.56);
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.byoa-appby {
+  margin-top: calc(var(--u) * 0.1);
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 700;
+  letter-spacing: -0.015em;
   color: var(--acc-text);
   white-space: nowrap;
 }
-.byoa-brain-head .byoa-said {
-  width: calc(var(--u) * 0.72);
-  height: calc(var(--u) * 0.65);
+
+/* what she told it, in plain words: the agent's whole brain. Three lines, each with its light. */
+.byoa-brain {
+  position: absolute;
+  left: calc(var(--u) * 0.5);
+  right: calc(var(--u) * 0.5);
+  top: calc(var(--u) * 3.75);
+  height: calc(var(--u) * 10.5);
 }
-.byoa-slot--step + .byoa-slot--step {
-  margin-top: calc(var(--u) * 0.2);
+.byoa-brain-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1);
+  background: var(--acc-soft);
+  border: 1px solid var(--acc-line);
+  transform-origin: 50% 0;
+}
+/* the same brain, folded: one row, and the three lights in it */
+.byoa-fold {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--u) * 2.3);
+  border-radius: calc(var(--u) * 1.15);
+  background: var(--acc-soft);
+  border: 1px solid var(--acc-line);
+  visibility: hidden;
+}
+.byoa-fold::before {
+  /* the line the three checks stand on */
+  content: '';
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  top: 50%;
+  height: calc(var(--u) * 0.14);
+  margin-top: calc(var(--u) * -0.07);
+  border-radius: calc(var(--u) * 0.07);
+  background: var(--acc-line);
+}
+.byoa-slot--step {
+  position: absolute;
+  left: calc(var(--u) * 0.4);
+  right: calc(var(--u) * 0.4);
+  top: calc(var(--u) * (0.5 + 3.25 * var(--i)));
+  height: calc(var(--u) * 3);
 }
 .byoa-step {
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.45);
-  height: calc(var(--u) * 1.5);
-  padding: 0 calc(var(--u) * 0.4) 0 calc(var(--u) * 0.4);
-  border-radius: calc(var(--u) * 0.5);
+  height: 100%;
+  padding: 0 calc(var(--u) * 0.25) 0 calc(var(--u) * 2.2);
+  border-radius: calc(var(--u) * 0.7);
   background: #ffffff;
   box-shadow: 0 calc(var(--u) * 0.12) calc(var(--u) * 0.35) rgba(45, 106, 209, 0.12);
 }
-.byoa-step-n {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 0.9);
-  height: calc(var(--u) * 0.9);
+.byoa-step-t {
+  font-size: calc(var(--u) * 0.97);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+/* a line's light: its number. Lit, it is filled. It travels to the folded row when the agent runs. */
+.byoa-light {
+  position: absolute;
+  left: calc(var(--u) * 0.45);
+  top: 50%;
+  width: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 1.5);
+  margin-top: calc(var(--u) * -0.75);
   border-radius: 50%;
   background: var(--acc-soft);
-  font-size: calc(var(--u) * 0.54);
+  box-shadow: 0 0 0 1px var(--acc-line);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.byoa-light b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: calc(var(--u) * 0.86);
   font-weight: 800;
   line-height: 1;
   color: var(--acc-ink);
 }
-.byoa-step-t {
-  font-size: calc(var(--u) * 0.78);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ev-navy);
-  white-space: nowrap;
+.byoa-light b.byoa-light-on {
+  background: var(--acc-deep);
+  color: #ffffff;
+  visibility: hidden;
 }
-.byoa-light {
-  position: relative;
-  flex: none;
-  margin-left: auto;
-  width: calc(var(--u) * 0.86);
-  height: calc(var(--u) * 0.86);
-  border-radius: 50%;
-  border: calc(var(--u) * 0.1) solid #c7ddf5;
-  background: #ffffff;
-}
-.byoa-light-glow,
-.byoa-light-on {
+.byoa-light-glow {
   position: absolute;
   inset: calc(var(--u) * -0.1);
   border-radius: 50%;
-}
-.byoa-light-glow {
   background: rgba(67, 132, 212, 0.5);
   visibility: hidden;
 }
 .byoa-light-glow--warm {
   background: rgba(241, 100, 67, 0.55);
 }
-.byoa-light-on {
-  display: grid;
-  place-items: center;
-  background: var(--acc);
-  visibility: hidden;
-}
-.byoa-light-on svg {
-  width: 62%;
-  height: 62%;
-}
 
-/* the two piles it sorts into */
-.byoa-bins {
-  margin: calc(var(--u) * 0.4) calc(var(--u) * 0.75) 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: calc(var(--u) * 0.35);
-}
-.byoa-bin {
-  padding: calc(var(--u) * 0.34) calc(var(--u) * 0.4) calc(var(--u) * 0.38);
-  border-radius: calc(var(--u) * 0.8);
-  background: #f4f9ff;
-  border: 1px solid var(--acc-line);
-  will-change: transform, opacity;
-}
-.byoa-bin--needs {
-  background: #fff7f3;
-  border-color: #f7d7cd;
-}
-.byoa-bin-head {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.38);
-  height: calc(var(--u) * 0.98);
-  padding: 0 calc(var(--u) * 0.1);
-  font-size: calc(var(--u) * 0.58);
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--acc-text);
-  white-space: nowrap;
-}
-.byoa-bin--needs .byoa-bin-head {
-  color: var(--ev-flame-text);
-}
-.byoa-bin-icon {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 0.96);
-  height: calc(var(--u) * 0.96);
-  border-radius: calc(var(--u) * 0.28);
-  background: var(--acc);
-}
-.byoa-bin--needs .byoa-bin-icon {
-  background: var(--ev-flame);
-}
-.byoa-bin-icon svg {
-  width: 64%;
-  height: 64%;
-}
-.byoa-bin-count {
-  margin-left: auto;
-  display: grid;
-  place-items: center;
-  min-width: calc(var(--u) * 1.02);
-  height: calc(var(--u) * 1.02);
-  border-radius: 50%;
-  background: var(--acc-ink);
-  font-size: calc(var(--u) * 0.66);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 1;
-  color: #ffffff;
-  font-variant-numeric: tabular-nums;
-}
-.byoa-bin--needs .byoa-bin-count {
-  background: var(--ev-flame-ink);
-}
-.byoa-bin-rows {
-  margin-top: calc(var(--u) * 0.26);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: calc(var(--u) * 0.18);
-  min-height: calc(var(--u) * 4.26);
-  align-content: start;
-}
-.byoa-place {
-  position: relative;
-}
-.byoa-place-ghost {
-  /* the empty place a sorted lead will take */
-  position: absolute;
-  inset: 0;
-  border-radius: calc(var(--u) * 0.45);
-  border: calc(var(--u) * 0.08) dashed #b9d3f3;
-}
-.byoa-bin--needs .byoa-place-ghost {
-  border-color: #f2c6b8;
-}
-.byoa-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.42);
-  height: calc(var(--u) * 1.3);
-  padding: 0 calc(var(--u) * 0.45) 0 calc(var(--u) * 0.36);
-  border-radius: calc(var(--u) * 0.45);
-  background: #ffffff;
-  box-shadow: 0 calc(var(--u) * 0.12) calc(var(--u) * 0.35) rgba(7, 26, 80, 0.08);
-  white-space: nowrap;
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.byoa-row-mark {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 0.78);
-  height: calc(var(--u) * 0.78);
-  border-radius: 50%;
-  background: var(--acc);
-}
-.byoa-row--needs .byoa-row-mark {
-  background: var(--ev-flame);
-}
-.byoa-row-mark svg {
-  width: 62%;
-  height: 62%;
-}
-.byoa-row-name {
-  font-size: calc(var(--u) * 0.82);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ev-navy);
-}
-.byoa-row-amt {
-  margin-left: auto;
-  font-size: calc(var(--u) * 0.72);
-  font-weight: 600;
-  color: var(--ev-muted);
-  font-variant-numeric: tabular-nums;
-}
-.byoa-row--needs {
-  height: calc(var(--u) * 2.04);
-  flex-wrap: wrap;
-  align-content: center;
-  row-gap: calc(var(--u) * 0.08);
-}
-.byoa-row-ask {
-  flex: 0 0 100%;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.3);
-  padding-left: calc(var(--u) * 0.06);
-  font-size: calc(var(--u) * 0.66);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-}
-.byoa-row-ask .byoa-said {
-  width: calc(var(--u) * 0.68);
-  height: calc(var(--u) * 0.62);
-  fill: var(--ev-flame);
-}
-.byoa-row-ask span {
-  font-weight: 700;
-  color: var(--ev-flame-text);
-}
-
-/* the one control: run the agent */
-.byoa-runzone {
+/* the five new leads, waiting, and the one control */
+.byoa-queue {
   position: absolute;
   left: 0;
   right: 0;
+  top: calc(var(--u) * 14.6);
   bottom: 0;
-  height: calc(var(--u) * 5.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--u) * 0.4);
+  gap: calc(var(--u) * 0.9);
+  padding-bottom: calc(var(--u) * 0.4);
+}
+.byoa-pile {
+  position: relative;
+  width: calc(var(--u) * 10.4);
+  height: calc(var(--u) * 3.3);
+}
+.byoa-card {
+  /* a lead, not yet looked at: a face and two lines */
+  position: absolute;
+  left: calc(var(--u) * 1.45 * var(--k));
+  top: 0;
+  width: calc(var(--u) * 4.6);
+  height: calc(var(--u) * 3.3);
+  border-radius: calc(var(--u) * 0.6);
+  background:
+    radial-gradient(circle at calc(var(--u) * 1.15) 50%, #c7ddf5 0, #c7ddf5 calc(var(--u) * 0.62), transparent calc(var(--u) * 0.66)),
+    linear-gradient(#dbe7f5, #dbe7f5) calc(var(--u) * 2.2) calc(var(--u) * 1.05) / calc(var(--u) * 1.8) calc(var(--u) * 0.4) no-repeat,
+    linear-gradient(#e9eef5, #e9eef5) calc(var(--u) * 2.2) calc(var(--u) * 1.85) / calc(var(--u) * 1.2) calc(var(--u) * 0.4) no-repeat,
+    #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.14),
+    0 0 0 1px rgba(7, 26, 80, 0.08);
+  visibility: hidden;
+  will-change: transform, opacity;
 }
 .byoa-runWrap {
   position: relative;
-  width: calc(var(--u) * 3.3);
-  height: calc(var(--u) * 3.3);
+  flex: none;
+  width: calc(var(--u) * 3.7);
+  height: calc(var(--u) * 3.7);
+  visibility: hidden;
 }
-.byoa-run {
+.ev-touch.byoa-run {
   width: 100%;
   height: 100%;
 }
@@ -647,24 +415,165 @@
   overflow: visible;
 }
 .byoa-run-hint {
-  position: relative;
-  height: calc(var(--u) * 0.9);
-  width: 100%;
-  font-size: calc(var(--u) * 0.64);
+  font-size: calc(var(--u) * 0.95);
   font-weight: 700;
-  color: var(--ev-muted);
-  letter-spacing: 0.02em;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--acc-text);
+  white-space: nowrap;
+  visibility: hidden;
 }
-.byoa-run-hint span {
+
+/* what comes out: two lists, in the room the build has left */
+.byoa-bins {
   position: absolute;
-  inset: 0;
-  text-align: center;
-  line-height: calc(var(--u) * 0.9);
+  left: calc(var(--u) * 0.5);
+  right: calc(var(--u) * 0.5);
+  top: calc(var(--u) * 6.5);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(var(--u) * 0.5);
+}
+.byoa-bin {
+  padding: calc(var(--u) * 0.35) calc(var(--u) * 0.4) calc(var(--u) * 0.45);
+  border-radius: calc(var(--u) * 1);
+  background: #f4f9ff;
+  border: 1px solid var(--acc-line);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.byoa-bin--needs {
+  background: #fff7f3;
+  border-color: #f7d7cd;
+}
+.byoa-bin-head {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.45);
+  height: calc(var(--u) * 1.9);
+  padding: 0 calc(var(--u) * 0.15);
+  font-size: calc(var(--u) * 0.78);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acc-text);
   white-space: nowrap;
 }
-.byoa-run-hint span:nth-child(2),
-.byoa-run-hint span:nth-child(3) {
-  color: var(--acc-ink);
+/* (the tag lands on this head and takes its place: it is a little taller) */
+.byoa-bin--ready .byoa-bin-head {
+  height: calc(var(--u) * 2.9);
+}
+.byoa-bin--needs .byoa-bin-head {
+  color: var(--ev-flame-text);
+}
+.byoa-bin-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.25);
+  height: calc(var(--u) * 1.25);
+  border-radius: calc(var(--u) * 0.36);
+  background: var(--acc);
+}
+.byoa-bin--needs .byoa-bin-icon {
+  background: var(--ev-flame);
+}
+.byoa-bin-icon svg {
+  width: 64%;
+  height: 64%;
+}
+.byoa-bin-count {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  min-width: calc(var(--u) * 1.3);
+  height: calc(var(--u) * 1.3);
+  border-radius: 50%;
+  background: var(--acc-ink);
+  font-size: calc(var(--u) * 0.82);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+.byoa-bin--needs .byoa-bin-count {
+  background: var(--ev-flame-ink);
+}
+.byoa-bin-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(var(--u) * 0.25);
+}
+.byoa-place {
+  position: relative;
+}
+.byoa-place-ghost {
+  /* the empty place a sorted lead will take */
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.6);
+  border: calc(var(--u) * 0.08) dashed #b9d3f3;
+}
+.byoa-bin--needs .byoa-place-ghost {
+  border-color: #f2c6b8;
+}
+.byoa-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 2.25);
+  padding: 0 calc(var(--u) * 0.6) 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.6);
+  background: #ffffff;
+  box-shadow: 0 calc(var(--u) * 0.12) calc(var(--u) * 0.35) rgba(7, 26, 80, 0.08);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.byoa-row-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.1);
+  height: calc(var(--u) * 1.1);
+  border-radius: 50%;
+  background: var(--acc);
+}
+.byoa-row-mark svg {
+  width: 62%;
+  height: 62%;
+}
+.byoa-row-name {
+  font-size: calc(var(--u) * 1.1);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--ev-navy);
+}
+/* a lead that needs documents: the name, and under it the one thing to ask */
+.byoa-row--needs {
+  display: block;
+  height: auto;
+  min-height: calc(var(--u) * 3.3);
+  padding: calc(var(--u) * 0.4) calc(var(--u) * 0.42) calc(var(--u) * 0.42);
+  white-space: normal;
+}
+.byoa-row--needs .byoa-row-name {
+  display: block;
+}
+.byoa-row-ask {
+  /* a block that is only as wide as its words: it is wiped open, left to right */
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin-top: calc(var(--u) * 0.08);
+  font-size: calc(var(--u) * 0.75);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  color: var(--ev-flame-text);
 }
 
 /* ---------- Her three instructions and the agent. They fly out of the letters and into the phone. ---------- */
@@ -708,114 +617,18 @@
   overflow: visible;
 }
 
-/* ---------- Under the photo: this morning's new leads ---------- */
-.byoa-inbox-head {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.6);
-  height: calc(var(--u) * 1.3);
-  margin-bottom: calc(var(--u) * 0.3);
-  font-size: calc(var(--u) * 0.82);
-  font-weight: 800;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--acc-text);
-  white-space: nowrap;
-}
-.byoa-inbox-head b {
-  display: grid;
-  place-items: center;
-  min-width: calc(var(--u) * 1.3);
-  height: calc(var(--u) * 1.3);
-  border-radius: 50%;
-  background: var(--acc-ink);
-  font-size: calc(var(--u) * 0.8);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 1;
-  color: #ffffff;
-}
-.byoa-in-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: calc(var(--u) * 1.52);
-  margin-top: calc(var(--u) * 0.2);
-  padding: 0 calc(var(--u) * 0.5) 0 calc(var(--u) * 0.75);
-  border-radius: calc(var(--u) * 0.55);
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid var(--ev-line);
-  white-space: nowrap;
-  will-change: transform, opacity;
-}
-.byoa-in-body {
-  flex: 1;
-  display: flex;
-  align-items: baseline;
-  gap: calc(var(--u) * 0.6);
-}
-.byoa-in-name {
-  font-size: calc(var(--u) * 1);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ev-ink);
-}
-.byoa-in-amt {
-  font-size: calc(var(--u) * 0.92);
-  font-weight: 600;
-  color: var(--ev-muted);
-  font-variant-numeric: tabular-nums;
-}
-.byoa-in-mark {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 0.92);
-  height: calc(var(--u) * 0.92);
-  border-radius: 50%;
-  background: var(--acc);
-  visibility: hidden;
-}
-.byoa-in-row--needs .byoa-in-mark {
-  background: var(--ev-flame);
-}
-.byoa-in-mark svg {
-  width: 62%;
-  height: 62%;
-}
-
-/* a lead, lifted off the list: it flies into the agent */
-.byoa-lead {
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: flex;
-  align-items: baseline;
-  gap: calc(var(--u) * 0.6);
-  padding: calc(var(--u) * 0.2) calc(var(--u) * 0.85) calc(var(--u) * 0.26) calc(var(--u) * 0.75);
-  border-radius: calc(var(--u) * 0.6);
-  background: #ffffff;
-  border: calc(var(--u) * 0.1) solid var(--acc);
-  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) rgba(45, 106, 209, 0.28);
-  white-space: nowrap;
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.byoa-lead .byoa-in-name {
-  color: var(--ev-navy);
-}
-
-/* ---------- 3 Ready to call ---------- */
+/* ---------- 3 Ready to call: the ONE thing on the phone at the result. It lands on the head
+   of that list (animate() moves it there) and stands a little off the phone's right edge. ---------- */
 .byoa-tag {
   position: absolute;
-  left: calc(var(--u) * 9.9);
-  bottom: calc(var(--u) * 2.7);
+  left: 4%;
+  top: 30%;
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.55);
-  height: calc(var(--u) * 3.3);
-  padding: 0 calc(var(--u) * 1.25) 0 calc(var(--u) * 0.55);
-  border-radius: calc(var(--u) * 1.65);
+  gap: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 1.2) 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 1.55);
   background: linear-gradient(145deg, #2d6ad1 0%, #1f4fa8 100%);
   box-shadow:
     0 calc(var(--u) * 0.9) calc(var(--u) * 2) rgba(36, 89, 184, 0.36),
@@ -828,8 +641,8 @@
 .byoa-tag-icon {
   display: grid;
   place-items: center;
-  width: calc(var(--u) * 2.2);
-  height: calc(var(--u) * 2.2);
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 2.1);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
 }
@@ -845,16 +658,17 @@
   font-variant-numeric: tabular-nums;
 }
 .byoa-tag-t {
-  font-size: calc(var(--u) * 1.12);
+  font-size: calc(var(--u) * 1.3);
   font-weight: 800;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
 }
 .byoa-tag-burst {
   position: absolute;
   inset: calc(var(--u) * -0.2);
-  border-radius: calc(var(--u) * 1.85);
+  border-radius: calc(var(--u) * 1.75);
   border: calc(var(--u) * 0.16) solid var(--acc);
   pointer-events: none;
+  visibility: hidden;
 }
 
 /* ---------- STAT: 623 agents, one of them hers ---------- */
@@ -943,253 +757,162 @@
 }
 .byoa-callout-in b {
   display: block;
-  font-size: calc(var(--u) * 1.05);
+  font-size: calc(var(--u) * 1.4);
   font-weight: 800;
   color: var(--ev-navy);
 }
 .byoa-callout-in span {
   display: block;
-  font-size: calc(var(--u) * 0.8);
+  font-size: calc(var(--u) * 1);
   font-weight: 600;
   color: var(--ev-muted);
 }
 
 /* ============================================================
-   A phone on its side. The phone in the film is enlarged 1.2×
-   and its screen is about 160 px across: every row a size up,
-   the small print dropped. Nothing on the glass is under 9 px
-   (--dt is that floor before the enlargement), nothing around
-   it under 11 px.
+   A phone on its side. The phone in the film is drawn wider
+   (the glass is 17.4u × 28.35u) and enlarged 1.2×: every row a
+   size up. Nothing on the glass is under 9 px (--dt is that
+   floor before the enlargement), nothing around it under 11 px.
    ============================================================ */
 @media (max-height: 480px) {
-  /* ----- before: the pile of leads (drawn 1.2× by the shared frame). It is a picture, not a
-     device: its words are read, so they are held at 11 px on the screen, which is 9.2 px
-     before the enlargement. ----- */
-  /* room for a name and its tag at that size; the form in front keeps its width, so its
-     boxes stay clear of the counter */
-  .byoa-b-sheet:not(.byoa-b-front) {
-    width: calc(var(--u) * 18.4);
-  }
-  /* each form shows a slightly taller strip, so a tag is not tucked under the next form */
-  .byoa-b-sheet {
-    top: calc(var(--u) * 2.05 * var(--j));
-  }
-  .byoa-b-front {
-    height: calc(var(--u) * 11.2);
-  }
-  .byoa-b-strip {
-    height: calc(var(--u) * 2.05);
-    gap: calc(var(--u) * 0.5);
-    padding: 0 calc(var(--u) * 0.8);
-  }
+  /* ----- before: the pile of leads. It is a picture, not a device: its words are read, so
+     they are held at 11 px on the screen, which is 9.2 px before the enlargement (1.38× at
+     the least). ----- */
   .byoa-b-strip b {
-    font-size: max(calc(var(--u) * 1.05), calc(var(--fl) * 9.2));
-  }
-  .byoa-b-ready {
-    height: max(calc(var(--u) * 1.5), calc(var(--fl) * 12.2));
-    padding: 0 calc(var(--u) * 0.55);
-    border-radius: 999px;
-    font-size: max(calc(var(--u) * 1), calc(var(--fl) * 9.2));
-    line-height: 1;
-    letter-spacing: 0;
-  }
-  /* the small clock in the tag is decoration: its room goes to the words */
-  .byoa-b-ready svg {
-    display: none;
-  }
-  .byoa-b-head span {
-    font-size: max(calc(var(--u) * 1.15), calc(var(--fl) * 9.2));
-  }
-  .byoa-b-check {
-    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.2));
-  }
-  .byoa-b-count {
-    padding-left: calc(var(--u) * 0.95);
-    padding-right: calc(var(--u) * 0.95);
+    font-size: max(calc(var(--u) * 1.08), calc(var(--fl) * 9.2));
   }
   .byoa-b-count span {
     font-size: max(calc(var(--u) * 1), calc(var(--fl) * 9.2));
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
   }
   .byoa-b-count small {
-    font-size: max(calc(var(--u) * 1.15), calc(var(--fl) * 9.2));
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 9.2));
   }
 
   /* ----- the agent on the phone ----- */
   .byoa-slot--id {
-    margin: calc(var(--u) * 0.1) calc(var(--u) * 0.5) calc(var(--u) * 0.15);
-  }
-  .byoa-id {
-    padding: calc(var(--u) * 0.12) calc(var(--u) * 0.25);
+    left: calc(var(--u) * 0.5);
+    right: calc(var(--u) * 0.5);
+    top: 0;
+    height: calc(var(--u) * 3);
   }
   .byoa-avatar {
-    width: calc(var(--u) * 1.75);
-    height: calc(var(--u) * 1.75);
+    width: calc(var(--u) * 2.2);
+    height: calc(var(--u) * 2.2);
   }
   .byoa-apptitle b {
-    font-size: max(calc(var(--u) * 1.2), var(--dt));
+    font-size: max(calc(var(--u) * 1.35), var(--dt));
   }
-  .byoa-apptitle span {
-    display: none;
-  }
-  /* the name docked beside the phone already says where it was built */
-  .byoa-appbadge {
-    display: none;
+  .byoa-appby {
+    margin-top: 0;
+    font-size: max(calc(var(--u) * 1), var(--dt));
+    letter-spacing: -0.02em;
   }
   .byoa-brain {
-    margin: 0 calc(var(--u) * 0.5);
-    padding: calc(var(--u) * 0.35) calc(var(--u) * 0.4) calc(var(--u) * 0.35);
+    left: calc(var(--u) * 0.5);
+    right: calc(var(--u) * 0.5);
+    top: calc(var(--u) * 3.2);
+    height: calc(var(--u) * 10.3);
   }
-  /* "Told in plain words" is Priya's own line under the stage here: the three things she told it stand alone */
-  .byoa-brain-head {
-    display: none;
+  .byoa-fold {
+    height: calc(var(--u) * 2.2);
   }
-  .byoa-slot--step + .byoa-slot--step {
-    margin-top: calc(var(--u) * 0.15);
+  .byoa-slot--step {
+    left: calc(var(--u) * 0.4);
+    right: calc(var(--u) * 0.4);
+    top: calc(var(--u) * (0.4 + 3.2 * var(--i)));
+    height: calc(var(--u) * 3.1);
   }
   .byoa-step {
-    height: calc(var(--u) * 1.32);
-    gap: calc(var(--u) * 0.35);
-    padding: 0 calc(var(--u) * 0.35);
-  }
-  .byoa-step-n {
-    width: calc(var(--u) * 1.15);
-    height: calc(var(--u) * 1.15);
-    font-size: max(calc(var(--u) * 0.96), var(--dt));
+    padding: 0 calc(var(--u) * 0.3) 0 calc(var(--u) * 2.5);
   }
   .byoa-step-t {
-    font-size: max(calc(var(--u) * 1.05), var(--dt));
+    font-size: max(calc(var(--u) * 1.2), var(--dt));
+    letter-spacing: -0.025em;
   }
   .byoa-light {
-    width: calc(var(--u) * 1);
-    height: calc(var(--u) * 1);
+    left: calc(var(--u) * 0.5);
+    width: calc(var(--u) * 1.6);
+    height: calc(var(--u) * 1.6);
+    margin-top: calc(var(--u) * -0.8);
+  }
+  .byoa-light b {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+  }
+  .byoa-queue {
+    top: calc(var(--u) * 13.8);
+    gap: calc(var(--u) * 0.8);
+    padding-bottom: calc(var(--u) * 0.3);
+  }
+  .byoa-pile {
+    height: calc(var(--u) * 3);
+  }
+  .byoa-card {
+    height: calc(var(--u) * 3);
+  }
+  .byoa-runWrap {
+    width: calc(var(--u) * 3.6);
+    height: calc(var(--u) * 3.6);
+  }
+  .byoa-run-hint {
+    font-size: max(calc(var(--u) * 1.1), var(--dt));
   }
   .byoa-bins {
-    margin: calc(var(--u) * 0.3) calc(var(--u) * 0.5) 0;
-    gap: calc(var(--u) * 0.3);
+    left: calc(var(--u) * 0.5);
+    right: calc(var(--u) * 0.5);
+    top: calc(var(--u) * 5.8);
+    gap: calc(var(--u) * 0.4);
   }
   .byoa-bin {
-    padding: calc(var(--u) * 0.25) calc(var(--u) * 0.35) calc(var(--u) * 0.35);
+    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.4) calc(var(--u) * 0.4);
   }
   .byoa-bin-head {
-    height: calc(var(--u) * 1.3);
+    height: calc(var(--u) * 1.8);
     font-size: max(calc(var(--u) * 1), var(--dt));
     letter-spacing: 0.06em;
   }
-  .byoa-bin-icon {
-    width: calc(var(--u) * 1.15);
-    height: calc(var(--u) * 1.15);
+  .byoa-bin--ready .byoa-bin-head {
+    height: calc(var(--u) * 2.9);
   }
   .byoa-bin-count {
-    min-width: calc(var(--u) * 1.3);
-    height: calc(var(--u) * 1.3);
+    min-width: calc(var(--u) * 1.4);
+    height: calc(var(--u) * 1.4);
     font-size: max(calc(var(--u) * 1), var(--dt));
   }
   .byoa-bin-rows {
-    margin-top: calc(var(--u) * 0.2);
-    gap: calc(var(--u) * 0.15);
-    min-height: calc(var(--u) * 4.26);
+    gap: calc(var(--u) * 0.2);
   }
   .byoa-row {
-    height: calc(var(--u) * 1.32);
-    gap: calc(var(--u) * 0.35);
-    padding: 0 calc(var(--u) * 0.4) 0 calc(var(--u) * 0.3);
-  }
-  .byoa-row-mark {
-    width: calc(var(--u) * 0.95);
-    height: calc(var(--u) * 0.95);
+    height: calc(var(--u) * 2.1);
+    gap: calc(var(--u) * 0.45);
+    padding: 0 calc(var(--u) * 0.5) 0 calc(var(--u) * 0.4);
   }
   .byoa-row-name {
-    font-size: max(calc(var(--u) * 1.05), var(--dt));
-  }
-  .byoa-row-amt {
-    font-size: max(calc(var(--u) * 1), var(--dt));
+    font-size: max(calc(var(--u) * 1.25), var(--dt));
   }
   /* what to ask may take a second line on the smallest phones: the row grows with it */
   .byoa-row--needs {
     height: auto;
-    min-height: calc(var(--u) * 2.5);
-    padding-top: calc(var(--u) * 0.05);
-    padding-bottom: calc(var(--u) * 0.1);
-    row-gap: 0;
+    min-height: calc(var(--u) * 3);
+    padding: calc(var(--u) * 0.2) calc(var(--u) * 0.5) calc(var(--u) * 0.3);
   }
   .byoa-row-ask {
+    margin-top: 0;
     font-size: max(calc(var(--u) * 1), var(--dt));
     line-height: 1.2;
     letter-spacing: -0.03em;
     white-space: normal;
   }
-  .byoa-row-ask .byoa-said {
-    display: none;
-  }
-  .byoa-row-ask span {
-    font-weight: 600;
-  }
   .byoa-tag {
-    bottom: calc(var(--u) * 2.2);
-  }
-  .byoa-runzone {
-    height: calc(var(--u) * 4.7);
-    gap: calc(var(--u) * 0.15);
-  }
-  .byoa-runWrap {
-    width: calc(var(--u) * 3);
     height: calc(var(--u) * 3);
   }
-  .byoa-run-hint {
-    height: calc(var(--u) * 1.3);
-    font-size: max(calc(var(--u) * 1), var(--dt));
-  }
-  .byoa-run-hint span {
-    line-height: calc(var(--u) * 1.3);
-  }
   .byoa-tag-t {
-    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.4));
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 9.4));
   }
 
-  /* ----- around the phone ----- */
-  /* Priya's line keeps to the left of the enlarged phone and may run right up to where a
-     centred phone begins: the phone stands 2u right of centre, so the gap has a real size.
-     (Everything that flies to it is measured from loc(), and follows.) */
-  .ev-moment[data-key='byoa'] .ev-deviceMover {
-    --ev-dx: calc(var(--u) * 2);
-  }
-  /* The headline runs to four lines here and Priya's line under it to three (four on the
-     narrowest phones): the headline is set a little smaller and closer, with the same four
-     line breaks, so her line always starts clear of it. */
-  .ev-moment[data-key='byoa'] .ev-sentence {
-    max-width: 9.86em;
-    font-size: calc(var(--u) * 3.3);
-    line-height: 1.16;
-  }
+  /* ----- the things that fly, and the picture of the number ----- */
   .byoa-part {
     font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
-  }
-  .byoa-inbox-head {
-    height: calc(var(--u) * 1.8);
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    letter-spacing: 0.14em;
-  }
-  .byoa-inbox-head b {
-    min-width: calc(var(--u) * 1.9);
-    height: calc(var(--u) * 1.9);
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-  }
-  .byoa-in-row {
-    height: calc(var(--u) * 2.15);
-  }
-  .byoa-in-name {
-    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
-  }
-  .byoa-in-amt {
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11.5));
-  }
-  .byoa-in-mark {
-    width: calc(var(--u) * 1.2);
-    height: calc(var(--u) * 1.2);
-  }
-  .byoa-lead {
-    padding: calc(var(--u) * 0.15) calc(var(--u) * 0.7) calc(var(--u) * 0.2) calc(var(--u) * 0.6);
   }
   .byoa-callout-in b {
     font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));

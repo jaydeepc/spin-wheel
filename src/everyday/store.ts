@@ -3,15 +3,16 @@
 /**
  * EVERYDAY AI · the one small store.
  *
- * What is on screen (which scene, which step) and the visitor's one switch (auto or
- * manual). The director (core/director.ts) is the only thing that moves the scene and
- * the step; the shell reads them; the controls flip the switch.
+ * What is on screen (which scene, which step) and the one switch (manual, or Auto-play).
+ * The director (core/director.ts) is the only thing that moves the scene and the step; the
+ * shell reads them; the Auto-play switch flips the mode.
  */
 
 import { create } from 'zustand'
 import { PRODUCTS, STEPS, type ProductKey } from './content'
 
 export type SceneId = 'intro' | 'priya' | ProductKey | 'engineering' | 'finale'
+/** Manual (the default): the film waits for the visitor at every rest. Auto: it plays by itself. */
 export type Mode = 'auto' | 'manual'
 
 const keysOf = (track: 'day' | 'engineering') => PRODUCTS.filter((p) => p.track === track).map((p) => p.key)
@@ -42,18 +43,19 @@ interface EverydayState {
   step: string
   /** True while the film rests on a step; false while it travels to it. */
   resting: boolean
-  /** Which of Priya's lines the scene's timeline has reached (a moment: before, tool, after). Null: go by the step. */
+  /**
+   * Which of Priya's lines the scene's timeline has reached (a moment: before, tool, after, or
+   * 'off' while she is not on screen: the name at centre stage, the number). Null: go by the step.
+   */
   cue: string | null
-  /** Auto plays like a film. Manual waits for a tap at the end of every step. */
+  /** Manual waits for Next at every rest (the default). Auto plays like a film (?auto, or the Auto-play switch). */
   mode: Mode
   /** A debug URL is holding one frame: nothing advances by itself. */
   hold: boolean
   /** Fonts are in and the first scene has been built. */
   ready: boolean
-  /** Manual mode, resting on a step a plain tap moves on from: the shell shows "Tap anywhere to continue". */
-  tapHint: boolean
-  /** On the opening screen, the product being previewed from the rail. */
-  preview: ProductKey | null
+  /** The film rests on its last frame: the Next button reads "Start again". */
+  atEnd: boolean
   /** Bumped after a resize has settled: scenes rebuild their timelines. */
   layoutTick: number
 
@@ -61,10 +63,8 @@ interface EverydayState {
   setStep(step: string, resting: boolean): void
   setCue(cue: string | null): void
   setMode(mode: Mode): void
-  setTapHint(on: boolean): void
   toggleMode(): void
-  setPreview(key: ProductKey | null): void
-  patch(p: Partial<Pick<EverydayState, 'mode' | 'hold' | 'ready'>>): void
+  patch(p: Partial<Pick<EverydayState, 'mode' | 'hold' | 'ready' | 'atEnd'>>): void
   relayout(): void
 }
 
@@ -74,20 +74,17 @@ export const useEveryday = create<EverydayState>((set) => ({
   step: 'idle',
   resting: false,
   cue: null,
-  mode: 'auto',
+  mode: 'manual',
   hold: false,
   ready: false,
-  tapHint: false,
-  preview: null,
+  atEnd: false,
   layoutTick: 0,
 
-  setScene: (scene) => set((s) => ({ scene, run: s.run + 1, preview: null, cue: null })),
+  setScene: (scene) => set((s) => ({ scene, run: s.run + 1, cue: null, atEnd: false })),
   setStep: (step, resting) => set({ step, resting }),
   setCue: (cue) => set({ cue }),
   setMode: (mode) => set({ mode }),
-  setTapHint: (tapHint) => set({ tapHint }),
   toggleMode: () => set((s) => ({ mode: s.mode === 'auto' ? 'manual' : 'auto' })),
-  setPreview: (preview) => set({ preview }),
   patch: (p) => set(p),
   relayout: () => set((s) => ({ layoutTick: s.layoutTick + 1 })),
 }))

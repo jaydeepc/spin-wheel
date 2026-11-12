@@ -73,9 +73,11 @@ export function sentences(text: string): ReactNode {
 
 /**
  * THE ONE CONTROL of a demo. Put exactly one in your Screen (or Extras) and draw your glyph
- * inside it. The shared frame makes it pulse and pressable from the moment it can be seen,
- * says "Your turn" beside it when somebody is there, sends the ghost fingertip to it when
- * nobody is, and plays your `run` timeline when it is pressed.
+ * inside it. The shared frame makes it pulse and pressable from the moment it can be seen, and
+ * plays your `run` timeline when it is pressed, or when Next is (the button, a key, a tap on the
+ * empty stage). The film is manual: the control waits for as long as it takes, and its own halo
+ * is the prompt. Only in Auto-play does the ghost fingertip press it, with "Your turn" beside it
+ * for a visitor who is there.
  * Size it from your own class (width / height); it is round unless you give it a radius.
  */
 export function TouchControl({
@@ -112,8 +114,12 @@ export function TouchControl({
   )
 }
 
-/** The phone: 15.4u × 31.6u. Children fill its screen, under a status bar: 14.4u × 28.3u. */
-export function PhoneFrame({ clock, children }: { clock: string; children: ReactNode }) {
+/**
+ * The phone: 15.4u × 31.6u, before the frame enlarges it to fit the picture area. Children fill
+ * its screen, under a status bar: 14.4u × 28.3u. The status bar carries no words and no clock
+ * (the time of the moment is in the frame's clock chip): only the signal and the battery.
+ */
+export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
     <div className="ev-phone">
       <i className="ev-phone-btn ev-phone-btn--a" />
@@ -122,7 +128,6 @@ export function PhoneFrame({ clock, children }: { clock: string; children: React
       <i className="ev-phone-bezel" />
       <div className="ev-screen ev-phone-screen">
         <div className="ev-status">
-          <span>{clock}</span>
           <svg viewBox="0 0 48 12" aria-hidden="true">
             <rect x="0" y="7" width="3" height="5" rx="1" fill="#071a50" />
             <rect x="5" y="5" width="3" height="7" rx="1" fill="#071a50" />
@@ -178,6 +183,3 @@ export function CodeGlyph({ className }: { className?: string }) {
     </svg>
   )
 }
-
-/** The moment's time as a status-bar clock: "10:30 am" → "10:30". */
-export const statusClock = (time: string) => time.replace(/\s*(am|pm)/i, '')

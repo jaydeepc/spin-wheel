@@ -16,17 +16,21 @@ import { SCENES, type SceneId } from '../store'
  *        finale             say | names | done
  *        any scene          start (time 0)
  *
- *   ?manual   manual mode: wait for a tap at every step
- *   ?touched  as if somebody had just touched the screen: a held demo frame shows "Your turn"
- *             beside its control, and a film that is playing waits for the visitor at its first one
+ *   ?auto     Auto-play: the film plays by itself (without it the film is manual: it waits for
+ *             Next at every rest, and never starts by itself)
+ *   ?manual   still accepted, and changes nothing: manual is the default
+ *   ?touched  Auto-play only: as if somebody had just touched the screen. A held demo frame shows
+ *             "Your turn" beside its control, and a film that is playing waits for the visitor at
+ *             its first one
  *   ?debug    leaves the browser's right-click menu alone (the film suppresses it for visitors);
- *             ?scene=… does the same. ?manual alone does not: a presenter may use it at the venue.
+ *             ?scene=… does the same. ?auto alone does not: a presenter may use it at the venue.
  */
 export interface DebugParams {
   scene: SceneId | null
   at: string | null
   dt: number
-  manual: boolean
+  /** Auto-play was asked for (?auto). Without it the film is manual. */
+  auto: boolean
   /** Somebody is there (see above). */
   touched: boolean
   /** A developer is looking: the browser's own menu is left alone. */
@@ -43,7 +47,7 @@ export function readDebug(): DebugParams {
     scene: scene && SCENES.includes(scene) ? scene : null,
     at: at || null,
     dt: Number(p.get('dt') ?? 0) || 0,
-    manual: flag(p, 'manual'),
+    auto: flag(p, 'auto'),
     touched: flag(p, 'touched'),
     dev: p.has('scene') || flag(p, 'debug'),
   }

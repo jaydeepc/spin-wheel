@@ -5,82 +5,65 @@
  *
  * SHE SPEAKS IN HINDI, AND THE DECK COMES OUT IN HINDI. AND IT IS A DECK YOU WOULD WANT.
  *
- * Before   Sunday, 11 pm: a slide editor, every formatting button, and an empty slide
- *          with a blinking cursor
- * Demo     the laptop opens on Prastuti, set to हिन्दी: four empty places in the filmstrip,
- *          an empty slide that says where the deck will appear; the tracker file flies out
- *          of the name and attaches itself
- * Run      she speaks, in Hindi (her words under the photo, each sentence with its English
- *          beneath). Four slides build themselves on the big canvas, one after another, in
- *          Hindi: a cover, the branch bars (the lagging one picked out), the rising line,
- *          the three points. The two charts stay longest. Each takes its place in the
- *          filmstrip. Then the finished deck is laid out on the canvas, not closed: the
- *          cover, the bars and the rising line side by side, stamped प्रस्तुति तैयार. That
- *          spread is the picture the moment rests on.
- * Result   Sunday, 11 pm, struck through, becomes प्रस्तुति तैयार
- * Stat     a stopwatch that fills to 18 minutes as the number counts; the laptop flies
- *          into the deck at its centre
+ * The laptop is the ONE picture, and everything of this moment happens inside it.
+ *
+ * Before   ONE picture: a slide editor late on Sunday night (the clock in its title bar says
+ *          so), every formatting button, and an empty slide with a blinking cursor
+ * Demo     the laptop opens on Prastuti, set to हिन्दी: the place the deck will appear, and
+ *          the voice bar with the one control. The tracker flies out of the name and attaches
+ *          itself (it rests there as a small sheet, without a word).
+ * Run      she speaks, in Hindi: her words run as a live line in the voice bar, each sentence
+ *          with its English beneath. Over it four slides build themselves, large, one on top
+ *          of the other, in Hindi: a cover, the branch bars (the lagging one picked out), the
+ *          rising line, the three points. The two charts stay longest. Then the voice bar gives
+ *          way, and the finished deck is dealt out over the whole screen: the cover, the bars
+ *          and the rising line, stamped प्रस्तुति तैयार. That spread is the picture the moment
+ *          rests on: the product's name and the language in the bar, three slides, one stamp.
+ * Result   nothing is added: the headline is the frame's, and the laptop keeps its spread
+ * Stat     a stopwatch that fills to 18 minutes as the number counts; the laptop flies into
+ *          the deck at its centre
  *
  * Everything here is Prastuti's own. The name (and its turn into Devanagari), the laptop,
- * the photo, the headline, the number, the hand-over and the touch invitation come from
- * the shared frame.
+ * the headline, the number, Priya's voice, the hand-over and the touch come from the shared
+ * frame.
+ *
+ * Sizes inside the laptop are in --a, the app's own unit: a 29th of the laptop screen's width
+ * (prastuti.css). A slide's own art is in --s, a hundredth of the slide's width.
  *
  * Hindi on screen: always the .prastuti-hi font stack, line-height 1.5 or more, never
- * letter-spaced, never upper-cased, and never split below a word for animation.
+ * letter-spaced, never upper-cased, never split below a word for animation, and never inside
+ * a box that could cut its matras.
  */
 
 import gsap from 'gsap'
 import type { ReactNode } from 'react'
-import { PRIYA, productByKey, type PrastutiProduct, type PrastutiSlide } from '../content'
-import { TouchControl } from './parts'
+import type { PrastutiProduct, PrastutiSlide } from '../content'
+import { splitSentences, TouchControl } from './parts'
 import type { MomentEnv, MomentModule, PartProps } from './types'
 import './prastuti.css'
 
 type P = PartProps<PrastutiProduct>
-const PRASTUTI = productByKey('prastuti') as PrastutiProduct
 
 /** A slide is 100 × 56.25 of its own units (--s): the art below is drawn in them. */
 const SLIDE = { w: 100, h: 56.25 }
 /** The cover's sun: a disc low on the right, with two orbits round it. */
 const SUN = { cx: 84, cy: 50, r: 26, orbit1: 33, orbit2: 41 }
+/** The callout on the last point of the line reaches this far (slide units) to the right of the point: it never leaves the slide. */
+const CALL_REACH = 7
 /** The rising line of the trend slide, inside the slide's box. */
 const TREND = { x0: 9, x1: 84, yLow: 48, yHigh: 23.5, floor: 51 }
 
-const WAVE = [0.4, 0.8, 0.55, 1, 0.35, 0.7, 0.95, 0.45, 0.6, 0.9, 0.3, 0.75, 1, 0.5, 0.85, 0.4, 0.65, 0.95, 0.35, 0.8, 0.55, 1, 0.45, 0.7, 0.9, 0.38]
+/** The small level meter beside her words: how high each bar swings while she speaks. */
+const WAVE = [0.55, 1, 0.7, 0.9, 0.45]
 
 /** The stopwatch: one hour round. */
 const DIAL = { size: 340, c: 170, ring: 114, tickIn: 132, tickOut: 138, tickMajor: 142, num: 157 }
 
 const minutesOf = (value: string) => parseInt(value, 10) || 0
-/**
- * Hindi ends a sentence with a danda (।); English with a full stop. No lookbehind here:
- * Safari before 16.4 refuses to parse one, and with it the whole page.
- */
-const sentencesOf = (text: string) =>
-  text
-    .match(/[^.?!।]+[.?!।]*\s*/g)
-    ?.map((sentence) => sentence.trim())
-    .filter(Boolean) ?? [text]
-/** The slides the finished deck is laid out with, back to front: the cover, then the two charts. */
+/** Hindi ends a sentence with a danda (।); English with a full stop. */
+const sentencesOf = (text: string) => splitSentences(text, '.?!।').filter(Boolean)
+/** The slides the finished deck is dealt out with, back to front: the cover, the bars, the rising line. */
 const SPREAD: PrastutiSlide['kind'][] = ['title', 'bars', 'trend']
-const bare = (word: string) => word.normalize('NFC').replace(/[।.,!?]/g, '')
-/**
- * The words of a sentence that the deck uses as they were said: the longest run of two or
- * more of her words found on a slide. Returns [from, to) in words; [0, 0] if there is none.
- */
-const keyRun = (words: string[], deckTexts: string[]): [number, number] => {
-  let best: [number, number] = [0, 0]
-  for (let from = 0; from < words.length; from++) {
-    for (let to = words.length; to > from + 1 && to - from > best[1] - best[0]; to--) {
-      const phrase = words.slice(from, to).map(bare).join(' ')
-      if (deckTexts.some((text) => text.normalize('NFC').includes(phrase))) {
-        best = [from, to]
-        break
-      }
-    }
-  }
-  return best
-}
 const polar = (r: number, minute: number) => {
   const a = (minute / 60) * Math.PI * 2
   return [DIAL.c + r * Math.sin(a), DIAL.c - r * Math.cos(a)] as const
@@ -128,43 +111,25 @@ function GlobeGlyph() {
   )
 }
 
-function MicGlyph({ colour }: { colour: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke={colour} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="9" y="2.500" width="6" height="11.500" rx="3" fill={colour} stroke="none" />
-      <path d="M5.500 11.500a6.500 6.500 0 0 0 13 0M12 18v3.500" />
-    </svg>
-  )
-}
-
 // ====================================================================== BEFORE
-/** Sunday, 11 pm. Every formatting button there is, and an empty slide with a blinking cursor. */
+/** ONE picture: a slide editor late on Sunday night. Every formatting button there is, and an empty slide. */
 function Before({ product }: P) {
   return (
     <div className="prastuti-b">
-      <div className="prastuti-b-night">
-        <svg viewBox="0 0 150 90" aria-hidden="true">
-          <path className="prastuti-b-moon" d="M143 25A13 13 0 0 1 127.500 9.500 13 13 0 1 0 143 25z" />
-          {[
-            [133, 45, 1.2],
-            [143, 42, 1.5],
-            [131, 56, 1],
-            [144, 70, 1.3],
-            [136, 82, 0.9],
-            [120, 33, 0.9],
-          ].map(([x, y, r], i) => (
-            <circle className="prastuti-b-star" key={i} cx={x} cy={y} r={r} />
-          ))}
-        </svg>
-        <span className="prastuti-b-time">{product.demo.beforeWhen}</span>
-      </div>
-
       <div className="prastuti-b-win">
         <div className="prastuti-b-top">
           <i />
           <i />
           <i />
-          <span>Untitled deck</span>
+          {/* the clock in the title bar: this is being done at night */}
+          <span className="prastuti-b-clock">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path className="prastuti-b-moon" d="M20.500 14.200A8.300 8.300 0 0 1 9.800 3.500a8.300 8.300 0 1 0 10.700 10.700z" />
+              <circle className="prastuti-b-star" cx="17.200" cy="5.400" r="1.150" />
+              <circle className="prastuti-b-star" cx="21" cy="9.300" r="0.800" />
+            </svg>
+            {product.demo.beforeWhen}
+          </span>
         </div>
         <div className="prastuti-b-tools">
           <span className="prastuti-b-font">
@@ -317,7 +282,7 @@ function TrendFace({ slide, copy }: { slide: PrastutiSlide; copy?: boolean }) {
         <circle className="prastuti-trend-dot prastuti-trend-dot--last" cx={last.x} cy={last.y.toFixed(2)} r="2.1" />
       </svg>
       <Head slide={slide} />
-      <div className="prastuti-trend-call" style={{ left: `${last.x}%`, top: `${((last.y - 6.2) / SLIDE.h) * 100}%` }}>
+      <div className="prastuti-trend-call" style={{ left: `${last.x + CALL_REACH}%`, top: `${((last.y - 6.2) / SLIDE.h) * 100}%` }}>
         <div className="prastuti-trend-pill">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M6 18 18 6M9 6h9v9" />
@@ -376,9 +341,14 @@ function SlideFace({ slide, copy }: { slide: PrastutiSlide; copy?: boolean }) {
 }
 
 // ====================================================================== SCREEN
-/** Prastuti on her laptop: set to Hindi, four places for slides, one big canvas, one place to talk. */
+/**
+ * Prastuti on her laptop. The bar says two things only: the product's name and the language.
+ * Under it one canvas: the place the deck appears, and the voice bar with the one control.
+ */
 function Screen({ product }: P) {
   const d = product.demo
+  const hindi = sentencesOf(d.spoken)
+  const english = sentencesOf(d.spokenEn)
   return (
     <div className="prastuti-app">
       <div className="prastuti-appbar">
@@ -398,60 +368,27 @@ function Screen({ product }: P) {
           <Hi>{d.language.native}</Hi>
           <span>{d.language.en}</span>
         </span>
-        <span className="prastuti-appwho">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={PRIYA.portrait} alt="" draggable={false} />
-          Priya
-        </span>
       </div>
 
       <div className="prastuti-canvas">
-        {/* the filmstrip: four places, filled one by one */}
-        <div className="prastuti-strip">
-          {d.slides.map((s, i) => (
-            <div className="prastuti-thumb" key={s.kind}>
-              <span className="prastuti-thumb-n">
-                {i + 1}
-                <i className="prastuti-thumb-ok">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M5.500 12.500 10 17 18.500 7.500" />
-                  </svg>
-                </i>
-              </span>
-              <div className="prastuti-thumb-slot">
-                <i className="prastuti-thumb-ring" />
-              </div>
-            </div>
-          ))}
+        {/* the place the deck will appear */}
+        <div className="prastuti-empty" data-ev-solid>
+          <span className="prastuti-empty-k">Speak in</span>
+          <span className="prastuti-empty-lang">
+            <Hi>{d.language.native}</Hi>
+            <span>{d.language.en}</span>
+          </span>
         </div>
 
-        {/* the canvas: each slide is built here, full size, then takes its place in the filmstrip */}
-        <div className="prastuti-main">
-          <div className="prastuti-empty">
-            <span className="prastuti-empty-k">Speak in</span>
-            <span className="prastuti-empty-lang">
-              <Hi>{d.language.native}</Hi>
-              <span>{d.language.en}</span>
-            </span>
-            <span className="prastuti-empty-p">Your deck appears here, in the same language.</span>
+        {/* the slides, as they are built: large, one on top of the other */}
+        {d.slides.map((s, i) => (
+          <div className={`prastuti-slide prastuti-build prastuti-build--${s.kind}`} style={{ zIndex: 2 + i }} key={s.kind}>
+            <SlideFace slide={s} />
           </div>
-          {d.slides.map((s, i) => (
-            <div className={`prastuti-slide prastuti-slide--${s.kind}`} style={{ zIndex: 10 - i }} key={s.kind}>
-              <SlideFace slide={s} />
-            </div>
-          ))}
-          {/* the finished deck, laid out: the cover and the two charts once more, as real slides */}
-          {SPREAD.map((kind, i) => {
-            const at = d.slides.findIndex((s) => s.kind === kind)
-            return at < 0 ? null : (
-              <div className={`prastuti-slide prastuti-out prastuti-out--${kind}`} data-slide={at} style={{ zIndex: 20 + i }} key={kind}>
-                <SlideFace slide={d.slides[at]} copy />
-              </div>
-            )
-          })}
-        </div>
+        ))}
 
-        <div className="prastuti-talk">
+        {/* the voice bar: the one control, and her words as she says them */}
+        <div className="prastuti-dock">
           <div className="prastuti-micWrap">
             <TouchControl label={`Talk the week through, in ${d.language.en}`} className="prastuti-mic">
               <span className="prastuti-mic-face">
@@ -461,44 +398,60 @@ function Screen({ product }: P) {
                     <path d="M5.500 11.500a6.500 6.500 0 0 0 13 0M12 18v3.500" />
                   </g>
                   <rect className="prastuti-mic-g--stop" x="7" y="7" width="10" height="10" rx="2.400" fill="#fff" stroke="none" />
-                  <path className="prastuti-mic-g--check" d="M5 12.500 10 17.500 19.500 7" strokeWidth="2.800" />
                 </svg>
               </span>
             </TouchControl>
           </div>
-          <div className="prastuti-talk-mid">
-            <div className="prastuti-hint">
-              <span>Tap to talk</span>
-              <span>Listening, in {d.language.en}</span>
-              <span>Building the deck, in {d.language.en}</span>
-              <span>
-                {d.slides.length} slides, in {d.language.en}
-              </span>
+          <div className="prastuti-say">
+            <div className="prastuti-idle">
+              <span className="prastuti-idle-k">Tap to talk</span>
+              <span className="prastuti-idle-p">Talk me through your week</span>
             </div>
-            <div className="prastuti-talk-body">
-              <p className="prastuti-talk-ph">Talk me through your week</p>
-              <div className="prastuti-wave">
-                {WAVE.map((_, i) => (
-                  <i key={i} />
-                ))}
+            {/* the live line: one sentence at a time, in Hindi, with its English beneath */}
+            {hindi.map((sentence, i) => (
+              <div className="prastuti-line" key={sentence}>
+                <p className="prastuti-line-hi prastuti-hi" lang="hi">
+                  {sentence.split(' ').map((word, k) => (
+                    <span key={k}>
+                      {k > 0 ? ' ' : null}
+                      <span className="prastuti-w">{word}</span>
+                    </span>
+                  ))}
+                </p>
+                <p className="prastuti-line-en">{english[i] ?? ''}</p>
               </div>
-            </div>
+            ))}
           </div>
+          <div className="prastuti-wave" aria-hidden="true">
+            {WAVE.map((_, i) => (
+              <i key={i} />
+            ))}
+          </div>
+          {/* the tracker, attached: a small sheet, without a word */}
           <div className="prastuti-attach">
             <i className="prastuti-attach-outline" />
-            <div className="prastuti-attach-chip">
+            <div className="prastuti-attach-tile">
               <SheetGlyph />
-              <span>{d.file}</span>
               <i className="prastuti-attach-sweep" />
             </div>
           </div>
         </div>
+
+        {/* the finished deck, dealt out: the cover and the two charts once more, as real slides */}
+        {SPREAD.map((kind, i) => {
+          const at = d.slides.findIndex((s) => s.kind === kind)
+          return at < 0 ? null : (
+            <div className={`prastuti-slide prastuti-out prastuti-out--${kind}`} data-slide={at} style={{ zIndex: 20 + i }} key={kind}>
+              <SlideFace slide={d.slides[at]} copy />
+            </div>
+          )
+        })}
       </div>
     </div>
   )
 }
 
-/** The stamp lies on the laptop, over the corner the laid-out deck leaves free, and travels with it (animate() places it). */
+/** The ONE thing on the laptop at the result: the stamp, on the corner the dealt-out deck leaves free (animate() places it). */
 function OnDevice({ product }: P) {
   return (
     <div className="prastuti-stamp">
@@ -509,94 +462,7 @@ function OnDevice({ product }: P) {
   )
 }
 
-// ====================================================================== AROUND THE DEVICE
-/** Left column: what goes in. Her voice, in her language, and the tracker. Nothing to format. */
-function Under({ product }: P) {
-  const d = product.demo
-  return (
-    <div className="prastuti-kit">
-      <span className="prastuti-kit-chip">
-        <MicGlyph colour="#c8431c" />
-        Her voice, in {d.language.en}
-      </span>
-      <span className="prastuti-kit-chip">
-        <SheetGlyph />
-        {d.file}
-      </span>
-      <span className="prastuti-kit-chip prastuti-kit-chip--solid">No formatting</span>
-    </div>
-  )
-}
-
-/** Under the photo: what she says, in Hindi, each sentence with its English beneath. */
-function Beside({ product }: P) {
-  const d = product.demo
-  const hindi = sentencesOf(d.spoken)
-  const english = sentencesOf(d.spokenEn)
-  // everything the deck says, to find her own words in it
-  const deckTexts = d.slides.flatMap((s) => [s.title, s.sub ?? '', s.callout ?? '', ...(s.points ?? []), ...(s.bars ?? []).map((b) => b.label)])
-  return (
-    <div className="prastuti-said">
-      <i className="prastuti-said-line" />
-      <p className="prastuti-said-who">
-        Priya says, in {d.language.en}
-        <span className="prastuti-said-wave" aria-hidden="true">
-          {[0.5, 1, 0.65, 0.9, 0.4].map((_, i) => (
-            <i key={i} />
-          ))}
-        </span>
-      </p>
-      {hindi.map((sentence, i) => {
-        const words = sentence.split(' ')
-        const [from, to] = keyRun(words, deckTexts)
-        return (
-          <div className="prastuti-sent" key={sentence}>
-            <p className="prastuti-sent-hi prastuti-hi" lang="hi">
-              {words.map((word, k) => (
-                <span key={k}>
-                  {k > 0 ? ' ' : null}
-                  {k >= from && k < to ? (
-                    // a word the deck keeps as she said it: it warms to the accent (two whole words, cross-faded)
-                    <span className="prastuti-w prastuti-w--key">
-                      <span className="prastuti-w-said">{word}</span>
-                      <span className="prastuti-w-kept" aria-hidden="true">
-                        {word}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="prastuti-w">{word}</span>
-                  )}
-                </span>
-              ))}
-            </p>
-            <p className="prastuti-sent-en">{english[i] ?? ''}</p>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-/** Under the result headline: the old time, struck through, and the new state. */
-function Proof({ product }: P) {
-  return (
-    <div className="prastuti-compare">
-      <span className="prastuti-compare-old">
-        {product.demo.beforeWhen}
-        <i />
-      </span>
-      <svg viewBox="0 0 40 20" fill="none" stroke="#c8431c" strokeWidth="2.600" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M2 10h34M28 3l8 7-8 7" />
-      </svg>
-      <span className="prastuti-compare-new">
-        <Hi>{product.demo.ready}</Hi>
-        <span>{product.demo.readyEn}</span>
-      </span>
-    </div>
-  )
-}
-
-/** The thing that flies: the tracker, out of the name and into the laptop. */
+/** The thing that flies: the tracker, out of the name and into the voice bar. */
 function Extras({ product }: P) {
   return (
     <div className="prastuti-file" aria-hidden="true">
@@ -610,8 +476,8 @@ function Extras({ product }: P) {
 /** A stopwatch, one hour round, that stops at 18 minutes. The deck is at its centre. */
 function Stat({ product }: P) {
   const mins = minutesOf(product.stat.value)
-  const d = product.demo
-  const cover = d.slides.find((s) => s.kind === 'title') ?? d.slides[0]
+  const slides = product.demo.slides
+  const cover = slides.find((s) => s.kind === 'title') ?? slides[0]
   return (
     <div className="prastuti-clock">
       <i className="prastuti-clock-shadow" />
@@ -669,26 +535,19 @@ function Stat({ product }: P) {
         </i>
       </div>
 
-      <div className="prastuti-callout">
-        <div className="prastuti-callout-in">
-          <Hi>{d.ready}</Hi>
-          <span>{d.readyEn}</span>
-        </div>
-      </div>
     </div>
   )
 }
 
 // ====================================================================== MOTION
 function animate(env: MomentEnv<PrastutiProduct>) {
-  const { $, $$, U, ease: E, loc, letters, before, demo, run, result, stat, product } = env
+  const { $, $$, U, ease: E, loc, letters, before, demo, run, stat, product } = env
   const inside = <T extends Element = HTMLElement>(root: Element, selector: string) => Array.from(root.querySelectorAll(selector)) as unknown as T[]
 
-  // ---------------------------------------------------------------- before: Sunday, 11 pm, and nothing on the slide
-  const night = $('.prastuti-b-night')
+  // ---------------------------------------------------------------- before: late on Sunday, and nothing on the slide
+  const clock = $('.prastuti-b-clock')
   const moon = $('.prastuti-b-moon')
   const stars = $$('.prastuti-b-star')
-  const win = $('.prastuti-b-win')
   const tools = $$('.prastuti-b-tools > *:not(.prastuti-b-press)')
   const press = $('.prastuti-b-press')
   const pressOn = [$('.prastuti-b-tool--b'), $('.prastuti-b-swatch--b'), $('.prastuti-b-tool--u')]
@@ -699,16 +558,15 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   // she tries one formatting button after another: the highlight hops between them
   const toolsEl = $('.prastuti-b-tools')
   const toolsBox = loc(toolsEl)
-  // on a phone on its side the picture is drawn 1.2×: the hops are in the toolbar's own pixels
+  // the picture is drawn enlarged by the frame: the hops are in the toolbar's own pixels
   const drawn = toolsBox.w / (toolsEl.offsetWidth || 1) || 1
   const pressAt = pressOn.map((el) => {
     const b = loc(el)
     return { x: (b.cx - toolsBox.x) / drawn, y: (b.cy - toolsBox.y) / drawn }
   })
-  gsap.set(night, { autoAlpha: 0, y: 2 * U, rotation: 9 })
-  gsap.set(moon, { scale: 0, rotation: -40, transformOrigin: '50% 50%' })
+  gsap.set(clock, { autoAlpha: 0, scale: 0.7, transformOrigin: '100% 50%' })
+  gsap.set(moon, { scale: 0, rotation: -50, transformOrigin: '50% 50%' })
   gsap.set(stars, { scale: 0, transformOrigin: '50% 50%' })
-  gsap.set(win, { autoAlpha: 0, y: 3 * U, rotation: -9 })
   gsap.set(tools, { autoAlpha: 0, y: 0.5 * U })
   gsap.set(press, { x: pressAt[0].x, y: pressAt[0].y, xPercent: -50, yPercent: -50, scale: 0.4, autoAlpha: 0 })
   gsap.set(bThumbs, { autoAlpha: 0, x: -0.6 * U })
@@ -716,32 +574,26 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   gsap.set(phs, { autoAlpha: 0 })
   gsap.set(cursor, { autoAlpha: 0 })
   before
-    .to(night, { autoAlpha: 1, y: 0, rotation: 4, duration: 0.6, ease: E.snap }, 0.05)
-    .to(win, { autoAlpha: 1, y: 0, rotation: -3, duration: 0.65, ease: E.snap }, 0.12)
-    .to(moon, { scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2)' }, 0.3)
-    .to(stars, { scale: 1, duration: 0.3, stagger: 0.04, ease: 'back.out(3)' }, 0.38)
-    .to(tools, { autoAlpha: 1, y: 0, duration: 0.26, stagger: 0.022, ease: 'power2.out' }, 0.26)
-    .to(bThumbs, { autoAlpha: 1, x: 0, duration: 0.28, stagger: 0.05 }, 0.3)
-    .to(bSlide, { autoAlpha: 1, scale: 1, duration: 0.36, ease: E.snap }, 0.32)
-    .to(phs, { autoAlpha: 1, duration: 0.24, stagger: 0.08 }, 0.46)
-    .to(cursor, { autoAlpha: 1, duration: 0.1 }, 0.6)
+    .to(tools, { autoAlpha: 1, y: 0, duration: 0.26, stagger: 0.022, ease: 'power2.out' }, 0.2)
+    .to(bThumbs, { autoAlpha: 1, x: 0, duration: 0.28, stagger: 0.05 }, 0.24)
+    .to(bSlide, { autoAlpha: 1, scale: 1, duration: 0.36, ease: E.snap }, 0.26)
+    .to(phs, { autoAlpha: 1, duration: 0.24, stagger: 0.08 }, 0.4)
+    .to(cursor, { autoAlpha: 1, duration: 0.1 }, 0.56)
+    // the clock in the title bar: it is night
+    .to(clock, { autoAlpha: 1, scale: 1, duration: 0.34, ease: 'back.out(2.2)' }, 0.34)
+    .to(moon, { scale: 1, rotation: 0, duration: 0.4, ease: 'back.out(2)' }, 0.42)
+    .to(stars, { scale: 1, duration: 0.24, stagger: 0.06, ease: 'back.out(3)' }, 0.5)
     // bold, a colour, underline… and still nothing on the slide
-    .to(press, { autoAlpha: 1, scale: 1, duration: 0.14, ease: 'back.out(3)' }, 0.5)
-    .to(press, { x: pressAt[1].x, y: pressAt[1].y, duration: 0.16, ease: 'power3.inOut' }, 0.62)
-    .to(press, { x: pressAt[2].x, y: pressAt[2].y, duration: 0.16, ease: 'power3.inOut' }, 0.74)
+    .to(press, { autoAlpha: 1, scale: 1, duration: 0.14, ease: 'back.out(3)' }, 0.44)
+    .to(press, { x: pressAt[1].x, y: pressAt[1].y, duration: 0.16, ease: 'power3.inOut' }, 0.56)
+    .to(press, { x: pressAt[2].x, y: pressAt[2].y, duration: 0.16, ease: 'power3.inOut' }, 0.68)
 
-  // ---------------------------------------------------------------- measure the screen, as it is laid out
-  const app = $('.prastuti-app')
-  // on screens narrower than 16:9 the laptop is smaller (prastuti.css): the app is fitted to its screen
-  const fitTo = (app.parentElement as HTMLElement).offsetWidth / (app.offsetWidth || 1)
-  if (fitTo > 0 && Math.abs(fitTo - 1) > 0.004) gsap.set(app, { scale: fitTo })
-
-  // The slides move inside the app, so their places are read from its own layout (offsets),
-  // which no zoom or fit of the laptop changes.
+  // ---------------------------------------------------------------- the screen, as it is laid out
+  // Everything inside the laptop is laid out at its real size (--a), so places are read from the
+  // layout itself (offsets inside the canvas), which no enlargement of the laptop changes.
   const canvas = $('.prastuti-canvas')
-  const main = $('.prastuti-main')
-  const W = main.offsetWidth
-  const H = main.offsetHeight
+  /** One app unit, in the canvas's own pixels. */
+  const A = canvas.offsetWidth / 29
   const within = (el: HTMLElement) => {
     let x = 0
     let y = 0
@@ -751,130 +603,94 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       y += node.offsetTop
       node = node.offsetParent as HTMLElement | null
     }
-    return { x, y }
+    return { x, y, w: el.offsetWidth, h: el.offsetHeight }
   }
-  const mainAt = within(main)
-  /** Where each slide stands in the filmstrip, as a move of the full-size slide. */
-  const park = $$('.prastuti-thumb-slot').map((slot) => {
-    const at = within(slot)
-    return { x: at.x - mainAt.x, y: at.y - mainAt.y, scale: slot.offsetWidth / (W || 1) }
-  })
 
-  const thumbs = $$('.prastuti-thumb')
-  const rings = $$('.prastuti-thumb-ring')
-  const oks = $$('.prastuti-thumb-ok')
   const empty = $('.prastuti-empty')
-  const slides = $$('.prastuti-slide:not(.prastuti-out)')
-  // the finished deck, laid out: the cover and the two charts once more
+  const builds = $$('.prastuti-build')
   const outs = $$('.prastuti-out')
-  const strip = $('.prastuti-strip')
+  const dock = $('.prastuti-dock')
   const micWrap = $('.prastuti-micWrap')
-  const hints = $$('.prastuti-hint span')
+  const idle = $$('.prastuti-idle > span')
+  const attach = $('.prastuti-attach')
   const attachOutline = $('.prastuti-attach-outline')
-  const attachChip = $('.prastuti-attach-chip')
+  const attachTile = $('.prastuti-attach-tile')
   const attachSweep = $('.prastuti-attach-sweep')
   const file = $('.prastuti-file')
-  const attachBox = loc($('.prastuti-attach'))
+  const attachBox = loc(attach)
   const fileBox = { w: file.offsetWidth, h: file.offsetHeight }
+  // measured now, while the dealt-out deck still lies where it will rest
+  const canvasBox = loc(canvas)
+  const outBox = (kind: string) => {
+    const el = outs.find((o) => o.classList.contains(`prastuti-out--${kind}`))
+    return el ? loc(el) : null
+  }
+  const barsBox = outBox('bars')
+  const trendBox = outBox('trend')
 
   // ---------------------------------------------------------------- demo: Prastuti, set to Hindi; the tracker attaches itself
-  gsap.set(thumbs, { autoAlpha: 0, x: -0.7 * U })
-  gsap.set(rings, { autoAlpha: 0 })
-  gsap.set(oks, { scale: 0 })
-  gsap.set(empty, { autoAlpha: 0, scale: 0.96 })
-  gsap.set(micWrap, { autoAlpha: 0, scale: 0 })
-  gsap.set(hints, { autoAlpha: 0 })
-  gsap.set(attachChip, { autoAlpha: 0, scale: 0.9 })
+  gsap.set(empty, { autoAlpha: 0, scale: 0.95 })
+  gsap.set(dock, { autoAlpha: 0, y: 1.6 * A })
+  gsap.set(micWrap, { scale: 0 })
+  gsap.set(idle, { autoAlpha: 0, x: -0.5 * A })
+  gsap.set(attachTile, { autoAlpha: 0, scale: 0.7 })
   gsap.set(attachSweep, { xPercent: -110 })
-  const saidWho = $('.prastuti-said-who')
-  gsap.set(saidWho, { autoAlpha: 0, x: 0.8 * U })
-  // the tracker is born from the first letter of the name and is thrown across into the laptop
+  // the tracker is born from the first letter of the name and is thrown across into the voice bar
   const born = { x: letters[0].cx, y: letters[0].cy }
   const dropAt = { x: attachBox.cx, y: attachBox.cy }
   const dropOver = { x: born.x + (dropAt.x - born.x) * 0.5, y: Math.min(born.y, dropAt.y) - 7.5 * U }
   gsap.set(file, { x: born.x, y: born.y, xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, rotation: -8 })
   const fileLand = 0.92
   demo
-    .to(empty, { autoAlpha: 1, scale: 1, duration: 0.42, ease: E.snap }, 0.46)
-    .to(thumbs, { autoAlpha: 1, x: 0, duration: 0.34, stagger: 0.06 }, 0.5)
+    .to(empty, { autoAlpha: 1, scale: 1, duration: 0.42, ease: E.snap }, 0.44)
+    .to(dock, { autoAlpha: 1, y: 0, duration: 0.4, ease: E.snap }, 0.52)
+    .to(micWrap, { scale: 1, duration: 0.42, ease: 'back.out(2.4)' }, 0.68)
+    .to(idle, { autoAlpha: 1, x: 0, duration: 0.26, stagger: 0.06 }, 0.82)
     .to(file, { scale: 1, autoAlpha: 1, duration: 0.32, ease: 'back.out(2.2)' }, 0.04)
-    .to(file, { motionPath: { path: [dropOver, dropAt], curviness: 1.25 }, duration: 0.58, ease: 'power2.inOut' }, fileLand - 0.58)
-    .to(file, { rotation: 7, duration: 0.26, ease: 'sine.out' }, fileLand - 0.58)
-    .to(file, { rotation: 0, duration: 0.32, ease: 'sine.inOut' }, fileLand - 0.32)
+    .to(file, { motionPath: { path: [dropOver, dropAt], curviness: 1.25 }, duration: 0.6, ease: 'power2.inOut' }, fileLand - 0.6)
+    .to(file, { rotation: 7, duration: 0.26, ease: 'sine.out' }, fileLand - 0.6)
+    .to(file, { rotation: 0, duration: 0.34, ease: 'sine.inOut' }, fileLand - 0.34)
+    // it lands, and becomes the small sheet in the voice bar
     .to(file, { scaleX: attachBox.w / fileBox.w, scaleY: attachBox.h / fileBox.h, autoAlpha: 0, duration: 0.18, ease: 'power2.out' }, fileLand - 0.05)
     .to(attachOutline, { autoAlpha: 0, duration: 0.16 }, fileLand - 0.05)
-    .to(attachChip, { autoAlpha: 1, scale: 1, duration: 0.3, ease: E.snap }, fileLand - 0.05)
-    .to(micWrap, { autoAlpha: 1, scale: 1, duration: 0.42, ease: 'back.out(2.4)' }, 0.74)
-    .to(hints[0], { autoAlpha: 1, duration: 0.25 }, 0.92)
-    // under the photo, the place her words will be: she is about to speak, in Hindi
-    .to(saidWho, { autoAlpha: 1, x: 0, duration: 0.3 }, 0.9)
+    .to(attachTile, { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'back.out(2.6)' }, fileLand - 0.05)
   env.bump(demo, fileLand - 0.05)
 
   // ---------------------------------------------------------------- run: she speaks in Hindi, and the deck builds itself in Hindi
   const mic = $('.prastuti-mic-face')
   const micGlyph = $('.prastuti-mic-g--mic')
   const stopGlyph = $('.prastuti-mic-g--stop')
-  const checkGlyph = $('.prastuti-mic-g--check')
-  const placeholder = $('.prastuti-talk-ph')
   const wave = $('.prastuti-wave')
   const waveBars = $$('.prastuti-wave i')
-  const saidLine = $('.prastuti-said-line')
-  const saidWave = $$('.prastuti-said-wave i')
-  const sents = $$('.prastuti-sent')
+  const lines = $$('.prastuti-line')
   const stamp = $('.prastuti-stamp')
   const burst = $('.prastuti-stamp-burst')
+  const kinds = product.demo.slides.map((s) => s.kind)
 
   gsap.set(stopGlyph, { autoAlpha: 0, scale: 0.4, transformOrigin: '50% 50%' })
   gsap.set(micGlyph, { transformOrigin: '50% 50%' })
-  gsap.set(checkGlyph, { drawSVG: '0%' })
   gsap.set(wave, { autoAlpha: 0 })
-  gsap.set(saidLine, { scaleY: 0, transformOrigin: '50% 0%' })
-  gsap.set(saidWave, { scaleY: 0.25 })
-  gsap.set(slides, { transformOrigin: '0 0', autoAlpha: 0, x: W * 0.02, y: H * 0.02, scale: 0.96 })
+  gsap.set(waveBars, { scaleY: 0.2 })
 
-  // The finished deck is laid out on the canvas, not closed: the bars low on the left, the rising
-  // line high on the right and over the bars' empty corner, the cover behind them both. How large
-  // each lies is said once, in prastuti.css (--out-*; 0 leaves that slide in the filmstrip). Where
-  // the laptop is small (--out-wide) the spread is the two charts, and the filmstrip gives them
-  // its room.
-  const mainCss = getComputedStyle(main)
-  const sizeOf = (kind: string) => parseFloat(mainCss.getPropertyValue(`--out-${kind}`)) || 0
-  const wide = sizeOf('wide') > 0
-  const fieldX = wide ? within(strip).x - mainAt.x : 0
-  const lieAt = (kind: string | undefined) => {
-    const k = sizeOf(kind ?? '')
-    if (kind === 'bars') return { x: fieldX, y: H * (1 - k), scale: k }
-    if (kind === 'trend') return { x: W * (1 - k), y: 0, scale: k }
-    return { x: fieldX, y: 0, scale: k }
-  }
-  const spread = outs.map((el) => {
-    const from = Number(el.dataset.slide) || 0
-    return { el, from, ...lieAt(product.demo.slides[from]?.kind) }
+  // WHEN. Each slide arrives on the canvas, builds itself, and is covered by the next. The two
+  // charts are the picture the visitor came for: they stay longest. The cover and the three
+  // points pass quickly (the cover is seen again in the finished spread).
+  const WORD = 0.04
+  const firstWords = lines[0] ? inside(lines[0], '.prastuti-w').length : 0
+  const firstSaid = 0.1 + firstWords * WORD
+  const STAY: Record<PrastutiSlide['kind'], number> = { title: 0.28, bars: 0.68, trend: 0.68, points: 0.26 }
+  const arrivals: number[] = []
+  let tG = firstSaid
+  builds.forEach((_, i) => {
+    arrivals.push(tG)
+    tG += STAY[kinds[i] ?? 'points']
   })
+  // (tG: the last slide is built; the voice bar gives way and the deck is dealt out)
 
-  // The stamp comes down on the corner the spread leaves free, low on the right. It lives on the
-  // laptop (not inside its screen), so that place is worked out in the laptop's own pixels.
-  const onDevice = stamp.parentElement as HTMLElement
-  const deviceBox = loc(onDevice)
-  const mainBox = loc(main)
-  const perStage = deviceBox.w / (onDevice.offsetWidth || 1) || 1
-  const perMain = mainBox.w / (W || 1)
-  const stampNudge = { x: parseFloat(mainCss.getPropertyValue('--stamp-dx')) || 0, y: parseFloat(mainCss.getPropertyValue('--stamp-dy')) || 0 }
-  const free = {
-    x: (fieldX + W * sizeOf('bars') + W) / 2 + stampNudge.x * W,
-    y: (H * sizeOf('trend') + H) / 2 + stampNudge.y * H,
-  }
-  const stampAt = {
-    x: (mainBox.x + free.x * perMain - deviceBox.x) / perStage,
-    y: (mainBox.y + free.y * perMain - deviceBox.y) / perStage,
-  }
-  // it comes down from over the laptop, not from over her photo
-  gsap.set(stamp, { x: stampAt.x, y: stampAt.y, xPercent: -50, yPercent: -50, autoAlpha: 0, scale: 2.3, rotation: -22, transformOrigin: '80% 50%' })
-  gsap.set(burst, { autoAlpha: 0 })
-
-  // her words come whole words at a time; the first slide starts as she ends her first sentence
-  const WORD = 0.042
-  const firstSaid = 0.1 + (sents[0] ? inside(sents[0], '.prastuti-w').length : 0) * WORD
+  // WHERE. A slide is built at its full size. When the next one arrives it steps back, up and to
+  // the left, so the deck is seen growing as a pile: `back` is how many slides lie on top of it.
+  const pile = (back: number) => ({ x: -1.15 * A * back, y: -0.36 * A * back, scale: 1 - 0.035 * back })
+  gsap.set(builds, { transformOrigin: '0 0', autoAlpha: 0, x: 1.3 * A, y: 0.9 * A, scale: 0.95 })
 
   run
     // the touch: she starts to talk
@@ -882,76 +698,43 @@ function animate(env: MomentEnv<PrastutiProduct>) {
     .to(mic, { scale: 1, duration: 0.4, ease: 'back.out(3.2)' }, 0.08)
     .to(micGlyph, { autoAlpha: 0, scale: 0.4, duration: 0.16, ease: 'power2.in' }, 0.03)
     .to(stopGlyph, { autoAlpha: 1, scale: 1, duration: 0.28, ease: 'back.out(2.4)' }, 0.14)
-    .to([hints[0], placeholder], { autoAlpha: 0, duration: 0.14 }, 0)
-    .to(hints[1], { autoAlpha: 1, duration: 0.2 }, 0.1)
-    .to(wave, { autoAlpha: 1, duration: 0.2 }, 0.05)
-    .to(saidLine, { scaleY: 1, duration: 0.6, ease: 'power2.out' }, 0.04)
-    // the canvas keeps saying where the deck will appear until the first slide is on its way
-    .to(empty, { autoAlpha: 0, scale: 0.97, duration: 0.16, ease: 'power1.in' }, firstSaid - 0.08)
+    .to(idle, { autoAlpha: 0, y: -0.5 * A, duration: 0.14, stagger: 0.03, ease: 'power2.in' }, 0)
+    .to(wave, { autoAlpha: 1, duration: 0.2 }, 0.06)
+    // the canvas keeps saying which language until the first slide is on its way
+    .to(empty, { autoAlpha: 0, scale: 0.97, duration: 0.16, ease: 'power1.in' }, firstSaid - 0.1)
   waveBars.forEach((b, i) => {
-    run.to(b, { scaleY: WAVE[i % WAVE.length], duration: 0.14, repeat: 5, yoyo: true, ease: 'sine.inOut' }, 0.08 + (i % 7) * 0.022)
-  })
-  saidWave.forEach((b, i) => {
-    run.to(b, { scaleY: 1, duration: 0.13, repeat: 5, yoyo: true, ease: 'sine.inOut' }, 0.08 + i * 0.03)
+    run.to(b, { scaleY: WAVE[i % WAVE.length], duration: 0.13, repeat: 11, yoyo: true, ease: 'sine.inOut' }, 0.08 + i * 0.03)
   })
 
-  // her words, whole words at a time; each sentence's English arrives as she finishes it
-  let spokenEnd = 0.1
-  let wordIndex = 0
-  sents.forEach((sent) => {
-    const words = inside(sent, '.prastuti-w')
-    const gloss = inside(sent, '.prastuti-sent-en')
-    gsap.set(words, { autoAlpha: 0, y: 0.4 * U })
-    gsap.set(gloss, { autoAlpha: 0, y: 0.3 * U })
-    words.forEach((w) => {
-      run.to(w, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' }, 0.1 + wordIndex * WORD)
-      wordIndex += 1
+  // HER WORDS: the live line in the voice bar. One sentence at a time, whole words at a time,
+  // its English beneath as she finishes it; it lifts away as the next one begins.
+  const saidAt = lines.map((_, i) => (i === 0 ? 0.1 : (arrivals[i] ?? tG) + 0.04))
+  lines.forEach((line, i) => {
+    const words = inside(line, '.prastuti-w')
+    const gloss = inside(line, '.prastuti-line-en')
+    const at = saidAt[i]
+    const until = saidAt[i + 1] ?? tG
+    gsap.set(line, { autoAlpha: 0 })
+    gsap.set(words, { autoAlpha: 0, y: 0.45 * A })
+    gsap.set(gloss, { autoAlpha: 0, y: 0.3 * A })
+    run.to(line, { autoAlpha: 1, duration: 0.01, ease: 'none' }, at)
+    words.forEach((w, k) => {
+      run.to(w, { autoAlpha: 1, y: 0, duration: 0.22, ease: 'power2.out' }, at + k * WORD)
     })
-    spokenEnd = 0.1 + wordIndex * WORD
-    run.to(gloss, { autoAlpha: 1, y: 0, duration: 0.26, ease: 'power2.out' }, spokenEnd + 0.02)
-    // the words the deck keeps exactly as she said them warm to the accent
-    const kept = inside(sent, '.prastuti-w-kept')
-    if (kept.length) {
-      gsap.set(kept, { autoAlpha: 0 })
-      run.to(kept, { autoAlpha: 1, duration: 0.18, ease: 'none' }, spokenEnd + 0.1).to(inside(sent, '.prastuti-w-said'), { autoAlpha: 0, duration: 0.18, ease: 'none' }, spokenEnd + 0.1)
-    }
-  })
-  // she has said it; the recording stays as a quiet waveform while the deck is built
-  run
-    .to(waveBars, { scaleY: (i) => 0.18 + WAVE[i % WAVE.length] * 0.55, duration: 0.3, ease: 'power2.out', stagger: 0.005 }, spokenEnd + 0.14)
-    .to(wave, { autoAlpha: 0.55, duration: 0.3 }, spokenEnd + 0.14)
-    .to(saidWave, { scaleY: (i) => [0.5, 1, 0.65, 0.9, 0.4][i % 5], duration: 0.24, ease: 'power2.out' }, spokenEnd + 0.14)
-    .to(hints[1], { autoAlpha: 0, duration: 0.14 }, spokenEnd + 0.14)
-    .to(hints[2], { autoAlpha: 1, duration: 0.2 }, spokenEnd + 0.24)
-
-  // Each slide arrives on the canvas, builds itself, and takes its place in the filmstrip. The
-  // two charts are the picture the visitor came for: they stay longest. The cover and the three
-  // points pass quickly (the cover is seen again in the finished spread).
-  const STAY: Record<PrastutiSlide['kind'], number> = { title: 0.27, bars: 0.7, trend: 0.7, points: 0.26 }
-  const PARK = 0.26
-  const arrivals: number[] = []
-  let lastLeave = firstSaid
-  slides.forEach((_, i) => {
-    arrivals.push(lastLeave)
-    lastLeave += STAY[product.demo.slides[i]?.kind ?? 'points']
-  })
-  const arrive = (i: number) => arrivals[i]
-  slides.forEach((slide, i) => {
-    const at = arrive(i)
-    const leave = arrivals[i + 1] ?? lastLeave
-    const land = leave + PARK
     run
-      .to(slide, { autoAlpha: 1, duration: 0.12, ease: 'none' }, at)
-      .to(slide, { x: 0, y: 0, scale: 1, duration: 0.26, ease: E.snap }, at)
-      .to(rings[i], { autoAlpha: 1, duration: 0.14 }, at)
-      .to(slide, { x: park[i].x, y: park[i].y, scale: park[i].scale, duration: PARK, ease: E.inOut }, leave)
-      .to(rings[i], { autoAlpha: 0, duration: 0.16 }, land)
-      .to(oks[i], { scale: 1, duration: 0.22, ease: 'back.out(3)' }, land - 0.04)
+      .to(gloss, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' }, at + Math.min(words.length * WORD, 0.3))
+      .to(line, { autoAlpha: 0, y: -0.7 * A, duration: 0.14, ease: 'power2.in' }, until - 0.14)
   })
 
-  slides.forEach((slide, i) => {
-    const at = arrive(i)
-    const kind = product.demo.slides[i]?.kind
+  // THE SLIDES
+  builds.forEach((slide, i) => {
+    const at = arrivals[i]
+    run.to(slide, { autoAlpha: 1, duration: 0.12, ease: 'none' }, at).to(slide, { x: 0, y: 0, scale: 1, duration: 0.3, ease: E.snap }, at)
+    // the slides already built step back, one place each
+    builds.slice(0, i).forEach((older, j) => {
+      run.to(older, { ...pile(i - j), duration: 0.3, ease: E.inOut }, at)
+    })
+    const kind = kinds[i]
 
     if (kind === 'title') {
       // 1 · the cover: the sun comes up, its orbits draw, the title rises in two lines
@@ -959,21 +742,21 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       const orbits = inside<SVGCircleElement>(slide, '.prastuti-t-ring')
       const moons = inside<SVGCircleElement>(slide, '.prastuti-t-dot')
       const caption = inside(slide, '.prastuti-t-en')
-      const lines = inside(slide, '.prastuti-t-title > span')
+      const titleLines = inside(slide, '.prastuti-t-title > span')
       const rule = inside(slide, '.prastuti-t-rule')
       const sub = inside(slide, '.prastuti-t-sub')
       gsap.set(sun, { scale: 0, transformOrigin: '50% 50%' })
       gsap.set(orbits, { drawSVG: '0%' })
       gsap.set(moons, { scale: 0, transformOrigin: '50% 50%' })
-      gsap.set([caption, sub], { autoAlpha: 0, x: -0.5 * U })
-      gsap.set(lines, { autoAlpha: 0, y: 0.7 * U })
+      gsap.set([caption, sub], { autoAlpha: 0, x: -0.5 * A })
+      gsap.set(titleLines, { autoAlpha: 0, y: 0.7 * A })
       gsap.set(rule, { scaleX: 0, transformOrigin: '0 50%' })
       run
         .to(sun, { scale: 1, duration: 0.24, ease: 'back.out(1.5)' }, at + 0.02)
         .to(orbits, { drawSVG: '100%', duration: 0.2, stagger: 0.03, ease: 'power2.out' }, at + 0.04)
         .to(moons, { scale: 1, duration: 0.12, stagger: 0.03, ease: 'back.out(3)' }, at + 0.14)
         .to(caption, { autoAlpha: 1, x: 0, duration: 0.14 }, at + 0.03)
-        .to(lines, { autoAlpha: 1, y: 0, duration: 0.18, stagger: 0.04, ease: 'power3.out' }, at + 0.04)
+        .to(titleLines, { autoAlpha: 1, y: 0, duration: 0.18, stagger: 0.04, ease: 'power3.out' }, at + 0.04)
         .to(rule, { scaleX: 1, duration: 0.12, ease: 'power2.out' }, at + 0.12)
         .to(sub, { autoAlpha: 1, x: 0, duration: 0.12 }, at + 0.14)
       return
@@ -984,13 +767,16 @@ function animate(env: MomentEnv<PrastutiProduct>) {
     const headText = inside(slide, '.prastuti-head-t, .prastuti-head-en')
     if (headBar.length) {
       gsap.set(headBar, { scaleY: 0, transformOrigin: '50% 0%' })
-      gsap.set(headText, { autoAlpha: 0, x: -0.5 * U })
+      gsap.set(headText, { autoAlpha: 0, x: -0.5 * A })
       run.to(headBar, { scaleY: 1, duration: 0.22, ease: 'power2.out' }, at + 0.04).to(headText, { autoAlpha: 1, x: 0, duration: 0.24, stagger: 0.05 }, at + 0.06)
     }
 
     if (kind === 'bars') {
-      // 2 · the tracker is read; the branches stand up one by one; the one that lags is flagged
-      run.to(attachSweep, { xPercent: 110, duration: 0.44, ease: 'power2.inOut' }, at - 0.04)
+      // 2 · the tracker is read (its sheet in the voice bar lights); the branches stand up one by one; the one that lags is flagged
+      run
+        .to(attachSweep, { xPercent: 110, duration: 0.44, ease: 'power2.inOut' }, at - 0.04)
+        .to(attachTile, { scale: 1.16, duration: 0.14, ease: 'power2.out' }, at - 0.02)
+        .to(attachTile, { scale: 1, duration: 0.3, ease: 'back.out(2.4)' }, at + 0.12)
       const base = inside(slide, '.prastuti-bars-base')
       const grid = inside(slide, '.prastuti-bars-grid')
       const bars = inside(slide, '.prastuti-bar')
@@ -999,14 +785,14 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       gsap.set(base, { scaleX: 0, transformOrigin: '0 50%' })
       gsap.set(grid, { autoAlpha: 0 })
       gsap.set(bars, { scaleY: 0, transformOrigin: '50% 100%' })
-      gsap.set(labels, { autoAlpha: 0, y: 0.3 * U })
-      gsap.set(mark, { scale: 0, y: 0.5 * U, transformOrigin: '50% 100%' })
+      gsap.set(labels, { autoAlpha: 0, y: 0.3 * A })
+      gsap.set(mark, { scale: 0, y: 0.5 * A, transformOrigin: '50% 100%' })
       run
         .to(base, { scaleX: 1, duration: 0.22, ease: 'power2.out' }, at + 0.04)
         .to(grid, { autoAlpha: 1, duration: 0.22 }, at + 0.08)
-        .to(bars, { scaleY: 1, duration: 0.3, stagger: 0.065, ease: 'back.out(1.7)' }, at + 0.08)
-        .to(labels, { autoAlpha: 1, y: 0, duration: 0.18, stagger: 0.065 }, at + 0.13)
-        .to(mark, { scale: 1, y: 0, duration: 0.2, ease: 'back.out(3)' }, at + 0.42)
+        .to(bars, { scaleY: 1, duration: 0.34, stagger: 0.07, ease: 'back.out(1.7)' }, at + 0.08)
+        .to(labels, { autoAlpha: 1, y: 0, duration: 0.18, stagger: 0.07 }, at + 0.13)
+        .to(mark, { scale: 1, y: 0, duration: 0.2, ease: 'back.out(3)' }, at + 0.44)
     } else if (kind === 'trend') {
       // 3 · the line draws upward, the light follows under it, and the last point is called out
       const line = inside<SVGPathElement>(slide, '.prastuti-trend-line')
@@ -1022,7 +808,7 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       gsap.set(dots, { scale: 0, transformOrigin: '50% 50%' })
       gsap.set(halo, { scale: 0, transformOrigin: '50% 50%' })
       gsap.set(grid, { autoAlpha: 0 })
-      gsap.set(pill, { autoAlpha: 0, scale: 0.5, y: 0.6 * U, transformOrigin: '50% 100%' })
+      gsap.set(pill, { autoAlpha: 0, scale: 0.5, y: 0.6 * A, transformOrigin: '80% 100%' })
       run
         .to(grid, { autoAlpha: 1, duration: 0.24, stagger: 0.03 }, at + 0.06)
         .to(line, { drawSVG: '100%', duration: drawFor, ease: 'power1.inOut' }, drawAt)
@@ -1042,11 +828,11 @@ function animate(env: MomentEnv<PrastutiProduct>) {
       const tiles = inside(slide, '.prastuti-p-tile')
       const texts = inside(slide, '.prastuti-p-text')
       gsap.set(band, { xPercent: -101 })
-      gsap.set(bandBits, { autoAlpha: 0, y: 0.5 * U })
+      gsap.set(bandBits, { autoAlpha: 0, y: 0.5 * A })
       gsap.set(rule, { scaleX: 0, transformOrigin: '0 50%' })
       gsap.set(arc, { scale: 0, transformOrigin: '50% 50%' })
       gsap.set(tiles, { scale: 0 })
-      gsap.set(texts, { autoAlpha: 0, x: -0.6 * U })
+      gsap.set(texts, { autoAlpha: 0, x: -0.6 * A })
       run
         .to(band, { xPercent: 0, duration: 0.18, ease: 'power3.out' }, at + 0.02)
         .to(arc, { scale: 1, duration: 0.2, ease: 'back.out(1.6)' }, at + 0.05)
@@ -1057,40 +843,63 @@ function animate(env: MomentEnv<PrastutiProduct>) {
     }
   })
 
-  // The deck is finished, and it is laid out, not closed. As the last slide goes down into the
-  // filmstrip, the cover and the two charts come up out of their places in it and lie side by
-  // side on the canvas: the charts are the picture the moment rests on.
-  const tG = lastLeave
-  spread.forEach((s) => {
-    const home = park[Math.min(s.from, park.length - 1)]
-    gsap.set(s.el, { transformOrigin: '0 0', x: home.x, y: home.y, scale: home.scale, autoAlpha: 0 })
-  })
-  spread
-    .filter((s) => s.scale > 0)
-    .forEach((s, i) => {
-      const leave = tG + i * 0.03
-      run.to(s.el, { autoAlpha: 1, duration: 0.06, ease: 'none' }, leave).to(s.el, { x: s.x, y: s.y, scale: s.scale, duration: 0.3, ease: E.inOut }, leave)
-    })
-  if (wide) {
-    // a small laptop: the filmstrip steps aside, and the two charts have the whole canvas
-    run.to(thumbs, { autoAlpha: 0, x: -0.7 * U, duration: 0.16, ease: 'power1.in' }, tG + 0.1).to(slides, { autoAlpha: 0, duration: 0.14, ease: 'none' }, tG + 0.12)
-  }
-  const hit = tG + 0.36
+  // THE DECK IS FINISHED, and it is dealt out, not closed. Her words and the voice bar have done
+  // their work: they give way (the bar sinks out of the screen), and the cover and the two charts
+  // come out of the pile and lie over the whole canvas. That spread is what the moment rests on.
+  const last = builds.length - 1
+  const stage0 = builds[0] ? within(builds[0]) : { x: 0, y: 0, w: 1, h: 1 }
   run
-    .to(stopGlyph, { autoAlpha: 0, scale: 0.4, duration: 0.14, ease: 'power2.in' }, tG)
-    .to(checkGlyph, { drawSVG: '100%', duration: 0.3, ease: 'power2.out' }, tG + 0.1)
-    .to(hints[2], { autoAlpha: 0, duration: 0.14 }, tG)
-    .to(hints[3], { autoAlpha: 1, duration: 0.2 }, tG + 0.1)
-    // प्रस्तुति तैयार
+    .to(dock, { y: 4.4 * A, autoAlpha: 0, duration: 0.26, ease: 'power2.in' }, tG - 0.02)
+    .to(wave, { autoAlpha: 0, duration: 0.12 }, tG - 0.02)
+  outs.forEach((out, i) => {
+    const from = Number(out.dataset.slide) || 0
+    const home = within(out)
+    const p = pile(last - from)
+    // it starts exactly where its slide lies in the pile…
+    const start = {
+      x: stage0.x + p.x - home.x,
+      y: stage0.y + p.y - home.y,
+      scale: (stage0.w * p.scale) / (home.w || 1),
+    }
+    gsap.set(out, { transformOrigin: '0 0', ...start, autoAlpha: 0 })
+    const leave = tG + i * 0.035
+    run
+      .to(out, { autoAlpha: 1, duration: 0.05, ease: 'none' }, leave)
+      .to(builds[from], { autoAlpha: 0, duration: 0.05, ease: 'none' }, leave + 0.03)
+      // …and is dealt to its own place
+      .to(out, { x: 0, y: 0, scale: 1, duration: 0.36, ease: E.inOut }, leave)
+  })
+  // the slides that are not in the spread (the three points) go under the others as they are dealt
+  builds.forEach((slide, i) => {
+    if (outs.some((out) => Number(out.dataset.slide) === i)) return
+    run.to(slide, { autoAlpha: 0, scale: 0.9, y: 0.8 * A, duration: 0.2, ease: 'power2.in' }, tG)
+  })
+
+  // प्रस्तुति तैयार: the ONE thing on the laptop. It comes down on the corner the spread leaves free
+  // (low on the right: right of the bars, under the rising line). It lives on the laptop, not in
+  // its screen, so that place is worked out in the laptop's own pixels.
+  const onDevice = stamp.parentElement as HTMLElement
+  const deviceBox = loc(onDevice)
+  const perStage = deviceBox.w / (onDevice.offsetWidth || 1) || 1
+  const right = canvasBox.x + canvasBox.w
+  const foot = canvasBox.y + canvasBox.h
+  const free = {
+    x: barsBox ? (barsBox.x + barsBox.w + right) / 2 : canvasBox.cx,
+    y: trendBox ? (trendBox.y + trendBox.h + foot) / 2 : canvasBox.cy,
+  }
+  const stampAt = { x: (free.x - deviceBox.x) / perStage, y: (free.y - deviceBox.y) / perStage }
+  gsap.set(stamp, { x: stampAt.x, y: stampAt.y, xPercent: -50, yPercent: -50, autoAlpha: 0, scale: 2.3, rotation: -22, transformOrigin: '80% 50%' })
+  gsap.set(burst, { autoAlpha: 0 })
+  const hit = tG + 0.4
+  run
     .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.22)
-    .to(stamp, { scale: 1, rotation: -7, duration: 0.22, ease: E.slam }, hit - 0.22)
+    .to(stamp, { scale: 1, rotation: -6, duration: 0.22, ease: E.slam }, hit - 0.22)
     .to(burst, { autoAlpha: 0.8, duration: 0.01 }, hit)
     .to(burst, { scale: 1.6, autoAlpha: 0, duration: 0.13, ease: 'power2.out' }, hit + 0.01)
 
-  // ---------------------------------------------------------------- result: Sunday, 11 pm, struck through
-  const strike = $('.prastuti-compare-old i')
-  gsap.set(strike, { scaleX: 0 })
-  result.to(strike, { scaleX: 1, duration: 0.26, ease: 'power2.inOut' }, 0.66)
+  // ---------------------------------------------------------------- result: nothing of Prastuti's is added, and nothing is left to clear.
+  // (The voice bar and her words left as the deck was dealt out; the laptop rests on its spread
+  // and its one stamp. The headline is the frame's.)
 
   // ---------------------------------------------------------------- stat: the stopwatch stops at 18 minutes
   const mins = minutesOf(product.stat.value)
@@ -1108,7 +917,6 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   const miniBacks = [$('.prastuti-mini-card--2'), $('.prastuti-mini-card--3')]
   const miniCheck = $('.prastuti-mini-check')
   const miniW = mini.offsetWidth
-  const callout = $('.prastuti-callout-in')
   const centre = `${DIAL.c} ${DIAL.c}`
   // the number counts from 0.35 for 0.95 s on power2.out: the hand keeps exactly that time
   const COUNT = { at: 0.35, dur: 0.95, ease: 'power2.out' }
@@ -1124,8 +932,9 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   gsap.set(mini, { autoAlpha: 0 })
   gsap.set(miniBacks, { x: 0, y: 0, rotation: 0 })
   gsap.set(miniCheck, { scale: 0 })
-  gsap.set(callout, { autoAlpha: 0, x: -1 * U, yPercent: -50 })
   stat
+    // the stamp has been read: it lifts off the laptop before the laptop flies into the stopwatch
+    .to(stamp, { autoAlpha: 0, scale: 0.8, duration: 0.2, ease: 'power2.in' }, 0)
     .to([face, track], { scale: 1, autoAlpha: 1, duration: 0.5, ease: E.snap }, 0.2)
     .to(shadow, { autoAlpha: 1, duration: 0.4 }, 0.3)
     .to(crown, { y: 0, autoAlpha: 1, duration: 0.3, ease: 'back.out(2.4)' }, 0.42)
@@ -1142,10 +951,9 @@ function animate(env: MomentEnv<PrastutiProduct>) {
     .to(head, { scale: 1, duration: 0.16, ease: 'power2.inOut' }, COUNT.at + COUNT.dur + 0.04)
     // the laptop has become the deck at the centre
     .to(mini, { autoAlpha: 1, duration: 0.14, ease: 'none' }, 0.72)
-    .to(miniBacks[0], { x: 0.07 * miniW, y: -0.06 * miniW, rotation: 2, duration: 0.4, ease: E.snap }, 0.86)
-    .to(miniBacks[1], { x: 0.14 * miniW, y: -0.12 * miniW, rotation: 4, duration: 0.4, ease: E.snap }, 0.9)
+    .to(miniBacks[0], { x: 0.05 * miniW, y: -0.045 * miniW, rotation: 2, duration: 0.4, ease: E.snap }, 0.86)
+    .to(miniBacks[1], { x: 0.1 * miniW, y: -0.085 * miniW, rotation: 4, duration: 0.4, ease: E.snap }, 0.9)
     .to(miniCheck, { scale: 1, duration: 0.3, ease: 'back.out(3)' }, 1.16)
-    .to(callout, { autoAlpha: 1, x: 0, duration: 0.34, ease: E.snap }, 1.14)
   // each minute mark lights as the hand passes it
   lit.forEach((tick, i) => {
     stat.to(tick, { autoAlpha: 1, duration: 0.08, ease: 'none' }, minuteAt(i + 1))
@@ -1157,15 +965,10 @@ function animate(env: MomentEnv<PrastutiProduct>) {
 const prastuti: MomentModule<PrastutiProduct> = {
   key: 'prastuti',
   device: 'laptop',
-  demoTitle: PRASTUTI.demo.slides[0].en,
-  demoLine: PRASTUTI.promise,
   highlight: 'builds the deck, in Hindi',
   Before,
   Screen,
   Stat,
-  Under,
-  Beside,
-  Proof,
   Extras,
   OnDevice,
   animate,

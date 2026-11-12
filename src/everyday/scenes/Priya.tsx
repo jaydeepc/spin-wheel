@@ -3,9 +3,14 @@
 /**
  * Meet Priya. She comes in after the opening, to explain Everyday AI through her Tuesday.
  *
- * A short beat: her photo, her name, her role, and the line with "AI learned her job"
- * picked out. Her own words are in the subtitle. Then her photo irises down into the
- * avatar that carries her words through the rest of the film.
+ * On it, and nothing else: her photo (the one picture, large on the right), the title, her
+ * role, the one line with "AI learned her job" picked out, and her own words (PRIYA.said) in
+ * the voice bubble, which on this screen stands BY HER PHOTO with its tail toward her: this is
+ * where the visitor learns that the bubble is Priya speaking. (The bubble is the shell's; this
+ * scene's stylesheet only says where it stands: see Priya.css.)
+ *
+ * When the scene ends her photo irises down into the face of the voice block, at the bottom of
+ * the left column, where her words are for the rest of the film.
  *
  * Held frames: ?scene=priya&at=<in|done>
  */
@@ -31,7 +36,6 @@ export default function Priya() {
     const hero = $('.pr-hero')
     const heroZoom = $('.pr-hero-zoom')
     const heroShadow = $('.pr-hero-shadow')
-    const heroTag = $('.pr-hero-tag')
     const rise = $$('.pr-say .ev-rise')
     const title = SplitText.create($('.pr-title-text'), { type: 'chars' })
     const underline = $('.pr-line em path')
@@ -45,8 +49,7 @@ export default function Priya() {
     gsap.set(title.chars, { yPercent: 118 })
     gsap.set(hero, { clipPath: clipHidden })
     gsap.set(heroZoom, { scale: 1.22, transformOrigin: '50% 30%' })
-    gsap.set([heroShadow, heroTag], { autoAlpha: 0 })
-    gsap.set(heroTag, { y: 1.2 * U })
+    gsap.set(heroShadow, { autoAlpha: 0 })
     gsap.set(underline, { drawSVG: '0%' })
     // her photo is on the stage: the avatar it will become stays out until the photo lands in it
     if (avatar) gsap.set(avatar, { autoAlpha: 0 })
@@ -60,7 +63,7 @@ export default function Priya() {
       .to(rise[0], { yPercent: 0 }, 0.45)
       .to(rise[1], { yPercent: 0, duration: 0.8 }, 0.58)
       .to(underline, { drawSVG: '100%', duration: 0.5, ease: 'power2.inOut' }, 1.0)
-      .to(heroTag, { autoAlpha: 1, y: 0, duration: 0.55, ease: E.snap }, 0.85)
+    // (her words arrive last, by her photo: the shell's bubble, delayed in Priya.css)
     const tI = PRIYA_TIME.in
     t.addLabel('in', tI)
 
@@ -73,7 +76,7 @@ export default function Priya() {
     t.to(rise, { yPercent: -118, duration: 0.45, ease: 'power3.in', stagger: 0.035 }, tI)
       .to(title.chars, { yPercent: -118, duration: 0.45, ease: 'power3.in', stagger: 0.014 }, tI)
       .to(underline, { autoAlpha: 0, duration: 0.2 }, tI)
-      .to([heroTag, heroShadow], { autoAlpha: 0, duration: 0.25, ease: 'power1.in' }, tI)
+      .to(heroShadow, { autoAlpha: 0, duration: 0.25, ease: 'power1.in' }, tI)
       .to(hero, { x: slot.x - hb.x - sAv * 0.165 * hb.w, y: slot.y - hb.y, scale: sAv, clipPath: clipAvatar, duration: 0.95, ease: E.inOut }, tI + 0.05)
     if (avatar) t.to(avatar, { autoAlpha: 1, duration: 0.18, ease: 'none' }, tI + 0.9)
     t.to(hero, { autoAlpha: 0, duration: 0.1, ease: 'none' }, tI + 1.0)
@@ -122,11 +125,6 @@ export default function Priya() {
             <img className="pr-hero-img" src={PRIYA.photo} alt="Priya, standing in her branch" draggable={false} />
           </div>
         </div>
-      </div>
-      <div className="pr-hero-tag">
-        <i />
-        <b>Priya</b>
-        <span>Lucknow</span>
       </div>
     </div>
   )

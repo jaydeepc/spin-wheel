@@ -1,31 +1,74 @@
 /* ============================================================
-   EVERYDAY AI · Meet Priya. Her words on the left, her photo
-   on the right; at the end the photo irises down into the
-   avatar beside her subtitle.
+   EVERYDAY AI · Meet Priya.
+   Who she is on the left (the title, her role, the one line);
+   her photo, the one picture, large on the right; and her own
+   words in the voice bubble, which stands BY HER PHOTO here,
+   its tail toward her. At the end the photo irises down into
+   the face of the voice block.
+
+   The numbers of the layout are set on .ev-root for this scene,
+   because two things read them: the photo (in the stage) and the
+   shell's voice bubble (beside the stage).
    ============================================================ */
 
-.ev-scene--priya {
-  --pr-title: calc(var(--u) * 8.4);
-  --pr-top: calc(var(--u) * -12.4);
+.ev-root[data-scene='priya'] {
+  --pr-pw: calc(var(--u) * 31); /* her photo: 716 × 880, so its height is 1.2292 × its width */
+  --pr-ph: calc(var(--pr-pw) * 1.2292);
+  --pr-ptop: var(--ev-top);
+  --pr-bw: calc(var(--u) * 25.5); /* her bubble's width: her words stand on two lines */
+  --pr-bin: calc(var(--u) * 3.6); /* how far the bubble reaches into the photo */
+  --pr-bup: calc(var(--u) * 2.6); /* its foot, above the photo's foot */
+  --pr-title: calc(var(--u) * 10.4);
+  --pr-top: calc(var(--u) * -14.6);
 }
-@media (min-aspect-ratio: 3/2) {
-  .ev-scene--priya {
-    --pr-title: calc(var(--u) * 10.4);
-    --pr-top: calc(var(--u) * -12.2);
+
+/* ---------- her words, by her photo (the shell's bubble: moments/README.md, "Priya's voice") ---------- */
+.ev-root[data-scene='priya'] .ev-voice {
+  --ev-vb-w: var(--pr-bw);
+  --ev-vb-left: calc(var(--hx) - var(--pr-pw) + var(--pr-bin) - var(--pr-bw));
+  --ev-vb-bottom: calc(var(--pr-ptop) + var(--pr-ph) - var(--pr-bup));
+}
+/* the tail is on the side that faces her */
+.ev-root[data-scene='priya'] .ev-voice-tail {
+  left: auto;
+  right: calc(var(--u) * -0.62);
+  bottom: calc(50% - var(--u) * 0.6);
+  transform: rotate(225deg);
+}
+/* she is the last to arrive on this screen: her photo first, then what she says, from her side */
+.ev-root[data-scene='priya'] .ev-voice-card {
+  transform-origin: 100% 60%;
+  animation-name: pr-voice-in;
+  animation-delay: 0.95s;
+}
+@keyframes pr-voice-in {
+  0% {
+    opacity: 0;
+    transform: translate(calc(var(--u) * 1.2), calc(var(--u) * 0.3)) scale(0.86);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
   }
 }
+
 .ev-root[data-hold='1'] .pr-hero-img {
   animation: none;
 }
 
+/* ---------- who she is ---------- */
 .pr-say {
   position: absolute;
   left: calc(var(--hx) * -1);
   top: var(--pr-top);
-  width: calc(var(--u) * 56);
+  width: calc(var(--hx) * 2 - var(--pr-pw) - var(--u) * 2);
   pointer-events: none;
 }
-.pr-title {
+/* (.pr-say before a class: the frame's reset, `.ev-root p, h1 { margin: 0 }`, outweighs one class alone) */
+.pr-say .pr-title {
   font-size: var(--pr-title);
   font-weight: 800;
   letter-spacing: -0.04em;
@@ -38,15 +81,16 @@
   width: max-content;
   padding-right: 0.1em;
 }
-.pr-role {
-  font-size: calc(var(--u) * 1.7);
+.pr-say .pr-role {
+  margin-top: calc(var(--u) * 0.2);
+  font-size: calc(var(--u) * 1.8);
   font-weight: 600;
   color: var(--ev-muted);
   line-height: 1.4;
   white-space: nowrap;
 }
-.pr-line {
-  margin-top: calc(var(--u) * 2.3);
+.pr-say .pr-line {
+  margin-top: calc(var(--u) * 1.9);
   white-space: nowrap;
   font-size: calc(var(--u) * 2.75);
   font-weight: 400;
@@ -77,14 +121,14 @@
   stroke-linecap: round;
 }
 
-/* Her photo: large on this screen, then it irises down into her avatar. */
+/* ---------- her photo: the one picture; then it irises down into her face in the voice block ---------- */
 .pr-hero,
 .pr-hero-shadow {
   position: absolute;
-  left: calc(var(--hx) - var(--u) * 24);
-  top: calc(var(--u) * -15.4);
-  width: calc(var(--u) * 24);
-  height: calc(var(--u) * 29.5);
+  left: calc(var(--hx) - var(--pr-pw));
+  top: var(--pr-ptop);
+  width: var(--pr-pw);
+  height: var(--pr-ph);
   border-radius: calc(var(--u) * 1.8);
   pointer-events: none;
 }
@@ -123,67 +167,34 @@
     transform: scale(1.06) translate3d(-1%, 1.2%, 0);
   }
 }
-.pr-hero-tag {
-  position: absolute;
-  left: calc(var(--hx) - var(--u) * 26.2);
-  top: calc(var(--u) * 8.9);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.7);
-  padding: calc(var(--u) * 0.7) calc(var(--u) * 1.3) calc(var(--u) * 0.7) calc(var(--u) * 1);
-  border-radius: calc(var(--u) * 1.1);
-  background: #ffffff;
-  box-shadow:
-    0 calc(var(--u) * 0.9) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.16),
-    0 0 0 1px rgba(7, 26, 80, 0.05);
-  pointer-events: none;
-  white-space: nowrap;
-  visibility: hidden;
-}
-.pr-hero-tag i {
-  width: calc(var(--u) * 0.7);
-  height: calc(var(--u) * 0.7);
-  border-radius: 50%;
-  background: var(--ev-flame);
-}
-.pr-hero-tag b {
-  font-size: calc(var(--u) * 1.25);
-  font-weight: 800;
-  color: var(--ev-navy);
-}
-.pr-hero-tag span {
-  font-size: calc(var(--u) * 1.05);
-  font-weight: 600;
-  color: var(--ev-muted);
-}
 
-/* squarer screens: her photo is nearer, so her line is a size smaller */
+/* ---------- squarer screens (a tablet): narrower, but taller ---------- */
 @media (max-aspect-ratio: 3/2) {
-  .pr-line {
+  .ev-root[data-scene='priya'] {
+    --pr-pw: calc(var(--u) * 28.5);
+    --pr-ptop: calc(var(--ev-top) + var(--u) * 2);
+    --pr-bw: calc(var(--u) * 25.5);
+    --pr-title: calc(var(--u) * 8.4);
+    --pr-top: calc(var(--u) * -15.6);
+  }
+  .pr-say .pr-line {
     font-size: calc(var(--u) * 2.3);
   }
-  .pr-role {
-    font-size: calc(var(--u) * 1.5);
+  .pr-say .pr-role {
+    font-size: calc(var(--u) * 1.55);
   }
 }
 
-/* a phone on its side: the stage is its own height now, and the small print keeps to its floor */
+/* ---------- a phone on its side: the stage has the whole room above the bar ---------- */
 @media (max-height: 480px) {
-  .ev-scene--priya {
-    --pr-top: calc(var(--u) * -11.2);
+  .ev-root[data-scene='priya'] {
+    --pr-ptop: calc(var(--u) * -16.6);
+    --pr-pw: calc(var(--u) * 29.6);
+    --pr-bw: calc(var(--u) * 26.5);
+    --pr-bup: calc(var(--u) * 2.2);
+    --pr-top: calc(var(--u) * -14.4);
   }
-  .pr-hero,
-  .pr-hero-shadow {
-    top: calc(var(--u) * -15.6);
-    height: calc(var(--u) * 31);
-  }
-  .pr-hero-tag {
-    top: calc(var(--u) * 10);
-  }
-  .pr-hero-tag b {
-    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
-  }
-  .pr-hero-tag span {
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+  .pr-say .pr-role {
+    font-size: max(calc(var(--u) * 1.8), calc(var(--fl) * 11.5));
   }
 }

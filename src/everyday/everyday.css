@@ -4,6 +4,11 @@
    from one fluid unit, --u, and placed from the stage centre.
    Shared classes are prefixed "ev-". A moment's own classes are
    prefixed with its key ("byot-") and live in its own .css file.
+
+   THE QUIET FRAME (what stays on screen): the logo, a one-line clock
+   chip, Priya's voice, five progress dots, Back and Next.
+   THE LAYOUT of a moment: the name, the statement and Priya's voice
+   down the left; ONE picture on the right. See moments/README.md.
    ============================================================ */
 
 .ev-root {
@@ -20,6 +25,24 @@
   --ev-pitch: calc(var(--u) * 1.18);
   --ev-picw: calc(var(--ev-pitch) * 32);
   --ev-pich: calc(var(--u) * 27);
+
+  /* ---- THE LAYOUT (moments/README.md). Lengths in stage coordinates: from the stage centre, y down. ----
+     The left column carries the name, the statement and Priya's voice; the picture area is
+     everything right of it, clear of it by --ev-gap. */
+  --ev-lw0: calc(var(--u) * 44); /* the left column beside a wide picture (a laptop, a centrepiece of its own) */
+  --ev-lw: calc(var(--u) * 46); /* the left column: beside a phone it can be a little wider */
+  --ev-bw: calc(var(--u) * 48); /* Priya's block at the before step (her longest lines) */
+  --ev-gap: calc(var(--u) * 2); /* THE CLEAR ZONE around Priya's voice, and between the column and the picture */
+  --ev-nh: max(calc(var(--u) * 3), 44px); /* the Next button's height: the strip's height */
+  --ev-sb: max(calc(var(--u) * 1.7), env(safe-area-inset-bottom)); /* the strip's distance from the bottom edge */
+  --ev-top: calc(var(--u) * 10.7 - 50vh); /* the picture area's top: 1.5u under the header */
+  --ev-top: calc(var(--u) * 10.7 - 50dvh);
+  --ev-vy: calc(50vh + var(--u) * 1.3 - var(--ev-sb) - var(--ev-nh)); /* the foot of Priya's voice: 2.2u above the strip */
+  --ev-vy: calc(50dvh + var(--u) * 1.3 - var(--ev-sb) - var(--ev-nh));
+  --ev-pb: var(--ev-vy); /* the picture area's foot */
+  --ev-px0: calc(var(--ev-lw) + var(--ev-gap) - var(--hx)); /* the picture area's left edge */
+  --ev-pw: calc(var(--hx) * 2 - var(--ev-lw) - var(--ev-gap)); /* its width… */
+  --ev-ph: calc(var(--ev-pb) - var(--ev-top)); /* …and its height */
 
   /* The current product's accent. Use these, never a hard-coded flame or azure. */
   --acc: #f16443; /* fills, large marks */
@@ -125,6 +148,12 @@
   --acc-a40: rgba(241, 100, 67, 0.4);
   --acc-haze-a45: rgba(251, 214, 205, 0.45);
 }
+/* Beside a wide picture (a laptop, a centrepiece of its own) the left column is its nominal
+   width, and never more than half the content: the picture keeps the right half. */
+.ev-root[data-device='laptop'],
+.ev-root[data-device='none'] {
+  --ev-lw: min(var(--ev-lw0), calc(var(--hx) - var(--u) * 0.4));
+}
 .ev-root *,
 .ev-root *::before,
 .ev-root *::after {
@@ -160,7 +189,7 @@
 }
 .ev-root:not([data-ready='1']) .ev-wrap,
 .ev-root:not([data-ready='1']) .ev-shellstage,
-.ev-root:not([data-ready='1']) .ev-rail,
+.ev-root:not([data-ready='1']) .ev-strip,
 .ev-root:not([data-ready='1']) .ev-header {
   visibility: hidden;
 }
@@ -263,7 +292,7 @@
   }
 }
 
-/* ---------- Header ---------- */
+/* ---------- Header: the logo, alone; and a one-line clock chip ---------- */
 .ev-header {
   position: absolute;
   z-index: 6;
@@ -276,52 +305,44 @@
   justify-content: space-between;
   pointer-events: none;
 }
-.ev-brand {
-  display: flex;
-  align-items: center;
-}
 .ev-logo {
   display: block;
   height: calc(var(--u) * 3.7);
   width: auto;
 }
-.ev-kicker {
-  margin-left: calc(var(--u) * 1.5);
-  padding-left: calc(var(--u) * 1.5);
-  border-left: 1px solid var(--ev-line);
-  font-size: calc(var(--u) * 1.02);
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--ev-muted);
-  line-height: calc(var(--u) * 2.2);
-  white-space: nowrap;
-}
-/* on the opening screen the title is on the stage itself, as large as it goes */
-.ev-kicker {
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.ev-root[data-scene='intro'] .ev-kicker {
-  opacity: 0;
-}
+/* Top right: where the film is, in ONE line ("9:10 am · At the branch"). */
 .ev-clock {
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.9);
+  gap: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 2.9);
+  padding: 0 calc(var(--u) * 1.15) 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 1.45);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 0 0 1px rgba(7, 26, 80, 0.08),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 1) rgba(7, 26, 80, 0.06);
   transition:
     opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s;
 }
-/* the opening screen: there is no Priya yet, and so no Tuesday */
-.ev-root[data-scene='intro'] .ev-clock {
+/* not on the opening (there is no Priya yet, and so no Tuesday) and not on the closing */
+.ev-root[data-scene='intro'] .ev-clock,
+.ev-root[data-scene='finale'] .ev-clock {
   opacity: 0;
+  visibility: hidden;
   transform: translateY(-40%);
+  transition:
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s 0.6s;
 }
 .ev-clock-dial {
   position: relative;
   flex: none;
-  width: calc(var(--u) * 2.9);
-  height: calc(var(--u) * 2.9);
+  width: calc(var(--u) * 1.95);
+  height: calc(var(--u) * 1.95);
 }
 .ev-clock-dial > svg:first-child {
   display: block;
@@ -332,7 +353,7 @@
 .ev-clock-face {
   fill: #ffffff;
   stroke: var(--ev-line);
-  stroke-width: 1.4;
+  stroke-width: 2;
   transition:
     fill 0.6s,
     stroke 0.6s;
@@ -342,14 +363,14 @@
 }
 .ev-clock-hand {
   stroke: var(--ev-navy);
-  stroke-width: 2.2;
+  stroke-width: 2.8;
   stroke-linecap: round;
   transform-origin: 20px 20px;
   transition: transform 1.3s cubic-bezier(0.65, 0, 0.2, 1);
 }
 .ev-clock-hand--m {
   stroke: var(--acc);
-  stroke-width: 1.8;
+  stroke-width: 2.4;
   transition:
     transform 1.3s cubic-bezier(0.65, 0, 0.2, 1),
     stroke 0.8s;
@@ -357,10 +378,10 @@
 /* the engineering chapter is not a time of her day: the clock becomes a code mark */
 .ev-clock-code {
   position: absolute;
-  left: 24%;
-  top: 24%;
-  width: 52%;
-  height: 52%;
+  left: 22%;
+  top: 22%;
+  width: 56%;
+  height: 56%;
   color: #ffffff;
   opacity: 0;
   transform: scale(0.5);
@@ -380,25 +401,26 @@
   transform: none;
 }
 .ev-clock-txt {
-  display: grid;
-  line-height: 1.15;
-  text-align: left;
+  display: block;
+  font-size: max(calc(var(--u) * 1.12), 12px);
+  line-height: 1;
+  white-space: nowrap;
 }
 .ev-clock-time {
-  font-size: calc(var(--u) * 1.45);
   font-weight: 800;
   color: var(--ev-navy);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+}
+.ev-clock-sep {
+  color: var(--ev-muted);
+  font-weight: 600;
 }
 .ev-clock-place {
-  font-size: calc(var(--u) * 1);
   font-weight: 600;
-  color: var(--ev-muted);
-  white-space: nowrap;
+  color: var(--ev-body);
 }
 .ev-clock-swap {
-  display: grid;
+  display: inline-block;
   animation: ev-swap 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes ev-swap {
@@ -416,6 +438,15 @@
 .ev-wrap {
   position: absolute;
   inset: 0;
+}
+/* A moment's hand-over (step 'done': only product moments have it) files the docked name into
+   its progress dot. The dots are in the strip, drawn over the stage, so for that step the stage
+   is raised over them. It is keyed on the step, so it cannot outlive the hand-over; and a press
+   falls through the raised stage, so Next, Back and the dots stay pressable under it (a press
+   on the empty stage lands on .ev-root, which is where a stage tap is heard anyway). */
+.ev-root[data-step='done'] .ev-wrap {
+  z-index: 9;
+  pointer-events: none;
 }
 .ev-stage {
   position: absolute;
@@ -533,23 +564,7 @@
   white-space: nowrap;
   line-height: 1;
 }
-.ev-promise {
-  position: absolute;
-  left: calc(var(--u) * -34);
-  top: calc(var(--u) * 11.2);
-  width: calc(var(--u) * 68);
-  text-align: center;
-  font-size: calc(var(--u) * 2.15);
-  font-weight: 400;
-  line-height: 1.3;
-  color: var(--ev-body);
-  letter-spacing: -0.005em;
-  pointer-events: none;
-}
-.ev-promise b {
-  font-weight: 800;
-  color: var(--ev-navy);
-}
+/* ---------- The NAME slot: where the name docks (top of the left column), and its caption ---------- */
 .ev-dock {
   position: absolute;
   left: calc(var(--hx) * -1);
@@ -558,39 +573,47 @@
   height: 1px;
   visibility: hidden;
 }
+/* The caption: the product's promise, in one line. On screen at the demo rest only: it leaves
+   as the result headline takes the slot under the name (core/buildMoment.ts). */
 .ev-dockcap {
   position: absolute;
   left: calc(var(--hx) * -1 + var(--u) * 0.15);
-  top: calc(var(--u) * -8.1);
-  font-size: calc(var(--u) * 1.3);
+  top: calc(var(--u) * -6.9); /* clear of a descender in the name above it (SmartHelp's p) */
+  width: calc(var(--ev-lw) - var(--u) * 0.15);
+  font-size: calc(var(--u) * 1.5);
   font-weight: 700;
   color: var(--acc-text);
-  white-space: nowrap;
   line-height: 1.3;
   pointer-events: none;
 }
-.ev-dockcap--caps {
-  top: calc(var(--u) * -7.9);
-  font-size: calc(var(--u) * 1.12);
+
+/* What the name stands for (BUILD YOUR OWN TECH; Hindi for "presentation"): one small line of
+   caps between the docked name and its caption, at the demo rest only. At centre stage the name
+   opens into it for under a second; here it rests, and can be read. Only names without a
+   descender have one (BYOT, BYOA, Prastuti), so it stands close under the baseline. */
+.ev-dockexp {
+  position: absolute;
+  left: calc(var(--hx) * -1 + var(--u) * 0.2);
+  top: calc(var(--u) * -8.3);
+  font-size: calc(var(--u) * 1.2);
   font-weight: 800;
-  letter-spacing: 0.34em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
+  line-height: 1;
+  color: var(--ev-ink);
+  white-space: nowrap;
+  pointer-events: none;
 }
-/* A Hindi name's caption (प्रस्तुति · Hindi for “presentation”). The Devanagari word hangs from
-   its headline, with marks above it and below the Latin baseline, so its mask is given head-room
-   (and the same foot-room as every mask), taken back by the margins: the line stands exactly
-   where the other captions do. 0.22em is as much as the mask may have and still hide the line
-   completely when it has risen out (yPercent -118 of a 1.3 line). The word keeps the caption's
-   own leading, so the line box is no taller than a Latin one. */
-.ev-dockcap--hi .ev-mask {
-  padding-top: 0.22em;
-  margin-top: -0.22em;
-  padding-bottom: 0.22em;
-  margin-bottom: -0.22em;
+.ev-dockexp b {
+  font-weight: 800;
+  color: var(--acc-ink);
 }
-.ev-dockcap--hi .ev-hi {
-  line-height: inherit;
-  font-weight: 700;
+/* under such a name the caption stands a little lower, so the three lines read as a lock-up
+   (the name, what it stands for, what it does) and not as a stack. The statement slot is empty
+   at the demo rest, and the caption has left before the headline arrives. */
+.ev-moment[data-name='acronym'] .ev-dockcap,
+.ev-moment[data-name='hindi'] .ev-dockcap {
+  top: calc(var(--u) * -6.25);
 }
 
 /* A name that is one word (SmartHelp, Piramal Mind, Prastuti): a single giant wordmark. */
@@ -661,47 +684,26 @@
   visibility: hidden;
 }
 
-/* ---------- Left column copy (demo, result) ---------- */
+/* ---------- The STATEMENT slot: at most ONE headline, in the middle of the left column ----------
+   The result headline (product.after). Under it, for two products only (SmartHelp, Piramal Mind),
+   ONE supporting line (.ev-proof). At the number step the number and its label stand here
+   (.ev-stat). At the before rest it is empty, except for Piramal Mind's before headline. */
 .ev-col {
   position: absolute;
   left: calc(var(--hx) * -1);
-  top: calc(var(--u) * -4.3);
-  width: calc(var(--u) * 26.5);
+  top: calc(var(--u) * -6.2);
+  width: var(--ev-lw);
   pointer-events: none;
 }
-.ev-col--result {
-  width: calc(var(--u) * 35);
-  top: calc(var(--u) * -4.6);
-}
-.ev-moment[data-device='none'] .ev-col--result {
-  width: calc(var(--u) * 30);
-}
-.ev-col-h {
-  font-size: calc(var(--u) * 2.9);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  color: var(--ev-navy);
-}
-.ev-col-p {
-  margin-top: calc(var(--u) * 0.5);
-  font-size: calc(var(--u) * 1.55);
-  font-weight: 500;
-  line-height: 1.42;
-  color: var(--ev-body);
-  max-width: calc(var(--u) * 23);
-}
-.ev-col-p b {
-  font-weight: 800;
-  color: var(--acc-ink);
-}
-
-.ev-sentence {
+.ev-sentence,
+.ev-before-h {
   font-size: calc(var(--u) * 3.55);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
   color: var(--ev-navy);
+  /* even lines, never a last word alone */
+  text-wrap: balance;
 }
 /* each line rises through its own mask (SplitText): room for the descenders at this leading */
 .ev-sentence > div {
@@ -711,21 +713,70 @@
 .ev-sentence .ev-hl {
   color: var(--acc-ink);
 }
-.ev-col-under {
-  margin-top: calc(var(--u) * 1.3);
-}
+/* the one supporting line: plain text, in this type. No box, no icon row, no second card. */
 .ev-proof {
-  margin-top: calc(var(--u) * 1.5);
+  margin-top: calc(var(--u) * 1.3);
+  max-width: calc(var(--u) * 40);
+  font-size: calc(var(--u) * 1.7);
+  font-weight: 600;
+  line-height: 1.38;
+  color: var(--ev-body);
+  visibility: hidden;
+}
+.ev-proof b {
+  font-weight: 800;
+  color: var(--ev-navy);
+}
+/* Piramal Mind only (MomentModule.beforeHeadline): the old way as a statement, at the before rest */
+.ev-before-h {
+  position: absolute;
+  left: calc(var(--hx) * -1);
+  top: calc(var(--u) * -6.2);
+  width: var(--ev-lw);
+  pointer-events: none;
+  text-wrap: balance;
+}
+
+/* ---------- The picture area: the right half, where the ONE picture stands ----------
+   From the left column's edge (plus the clear zone) to the right edge of the content; from
+   under the header to the foot of Priya's voice. core/buildMoment.ts measures this box and fits
+   the device into it. Never drawn. (--before: the same for the old-way picture, which stands
+   beside her widest bubble; --above: see below.) */
+.ev-picarea {
+  position: absolute;
+  left: var(--ev-px0);
+  top: var(--ev-top);
+  width: var(--ev-pw);
+  height: var(--ev-ph);
+  visibility: hidden;
+  pointer-events: none;
+}
+.ev-picarea--before {
+  left: calc(var(--ev-bw) + var(--ev-gap) - var(--hx));
+  width: calc(var(--hx) * 2 - var(--ev-bw) - var(--ev-gap));
+}
+/* On a squarer screen there is more room ABOVE her bubble than beside it: the old-way picture
+   may stand there instead, over the right 58% of the content (the frame takes whichever of the
+   two lets the picture be larger). 12.2u: her bubble at its three lines, and the clear zone. */
+.ev-picarea--above {
+  left: calc(var(--hx) * -0.16);
+  width: calc(var(--hx) * 1.16);
+  height: calc(var(--ev-vy) - var(--u) * 12.2 - var(--ev-top));
+}
+/* (where the before headline stands in the statement slot, the picture keeps to the picture area) */
+.ev-moment[data-before-h='1'] .ev-picarea--above {
+  left: var(--ev-px0);
+  width: var(--ev-pw);
 }
 
 /* ---------- The device ---------- */
 .ev-deviceMover {
-  /* where the device stands during the demo: centre stage, or right of centre without a photo */
-  --ev-dx: 0px;
+  /* The device's own box. core/buildMoment.ts moves it to the middle of the picture area and
+     enlarges it to fit: only its SIZE (--ev-dw × --ev-dh) matters, not where this rule puts it. */
   --ev-dw: calc(var(--u) * 15.4);
   --ev-dh: calc(var(--u) * 31.6);
   position: absolute;
-  left: calc(var(--ev-dx) - var(--ev-dw) / 2);
+  left: calc(var(--ev-dw) / -2);
   top: calc(var(--ev-dh) / -2);
   width: var(--ev-dw);
   height: var(--ev-dh);
@@ -733,19 +784,14 @@
   pointer-events: none;
   visibility: hidden;
 }
-.ev-moment[data-photo='0'] .ev-deviceMover {
-  --ev-dx: calc(var(--u) * 9);
-}
 .ev-moment[data-device='laptop'] .ev-deviceMover {
-  --ev-dx: calc(var(--u) * 4.6);
   --ev-dw: calc(var(--u) * 33);
   --ev-dh: calc(var(--u) * 21.4);
 }
 .ev-moment[data-device='none'] .ev-deviceMover {
-  /* your own centrepiece: everything right of the copy column */
-  --ev-dw: calc(var(--hx) + var(--u) * 15);
-  --ev-dx: calc((var(--hx) - var(--u) * 15) / 2);
-  --ev-dh: calc(var(--u) * 31.6);
+  /* Your own centrepiece: it has the picture area's own box, unless its module sets another. */
+  --ev-dw: var(--ev-pw);
+  --ev-dh: var(--ev-ph);
 }
 .ev-own {
   position: absolute;
@@ -851,69 +897,26 @@
   opacity: 0.35;
   pointer-events: none;
 }
+/* the status bar: no words and no clock, only the signal and the battery (right of the island) */
 .ev-status {
   flex: none;
   height: calc(var(--u) * 2.25);
   padding: calc(var(--u) * 0.72) calc(var(--u) * 1.25) 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  font-size: calc(var(--u) * 0.72);
-  font-weight: 700;
-  color: var(--ev-navy);
-  font-variant-numeric: tabular-nums;
 }
 .ev-status svg {
   height: calc(var(--u) * 0.62);
   width: calc(var(--u) * 2.4);
 }
 
-/* The photo: Priya on the site visit, speaking into her phone. */
-.ev-side {
-  position: absolute;
-  left: calc(var(--hx) - var(--u) * 17);
-  top: calc(var(--u) * -15.4);
-  width: calc(var(--u) * 17);
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-.ev-photo-frame {
-  position: relative;
-  width: 100%;
-  height: calc(var(--u) * 19.8);
-  border-radius: calc(var(--u) * 1.5);
-  overflow: hidden;
-  background: #eef1f6;
-  box-shadow:
-    0 calc(var(--u) * 1.8) calc(var(--u) * 3.8) rgba(7, 26, 80, 0.18),
-    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.1);
-}
-.ev-photo-frame img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.ev-photo-cap {
-  position: absolute;
-  left: calc(var(--u) * 0.7);
-  bottom: calc(var(--u) * 0.7);
-  padding: calc(var(--u) * 0.36) calc(var(--u) * 0.8);
-  border-radius: calc(var(--u) * 0.7);
-  background: rgba(255, 255, 255, 0.94);
-  font-size: calc(var(--u) * 0.86);
-  font-weight: 700;
-  color: var(--ev-navy);
-  white-space: nowrap;
-}
-
-/* ---------- STAT ---------- */
+/* ---------- The NUMBER: in the statement slot, with its picture in the picture area ---------- */
 .ev-stat {
   position: absolute;
   left: calc(var(--hx) * -1);
-  /* the number's own line box has air above its figures, so the block can sit high: its label
-     then stays clear of Priya's line when that runs to two lines */
-  top: calc(var(--u) * -6.3);
+  /* in the statement slot: the number has the screen (Priya's bubble is away) */
+  top: calc(var(--u) * -5);
   pointer-events: none;
 }
 .ev-stat-num {
@@ -927,6 +930,13 @@
   transform-origin: 0 80%;
   white-space: nowrap;
 }
+/* The number is set 0.04em to the left (its first digit's side bearing), and it rises through a
+   mask: the mask reaches that far left too, and a little more, so the left curve of a 6 or the
+   tilde is never shaved. */
+.ev-stat > .ev-mask {
+  padding-left: calc(var(--ev-num) * 0.07);
+  margin-left: calc(var(--ev-num) * -0.07);
+}
 .ev-stat-label {
   margin-top: calc(var(--u) * -0.3);
   font-size: calc(var(--u) * 2.4);
@@ -937,380 +947,326 @@
   max-width: var(--ev-statw);
 }
 
-/* ---------- The rail: the film as one line, in two tracks ----------
-   A cap for the opening, the four stops of her Tuesday, a break, the engineering stop,
-   a cap for the closing. Widths are in day-columns; Shell.tsx hands over where the
-   marker stands in the same units (--a … --e), so only this rule knows the proportions. */
-.ev-rail {
-  --cap: 0.8; /* the opening and the closing */
-  --cap0: var(--cap); /* …which a phone on its side sizes one by one */
-  --cap1: var(--cap);
-  --gap: 0.36; /* the break between her day and engineering */
-  --mw: 1.34; /* the engineering stop */
-  --nd: 4;
-  --ne: 1;
-  --a: 0;
-  --b: 0;
-  --c: 0;
-  --d: 0;
-  --e: 0;
-  --total: calc(var(--cap0) + var(--cap1) + var(--nd) + var(--gap) + var(--ne) * var(--mw));
-  --p: calc((var(--a) * var(--cap0) + var(--b) + var(--c) * var(--gap) + var(--d) * var(--mw) + var(--e) * var(--cap1)) / var(--total));
-  /* where the line starts and ends (the two caps' dots), and where it breaks */
-  --r0: calc(var(--cap0) * 0.5 / var(--total) * 100%);
-  --r1: calc(100% - var(--cap1) * 0.5 / var(--total) * 100%);
-  --brk0: calc((var(--cap0) + var(--nd) - 0.04) / var(--total) * 100%);
-  --brk1: calc((var(--cap0) + var(--nd) + var(--gap) + 0.04) / var(--total) * 100%);
+/* ---------- The strip along the bottom: five progress dots (left), Back and Next (right) ----------
+   No sentences live here: only the dots, two faint utilities on large screens, and the two
+   buttons. Next is the only control with visual weight. */
+.ev-strip {
   position: absolute;
   z-index: 8;
   left: calc(50% - var(--hx) * var(--z));
   right: calc(50% - var(--hx) * var(--z));
-  bottom: max(calc(var(--u) * 1.5), env(safe-area-inset-bottom));
-  height: calc(var(--u) * 7.2);
-}
-.ev-rail-track {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: calc(var(--u) * 2);
-  height: calc(var(--u) * 1);
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent var(--r0),
-    #000 var(--r0),
-    #000 var(--brk0),
-    transparent var(--brk0),
-    transparent var(--brk1),
-    #000 var(--brk1),
-    #000 var(--r1),
-    transparent var(--r1)
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent var(--r0),
-    #000 var(--r0),
-    #000 var(--brk0),
-    transparent var(--brk0),
-    transparent var(--brk1),
-    #000 var(--brk1),
-    #000 var(--r1),
-    transparent var(--r1)
-  );
-}
-.ev-rail-line,
-.ev-rail-fill {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: 50%;
-  height: calc(var(--u) * 0.16);
-  margin-top: calc(var(--u) * -0.08);
-  pointer-events: none;
-}
-.ev-rail-line {
-  background: #d7e2ee;
-}
-.ev-rail-fill {
-  background: linear-gradient(90deg, #000e4f 0%, #000e4f 10%, #af4633 78%, #f16443 100%);
-  transform-origin: 0 50%;
-  transform: scaleX(var(--p));
-  transition: transform 1.1s cubic-bezier(0.65, 0, 0.2, 1);
-  will-change: transform;
-}
-/* the break: her day ends here, and engineering begins */
-.ev-rail-break {
-  position: absolute;
-  left: var(--brk0);
-  width: calc(var(--brk1) - var(--brk0));
-  top: calc(var(--u) * 2.5);
-  height: 0;
-  pointer-events: none;
-}
-.ev-rail-break::before,
-.ev-rail-break::after {
-  content: '';
-  position: absolute;
-  top: calc(var(--u) * -0.5);
-  width: calc(var(--u) * 0.16);
-  height: calc(var(--u) * 1);
-  border-radius: calc(var(--u) * 0.08);
-  background: #b7c9e2;
-  transition: background 0.6s;
-}
-.ev-rail-break::before {
-  left: 0;
-}
-.ev-rail-break::after {
-  right: 0;
-  background: var(--ev-navy);
-}
-.ev-rail-carrier {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: calc(var(--u) * 2.5);
-  height: 0;
-  transform: translateX(calc(var(--p) * 100%));
-  transition: transform 1.1s cubic-bezier(0.65, 0, 0.2, 1);
-  pointer-events: none;
-  z-index: 2;
-  will-change: transform;
-}
-.ev-rail-marker {
-  position: absolute;
-  left: calc(var(--u) * -0.6);
-  top: calc(var(--u) * -0.6);
-  width: calc(var(--u) * 1.2);
-  height: calc(var(--u) * 1.2);
-  border-radius: 50%;
-  background: var(--acc);
-  box-shadow:
-    0 0 0 calc(var(--u) * 0.24) #ffffff,
-    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.3);
-  transition: background 0.8s;
-}
-.ev-rail-marker::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--acc);
-  animation: ev-here 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
-}
-@keyframes ev-here {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  70%,
-  100% {
-    transform: scale(2.7);
-    opacity: 0;
-  }
-}
-.ev-root[data-hold='1'] .ev-rail-marker::after {
-  animation: none;
-  opacity: 0;
-}
-.ev-stop {
-  position: absolute;
-  top: 0;
-  left: calc(var(--x) / var(--total) * 100%);
-  width: calc(var(--w) / var(--total) * 100%);
-  display: block;
-  height: 100%;
-  text-align: center;
-  --x: 0;
-  --w: 1;
-  --s-ink: #c8431c;
-  /* the current name: how much it grows and how far it leans, in units of --u (core/buildMoment.ts reads these) */
-  --cur-scale: 1.26;
-  --cur-dx: 0;
-}
-.ev-stop--first {
-  --x: 0;
-  --w: var(--cap0);
-}
-.ev-stop--day {
-  --x: calc(var(--cap0) + var(--k));
-}
-.ev-stop--eng {
-  --x: calc(var(--cap0) + var(--nd) + var(--gap) + var(--k) * var(--mw));
-  --w: var(--mw);
-}
-.ev-stop--end {
-  --x: calc(var(--total) - var(--cap1));
-  --w: var(--cap1);
-}
-.ev-stop[data-accent='azure'] {
-  --s-ink: #2d6ad1;
-}
-.ev-stop[data-accent='navy'] {
-  --s-ink: #071a50;
-}
-.ev-stop-time {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  font-size: calc(var(--u) * 0.98);
-  font-weight: 700;
-  line-height: calc(var(--u) * 1.5);
-  color: var(--ev-muted);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  transition: color 0.5s;
-}
-/* Piramal Mind has no time of day: it carries the chapter's tag instead */
-.ev-stop-tag {
+  bottom: var(--ev-sb);
+  height: var(--ev-nh);
   display: flex;
-  justify-content: center;
-}
-.ev-stop-tag > span {
-  display: inline-flex;
   align-items: center;
-  gap: calc(var(--u) * 0.36);
-  height: calc(var(--u) * 1.5);
-  padding: 0 calc(var(--u) * 0.75) 0 calc(var(--u) * 0.55);
-  border-radius: calc(var(--u) * 0.75);
-  background: var(--ev-navy);
-  color: #ffffff;
-  font-size: calc(var(--u) * 0.8);
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  line-height: 1;
+  pointer-events: none;
+  /* a dot, and the button around it (40 px or more to the touch) */
+  --dot: max(calc(var(--u) * 0.62), 7px);
+  --dot-hit: max(calc(var(--u) * 2.3), 40px);
 }
-.ev-stop-tag svg {
+
+/* ----- the dots: four for her day, a small gap, one for Piramal Mind. No words. ----- */
+.ev-dots {
   flex: none;
-  width: calc(var(--u) * 0.95);
-  height: calc(var(--u) * 0.95);
-}
-.ev-stop-dot {
-  position: absolute;
-  left: 50%;
-  top: calc(var(--u) * 2.5);
-  width: calc(var(--u) * 0.7);
-  height: calc(var(--u) * 0.7);
-  margin: calc(var(--u) * -0.35) 0 0 calc(var(--u) * -0.35);
-  border-radius: 50%;
-  background: #ffffff;
-  border: calc(var(--u) * 0.16) solid #b7c9e2;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  /* the first dot stands on the content's left edge (its button reaches a little past it) */
+  margin-left: calc((var(--dot) - var(--dot-hit)) / 2);
   transition:
-    background 0.5s,
-    border-color 0.5s,
-    transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s;
 }
-.ev-stop[data-state='past'] .ev-stop-dot {
+/* hidden on the opening, on Meet Priya and on the closing: they fade, they do not pop */
+.ev-root[data-scene='intro'] .ev-dots,
+.ev-root[data-scene='priya'] .ev-dots,
+.ev-root[data-scene='finale'] .ev-dots {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s 0.5s;
+}
+.ev-dot {
+  --d-acc: #f16443;
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--dot-hit);
+  height: 100%;
+  min-height: 40px;
+  pointer-events: auto;
+}
+.ev-dot[data-accent='azure'] {
+  --d-acc: #4384d4;
+}
+.ev-dot[data-accent='navy'] {
+  --d-acc: #071a50;
+}
+.ev-dots-gap {
+  flex: none;
+  width: calc(var(--u) * 0.9);
+}
+.ev-dot-mark {
+  display: block;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: calc(var(--dot) / 2);
+  border: max(1.5px, calc(var(--u) * 0.13)) solid #9fb2cf;
+  background: rgba(255, 255, 255, 0.7);
+  transition:
+    width 0.55s cubic-bezier(0.3, 1.3, 0.4, 1),
+    background 0.4s,
+    border-color 0.4s;
+}
+/* visited: filled */
+.ev-dot[data-state='past'] .ev-dot-mark {
   background: #071a50;
   border-color: #071a50;
+  animation: ev-dot-filed 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) both;
 }
-.ev-stop[data-state='current'] .ev-stop-dot {
-  border-color: var(--s-ink);
-  transform: scale(1.25);
+/* current: a slightly longer pill, in the product's accent */
+.ev-dot[data-state='current'] .ev-dot-mark {
+  width: calc(var(--dot) * 3.1);
+  background: var(--d-acc);
+  border-color: var(--d-acc);
 }
-.ev-stop-name {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(var(--u) * 3.5);
-  font-size: calc(var(--u) * 1.9);
-  font-weight: 800;
-  line-height: calc(var(--u) * 2.6);
-  letter-spacing: -0.02em;
-  color: var(--ev-ink);
-  white-space: nowrap;
-  transform-origin: 50% 50%;
-  transition:
-    color 0.5s,
-    transform 0.7s cubic-bezier(0.3, 1.4, 0.4, 1);
+.ev-dot:active .ev-dot-mark {
+  transform: scale(0.82);
 }
-.ev-stop-pop {
-  display: inline-block;
-}
-.ev-stop[data-state='current'] .ev-stop-name {
-  color: var(--s-ink);
-  transform: translateX(calc(var(--u) * var(--cur-dx))) scale(var(--cur-scale));
-}
-.ev-stop[data-state='current'] .ev-stop-time {
-  color: var(--ev-navy);
-}
-.ev-stop[data-state='current'] .ev-stop-tag {
-  color: #ffffff;
-}
-/* a long name (Piramal Mind) grows a little less */
-.ev-stop[data-long='1'] {
-  --cur-scale: 1.15;
-}
-.ev-stop:active .ev-stop-name {
-  transform: scale(0.94);
-  transition-duration: 0.12s;
-}
-/* the opening screen: the five names take turns to lift, so it is plain they can be touched */
-.ev-root[data-scene='intro'] .ev-stop-pop {
-  animation: ev-sweep 6.5s cubic-bezier(0.3, 0, 0.2, 1) infinite;
-  animation-delay: calc(var(--i) * 0.55s + 3.4s);
-}
-@keyframes ev-sweep {
-  0%,
-  16%,
-  100% {
-    transform: none;
-    color: inherit;
-  }
-  6% {
-    transform: translateY(-14%) scale(1.14);
-    color: var(--s-ink);
-  }
-}
-.ev-pips {
-  position: absolute;
-  left: 50%;
-  top: calc(var(--u) * 6.45);
-  display: flex;
-  gap: calc(var(--u) * 0.28);
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-.ev-stop[data-state='current'][data-steps='1'] .ev-pips {
-  opacity: 1;
-}
-.ev-pips i {
-  width: calc(var(--u) * 1.1);
-  height: calc(var(--u) * 0.24);
-  border-radius: calc(var(--u) * 0.12);
-  background: #d7e2ee;
-  transition: background 0.5s;
-}
-.ev-pips i[data-on='1'] {
-  background: var(--s-ink);
-}
-.ev-stop[data-state='past'] .ev-stop-pop {
-  animation: ev-railpop 0.75s cubic-bezier(0.3, 1.5, 0.5, 1) both;
-  animation-delay: calc(var(--i, 0) * 0.02s);
-}
-@keyframes ev-railpop {
+/* the name has just been filed into it (the hand-over: core/buildMoment.ts) */
+@keyframes ev-dot-filed {
   0% {
     transform: scale(1);
   }
-  28% {
-    transform: scale(1.28);
+  30% {
+    transform: scale(1.9);
   }
   100% {
     transform: scale(1);
   }
 }
-/* the two caps: what Everyday AI is (the opening), and the five names (the closing) */
-.ev-stop--cap .ev-stop-name {
-  font-size: calc(var(--u) * 1.02);
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-indent: 0.2em;
-  text-transform: uppercase;
+
+/* ----- one faint utility, on the OPENING only (large screens): the Auto-play switch -----
+   Once the film is under way the strip is the dots and the two buttons and nothing else: no word
+   and no extra control stands under Priya's bubble. (?auto still works; a deliberate Next or Back
+   switches Auto-play off; the dots and the closing's "Start again" are the ways back.) */
+.ev-util {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  height: 100%;
+  margin-left: calc(var(--u) * 1.6);
   color: var(--ev-muted);
-}
-.ev-stop--cap[data-state='past'] .ev-stop-name {
-  color: var(--ev-ink);
-}
-.ev-stop--cap[data-state='current'] .ev-stop-name {
-  color: var(--ev-navy);
-  transform: none;
-}
-.ev-stop--cap[data-state='current'] .ev-stop-dot {
-  border-color: var(--ev-navy);
-}
-/* While the first name of her day is the current one it is drawn large, right up against the
-   opening's label ("EVERYDAY AI SmartHelp" read as one string). The label steps back for that
-   moment and the cap is its dot and "Start", as it always is on squarer screens. */
-.ev-stop--cap .ev-stop-name {
-  transition:
-    color 0.5s,
-    opacity 0.45s;
-}
-.ev-stop--first[data-tight='1'] .ev-stop-name {
   opacity: 0;
+  visibility: hidden;
+  /* it stands in the dots' place (there are none on the opening), on the content's left edge */
+  transform: translateX(calc(var(--dot-hit) * -4.5 - var(--dot) / 2 - var(--u) * 3.1));
+  transition:
+    opacity 0.3s,
+    visibility 0s 0.3s;
+}
+/* (inherit, not visible: while the strip itself is hidden, before the film is ready or behind
+   the "turn your device" prompt, the switch is hidden with it) */
+.ev-root[data-scene='intro'] .ev-util {
+  opacity: 0.72;
+  visibility: inherit;
+  transition:
+    opacity 0.3s,
+    visibility 0s;
+}
+.ev-root[data-scene='intro'] .ev-util:hover {
+  opacity: 1;
+}
+.ev-auto {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-height: 40px;
+  pointer-events: auto;
+}
+.ev-auto {
+  gap: calc(var(--u) * 0.55);
+  padding: 0 calc(var(--u) * 0.6);
+  font-size: max(calc(var(--u) * 0.92), 11px);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ev-auto-track {
+  position: relative;
+  flex: none;
+  width: max(calc(var(--u) * 2), 26px);
+  height: max(calc(var(--u) * 1.15), 15px);
+  border-radius: 999px;
+  background: #cfd9e8;
+  transition: background 0.25s;
+}
+.ev-auto-track > i {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  bottom: 2px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(7, 26, 80, 0.3);
+  transition: transform 0.28s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.ev-auto[data-on='1'] {
+  color: var(--ev-navy);
+}
+.ev-auto[data-on='1'] .ev-auto-track {
+  background: #4384d4;
+}
+.ev-auto[data-on='1'] .ev-auto-track > i {
+  transform: translateX(calc(max(calc(var(--u) * 2), 26px) - max(calc(var(--u) * 1.15), 15px)));
+}
+.ev-auto:active .ev-auto-track {
+  transform: scale(0.9);
+}
+
+/* ----- Back and NEXT: bottom right, always in the same place -----
+   Next is the one thing a newcomer must find, in a room: it is a third taller than the strip
+   (--ev-nx), standing on the strip's foot and rising above it. Back is centred on it. */
+.ev-nav {
+  --ev-nx: max(calc(var(--u) * 4), 48px);
+  flex: none;
+  margin-left: auto;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+  height: var(--ev-nx);
+  transition:
+    opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s;
+}
+/* not on the opening: its own start button is the action there */
+.ev-root[data-scene='intro'] .ev-nav {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(40%);
+  transition:
+    opacity 0.3s,
+    transform 0.3s,
+    visibility 0s 0.3s;
+}
+.ev-back {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--ev-nh);
+  height: var(--ev-nh);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(7, 26, 80, 0.1);
+  color: var(--ev-muted);
+  pointer-events: auto;
+  transition:
+    transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1),
+    color 0.2s,
+    background 0.2s;
+}
+.ev-back svg {
+  width: max(calc(var(--u) * 1.3), 17px);
+  height: max(calc(var(--u) * 1.3), 17px);
+  margin-right: 6%;
+}
+.ev-back:hover {
+  color: var(--ev-navy);
+}
+.ev-back:active {
+  transform: scale(0.9);
+  background: #eaf0f8;
+}
+.ev-next {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.8);
+  height: var(--ev-nx);
+  min-width: calc(var(--ev-nx) * 2.5);
+  padding: 0 calc(var(--u) * 1.9) 0 calc(var(--u) * 2.4);
+  border-radius: calc(var(--ev-nx) / 2);
+  font-size: max(calc(var(--u) * 1.6), 15px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: auto;
+  /* moving: quiet. The film is travelling; a press finishes the move. */
+  background: rgba(255, 255, 255, 0.9);
+  color: #7c8aa8;
+  box-shadow: 0 0 0 1px rgba(7, 26, 80, 0.12);
+  transition:
+    background 0.3s,
+    color 0.3s,
+    box-shadow 0.3s,
+    transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.ev-next svg {
+  flex: none;
+  width: max(calc(var(--u) * 1.55), 16px);
+  height: max(calc(var(--u) * 1.55), 16px);
+  overflow: visible;
+  transition: transform 0.3s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+/* ready: the film rests, and this is how it moves on. Full strength. */
+.ev-next[data-state='ready'] {
+  background: linear-gradient(180deg, #12297a 0%, #071a50 100%);
+  color: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 0.7) calc(var(--u) * 1.7) rgba(7, 26, 80, 0.3),
+    0 calc(var(--u) * 0.15) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.22);
+}
+.ev-next[data-state='ready'] svg {
+  transform: translateX(8%);
+}
+.ev-next:active {
+  transform: scale(0.95);
+}
+/* one soft pulse as the film comes to rest; a gentle breathing glow if nobody presses for about 4 s */
+.ev-next-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+.ev-next[data-state='ready'] .ev-next-halo {
+  animation:
+    ev-next-arrive 0.9s cubic-bezier(0.2, 0.6, 0.3, 1) 0.1s 1 both,
+    ev-next-breathe 2.6s ease-in-out 4s infinite;
+}
+@keyframes ev-next-arrive {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(67, 132, 212, 0.55);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 calc(var(--u) * 1.1) rgba(67, 132, 212, 0);
+  }
+}
+@keyframes ev-next-breathe {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(67, 132, 212, 0.5);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 0 calc(var(--u) * 0.55) rgba(67, 132, 212, 0.16);
+  }
+}
+.ev-next-word {
+  display: inline-block;
 }
 
 /* ---------- Touch feedback ---------- */
@@ -1362,12 +1318,20 @@
 .ev-stat-pic {
   position: absolute;
   left: calc(var(--hx) - var(--ev-picw));
-  top: calc(var(--ev-pitch) * -10.6);
+  /* In the middle of the picture area's height; and never higher than the statement slot: on a
+     squarer screen the box reaches left under the end of a long docked name (SmartHelp). */
+  top: max(calc((var(--ev-top) + var(--ev-pb)) / 2 - var(--ev-pitch) * 10), calc(var(--u) * -5.6));
   width: var(--ev-picw);
   height: calc(var(--ev-pitch) * 20);
   pointer-events: none;
   visibility: hidden;
   will-change: opacity;
+}
+@media (min-aspect-ratio: 3/2) {
+  /* (a wide screen: the box is clear of every docked name, and stands in the middle of the area) */
+  .ev-stat-pic {
+    top: calc((var(--ev-top) + var(--ev-pb)) / 2 - var(--ev-pitch) * 10);
+  }
 }
 .ev-stat-pre {
   font-weight: 300;
@@ -1389,45 +1353,49 @@
   display: inline-block;
 }
 
-/* ---------- BEFORE: the old way, small. A picture, the word "Before", one line. ---------- */
+/* ---------- BEFORE: the old way. ONE picture in the picture area, under a small "Before" tag. ----------
+   The picture is laid out by its module for 25u × 20u; core/buildMoment.ts stands it in the
+   middle of the picture area and enlarges it whole to fit (up to 1.6×). The tag stands on its
+   top left corner. Priya's bubble tells the old way: there is no headline and no line beside it. */
 .ev-before {
   position: absolute;
-  left: calc(var(--u) * -30);
-  top: calc(var(--u) * -13.6);
-  width: calc(var(--u) * 60);
-  height: calc(var(--u) * 21);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 3.6);
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
   pointer-events: none;
 }
 .ev-before-pic {
-  position: relative;
-  flex: none;
+  position: absolute;
+  left: calc(var(--u) * -12.5);
+  top: calc(var(--u) * -10);
   width: calc(var(--u) * 25);
   height: calc(var(--u) * 20);
   visibility: hidden;
   will-change: transform, opacity;
 }
-.ev-before-txt {
-  min-width: 0;
-}
-.ev-before-eyebrow {
-  font-size: calc(var(--u) * 1.02);
+.ev-before-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: calc(var(--u) * 2.1);
+  padding: 0 calc(var(--u) * 0.85) 0 calc(var(--u) * 1.05);
+  border-radius: calc(var(--u) * 1.05);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px var(--ev-line),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.06);
+  font-size: calc(var(--u) * 0.95);
   font-weight: 800;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
+  line-height: 1;
   color: var(--ev-muted);
-  line-height: 1.5;
-}
-.ev-before-h {
-  margin-top: calc(var(--u) * 0.7);
-  font-size: calc(var(--u) * 3.4);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: var(--ev-navy);
-  text-wrap: balance;
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
 }
 
 /* ---------- The module's free layer ---------- */
@@ -1438,12 +1406,6 @@
   width: 0;
   height: 0;
   pointer-events: none;
-}
-.ev-beside {
-  margin-top: calc(var(--u) * 1.3);
-}
-.ev-moment[data-photo='0'] .ev-beside {
-  margin-top: 0;
 }
 
 /* ---------- THE ONE CONTROL: it pulses and can be touched only while the film waits on it ---------- */
@@ -1563,249 +1525,159 @@
   background: #b3bccd;
 }
 
-/* ---------- Priya's line: a film subtitle with her face. And the quiet controls. ---------- */
-.ev-sub {
+/* ---------- PRIYA'S VOICE: her face, and her line in a speech bubble ----------
+   Always in the same place: the bottom of the left column, its foot on --ev-vy (just above the
+   strip), growing upward to three lines at the most. The second most prominent text on screen,
+   after the headline. NOTHING else may come within 2u of this block: that is THE CLEAR ZONE
+   (moments/README.md).
+
+   The block is a 0 × 0 box at the stage centre (it lives in .ev-shellstage). What a scene may
+   set, from its own stylesheet, to stand the bubble somewhere else (Meet Priya: by her photo):
+     --ev-vb-left    the bubble's left edge, as a stage x
+     --ev-vb-bottom  the bubble's foot, as a stage y
+     --ev-vb-w       the bubble's greatest width
+   The face (.ev-voice-avatar, [data-ev="avatar"]) always stays in its place. */
+.ev-voice {
+  --ev-av: calc(var(--u) * 5.6);
+  --ev-vw: var(--ev-lw);
+  --ev-vb-left: calc(var(--ev-av) + var(--u) * 1.5 - var(--hx));
+  --ev-vb-bottom: var(--ev-vy);
+  --ev-vb-w: calc(var(--ev-vw) - var(--ev-av) - var(--u) * 1.5);
   position: absolute;
-  left: calc(var(--hx) * -1);
-  top: calc(var(--u) * 17.8);
-  width: calc(var(--hx) * 2);
-  height: calc(var(--u) * 3.8);
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
   pointer-events: none;
 }
-.ev-sub-avatar {
-  position: absolute;
-  left: calc(var(--u) * 0.2);
-  top: calc(var(--u) * 0.1);
-  width: calc(var(--u) * 3.6);
-  height: calc(var(--u) * 3.6);
-  border-radius: 50%;
+/* her 'before' line is her longest: for the before step (and while it leaves) the bubble may be
+   wider, and the old-way picture stands clear of that (.ev-picarea--before) */
+.ev-root[data-step='before'] .ev-voice,
+.ev-root[data-step='name'] .ev-voice {
+  --ev-vw: var(--ev-bw);
 }
-.ev-sub-avatar img {
+.ev-voice-avatar {
+  position: absolute;
+  left: calc(var(--hx) * -1);
+  top: calc(var(--ev-vy) - var(--ev-av));
+  width: var(--ev-av);
+  height: var(--ev-av);
+  border-radius: 50%;
+  transition:
+    opacity 0.25s,
+    visibility 0s;
+}
+.ev-voice-avatar img {
   display: block;
   width: 100%;
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
-.ev-sub-avatar::after {
+.ev-voice-avatar::after {
   content: '';
   position: absolute;
-  inset: calc(var(--u) * -0.34);
+  inset: calc(var(--u) * -0.38);
   border-radius: 50%;
-  border: calc(var(--u) * 0.14) solid var(--acc);
+  border: max(1.5px, calc(var(--u) * 0.15)) solid var(--acc);
   transition: border-color 0.8s;
 }
-/* The opening screen has no Priya yet. On "Meet Priya" her photo is large on the stage, and
-   irises down into this avatar at the end: the scene's timeline shows it then (inline styles win). */
-.ev-root[data-scene='intro'] .ev-sub-avatar,
-.ev-root[data-scene='priya'] .ev-sub-avatar {
-  opacity: 0;
-  visibility: hidden;
-}
-.ev-sub-lines {
+.ev-voice-bubble {
   position: absolute;
-  left: calc(var(--u) * 5.3);
-  /* clear of the two controls at their widest ("Manual") */
-  right: calc(var(--u) * 21);
-  top: 0;
-  height: 100%;
-}
-.ev-sub-line {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-}
-.ev-sub-line p {
-  font-size: calc(var(--u) * 1.5);
-  font-weight: 600;
-  line-height: 1.26;
-  color: var(--ev-ink);
-  max-width: calc(var(--u) * 66);
-  text-wrap: pretty;
-}
-.ev-sub-line b {
-  font-weight: 800;
-  color: var(--ev-navy);
-}
-.ev-sub-who {
-  display: block;
-  font-size: calc(var(--u) * 0.84);
-  font-weight: 800;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: var(--ev-muted);
-  margin-bottom: calc(var(--u) * 0.1);
-}
-
-.ev-ctl {
-  position: absolute;
-  right: 0;
-  top: calc(var(--u) * 0.1);
-  height: calc(var(--u) * 3.6);
-  display: flex;
-  align-items: center;
-  padding: 0 calc(var(--u) * 0.25);
-  border-radius: calc(var(--u) * 1.8);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow:
-    0 calc(var(--u) * 0.4) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.12),
-    0 0 0 1px rgba(7, 26, 80, 0.07);
-  pointer-events: auto;
-}
-.ev-ctl-btn {
-  position: relative;
-  flex: none;
-  display: flex;
-  align-items: center;
-  height: calc(var(--u) * 3.1);
-  border-radius: calc(var(--u) * 1.55);
-  color: var(--ev-navy);
-  font-size: calc(var(--u) * 1.02);
-  font-weight: 800;
-  letter-spacing: -0.005em;
-  white-space: nowrap;
-  transition:
-    transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1),
-    background 0.2s;
-}
-.ev-ctl-btn:active {
-  transform: scale(0.94);
-  background: #eaf0f8;
-}
-.ev-ctl-btn::after {
-  /* a generous touch target */
-  content: '';
-  position: absolute;
-  inset: calc(var(--u) * -0.45) calc(var(--u) * -0.1);
-  border-radius: inherit;
-}
-.ev-ctl-btn svg {
-  flex: none;
-  overflow: visible;
-}
-.ev-ctl-mode {
-  gap: calc(var(--u) * 0.4);
-  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 0.15);
-}
-.ev-ctl-mode > svg {
-  width: calc(var(--u) * 2.8);
-  height: calc(var(--u) * 2.8);
-}
-.ev-ctl-again {
-  gap: calc(var(--u) * 0.5);
-  padding: 0 calc(var(--u) * 1.1) 0 calc(var(--u) * 0.9);
-}
-.ev-ctl-again > svg {
-  width: calc(var(--u) * 1.5);
-  height: calc(var(--u) * 1.5);
-}
-.ev-ctl-ring {
-  fill: none;
-  stroke: var(--acc);
-  stroke-width: 2.6;
-  stroke-linecap: round;
-  transform: rotate(-90deg);
-  transform-origin: 20px 20px;
-  transition: stroke 0.8s;
-}
-.ev-ctl-track {
-  fill: none;
-  stroke: var(--ev-line);
-  stroke-width: 2.6;
-}
-/* the label keeps the width of its longer word, so the capsule never changes size when the switch is flipped */
-.ev-ctl-mode .ev-ctl-label {
-  min-width: calc(var(--u) * 3.9);
-  text-align: left;
-}
-.ev-ctl-divider {
-  flex: none;
-  width: 1px;
-  height: calc(var(--u) * 1.7);
-  margin: 0 calc(var(--u) * 0.15);
-  background: var(--ev-line);
-}
-
-/* ---------- The two prompts: the screen is waiting for you ----------
-   "Tap anywhere to continue": manual mode, resting on a finished step. It stands beside the two
-   controls, in the subtitle row, and Priya's line gives it the room (in manual mode only).
-   --ctl-w is the capsule's width: it does not change (see .ev-ctl-mode .ev-ctl-label). */
-.ev-taphint {
-  --ctl-w: calc(var(--u) * 19);
-  position: absolute;
-  right: calc(var(--ctl-w) + var(--u) * 0.9);
-  top: calc(var(--u) * 0.1);
-  height: calc(var(--u) * 3.6);
+  left: var(--ev-vb-left);
+  bottom: calc(var(--ev-vb-bottom) * -1);
   width: max-content;
-  max-width: calc(var(--u) * 12.6);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.6);
-  padding: 0 calc(var(--u) * 1.1) 0 calc(var(--u) * 0.75);
-  border-radius: calc(var(--u) * 1.8);
-  background: var(--acc-soft);
-  box-shadow: 0 0 0 1px var(--acc-line);
-  color: var(--acc-text);
-  font-size: calc(var(--u) * 0.98);
-  font-weight: 800;
-  line-height: 1.22;
-  letter-spacing: -0.005em;
-  text-wrap: balance;
-  pointer-events: none;
+  max-width: var(--ev-vb-w);
+  transform-origin: 0 100%;
+  transition:
+    opacity 0.2s,
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s;
+}
+/* She has nothing to say here (the name at centre stage; the number; a hand-over): the whole
+   block is away, face and all. */
+.ev-voice[data-on='0'] .ev-voice-bubble {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(calc(var(--u) * 0.5)) scale(0.96);
+  transition:
+    opacity 0.18s,
+    transform 0.18s cubic-bezier(0.4, 0, 1, 1),
+    visibility 0s 0.18s;
+}
+.ev-voice[data-on='0'] .ev-voice-avatar {
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.3s,
-    visibility 0s 0.3s,
-    background 0.8s,
-    color 0.8s;
+    opacity 0.18s,
+    visibility 0s 0.18s;
 }
-.ev-taphint[data-on='1'] {
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 0.3s,
-    background 0.8s,
-    color 0.8s;
-}
-/* on a phone on its side the director moves it to a clear place (its transform), or, if the
-   frame has none, keeps it off (core/director.ts → placeHint) */
-.ev-taphint[data-fit='0'] {
+/* The opening has no Priya yet. On "Meet Priya" her photo is large on the stage, and irises down
+   into this face at the end: the scene's timeline shows it then (inline styles win). */
+.ev-root[data-scene='intro'] .ev-voice-avatar,
+.ev-root[data-scene='priya'] .ev-voice-avatar {
   opacity: 0;
   visibility: hidden;
 }
-.ev-taphint svg {
-  flex: none;
-  width: calc(var(--u) * 1.7);
-  height: calc(var(--u) * 1.7);
-  overflow: visible;
+/* The card is keyed by her line (Shell.tsx): a new line is a new card, and it arrives in one
+   small, crisp move from the corner nearest her. */
+.ev-voice-card {
+  position: relative;
+  padding: calc(var(--u) * 1.1) calc(var(--u) * 1.7) calc(var(--u) * 1.25) calc(var(--u) * 1.75);
+  border-radius: calc(var(--u) * 1.7);
+  background: #ffffff;
+  /* a hairline in the moment's accent, and a soft shadow */
+  box-shadow:
+    0 0 0 max(1.5px, calc(var(--u) * 0.11)) var(--acc-a40),
+    0 calc(var(--u) * 1.3) calc(var(--u) * 3.2) rgba(7, 26, 80, 0.13),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.07);
+  transform-origin: 0 100%;
+  animation: ev-voice-in 0.42s cubic-bezier(0.3, 1.45, 0.5, 1) both;
 }
-.ev-taphint-ring {
-  transform-origin: 12px 12px;
-  opacity: 0.55;
-}
-.ev-taphint[data-on='1'] .ev-taphint-ring {
-  animation: ev-taphint 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
-}
-@keyframes ev-taphint {
+@keyframes ev-voice-in {
   0% {
-    transform: scale(0.55);
-    opacity: 0.9;
-  }
-  80%,
-  100% {
-    transform: scale(1.25);
     opacity: 0;
+    transform: translate(calc(var(--u) * -0.5), calc(var(--u) * 0.5)) scale(0.88);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
   }
 }
-/* manual mode: her line keeps clear of the hint as well as of the two controls */
-.ev-root[data-mode='manual'] .ev-sub-lines {
-  right: calc(var(--u) * 33.6);
+/* the small tail, toward her */
+.ev-voice-tail {
+  position: absolute;
+  left: calc(var(--u) * -0.62);
+  bottom: calc(var(--ev-av) / 2 - var(--u) * 0.6);
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.2);
+  background: #ffffff;
+  border-left: max(1.5px, calc(var(--u) * 0.11)) solid var(--acc-a40);
+  border-bottom: max(1.5px, calc(var(--u) * 0.11)) solid var(--acc-a40);
+  border-bottom-left-radius: calc(var(--u) * 0.3);
+  transform: rotate(45deg);
+}
+.ev-voice-text {
+  font-size: calc(var(--u) * 1.95);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: var(--ev-navy);
+  /* no text-wrap here: the bubble is as wide as its words (max-content, up to --ev-vb-w), and
+     Safari's `pretty` re-breaks them much narrower than that, leaving the card half empty */
+}
+.ev-voice-text b {
+  font-weight: 800;
+  color: var(--acc-ink);
 }
 
-/* "Your turn": beside a demo's control while it waits for a visitor who is there. The director
-   places it (x / y, and which side of the control it stands on) and shows it: core/director.ts. */
+/* ---------- "Your turn" (Auto-play only) ----------
+   Beside a demo's control while it waits for a visitor who is there. The director places it
+   (x / y, and which side of the control it stands on) and shows it: core/director.ts. In manual
+   there is no caption: the control's own halo and the Next button are the prompt. */
 .ev-turn {
   position: absolute;
   left: 0;
@@ -1859,111 +1731,6 @@
   to {
     transform: translateX(calc(var(--u) * -0.22));
   }
-}
-
-/* ---------- The opening screen: touch a product on the rail to preview it ----------
-   The preview docks in one place, under the start control and clear of the two controls
-   at every screen size: see the whole film, or play just this one. */
-.ev-preview {
-  position: absolute;
-  z-index: 4;
-  left: 0;
-  bottom: calc(100% + var(--u) * 0.6);
-  width: max-content;
-  max-width: calc(100% - var(--u) * 22);
-  min-height: calc(var(--u) * 5.4);
-  padding: calc(var(--u) * 0.55) calc(var(--u) * 1) calc(var(--u) * 0.55) calc(var(--u) * 1.7);
-  border-radius: calc(var(--u) * 1.5);
-  background: #ffffff;
-  box-shadow:
-    0 calc(var(--u) * 1.6) calc(var(--u) * 3.6) rgba(7, 26, 80, 0.2),
-    0 calc(var(--u) * 0.3) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.1),
-    0 0 0 1px rgba(7, 26, 80, 0.05),
-    inset calc(var(--u) * 0.4) 0 0 var(--acc);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 1.5);
-  text-align: left;
-  cursor: pointer;
-  animation: ev-preview-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  transform-origin: 0 100%;
-}
-@keyframes ev-preview-in {
-  from {
-    opacity: 0;
-    transform: translateY(calc(var(--u) * 1.2)) scale(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-.ev-preview-name {
-  flex: none;
-  display: grid;
-  white-space: nowrap;
-}
-.ev-preview-name b {
-  font-size: calc(var(--u) * 2.9);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1.12;
-  color: var(--acc-ink);
-}
-.ev-preview-name span {
-  font-size: calc(var(--u) * 0.98);
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--ev-ink);
-}
-.ev-preview-txt {
-  flex: 1;
-  min-width: 0;
-  padding-left: calc(var(--u) * 1.5);
-  border-left: 1px solid var(--ev-line);
-}
-.ev-preview-when {
-  font-size: calc(var(--u) * 0.86);
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ev-muted);
-  line-height: 1.4;
-}
-.ev-preview-promise {
-  margin-top: calc(var(--u) * 0.2);
-  font-size: calc(var(--u) * 1.2);
-  font-weight: 600;
-  line-height: 1.28;
-  color: var(--ev-body);
-  text-wrap: balance;
-}
-.ev-preview-go {
-  position: relative;
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 4);
-  height: calc(var(--u) * 4);
-  border-radius: 50%;
-  background: linear-gradient(140deg, var(--acc-g1) 0%, var(--acc-g3) 100%);
-  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) var(--acc-a40); /* color-mix(): see the @supports block at the end of this file */
-  transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1);
-}
-.ev-preview-go:active {
-  transform: scale(0.9);
-}
-.ev-preview-go svg {
-  width: 42%;
-  height: 42%;
-  margin-left: 8%;
-}
-.ev-stop[data-preview='1'] .ev-stop-name {
-  color: var(--s-ink);
-  transform: scale(1.12);
-}
-.ev-stop[data-preview='1'] .ev-stop-pop {
-  animation: none;
 }
 
 /* ---------- Portrait: ask for the device to be turned ---------- */
@@ -2025,22 +1792,24 @@
 
 /* ---------- A phone on its side ----------
    The screen is short (about 300 to 430 px once the browser's bars are taken out), so the
-   film is laid out again around what is scarce: height.
+   film is laid out again around what is scarce: height. THE LAYOUT is the same one (the name,
+   the statement and Priya's voice down the left; ONE picture on the right), with its own numbers.
 
      - The stage gets all of it but one bar. There is no header band: the logo moves into
-       the bar, and the clock gives way to the times the rail already carries.
-     - The bar along the bottom is a player's transport: logo · the rail · auto / manual ·
-       start again. It is a full fingertip tall (44 px or more), and the only place where
-       anything is touched besides the stage itself.
+       the bar, and there is no clock chip.
+     - The bar along the bottom is the strip: logo · the five dots · Back · Next. It is a full
+       fingertip tall (44 px or more), and the only place where anything is touched besides
+       the stage itself. No Auto-play switch and no Start again here.
      - --u is worked out from the room that is left, clear of the notch and of the home
-       indicator: 38.9 units from the top of the docked name to the foot of Priya's line.
-       It comes to about 7 to 9 px (16:9 screens are held by their width instead), and the
-       stage is not scaled any more (--z is 1).
+       indicator: 38.9 units from the top of the docked name to the foot of the stage.
+       It comes to about 6 to 9 px (16:9 screens are held by their width instead), and the
+       stage is not scaled (--z is 1).
      - Type has a floor in real pixels: max(calc(var(--u) * n), calc(var(--fl) * 11)) for
-       anything that is read, 7.5 px inside the enlarged phone (9 px on the glass). --fl is
-       1px on every phone this is laid out for (--u of 6.9 px or more: a screen 320 px tall
-       and 640 px wide, clear of its insets); on anything smaller still it shrinks with --u,
-       so the layout scales down whole rather than breaking. See each scene's own block.   */
+       anything that is read, 12 px for Priya's words, 7.5 px inside the enlarged phone (9 px on
+       the glass). --fl is 1px on every phone this is laid out for (--u of 6.9 px or more: a
+       screen 320 px tall and 640 px wide, clear of its insets); on anything smaller still it
+       shrinks with --u, so the layout scales down whole rather than breaking. See each
+       scene's own block.   */
 @media (max-height: 480px) {
   .ev-root {
     --sat: env(safe-area-inset-top, 0px);
@@ -2064,6 +1833,16 @@
     --fl: min(1px, calc(var(--u) / 6.9));
     /* type inside a device has its own floor: 9 px on the glass once the phone is enlarged 1.2× (core/buildMoment.ts) */
     --dt: calc(var(--fl) * 7.5);
+
+    /* THE LAYOUT here: the room runs from -17.3u to +21.6u around the stage centre */
+    --ev-lw0: calc(var(--u) * 42);
+    --ev-lw: calc(var(--u) * 46);
+    --ev-bw: calc(var(--u) * 50);
+    --ev-top: calc(var(--u) * -17.1);
+    --ev-vy: calc(var(--u) * 20.8);
+    --ev-pb: calc(var(--u) * 21.3);
+    --ev-nh: max(44px, calc(var(--bar) - 5px));
+    --ev-sb: var(--bot);
   }
   .ev-stage,
   .ev-shellstage {
@@ -2075,7 +1854,7 @@
     --ev-dw: calc(var(--u) * 18.4);
   }
 
-  /* ----- the logo, at the left end of the bar ----- */
+  /* ----- the logo, at the left end of the bar; no clock chip ----- */
   .ev-header {
     top: auto;
     right: auto;
@@ -2086,191 +1865,61 @@
   .ev-logo {
     height: calc(var(--bu) * 24);
   }
-  .ev-kicker,
   .ev-clock {
     display: none;
   }
 
-  /* ----- the rail, in the bar: time · line · name · pips ----- */
-  .ev-rail {
-    --cap0: 0.3; /* the opening: only its dot (Start again does the same thing) */
-    --cap1: 0.85; /* the closing: a dot with a fingertip of room */
-    --gap: 0.3;
-    --mw: 1.4;
+  /* ----- the strip is the bar: the dots after the logo, Back and Next at the right end ----- */
+  .ev-strip {
     left: calc(var(--pad) + var(--bu) * 53 + 14px);
-    right: calc(var(--pad) + var(--bu) * 88 + 9px);
-    bottom: var(--bot);
+    right: var(--pad);
     height: var(--bar);
   }
-  .ev-rail-track {
-    top: calc(var(--bu) * 14.5);
-    height: calc(var(--bu) * 7);
+  .ev-strip {
+    --dot: 7px;
+    --dot-hit: 40px;
   }
-  .ev-rail-line,
-  .ev-rail-fill {
-    height: calc(var(--bu) * 1.2);
-    margin-top: calc(var(--bu) * -0.6);
+  .ev-dots {
+    margin-left: 0;
   }
-  .ev-rail-break,
-  .ev-rail-carrier {
-    top: calc(var(--bu) * 18);
+  .ev-dots-gap {
+    width: 6px;
   }
-  .ev-rail-break::before,
-  .ev-rail-break::after {
-    top: calc(var(--bu) * -3.5);
-    width: calc(var(--bu) * 1.2);
-    height: calc(var(--bu) * 7);
-    border-radius: calc(var(--bu) * 0.6);
-  }
-  .ev-rail-marker {
-    left: calc(var(--bu) * -4);
-    top: calc(var(--bu) * -4);
-    width: calc(var(--bu) * 8);
-    height: calc(var(--bu) * 8);
-    box-shadow:
-      0 0 0 calc(var(--bu) * 1.6) #ffffff,
-      0 calc(var(--bu) * 2) calc(var(--bu) * 5) rgba(7, 26, 80, 0.3);
-  }
-  .ev-stop {
-    --cur-scale: 1.12;
-    /* a stop is touched through its ::before, which keeps 8 px between neighbours */
-    pointer-events: none;
-  }
-  .ev-stop[data-long='1'] {
-    --cur-scale: 1.06;
-  }
-  .ev-stop::before {
-    content: '';
-    position: absolute;
-    inset: 0 4.5px;
-    pointer-events: auto;
-  }
-  .ev-stop--first::before {
+  .ev-util {
     display: none;
   }
-  .ev-stop-time {
-    top: 0;
-    font-size: calc(var(--bu) * 11);
-    line-height: calc(var(--bu) * 13);
+  .ev-nav {
+    /* in the bar, Next is the bar's own height: a full fingertip, and no taller */
+    --ev-nx: var(--ev-nh);
+    align-self: center;
+    gap: 8px;
   }
-  .ev-stop-tag > span {
-    gap: calc(var(--bu) * 3);
-    height: calc(var(--bu) * 13);
-    padding: 0 calc(var(--bu) * 6) 0 calc(var(--bu) * 5);
-    border-radius: calc(var(--bu) * 6.5);
-    font-size: calc(var(--bu) * 11);
-    letter-spacing: 0;
-    text-transform: none;
+  .ev-back {
+    width: 44px;
+    height: 44px;
   }
-  .ev-stop-tag svg {
-    width: calc(var(--bu) * 9);
-    height: calc(var(--bu) * 9);
+  .ev-next {
+    min-width: 96px;
+    padding: 0 14px 0 18px;
+    gap: 7px;
+    font-size: 15px;
   }
-  .ev-stop-dot {
-    top: calc(var(--bu) * 18);
-    width: calc(var(--bu) * 5);
-    height: calc(var(--bu) * 5);
-    margin: calc(var(--bu) * -2.5) 0 0 calc(var(--bu) * -2.5);
-    border-width: calc(var(--bu) * 1.2);
-  }
-  .ev-stop-name {
-    top: calc(var(--bu) * 22.5);
-    font-size: calc(var(--bu) * 12.5);
-    line-height: calc(var(--bu) * 16);
-  }
-  .ev-pips {
-    top: calc(var(--bu) * 40);
-    gap: calc(var(--bu) * 2);
-  }
-  .ev-pips i {
-    width: calc(var(--bu) * 8);
-    height: calc(var(--bu) * 2);
-    border-radius: calc(var(--bu) * 1);
-  }
-  /* the two caps are their dots */
-  .ev-stop--cap .ev-stop-name,
-  .ev-stop--cap .ev-stop-time {
-    display: none;
+  .ev-next svg {
+    width: 16px;
+    height: 16px;
   }
 
-  /* ----- the two controls, at the right end of the bar: two round buttons, 44 px to the touch ----- */
-  .ev-ctl {
-    top: calc(100vh - var(--bot) - var(--bar) - var(--cy) - var(--u) * 17.8);
-    top: calc(100dvh - var(--bot) - var(--bar) - var(--cy) - var(--u) * 17.8);
-    right: calc(var(--hx) + var(--pad) - 50vw);
-    height: var(--bar);
-    padding: 0;
-    gap: calc(var(--bu) * 16);
-    border-radius: 0;
-    background: none;
-    box-shadow: none;
+  /* ----- Priya's voice: 12 px at the least, a slightly smaller face ----- */
+  .ev-voice {
+    --ev-av: max(calc(var(--u) * 4.9), 38px);
   }
-  .ev-ctl-label,
-  .ev-ctl-divider {
-    display: none;
+  .ev-voice-card {
+    padding: calc(var(--u) * 0.85) calc(var(--u) * 1.3) calc(var(--u) * 0.95) calc(var(--u) * 1.4);
+    border-radius: calc(var(--u) * 1.5);
   }
-  .ev-ctl-btn,
-  .ev-ctl-mode,
-  .ev-ctl-again {
-    padding: 0;
-    width: calc(var(--bu) * 36);
-    height: calc(var(--bu) * 36);
-    border-radius: 50%;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.94);
-    box-shadow:
-      0 calc(var(--bu) * 2) calc(var(--bu) * 7) rgba(7, 26, 80, 0.14),
-      0 0 0 1px rgba(7, 26, 80, 0.08);
-  }
-  .ev-ctl-btn::after {
-    inset: calc(var(--bu) * -4);
-  }
-  .ev-ctl-again > svg {
-    width: calc(var(--bu) * 17);
-    height: calc(var(--bu) * 17);
-  }
-  .ev-ctl-mode > svg {
-    width: calc(var(--bu) * 31);
-    height: calc(var(--bu) * 31);
-  }
-
-  /* ----- Priya's line: the whole width now, in type that can be read at arm's length ----- */
-  .ev-sub-lines {
-    right: 0;
-  }
-  .ev-sub-who {
-    display: none;
-  }
-  /* a line that runs to three grows upward from the foot of its band, never down into the bar */
-  .ev-sub-line {
-    inset: auto 0 0 0;
-    min-height: 100%;
-  }
-  .ev-sub-line p {
-    font-size: max(calc(var(--u) * 1.55), calc(var(--fl) * 11.5));
-    max-width: none;
-  }
-  /* "Tap anywhere to continue" stands at the right end of her line's row (the two controls are
-     down in the bar), and her line gives it the room, in manual mode only */
-  .ev-taphint {
-    right: 0;
-    top: auto;
-    bottom: 0;
-    height: auto;
-    min-height: calc(var(--u) * 3.8);
-    max-width: calc(var(--fl) * 136);
-    gap: calc(var(--fl) * 6);
-    padding: calc(var(--fl) * 3) calc(var(--fl) * 11) calc(var(--fl) * 3) calc(var(--fl) * 8);
-    border-radius: calc(var(--fl) * 17);
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    line-height: 1.18;
-  }
-  .ev-taphint svg {
-    width: calc(var(--fl) * 15);
-    height: calc(var(--fl) * 15);
-  }
-  .ev-root[data-mode='manual'] .ev-sub-lines {
-    right: calc(var(--fl) * 144);
+  .ev-voice-text {
+    font-size: max(calc(var(--u) * 1.9), 12px);
+    line-height: 1.27;
   }
   .ev-turn {
     height: max(calc(var(--u) * 2.9), calc(var(--fl) * 24));
@@ -2286,51 +1935,14 @@
     width: calc(var(--fl) * 10);
     height: calc(var(--fl) * 10);
   }
-  /* the phone is enlarged during the demo and reaches down past Priya's line: the line keeps to the left of it */
-  .ev-root[data-device='phone'][data-step='demo'] .ev-sub-line p,
-  .ev-root[data-device='phone'][data-step='result'] .ev-sub-line p {
-    max-width: calc(var(--hx) - var(--u) * 16.5);
-  }
 
   /* ----- the stage's shared type, held to its floor ----- */
-  .ev-col-under {
-    display: none;
-  }
-  /* The before card has the stage to itself: its picture is drawn a fifth larger (each
-     module's picture is laid out for 25u × 20u, and is enlarged whole, like a device). */
-  .ev-before {
-    left: calc(var(--u) * -32);
-    top: calc(var(--u) * -14.6);
-    width: calc(var(--u) * 64);
-    height: calc(var(--u) * 25);
-    gap: calc(var(--u) * 3.4);
-  }
-  .ev-before-pic {
-    width: calc(var(--u) * 30);
-    height: calc(var(--u) * 24);
-  }
-  /* (.ev-moment in front: a module's own picture class (.byot-b { inset: 0 }) weighs the same as
-     .ev-before-pic > *, and must not win by the order the stylesheets happen to load in) */
-  .ev-moment .ev-before-pic > * {
-    inset: 0 auto auto 0;
-    width: calc(var(--u) * 25);
-    height: calc(var(--u) * 20);
-    transform: scale(1.2);
-    transform-origin: 0 0;
-  }
-  /* the photo is a little shorter, so what stands under it has room above the bar */
-  .ev-side {
-    top: calc(var(--u) * -16.3);
-  }
-  .ev-photo-frame {
-    height: calc(var(--u) * 17.4);
-  }
-  .ev-beside {
-    margin-top: calc(var(--u) * 1.1);
-  }
-  .ev-before-eyebrow {
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    letter-spacing: 0.24em;
+  .ev-before-tag {
+    height: max(calc(var(--u) * 2.5), calc(var(--fl) * 20));
+    padding: 0 calc(var(--fl) * 8) 0 calc(var(--fl) * 10);
+    border-radius: calc(var(--fl) * 12);
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11.1));
+    letter-spacing: 0.2em;
   }
   .ev-under,
   .ev-meaning {
@@ -2339,70 +1951,28 @@
     text-indent: 0.3em;
   }
   .ev-dockcap {
-    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11));
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.1));
   }
-  .ev-dockcap--caps {
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    letter-spacing: 0.26em;
+  .ev-dockexp {
+    top: calc(var(--u) * -8.5);
+    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 11));
+    letter-spacing: 0.2em;
   }
-  .ev-col-p {
-    font-size: max(calc(var(--u) * 1.6), calc(var(--fl) * 11.5));
+  /* the one supporting line stands a little closer to the headline: with three lines of headline
+     over it, it must still end 2u clear of Priya's bubble, which has no room to spare here */
+  .ev-proof {
+    margin-top: calc(var(--u) * 0.8);
+    font-size: max(calc(var(--u) * 1.7), calc(var(--fl) * 11.5));
+    line-height: 1.3;
   }
-  /* the photo's caption says where she is; the rail already says when */
-  .ev-photo-cap {
-    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11.5));
-    left: calc(var(--u) * 0.6);
-    bottom: calc(var(--u) * 0.6);
-    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.7);
-  }
-  .ev-photo-cap-time {
-    display: none;
-  }
-  .ev-status {
-    font-size: max(calc(var(--u) * 0.86), var(--dt));
+  /* The phone is fitted to the full height of the picture area here, so it does not float while
+     it waits: it would rise out of the area, toward the top of the screen. */
+  .ev-deviceFloat {
+    animation: none !important;
   }
   /* a demo's one control: a full fingertip around it on the smallest phone */
   .ev-touch::after {
     inset: min(calc(var(--u) * -1.5), -12px);
-  }
-
-  /* ----- the opening screen's preview: over the bar, in the start control's own place and
-     over all of it (two things to touch, never one half on the other), left of the pillars ----- */
-  .ev-preview {
-    left: calc(50vw - var(--hx) - var(--pad) - var(--bu) * 53 - 14px);
-    bottom: calc(100% + 3px);
-    max-width: calc(var(--hx) * 2 - var(--u) * 37.5);
-    min-height: calc(var(--u) * 9.4);
-    gap: calc(var(--u) * 1.2);
-    padding-left: calc(var(--u) * 1.6);
-  }
-  .ev-preview-txt {
-    padding-left: calc(var(--u) * 1.2);
-  }
-  /* …so the start control under it keeps still while the preview is up */
-  .ev-root:has(.ev-preview) .ev-start-ping {
-    display: none;
-  }
-  .ev-preview-name span,
-  .ev-preview-when {
-    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 11));
-    letter-spacing: 0.1em;
-  }
-  .ev-preview-name span {
-    letter-spacing: 0;
-  }
-  .ev-preview-promise {
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11.5));
-  }
-  .ev-preview-go {
-    width: max(calc(var(--u) * 4.6), calc(var(--fl) * 40));
-    height: max(calc(var(--u) * 4.6), calc(var(--fl) * 40));
-  }
-  .ev-preview-go::after {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
   }
 }
 
@@ -2413,12 +1983,10 @@
   transition: none !important;
 }
 .ev-root[data-hold='1'] .ev-clock-swap,
-.ev-root[data-hold='1'] .ev-stop-pop,
-.ev-root[data-hold='1'] .ev-preview {
-  animation: none !important;
-}
-.ev-root[data-hold='1'] .ev-turn svg,
-.ev-root[data-hold='1'] .ev-taphint .ev-taphint-ring {
+.ev-root[data-hold='1'] .ev-voice-card,
+.ev-root[data-hold='1'] .ev-dot-mark,
+.ev-root[data-hold='1'] .ev-next-halo,
+.ev-root[data-hold='1'] .ev-turn svg {
   animation: none !important;
 }
 .ev-root[data-hold='1'] .ev-touch[data-live='1'] .ev-touch-ring {
@@ -2429,27 +1997,6 @@
 .ev-root[data-hold='1'] .ev-touch[data-live='1'] .ev-touch-ring--2 {
   opacity: 0.22;
   transform: scale(1.9);
-}
-
-/* squarer screens: the rail's two caps give their room to the five names */
-@media (max-aspect-ratio: 3/2) {
-  .ev-rail {
-    --cap: 0.36;
-    --gap: 0.3;
-    --mw: 1.3;
-  }
-  .ev-stop--cap .ev-stop-name,
-  .ev-stop--cap .ev-stop-time {
-    display: none;
-  }
-}
-
-/* Hindi, wherever it appears in the shell: a Devanagari face, its own leading, never tracked or capitalised */
-.ev-hi {
-  font-family: 'Kohinoor Devanagari', 'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', sans-serif;
-  letter-spacing: 0;
-  text-transform: none;
-  line-height: 1.7;
 }
 
 .ev-ondevice {
@@ -2480,7 +2027,7 @@ html:has(.ev-root) body {
 /* ---------- color-mix(), for the browsers that have it ----------
    color-mix() needs Safari 16.2 / Chrome 111. A declaration that holds a var() is never thrown
    out when the sheet is read, so an older browser would not fall back to a plain line written
-   before it: it would draw nothing. So each of the three rules above carries the plain rgba()
+   before it: it would draw nothing. So each of the rules above carries the plain rgba()
    colour (--acc-a32, --acc-a40, --acc-haze-a45: set with every accent at the top of this file),
    and the color-mix() line is added here, after them, only for a browser that can read it: the
    same colour, worked out from --acc itself. Keep this block last. */
@@ -2490,8 +2037,5 @@ html:has(.ev-root) body {
   }
   .ev-touch-ring {
     background: color-mix(in srgb, var(--acc) 32%, transparent);
-  }
-  .ev-preview-go {
-    box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) color-mix(in srgb, var(--acc) 40%, transparent);
   }
 }

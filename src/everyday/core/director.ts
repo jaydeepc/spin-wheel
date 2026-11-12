@@ -5,8 +5,16 @@
  *
  * Every scene (the opening, Meet Priya, a product moment, the chapter card, the closing) builds ONE paused GSAP timeline
  * and hands it over with an ordered list of stops: labels on that timeline where the film
- * rests. The director plays from stop to stop, rests, listens for touch, sends the ghost
- * fingertip when nobody touches, and moves to the next scene after the last stop.
+ * rests. The director plays from stop to stop, rests, and moves to the next scene after the
+ * last stop.
+ *
+ * MANUAL IS THE DEFAULT. The film never starts or moves on by itself: at every rest it waits
+ * for the Next button (or a key, or a tap on the empty stage; at a stop with a control, a press
+ * on the control), for as long as it takes. There is no timer of any kind in manual: a presenter
+ * can talk over one screen for ten minutes and it will still be there.
+ *
+ * AUTO-PLAY (?auto, or the Auto-play switch) plays it like a film: rests are timed, and the
+ * ghost fingertip presses the controls. A deliberate Next or Back switches it off again.
  *
  * Nothing else moves the film. A scene never plays its own timeline.
  */
@@ -15,7 +23,7 @@ import gsap from 'gsap'
 import { SCENES, isProduct, useEveryday, type SceneId } from '../store'
 import type { DebugParams } from './debug'
 import type { Box, Stage } from './stage'
-import { CUT, IDLE, TOUCH } from './timing'
+import { CUT, TOUCH } from './timing'
 
 export interface SceneStop {
   /** A label on the scene's timeline: the END state of this step. */
@@ -26,25 +34,35 @@ export interface SceneStop {
   legs?: { to: string; cap?: number }[]
   /** The longest the (single) stretch may take; it is played faster if it is longer. */
   cap?: number
-  /** Auto mode: rest here this long, then move on. Leave out to wait for a touch. */
+  /** Auto-play: rest here this long, then move on. Leave out to wait for a touch. (Manual always waits for Next.) */
   hold?: number
   /**
+   * Manual passes straight through: the film does not rest here, it carries on to the next stop
+   * on the same press (a moment's 'name', the closing's 'say'). Back skips it too. Auto-play still
+   * rests here for `hold`, and a debug URL can still hold the frame.
+   */
+  pass?: boolean
+  /**
    * The one control that does the thing at this stop. It can be pressed from the moment it can be
-   * seen, while the film is still arriving here. In auto mode the ghost fingertip presses it.
+   * seen, while the film is still arriving here. Next (the button, a key, a tap on the empty
+   * stage) presses it too. In Auto-play the ghost fingertip presses it.
    */
   control?: HTMLElement | null
   /**
-   * Seconds the control waits, once the film rests here, before the ghost fingertip sets off
-   * (default TOUCH.wait). If somebody has just touched the screen it waits at least TOUCH.waitAttended.
+   * Auto-play: seconds the control waits, once the film rests here, before the ghost fingertip
+   * sets off (default TOUCH.wait). If somebody has just touched the screen it waits at least TOUCH.waitAttended.
    */
   ghostAfter?: number
-  /** Say "Your turn" beside the control while it waits for somebody who is there (a moment's demo). */
+  /** Auto-play: say "Your turn" beside the control while it waits for somebody who is there (a moment's demo). */
   invite?: boolean
-  /** Whatever the mode: after this long untouched, start again from the opening screen. */
+  /** Auto-play: after this long untouched, start again from the opening screen. (Manual never does.) */
   idle?: number
   /** Arriving here leaves the scene at once for the next one. */
   exit?: boolean
-  /** The film's last frame: a tap on the empty stage does nothing here (keys and its own buttons still work). */
+  /**
+   * The film's last frame: a tap on the empty stage does nothing here, and the Next button reads
+   * "Start again" (the store's `atEnd`); Next and the keys start the film again.
+   */
   stay?: boolean
 }
 
@@ -77,14 +95,9 @@ interface Els {
   wrap: HTMLElement
   ghost: HTMLElement
   ghostRing: HTMLElement
-  ring: SVGCircleElement | null
-  /** The "Your turn" caption (rendered in Experience.tsx; placed beside a waiting control). */
+  /** The "Your turn" caption (rendered in Experience.tsx; Auto-play places it beside a waiting control). */
   turn: HTMLElement | null
-  /** "Tap anywhere to continue" (rendered in Shell.tsx; on a phone on its side the director finds it a clear place). */
-  hint: HTMLElement | null
 }
-
-const RING_LEN = 2 * Math.PI * 17
 
 interface Rect {
   x: number
@@ -92,6 +105,8 @@ interface Rect {
   w: number
   h: number
 }
+/** THE CLEAR ZONE around Priya's voice, in units of --u: nothing of the frame's comes nearer (moments/README.md). */
+const VOICE_CLEAR = 2
 /** Do two boxes overlap, or come within `pad` of each other? */
 const overlap = (a: Rect, b: Rect, pad = 0) => a.x < b.x + b.w + pad && a.x + a.w > b.x - pad && a.y < b.y + b.h + pad && a.y + a.h > b.y - pad
 const store = () => useEveryday.getState()
@@ -112,7 +127,6 @@ class Director {
   private mover: gsap.core.Tween | null = null
   private timers: gsap.core.Tween[] = []
   private ghostTl: gsap.core.Timeline | null = null
-  private ringTween: gsap.core.Tween | null = null
   private live: HTMLElement | null = null
   /** The control that has just been pressed: not live any more, but it still takes the taps that land on it. */
   private spent: HTMLElement | null = null
@@ -134,15 +148,18 @@ class Director {
   mount(els: Els, stage: Stage, debug: DebugParams) {
     this.els = els
     this.stage = stage
-    if (els.ring) gsap.set(els.ring, { strokeDasharray: RING_LEN, strokeDashoffset: RING_LEN })
     this.pretendTouched = debug.touched
     if (debug.touched) this.lastTouch = performance.now()
-    store().patch({ mode: debug.manual ? 'manual' : 'auto', hold: !!(debug.scene && debug.at) })
+    // manual unless Auto-play was asked for
+    store().patch({ mode: debug.auto ? 'auto' : 'manual', hold: !!(debug.scene && debug.at) })
     this.unsub = useEveryday.subscribe((s, prev) => {
       // auto ↔ manual while resting: re-arm the stop under the new rule
-      if (s.mode !== prev.mode && this.handle && !this.busy && this.idx >= 0) {
+      if (s.mode !== prev.mode && this.handle && !this.busy && !this.cutting && this.idx >= 0) {
         this.clearAuto()
-        this.schedule(this.handle.stops[this.idx])
+        const stop = this.handle.stops[this.idx]
+        // (Auto-play was resting on a stop that manual passes through: carry on to the next rest)
+        if (this.passes(stop, this.idx)) this.goTo(this.idx + 1)
+        else this.schedule(stop)
       }
     })
     const scene = debug.scene ?? 'intro'
@@ -155,7 +172,7 @@ class Director {
     this.clearAuto()
     this.mover?.kill()
     this.mover = null
-    if (this.els) gsap.killTweensOf([this.els.wrap, this.els.ghost, this.els.ghostRing, this.els.turn, this.els.hint])
+    if (this.els) gsap.killTweensOf([this.els.wrap, this.els.ghost, this.els.ghostRing, this.els.turn])
     this.setLive(null)
     this.setSpent(null)
     this.guarded = false
@@ -209,18 +226,18 @@ class Director {
       this.busy = false
       const resting = Math.abs(labelAt(stops[i]) - time) < 0.001
       store().setStep(stops[i].step ?? stops[i].label, resting)
+      this.setAtEnd(resting && !!stops[i].stay)
       if (resting) {
-        // a held frame shows what a visitor would see resting here: the live control, and the prompts
+        // a held frame shows what a visitor would see resting here: the live control, and (Auto-play, ?touched) "Your turn"
         const stop = stops[i]
         if (stop.control) this.setLive(stop.control)
-        this.prompt(stop)
-        if (stop.control && stop.invite && (store().mode === 'manual' || this.pretendTouched)) this.inviteSoon(stop.control)
+        if (stop.control && stop.invite && store().mode === 'auto' && this.pretendTouched) this.inviteSoon(stop.control)
       }
     } else if (e.kind === 'rest') {
       const i = lastRest()
       tl.seek(stops[i].label)
       this.idx = i
-      this.arrive(i)
+      this.arrive(i, true)
     } else if (e.kind === 'resume') {
       const i = Math.min(Math.max(e.idx, 0), stops.length - 1)
       if (e.busy) {
@@ -256,8 +273,21 @@ class Director {
 
   // ------------------------------------------------------------------ the visitor's moves
   /**
-   * Space, Right, PageDown, Enter (and a tap that is let through): move on a step. During a move
-   * it finishes the move: the deliberate skip.
+   * A DELIBERATE Next or Back: the Next and Back buttons, and the keys (Space, Right, PageDown,
+   * Enter; Left, PageUp). The visitor has taken over, so Auto-play is switched off. (A press on a
+   * demo's control and a tap on the empty stage do not come through here: they leave the mode alone.)
+   */
+  press = (dir: 1 | -1) => {
+    this.noteTouch()
+    if (store().mode === 'auto' && !store().hold) store().setMode('manual')
+    if (dir > 0) this.next()
+    else this.back()
+  }
+
+  /**
+   * Move on a step. At rest: to the next rest (at a stop with a control this is that control's
+   * press: the demo runs and the film rests at its result; on the last frame the film starts
+   * again). During a move it finishes the move: the deliberate skip.
    */
   next = () => {
     const h = this.handle
@@ -312,17 +342,18 @@ class Director {
     this.mover = h.tl.tweenTo(h.stops[i].label, { duration: Math.max(0.01, Math.min(0.32, left)), ease: 'power2.out', onUpdate: this.syncCue, onComplete: () => this.arrive(i) })
   }
 
-  /** Somebody touched the screen (any pointer down): for a while, the film takes it that they are still there. */
+  /** Somebody touched the screen or pressed a key: for a while, Auto-play takes it that they are still there. */
   noteTouch = () => {
     this.lastTouch = performance.now()
   }
 
-  /** Left: back a step, or to the scene before. */
+  /** Back to the rest before this one (manual skips the stops it passes through), or to the scene before. */
   back = () => {
     const h = this.handle
     if (!h || this.cutting) return
-    if (this.idx > 0) {
-      const i = this.idx - 1
+    let i = this.idx - 1
+    if (store().mode === 'manual' && !store().hold) while (i >= 0 && h.stops[i].pass) i--
+    if (i >= 0) {
       this.clearAuto()
       this.mover?.kill()
       this.setLive(null)
@@ -332,15 +363,16 @@ class Director {
       this.idx = i
       this.busy = true
       this.moveStarted = performance.now()
+      this.setAtEnd(false)
       store().setStep(h.stops[i].step ?? h.stops[i].label, false)
-      this.mover = h.tl.tweenTo(h.stops[i].label, { duration: 0.6, ease: 'power2.inOut', onUpdate: this.syncCue, onComplete: () => this.arrive(i) })
+      this.mover = h.tl.tweenTo(h.stops[i].label, { duration: 0.6, ease: 'power2.inOut', onUpdate: this.syncCue, onComplete: () => this.arrive(i, true) })
       return
     }
     const at = SCENES.indexOf(this.scene)
     if (at > 0) this.cut(() => this.enter(SCENES[at - 1], { kind: 'rest' }), -1)
   }
 
-  /** The rail: play any scene from its beginning. The stage turns the way the film runs. */
+  /** A progress dot (or a card on the closing): play any scene from its beginning. The stage turns the way the film runs. */
   jump = (scene: SceneId) => {
     if (this.cutting) return
     const dir = SCENES.indexOf(scene) < SCENES.indexOf(this.scene) ? -1 : 1
@@ -348,13 +380,12 @@ class Director {
   }
 
   /**
-   * Start again, from the opening screen, as the next visitor should find it: playing by itself.
-   * (Start again, Watch again, the closing's idle return, the end of the film, the rail's first
-   * stop. Back does not come through here: stepping back keeps the mode.)
+   * Start again, from the opening screen. The mode is kept: a manual film waits there for its
+   * start button, Auto-play starts by itself after the opening's attract time. (Start again, the
+   * Next button on the last frame, Auto-play's return from the closing.)
    */
   restart = () => {
     if (this.cutting) return
-    if (store().mode !== 'auto') store().setMode('auto')
     this.jump('intro')
   }
 
@@ -384,17 +415,6 @@ class Director {
     }
   }
 
-  /** Stop the countdown at the current stop (a preview is open)… */
-  suspend = () => this.clearAuto()
-
-  /** …and start it again. */
-  resume = () => {
-    if (this.handle && !this.busy && !this.cutting && this.idx >= 0) {
-      this.clearAuto()
-      this.schedule(this.handle.stops[this.idx])
-    }
-  }
-
   // ------------------------------------------------------------------ the machine
   private enter(scene: SceneId, entry: Entry) {
     this.clearAuto()
@@ -411,6 +431,7 @@ class Director {
     this.idx = -1
     this.busy = true
     const s = store()
+    this.setAtEnd(false)
     s.setScene(scene)
     s.setStep(isProduct(scene) ? 'before' : scene === 'intro' ? 'idle' : 'in', false)
   }
@@ -438,6 +459,7 @@ class Director {
     this.idx = i
     this.busy = true
     this.moveStarted = performance.now()
+    this.setAtEnd(false)
     store().setStep(stop.step ?? stop.label, false)
     const legs = stop.legs ?? [{ to: stop.label, cap: stop.cap }]
     const tl = h.tl
@@ -487,7 +509,14 @@ class Director {
     if (store().cue !== id) store().setCue(id)
   }
 
-  private arrive(i: number) {
+  /** Manual does not rest on this stop: it carries straight on to the next one. */
+  private passes(stop: SceneStop, i: number) {
+    const h = this.handle
+    return !!h && !!stop.pass && !stop.exit && i < h.stops.length - 1 && store().mode === 'manual' && !store().hold
+  }
+
+  /** The film has reached stop i. `steppedBack`: it was stepped back onto it, so it rests here whatever the stop is. */
+  private arrive(i: number, steppedBack = false) {
     const h = this.handle
     if (!h) return
     this.busy = false
@@ -504,18 +533,27 @@ class Director {
         return
       }
     }
+    if (!steppedBack && this.passes(stop, i)) {
+      // manual: not a rest. The same press carries on to the next stop.
+      this.goTo(i + 1)
+      return
+    }
     store().setStep(stop.step ?? stop.label, true)
     if (stop.exit) {
       if (!store().hold) this.leave()
       return
     }
+    this.setAtEnd(!!stop.stay)
     this.schedule(stop)
+  }
+
+  private setAtEnd(on: boolean) {
+    if (store().atEnd !== on) store().patch({ atEnd: on })
   }
 
   private schedule(stop: SceneStop) {
     const s = store()
     if (stop.control) this.setLive(stop.control)
-    this.prompt(stop)
     if (s.hold || this.frozen) return
     if (s.mode === 'auto') {
       if (stop.control) {
@@ -526,21 +564,10 @@ class Director {
         if (here && stop.invite) this.inviteSoon(stop.control)
         this.ghostTouch(here ? Math.max(base, TOUCH.waitAttended) : base, stop.control, () => this.next())
       } else if (stop.hold != null) this.autoAfter(stop.hold, () => this.next())
-    } else {
-      // Manual: the control waits for as long as it takes, and says so.
-      if (stop.control && stop.invite) this.inviteSoon(stop.control)
-      if (stop.idle == null) {
-        // Nobody touching: back to auto, for the next visitor, and to the opening screen (there,
-        // auto mode simply takes over the wait).
-        this.timers.push(
-          gsap.delayedCall(IDLE.manual, () => {
-            if (this.scene !== 'intro') this.restart()
-            else store().setMode('auto')
-          }),
-        )
-      }
+      if (stop.idle != null) this.timers.push(gsap.delayedCall(stop.idle, () => this.restart()))
     }
-    if (stop.idle != null) this.timers.push(gsap.delayedCall(stop.idle, () => this.restart()))
+    // Manual: nothing is scheduled. Everything waits for the visitor, for as long as it takes
+    // (the control's own halo and the Next button are the prompt).
   }
 
   /** Has somebody touched the screen recently enough to still be standing there? */
@@ -549,69 +576,9 @@ class Director {
   }
 
   /**
-   * Manual mode, resting on a finished step that a plain tap moves on from: the shell says so
-   * ("Tap anywhere to continue"). Not where a control is waiting (the control is the prompt), not
-   * on the film's last frame (a tap does nothing there).
-   */
-  private prompt(stop: SceneStop) {
-    const on = store().mode === 'manual' && !stop.control && !stop.stay && !stop.exit
-    if (on) {
-      this.placeHint()
-      // a frame held by a debug URL may still be being revealed (the stage is unseen until the
-      // first scene is ready): look again once it can be seen
-      if (store().hold || !store().ready) this.timers.push(gsap.delayedCall(0.25, () => this.placeHint()))
-    }
-    if (store().tapHint !== on) store().setTapHint(on)
-  }
-
-  /**
-   * Where "Tap anywhere to continue" stands. On a large screen: beside the two controls, always
-   * (the stylesheet gives it that room). On a phone on its side the stage reaches down into the
-   * row it would stand in (an enlarged device, a stamp hanging off it), so the director looks:
-   * the end of Priya's row if that is clear, else just above it, else a top corner. If nothing
-   * is clear it is not shown, rather than laid over something that is being read.
-   */
-  private placeHint() {
-    const els = this.els
-    const hint = els?.hint
-    if (!els || !hint) return
-    gsap.set(hint, { x: 0, y: 0 })
-    hint.removeAttribute('data-fit')
-    const { stage } = this
-    stage.measure()
-    if (!stage.small) return
-    const U = stage.U
-    const home = stage.loc(hint)
-    if (!home.w || !home.h) return
-    const page = stage.box(els.root.getBoundingClientRect())
-    const top = page.y + 0.9 * U
-    const spots = [
-      { x: home.x, y: home.y },
-      { x: home.x, y: home.y - home.h - 0.6 * U },
-      { x: home.x, y: top },
-      { x: -stage.hx, y: top },
-    ]
-    const near = { x: page.x, y: page.y, w: page.w, h: page.h, cx: 0, cy: 0 }
-    // (the two controls are not something to keep clear of here: the stylesheet seats the hint's
-    // own place right above them, nearer than the air kept around everything else)
-    const blocks = this.blocksIn(near, hint, false)
-    const kind = els.root.dataset.device
-    const device = kind === 'phone' || kind === 'laptop' ? els.root.querySelector<HTMLElement>('.ev-moment .ev-deviceMover') : null
-    if (device && getComputedStyle(device).visibility !== 'hidden') blocks.push(stage.loc(device))
-    const pad = 0.4 * U
-    const spot = spots.find((p) => !blocks.some((o) => overlap({ x: p.x, y: p.y, w: home.w, h: home.h }, o, pad)))
-    if (!spot) {
-      hint.setAttribute('data-fit', '0')
-      return
-    }
-    gsap.set(hint, { x: spot.x - home.x, y: spot.y - home.y })
-  }
-
-  /**
-   * A jump that is not part of the film's own flow (the rail, Left from a first step, start
-   * again). The stage turns like a page along the rail: what is on it slides off the way the rail
-   * runs, and the new scene arrives from the other side while the rail's marker glides across.
-   * dir 1 = later in the film (out to the left), -1 = earlier.
+   * A jump that is not part of the film's own flow (a progress dot, Back from a first step, start
+   * again). The stage turns like a page: what is on it slides off the way the film runs, and the
+   * new scene arrives from the other side. dir 1 = later in the film (out to the left), -1 = earlier.
    */
   private cut(mid: () => void, dir: 1 | -1 = 1) {
     const els = this.els
@@ -633,7 +600,7 @@ class Director {
       overwrite: true,
       onComplete: () => {
         this.cutting = false
-        // The new scene measures the shell (rail, avatar) as it builds, so the stage is put back
+        // The new scene measures the shell (the dots, the avatar) as it builds, so the stage is put back
         // in place, unseen, first; it slides in once the scene has been built (see register).
         gsap.set(els.wrap, { x: 0 })
         this.arriving = dir
@@ -658,34 +625,20 @@ class Director {
   private clearAuto() {
     this.timers.forEach((t) => t.kill())
     this.timers = []
-    if (store().tapHint) store().setTapHint(false)
     this.hideTurn()
     if (this.ghostTl) {
       this.ghostTl.kill()
       this.ghostTl = null
       if (this.els) gsap.set(this.els.ghost, { autoAlpha: 0 })
     }
-    this.ringTween?.kill()
-    this.ringTween = null
-    if (this.els?.ring) gsap.set(this.els.ring, { strokeDashoffset: RING_LEN })
-  }
-
-  /** The ring around the auto control fills while the film counts down to its next move. */
-  private countdown(seconds: number) {
-    const ring = this.els?.ring
-    if (!ring) return
-    this.ringTween?.kill()
-    this.ringTween = gsap.fromTo(ring, { strokeDashoffset: RING_LEN }, { strokeDashoffset: 0, duration: seconds, ease: 'none' })
   }
 
   private autoAfter(seconds: number, act: () => void) {
-    this.countdown(seconds)
     this.timers.push(gsap.delayedCall(seconds, act))
   }
 
   /** A soft fingertip travels to the control and presses it: it does the thing, and shows the next person how. */
   private ghostTouch(delay: number, target: HTMLElement, act: () => void) {
-    this.countdown(delay + TOUCH.travel)
     this.timers.push(
       gsap.delayedCall(delay, () => {
         const els = this.els
@@ -734,19 +687,25 @@ class Director {
     el?.setAttribute('data-spent', '1')
   }
 
-  // ------------------------------------------------------------------ the two prompts keep clear of what is read
+  // ------------------------------------------------------------------ "Your turn" keeps clear of what is read
   /**
-   * Everything inside `near` (stage pixels) that a prompt must not lie over: every piece of text
+   * Everything inside `near` (stage pixels) that the caption must not lie over: every piece of text
    * that can actually be seen (what a mask hides, or an ancestor has faded out, is not there),
-   * the photographs, Priya's face, the two controls, the logo and the clock.
+   * Priya's face and her bubble WITH THEIR CLEAR ZONE (2u all round: `clear` is how much of it the
+   * caller's own padding does not already give), the buttons, the dots, the logo and the clock,
+   * and any wordless picture a scene has marked `data-ev-solid` (a pile of cards, a dashed box).
    */
-  private blocksIn(near: Rect, self: HTMLElement, controls = true): Box[] {
+  private blocksIn(near: Rect, self: HTMLElement, clear: number): Box[] {
     const els = this.els
     if (!els) return []
     const { stage } = this
     const blocks: Box[] = []
-    els.root.querySelectorAll<HTMLElement>(`.ev-photo-frame, .ev-sub-avatar, ${controls ? '.ev-ctl, ' : ''}.ev-taphint, .ev-turn, .ev-logo, .ev-clock`).forEach((el) => {
-      if (el !== self && getComputedStyle(el).visibility !== 'hidden') blocks.push(stage.loc(el))
+    els.root.querySelectorAll<HTMLElement>('.ev-voice-avatar, .ev-voice-bubble, .ev-nav, .ev-util, .ev-dots, .ev-turn, .ev-logo, .ev-clock, [data-ev-solid]').forEach((el) => {
+      const cs = getComputedStyle(el)
+      if (el === self || cs.visibility === 'hidden' || parseFloat(cs.opacity) <= 0.05) return
+      const b = stage.loc(el)
+      const grow = el.matches('.ev-voice-avatar, .ev-voice-bubble') ? clear : 0
+      blocks.push(grow ? { ...b, x: b.x - grow, y: b.y - grow, w: b.w + 2 * grow, h: b.h + 2 * grow } : b)
     })
     // what each ancestor does to the text inside it: how much it fades it, and whether it clips it
     const seenEls = new Map<Element, { opacity: number; clips: boolean }>()
@@ -763,7 +722,7 @@ class Director {
     const range = document.createRange()
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement
-      if (!parent || !(node.nodeValue ?? '').trim() || self.contains(parent) || parent.closest('.ev-taphint, .ev-turn, .ev-rotate')) continue
+      if (!parent || !(node.nodeValue ?? '').trim() || self.contains(parent) || parent.closest('.ev-turn, .ev-rotate')) continue
       range.selectNodeContents(node)
       const rects = range.getClientRects()
       for (let k = 0; k < rects.length; k++) {
@@ -810,10 +769,11 @@ class Director {
   }
 
   /**
-   * "Your turn", beside the waiting control. Where exactly is worked out from what is on screen
-   * at that instant: next to the control if there is clear room, otherwise beside the device it is
-   * in, at the control's height. It never lies over text, a photo, the control itself or the edge
-   * of a device; if no such place exists it is not shown (the control still pulses).
+   * "Your turn", beside the waiting control (Auto-play only). Where exactly is worked out from
+   * what is on screen at that instant: next to the control if there is clear room, otherwise
+   * beside the device it is in, at the control's height. It never lies over text, a picture marked
+   * `data-ev-solid`, the control itself or the edge of a device, and never within 2u of Priya's
+   * voice; if no such place exists it is not shown (the control still pulses).
    */
   private showTurn(control: HTMLElement) {
     const els = this.els
@@ -832,11 +792,10 @@ class Director {
     const device = moverEl ? stage.loc(moverEl) : null
     const screen = screenEl ? stage.loc(screenEl) : null
 
-    // ---- where it may stand: inside the page and above the row of Priya's line. On a phone on
-    // its side the enlarged device reaches down through that row, so there the limit is the bar,
-    // and her line, her face and the controls are kept clear of one by one (below).
+    // ---- where it may stand: inside the page and above the bottom strip. Priya's bubble, her
+    // face, the dots and the buttons are kept clear of one by one (below).
     const page = stage.box(els.root.getBoundingClientRect())
-    const under = els.root.querySelector(stage.small ? '.ev-rail' : '.ev-sub')
+    const under = els.root.querySelector('.ev-strip')
     const floor = under ? stage.loc(under).y : page.y + page.h
     const edge = 0.8 * U
     const field = { x0: Math.max(page.x + edge, -stage.hx), x1: Math.min(page.x + page.w - edge, stage.hx), y0: page.y + edge, y1: floor - 0.4 * U }
@@ -886,10 +845,10 @@ class Director {
       h: Math.max(...around.map((o) => o.y + o.h)) + h + 3 * U - ny,
     }
     const hits = overlap
-    const blocks = this.blocksIn(near, turn)
+    const pad = 0.45 * U
+    const blocks = this.blocksIn(near, turn, Math.max(0, VOICE_CLEAR * U - pad))
 
     // ---- the first candidate that is clear
-    const pad = 0.45 * U
     const spot = spots.find((p) => {
       const b = { x: p.x, y: p.y, w, h }
       if (b.x < field.x0 || b.x + b.w > field.x1 || b.y < field.y0 || b.y + b.h > field.y1) return false

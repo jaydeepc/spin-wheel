@@ -2,15 +2,25 @@
 
 /**
  * The frame every product moment is drawn in. It renders everything the five share and
- * leaves four holes for the module: Before, Screen, Stat (and the optional extras).
+ * leaves three holes for the module: Before, Screen, Stat (and the optional Proof, OnDevice, Extras).
  * The motion is in core/buildMoment.ts.
+ *
+ * THE LAYOUT (moments/README.md): down the left, three slots, always in the same place
+ *
+ *   the NAME slot        the docked name, and its one-line caption (the promise) at the demo rest
+ *   the STATEMENT slot   at most one headline; at the number step, the number and its label
+ *   PRIYA'S VOICE        her bubble (the shell draws it: shell/Shell.tsx)
+ *
+ * and on the right ONE picture, in the picture area (.ev-picarea): the old-way picture, then the
+ * device, then the picture of the number. Nothing else: no copy beside the device, no photo,
+ * no side column.
  */
 
 import { useRef, type CSSProperties } from 'react'
 import type { Product } from '../content'
 import { buildMoment } from '../core/buildMoment'
 import { useScene } from '../core/useScene'
-import { LaptopFrame, PhoneFrame, Rise, sentences, statusClock, withName } from './parts'
+import { LaptopFrame, PhoneFrame, Rise, sentences } from './parts'
 import type { MomentModule } from './types'
 
 /** "~15%" → ["~", "15", "%"], "18 min" → ["", "18", " min"]. */
@@ -28,21 +38,7 @@ export default function Moment({ product, module }: { product: Product; module: 
   const kind = product.expansion ? 'acronym' : product.devanagari ? 'hindi' : 'plain'
   const nameSize = Math.min(26, 74 / (product.name.length * 0.6))
   const [pre, num, post] = splitStat(product.stat.value)
-  const { Before, Screen, Stat, Under, Beside, Proof, Extras, OnDevice } = module
-  // The caption under the docked name. A Hindi name's caption is the word itself, in Devanagari
-  // (its own face and language, never the Latin stack), and what it means.
-  const dockLine = product.expansion ? (
-    product.expansion.join(' ')
-  ) : product.devanagari ? (
-    <>
-      <span className="ev-hi" lang="hi">
-        {product.devanagari}
-      </span>
-      {` · ${product.meaning}`}
-    </>
-  ) : (
-    product.promise
-  )
+  const { Before, Screen, Stat, Proof, Extras, OnDevice } = module
 
   return (
     <div
@@ -51,23 +47,27 @@ export default function Moment({ product, module }: { product: Product; module: 
       data-key={product.key}
       data-accent={product.accent}
       data-device={device}
-      data-photo={product.photo ? '1' : '0'}
+      data-before-h={module.beforeHeadline ? '1' : '0'}
       data-name={kind}
     >
-      {/* ---------- before: the old way, small ---------- */}
+      {/* where the ONE picture stands: measured by core/buildMoment.ts, never drawn */}
+      <i className="ev-picarea" />
+      <i className="ev-picarea ev-picarea--before" />
+      <i className="ev-picarea ev-picarea--above" />
+
+      {/* ---------- before: the old way. A picture and a small tag; Priya's bubble tells it. ---------- */}
       <div className="ev-before">
         <div className="ev-before-pic" role="img" aria-label={product.before.headline}>
           <Before product={product} />
         </div>
-        <div className="ev-before-txt">
-          <p className="ev-before-eyebrow">
-            <Rise>Before</Rise>
-          </p>
-          <p className="ev-before-h">
-            <Rise>{sentences(product.before.detail)}</Rise>
-          </p>
-        </div>
+        <p className="ev-before-tag">Before</p>
       </div>
+      {/* (only where her line does not tell the old way itself: Piramal Mind) */}
+      {module.beforeHeadline ? (
+        <p className="ev-before-h">
+          <Rise>{sentences(product.before.headline)}</Rise>
+        </p>
+      ) : null}
 
       {/* ---------- THE NAME ---------- */}
       <i className="ev-flash" />
@@ -110,28 +110,30 @@ export default function Moment({ product, module }: { product: Product; module: 
           </>
         )}
       </div>
-      <p className="ev-promise">
+      {/* ---------- the NAME slot: where the name docks, and its caption (the demo rest only) ---------- */}
+      <i className="ev-dock" />
+      {/* what the name stands for, in one small line under the docked name: the demo rest only
+          (it was open at centre stage for under a second; here it can be read) */}
+      {product.expansion || product.meaning ? (
+        <p className="ev-dockexp" aria-hidden="true">
+          <Rise>
+            {product.expansion
+              ? product.expansion.map((word, i) => (
+                  <span key={word}>
+                    {i ? ' ' : ''}
+                    <b>{word[0]}</b>
+                    {word.slice(1)}
+                  </span>
+                ))
+              : product.meaning}
+          </Rise>
+        </p>
+      ) : null}
+      <p className="ev-dockcap">
         <Rise>{product.promise}</Rise>
       </p>
-      <i className="ev-dock" />
-      <p className={kind === 'acronym' ? 'ev-dockcap ev-dockcap--caps' : kind === 'hindi' ? 'ev-dockcap ev-dockcap--hi' : 'ev-dockcap'}>
-        <Rise>{dockLine}</Rise>
-      </p>
 
-      {/* ---------- left column: demo copy, then the result ---------- */}
-      <div className="ev-col ev-col--demo">
-        <p className="ev-col-h">
-          <Rise>{module.demoTitle}</Rise>
-        </p>
-        <p className="ev-col-p">
-          <Rise>{withName(module.demoLine, product.name)}</Rise>
-        </p>
-        {Under ? (
-          <div className="ev-col-under">
-            <Under product={product} />
-          </div>
-        ) : null}
-      </div>
+      {/* ---------- the STATEMENT slot: the result headline, and at most one supporting line ---------- */}
       <div className="ev-col ev-col--result">
         <p className="ev-sentence" data-highlight={module.highlight ?? ''}>
           {product.after}
@@ -143,31 +145,7 @@ export default function Moment({ product, module }: { product: Product; module: 
         ) : null}
       </div>
 
-      {/* ---------- right column: the photo of this moment in her day ---------- */}
-      {product.photo || Beside ? (
-        <div className="ev-side">
-          {product.photo ? (
-            <div className="ev-photo-frame">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={product.photo} alt={`Priya, ${product.place.toLowerCase()}`} draggable={false} />
-              <span className="ev-photo-cap">
-                <span className="ev-photo-cap-time">
-                  {product.time}
-                  {' · '}
-                </span>
-                {product.place}
-              </span>
-            </div>
-          ) : null}
-          {Beside ? (
-            <div className="ev-beside">
-              <Beside product={product} />
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-
-      {/* ---------- stat: a huge number, with a picture of it ---------- */}
+      {/* ---------- the number: in the statement slot, with its picture in the picture area ---------- */}
       <div className="ev-stat-pic" aria-hidden="true">
         <Stat product={product} />
       </div>
@@ -186,13 +164,13 @@ export default function Moment({ product, module }: { product: Product; module: 
         </p>
       </div>
 
-      {/* ---------- the device, centre stage ---------- */}
+      {/* ---------- the device: the ONE picture, in the picture area ---------- */}
       <div className="ev-deviceMover">
         <i className="ev-device-shadow" />
         <div className="ev-deviceFloat">
           <div className="ev-deviceNudge">
             {device === 'phone' ? (
-              <PhoneFrame clock={module.clock ?? statusClock(product.time)}>
+              <PhoneFrame>
                 <Screen product={product} />
               </PhoneFrame>
             ) : device === 'laptop' ? (

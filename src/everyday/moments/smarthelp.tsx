@@ -3,34 +3,40 @@
 /**
  * SmartHelp · 9:10 am, at the branch.      THE SUPPORT DESK THAT SOLVES THE TICKET ITSELF.
  *
- * Before   ticket #4821, "With the backend team": the to-and-fro piles up message by message,
- *          and the ticket is "Still open"
- * Demo     the name comes apart as it docks: out of "Smart" fly the two ways it resolves a
- *          ticket (they settle beside the phone); out of "Help" flies her ticket, into the
- *          support desk, written and ready. The one control: Raise ticket
- * Run      she raises it. It is "With SmartHelp" at once, and SmartHelp works it in front of
- *          you: Understood, Found, and then the hero: it RUNS A COMMAND ITSELF (a safe,
- *          pre-approved one), the ticket flips to Resolved and is stamped closed
- * Result   "With the backend team", struck through, becomes "No human needed."
+ * THE BUDGET (moments/README.md): at every rest the screen holds the name, at most one
+ * statement, Priya's bubble and ONE picture. What SmartHelp puts in that picture:
+ *
+ * Before   the old way, as light as it reads: ticket #4821, "With the backend team", four
+ *          messages to and fro, and "Still open" stamped on it
+ * Demo     her ticket flies out of the name into the support desk, written and ready, with
+ *          the one control under it: Raise ticket. Nothing else is on the glass.
+ * Run      she raises it. The ticket goes up, it is "With SmartHelp" at once, and SmartHelp
+ *          works it in front of you: Understood, Found, and then the hero: it RUNS A COMMAND
+ *          ITSELF (a safe, pre-approved one: the tag is inside the Fixed row). The ticket's
+ *          words give way, and "Ticket closed" is stamped across it.
+ * Result   on the glass: Support desk · #4821 under its stamp · Understood · Found · Fixed, and
+ *          what the fix was. Six rows of words: as the headline arrives, the two lines of detail
+ *          under Understood and Found lift out and the two ticked words grow into their place.
+ *          The stamp says it is closed, so the chat's own "Resolved" line (demo.resolved) is not
+ *          shown. Under the headline, the one supporting line: the two ways it resolves a ticket
+ *          (demo.twoWays).
  * Stat     a hundred tickets; fifteen close themselves as the number counts; the phone flies
  *          into the one that was hers
  *
- * Everything here is SmartHelp's own. The name, the phone, the headline, the number, the
- * hand-over and the touch invitation come from the shared frame.
+ * Everything here is SmartHelp's own. The name, the phone, the headline, the number, Priya's
+ * bubble, the hand-over and the touch come from the shared frame.
  */
 
 import gsap from 'gsap'
 import { Fragment, type ReactNode } from 'react'
-import { productByKey, type SmartHelpProduct } from '../content'
+import type { SmartHelpProduct } from '../content'
 import { TouchControl } from './parts'
 import type { MomentEnv, MomentModule, PartProps } from './types'
 import './smarthelp.css'
 
 type P = PartProps<SmartHelpProduct>
-const SH = productByKey('smarthelp') as SmartHelpProduct
 
-/** Which letters of S·m·a·r·t the two ways are born from, and where "Help" begins. */
-const SMART_LETTERS = [0, 4]
+/** Where "Help" begins in the name: her ticket is born from those letters. */
 const HELP_FROM = 5
 
 /** "Resolved. Please try eKYC again." → ["Resolved", "Please try eKYC again."] */
@@ -46,11 +52,14 @@ const unbroken = (text: string): ReactNode[] =>
       {word.includes('-') ? <span className="ev-nobreak">{word}</span> : word}
     </Fragment>
   ))
-/** The last sentence of a line, without its full stop: "… No back-and-forth." → "No back-and-forth" */
-const lastSentence = (text: string) => (text.split('. ').pop() ?? text).replace(/\.$/, '')
-
-/** The two promises under the ticket. The demo ticks them off: the first when it finds the cause without asking her anything, the second when the ticket closes. */
-const claimsOf = (p: SmartHelpProduct) => [lastSentence(p.priya.after), lastSentence(p.demo.closed)]
+/** The same sentence, with the words that carry it set in bold: "It guides her in the app, or fixes …" */
+const stressed = (text: string, words: string[]): ReactNode[] =>
+  text.split(' ').map((word, i) => (
+    <Fragment key={i}>
+      {i ? ' ' : null}
+      {words.includes(word.replace(/[.,]/g, '')) ? <b>{word}</b> : word}
+    </Fragment>
+  ))
 
 /** The stat's picture: a hundred tickets, ten by ten. Fifteen of them close themselves. */
 const WALL_COLS = 10
@@ -109,19 +118,9 @@ const Prompt = () => (
     <path d="M5 6.500l5.500 5.500L5 17.500M13 17.500h6" />
   </svg>
 )
-/** It guides (a route to the place in the app), it fixes (a spanner). */
-const WAYS: ReactNode[] = [
-  <svg key="g" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
-    <circle cx="5.500" cy="18.500" r="2" />
-    <path d="M5.500 16.500V10a4 4 0 0 1 4-4H19M15.500 2.500 19 6l-3.500 3.500" />
-  </svg>,
-  <svg key="f" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
-    <path d="M14.700 6.300a1 1 0 0 0 0 1.400l1.600 1.600a1 1 0 0 0 1.400 0l3.770-3.770a6 6 0 0 1-7.940 7.940l-6.910 6.910a2.120 2.120 0 0 1-3-3l6.910-6.910a6 6 0 0 1 7.940-7.940z" />
-  </svg>,
-]
 
 // ====================================================================== BEFORE
-/** The old way: the same ticket, with the backend team. A screenshot, a retry, and it is still open. */
+/** The old way: the ticket is with the backend team. A to-and-fro, and it is still open. */
 function Before({ product }: P) {
   const { ticket, old } = product.demo
   return (
@@ -132,18 +131,17 @@ function Before({ product }: P) {
             <TicketGlyph />
           </span>
           <i className="smarthelp-b-perf" />
-          <p className="smarthelp-b-eyebrow">Support ticket</p>
           <p className="smarthelp-b-id">
             <span>{ticket.id}</span>
           </p>
-          <p className="smarthelp-b-status">
+          <div className="smarthelp-b-status">
             <span className="smarthelp-b-dots">
               <i />
               <i />
               <i />
             </span>
             {old.status}
-          </p>
+          </div>
         </div>
       </div>
       <div className="smarthelp-b-thread">
@@ -169,10 +167,13 @@ function Before({ product }: P) {
 }
 
 // ====================================================================== SCREEN
-/** The support desk on her phone. Her ticket is written; she raises it; SmartHelp works it. */
+/**
+ * The support desk on her phone. At the demo rest: the desk's name, her ticket, the one control.
+ * At the result rest, five rows: the desk's name, her ticket (under its stamp), Understood, Found
+ * and Fixed (with the "safe, pre-approved" tag inside it).
+ */
 function Screen({ product }: P) {
   const d = product.demo
-  const [resolved, next] = lead(d.resolved)
   const last = d.steps.length - 1
   return (
     <div className="smarthelp-app">
@@ -180,28 +181,17 @@ function Screen({ product }: P) {
         <span className="smarthelp-icon">
           <Spark />
         </span>
-        <span className="smarthelp-title">
-          <b>{d.desk}</b>
-          <span>
-            {product.name} · {d.app}
-          </span>
-        </span>
+        <b className="smarthelp-title">{d.desk}</b>
       </div>
 
       {/* her ticket */}
       <div className="smarthelp-tkc">
         <i className="smarthelp-tkc-glow" />
         <div className="smarthelp-tkc-head">
-          <span className="smarthelp-tkc-id">
-            Ticket <b>{d.ticket.id}</b>
-          </span>
+          <b className="smarthelp-tkc-id">{d.ticket.id}</b>
           <span className="smarthelp-pill">
             <span className="smarthelp-pill--new">New</span>
             <span className="smarthelp-pill--with">With {product.name}</span>
-            <span className="smarthelp-pill--done">
-              <Tick width={3.8} />
-              {resolved}
-            </span>
           </span>
         </div>
         <div className="smarthelp-tkc-body">
@@ -213,218 +203,108 @@ function Screen({ product }: P) {
       </div>
 
       {/* the one control */}
-      <div className="smarthelp-raisezone">
-        <div className="smarthelp-raiseWrap">
-          <TouchControl label={`${d.raise} ${d.ticket.id} on ${product.name}`} className="smarthelp-raise">
-            <span className="smarthelp-raise-face">
-              <TicketGlyph />
-              {d.raise}
-            </span>
-          </TouchControl>
-        </div>
-        <p className="smarthelp-hint">Tap to raise it</p>
-        <div className="smarthelp-hero">
-          <span className="smarthelp-hero-mark">
-            <Spark />
+      <div className="smarthelp-raiseWrap">
+        <TouchControl label={`${d.raise} ${d.ticket.id} on ${product.name}`} className="smarthelp-raise">
+          <span className="smarthelp-raise-face">
+            <TicketGlyph />
+            {d.raise}
           </span>
-          <p>{product.promise}</p>
-        </div>
+        </TouchControl>
       </div>
 
-      {/* SmartHelp works the ticket */}
-      <div className="smarthelp-work">
-        <p className="smarthelp-from">
-          <i>
-            <Spark />
-          </i>
-          {product.name}
-          <span>now</span>
-        </p>
-        <div className="smarthelp-card">
-          {d.steps.map((s, i) => (
-            <div className={i === last ? 'smarthelp-step smarthelp-step--fix' : 'smarthelp-step'} key={s.k}>
-              <i className="smarthelp-node">
-                <i className="smarthelp-node-spin" />
-                <b className="smarthelp-node-on">
-                  <Tick width={3.8} />
-                </b>
-              </i>
-              {i < last ? (
-                <i className="smarthelp-link">
-                  <i />
-                </i>
-              ) : null}
-              <p className="smarthelp-step-k">
-                <span>{s.k}</span>
-                <b aria-hidden="true">{s.k}</b>
-              </p>
-              {i < last ? (
-                <>
-                  <p className="smarthelp-step-v">{s.v}</p>
-                  <span className="smarthelp-step-skel">
-                    <i />
-                    <i />
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="smarthelp-step-skel">
-                    <i />
-                    <i />
-                  </span>
-                  {/* the hero: it runs a command itself */}
-                  <div className="smarthelp-cmd">
-                    <div className="smarthelp-cmd-line">
-                      <Prompt />
-                      <span className="smarthelp-cmd-code">
-                        <i />
-                        <i />
-                        <i />
-                      </span>
-                      <i className="smarthelp-cmd-caret" />
-                      <span className="smarthelp-cmd-shield">
-                        <Shield />
-                      </span>
-                    </div>
-                    <p className="smarthelp-cmd-out">{s.v}</p>
-                    <i className="smarthelp-cmd-bar">
-                      <i />
-                    </i>
-                    <i className="smarthelp-cmd-flash" />
-                  </div>
-                </>
-              )}
-              <i className="smarthelp-step-sweep" />
-            </div>
-          ))}
-          <div className="smarthelp-done">
-            <span className="smarthelp-done-bg" />
-            <i>
-              <Tick width={3.8} />
+      {/* SmartHelp works the ticket, in the same chat */}
+      <div className="smarthelp-card">
+        {d.steps.map((s, i) => (
+          <div className={i === last ? 'smarthelp-step smarthelp-step--fix' : 'smarthelp-step'} key={s.k}>
+            <i className="smarthelp-node">
+              <i className="smarthelp-node-spin" />
+              <b className="smarthelp-node-on">
+                <Tick width={3.8} />
+              </b>
             </i>
-            <p className="smarthelp-done-txt">
-              <b>{resolved}.</b> {next}
+            {i < last ? (
+              <i className="smarthelp-link">
+                <i />
+              </i>
+            ) : null}
+            <p className="smarthelp-step-k">
+              <span>{s.k}</span>
+              <b aria-hidden="true">{s.k}</b>
             </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/** On the phone's edge, travelling with it: the tag on the fix, and the stamp on the ticket. */
-function OnDevice({ product }: P) {
-  const d = product.demo
-  const [closed, how] = lead(d.closed)
-  return (
-    <>
-      <div className="smarthelp-safe">
-        <i className="smarthelp-safe-ring" />
-        <span className="smarthelp-safe-ico">
-          <Shield check="smarthelp-safe-check" />
-        </span>
-        <span className="smarthelp-safe-txt">{unbroken(d.safe)}</span>
-      </div>
-      <div className="smarthelp-stamp">
-        <i className="smarthelp-stamp-burst" />
-        <b>{closed}</b>
-        <span>{how}</span>
-      </div>
-    </>
-  )
-}
-
-// ====================================================================== AROUND THE DEVICE
-/** Beside the phone: the two ways SmartHelp resolves a ticket. The demo shows the second. */
-function Beside({ product }: P) {
-  const ways = product.demo.ways
-  return (
-    <div className="smarthelp-ways">
-      <p className="smarthelp-ways-who">How it resolves a ticket</p>
-      {ways.map((w, i) => (
-        <div className="smarthelp-way-slot" key={w.title}>
-          <div className={i === ways.length - 1 ? 'smarthelp-way smarthelp-way--shown' : 'smarthelp-way'}>
-            <p className="smarthelp-way-head">
-              <span className="smarthelp-way-ico">{WAYS[i]}</span>
-              <b>{w.title}</b>
-            </p>
-            <p className="smarthelp-way-text">{w.text}</p>
-            {i === ways.length - 1 ? (
+            {i < last ? (
               <>
-                <i className="smarthelp-way-glow" />
-                <span className="smarthelp-way-tag">
-                  <Tick width={3.8} />
-                  This ticket
+                <p className="smarthelp-step-v">{unbroken(s.v)}</p>
+                <span className="smarthelp-step-skel">
+                  <i />
+                  <i />
                 </span>
               </>
-            ) : null}
+            ) : (
+              /* the hero: it runs a command itself. The command is typed by nobody, runs, and
+                 gives way to what it did; the tag that says it is a safe one is part of the row. */
+              <>
+              <span className="smarthelp-step-skel">
+                <i />
+              </span>
+              <div className="smarthelp-cmd">
+                <span className="smarthelp-cmd-code">
+                  <Prompt />
+                  <i />
+                  <i />
+                  <i />
+                  <i className="smarthelp-cmd-caret" />
+                </span>
+                <p className="smarthelp-cmd-out">{unbroken(s.v)}</p>
+                <div className="smarthelp-cmd-safe">
+                  <span className="smarthelp-cmd-shield">
+                    <Shield check="smarthelp-safe-check" />
+                  </span>
+                  <span>{unbroken(d.safe)}</span>
+                </div>
+                <i className="smarthelp-cmd-bar">
+                  <i />
+                </i>
+                <i className="smarthelp-cmd-flash" />
+              </div>
+              </>
+            )}
+            <i className="smarthelp-step-sweep" />
           </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-/** Left column: the two promises. Each is ticked off by the demo itself. */
-function Under({ product }: P) {
-  return (
-    <div className="smarthelp-claims">
-      {claimsOf(product).map((c) => (
-        <span className="smarthelp-claim" key={c}>
-          <i className="smarthelp-claim-ring" />
-          {c}
-          <span className="smarthelp-claim-on" aria-hidden="true">
-            <i>
-              <Tick width={3.6} />
-            </i>
-            {c}
-          </span>
-        </span>
-      ))}
-    </div>
-  )
-}
-
-/** Under the result headline: the queue, struck through, and what replaced it. */
-function Proof({ product }: P) {
-  const d = product.demo
-  return (
-    <div className="smarthelp-compare">
-      <span className="smarthelp-compare-old">
-        <b>{d.ticket.id}</b>
-        {d.old.status}
-        <i />
-      </span>
-      <svg viewBox="0 0 40 20" fill="none" strokeWidth="2.600" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M2 10h34M28 3l8 7-8 7" />
-      </svg>
-      <span className="smarthelp-compare-new">{lead(d.closed)[1]}</span>
-    </div>
-  )
-}
-
-/** Things that fly: the two ways (out of "Smart") and her ticket (out of "Help"). */
-function Extras({ product }: P) {
-  const d = product.demo
-  return (
-    <>
-      {d.ways.map((w, i) => (
-        <div className="smarthelp-part" key={w.title} aria-hidden="true">
-          {WAYS[i]}
-          {w.title}
-        </div>
-      ))}
-      <div className="smarthelp-ask" aria-hidden="true">
-        <p className="smarthelp-ask-text">{d.ticket.text}</p>
+        ))}
       </div>
-    </>
+    </div>
+  )
+}
+
+/** The ONE thing on the device at the result rest: the stamp, across her ticket. */
+function OnDevice({ product }: P) {
+  const [closed, how] = lead(product.demo.closed)
+  return (
+    <div className="smarthelp-stamp">
+      <i className="smarthelp-stamp-burst" />
+      <b>{closed}</b>
+      <span>{how}</span>
+    </div>
+  )
+}
+
+/** The one supporting line under the result headline: the two ways it resolves a ticket. */
+function Proof({ product }: P) {
+  return <p className="smarthelp-two">{stressed(product.demo.twoWays, ['guides', 'fixes'])}</p>
+}
+
+/** The one thing that flies: her ticket, out of "Help" and into the support desk. */
+function Extras({ product }: P) {
+  return (
+    <div className="smarthelp-ask" aria-hidden="true">
+      <p className="smarthelp-ask-text">{product.demo.ticket.text}</p>
+    </div>
   )
 }
 
 // ====================================================================== STAT
-/** A hundred support tickets. Fifteen close themselves. One of them was hers. */
-function Stat({ product }: P) {
-  const d = product.demo
+/** A hundred support tickets. Fifteen close themselves. One of them was hers: the phone lands in it. */
+function Stat() {
   return (
     <div className="smarthelp-wall">
       {Array.from({ length: WALL_COLS * WALL_ROWS }, (_, i) => {
@@ -443,12 +323,6 @@ function Stat({ product }: P) {
         )
       })}
       <i className="smarthelp-land" />
-      <div className="smarthelp-callout">
-        <div className="smarthelp-callout-in">
-          <b>Ticket {d.ticket.id}</b>
-          <span>{lead(d.closed)[1]}</span>
-        </div>
-      </div>
     </div>
   )
 }
@@ -459,77 +333,62 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
   const clipShut = 'inset(0% 100% 0% 0%)'
   const clipOpen = 'inset(0% 0% 0% 0%)'
 
-  // ---------------------------------------------------------------- measure, while the stage is posed as in the demo
-  const parts = $$('.smarthelp-part')
-  const slots = $$('.smarthelp-way-slot')
-  const wayCards = $$('.smarthelp-way')
+  // ---------------------------------------------------------------- the cast
+  const tkc = $('.smarthelp-tkc')
+  const tkText = $('.smarthelp-tkc-text')
+  const tkGlow = $('.smarthelp-tkc-glow')
+  const tkSkels = $$('.smarthelp-tkc-skel')
+  const pills = $$('.smarthelp-pill > span')
+  const scan = $('.smarthelp-tkc-scan')
+  const raiseWrap = $('.smarthelp-raiseWrap')
+  const face = $('.smarthelp-raise-face')
   const ask = $('.smarthelp-ask')
   const askText = $('.smarthelp-ask-text')
-  const tkText = $('.smarthelp-tkc-text')
+  const stamp = $('.smarthelp-stamp')
+  const burst = $('.smarthelp-stamp-burst')
 
-  const slotBox = slots.map((s) => loc(s))
-  const partBox = parts.map((p) => ({ w: p.offsetWidth, h: p.offsetHeight }))
+  // ---------------------------------------------------------------- measure, while the stage is posed as in the demo
+  // How much the frame has enlarged the phone: a distance on the stage, divided by this, is a distance on its glass.
+  const zoom = loc(env.shared.device).w / (env.shared.device.offsetWidth || 1) || 1
+  // The stamp lands across her ticket, a little to the right, so that it hangs over the phone's edge.
+  const cardAt = loc(tkc)
+  const stampAt = loc(stamp)
+  const stampTo = {
+    x: (cardAt.cx - stampAt.cx) / zoom + 2.3 * U,
+    y: (cardAt.cy - stampAt.cy) / zoom + 0.65 * U,
+  }
+  // At the demo rest her ticket stands lower, just over the one control: the two are the whole
+  // screen. When she raises it, it goes up to where it rests, and SmartHelp answers under it.
+  const lift = Math.max(0, raiseWrap.offsetTop - tkc.offsetTop - tkc.offsetHeight - 1.2 * U)
+  gsap.set(tkc, { y: lift })
   const textBox = loc(tkText)
   const askScale = textBox.w / (askText.offsetWidth || 1)
 
   // ---------------------------------------------------------------- before: the ticket goes back and forth, and is still open
   const ticket = $('.smarthelp-b-ticket')
   const ticketId = $('.smarthelp-b-id span')
-  const eyebrow = $('.smarthelp-b-eyebrow')
   const status = $('.smarthelp-b-status')
   const msgs = $$('.smarthelp-b-msg')
   const still = $('.smarthelp-b-still')
-  gsap.set(ticket, { autoAlpha: 0, y: 3 * U, rotation: -12 })
+  gsap.set(ticket, { autoAlpha: 0, y: 3 * U, rotation: -10 })
   gsap.set(ticketId, { yPercent: 110 })
-  gsap.set(eyebrow, { autoAlpha: 0, x: -0.6 * U })
   gsap.set(status, { autoAlpha: 0, scale: 0.7, transformOrigin: '0 50%' })
   gsap.set(msgs, { autoAlpha: 0, scale: 0.6, y: 0.9 * U, transformOrigin: (i) => (msgs[i].classList.contains('smarthelp-b-msg--team') ? '0% 100%' : '100% 100%') })
-  gsap.set(still, { autoAlpha: 0, scale: 1.9, rotation: -16 })
-  // The whole to-and-fro is in place in the first half second: the card then rests, and that rest
-  // is for reading it. Only "Still open" lands late, on what has piled up.
+  gsap.set(still, { autoAlpha: 0, scale: 2.1, rotation: -18 })
+  // The ticket, then the to-and-fro: one from them, one from her, one from them, one from her.
+  // Only "Still open" lands late, on the ticket itself.
   before
-    .to(ticket, { autoAlpha: 1, y: 0, rotation: -3, duration: 0.5, ease: E.snap }, 0)
-    .to(eyebrow, { autoAlpha: 1, x: 0, duration: 0.24 }, 0.08)
+    .to(ticket, { autoAlpha: 1, y: 0, rotation: -2, duration: 0.5, ease: E.snap }, 0)
     .to(ticketId, { yPercent: 0, duration: 0.34, ease: E.out }, 0.08)
-    .to(status, { autoAlpha: 1, scale: 1, duration: 0.26, ease: 'back.out(2.4)' }, 0.12)
-    // …message by message, each on the heels of the last
-    .to(msgs, { autoAlpha: 1, scale: 1, y: 0, duration: 0.2, ease: 'back.out(2)', stagger: 0.045 }, 0.02)
-    // still open
-    .to(still, { autoAlpha: 1, duration: 0.08, ease: 'none' }, 0.5)
-    .to(still, { scale: 1, rotation: -4, duration: 0.18, ease: E.slam }, 0.5)
+    .to(status, { autoAlpha: 1, scale: 1, duration: 0.26, ease: 'back.out(2.4)' }, 0.14)
+    .to(msgs, { autoAlpha: 1, scale: 1, y: 0, duration: 0.22, ease: 'back.out(2)', stagger: 0.08 }, 0.16)
+    .to(still, { autoAlpha: 1, duration: 0.08, ease: 'none' }, 0.6)
+    .to(still, { scale: 1, rotation: -5, duration: 0.2, ease: E.slam }, 0.6)
 
-  // ---------------------------------------------------------------- demo: "Smart" gives the two ways, "Help" gives her ticket
-  const raiseWrap = $('.smarthelp-raiseWrap')
-  const hint = $('.smarthelp-hint')
-  const hero = $('.smarthelp-hero')
-  const tkGlow = $('.smarthelp-tkc-glow')
-  const tkSkels = $$('.smarthelp-tkc-skel')
-  gsap.set(wayCards, { autoAlpha: 0, scale: 0.92 })
-  gsap.set(hero, { autoAlpha: 0, scale: 0.8, y: 0.8 * U })
+  // ---------------------------------------------------------------- demo: out of "Help" comes her ticket, into the support desk
   gsap.set(tkText, { autoAlpha: 0 })
   gsap.set(tkGlow, { autoAlpha: 0 })
-  gsap.set(raiseWrap, { autoAlpha: 0, scale: 0 })
-  gsap.set(hint, { autoAlpha: 0 })
-  const born = SMART_LETTERS.map((li) => letters[Math.min(li, letters.length - 1)])
-  gsap.set(parts, { x: (i) => born[i].cx, y: (i) => born[i].cy, xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0 })
-  parts.forEach((p, i) => {
-    const from = { x: born[i].cx, y: born[i].cy }
-    const to = { x: slotBox[i].cx, y: slotBox[i].cy }
-    // thrown high over the phone, each on its own curve, down into its place beside it
-    const over = { x: from.x + (to.x - from.x) * 0.58, y: Math.min(from.y, to.y) - (4.5 + (1 - i) * 1.8) * U }
-    const birth = 0.02 + i * 0.06
-    const fly = 0.24 + i * 0.09
-    const dur = 0.56
-    const land = fly + dur
-    demo
-      .to(p, { scale: 1, autoAlpha: 1, duration: 0.26, ease: 'back.out(2.2)' }, birth)
-      .to(p, { motionPath: { path: [over, to], curviness: 1.25 }, duration: dur, ease: 'power2.inOut' }, fly)
-      .to(p, { rotation: 8, duration: dur * 0.45, ease: 'sine.out' }, fly)
-      .to(p, { rotation: 0, duration: dur * 0.55, ease: 'sine.inOut' }, fly + dur * 0.45)
-      .to(p, { scaleX: slotBox[i].w / partBox[i].w, scaleY: slotBox[i].h / partBox[i].h, autoAlpha: 0, duration: 0.2, ease: 'power2.out' }, land - 0.05)
-      .to(wayCards[i], { autoAlpha: 1, scale: 1, duration: 0.32, ease: E.snap }, land - 0.05)
-  })
-  // her ticket: out of "Help", into the support desk, written and ready
+  gsap.set(raiseWrap, { autoAlpha: 0, scale: 0.4 })
   const helpLetters = letters.slice(Math.min(HELP_FROM, letters.length - 1))
   const helpFrom = {
     x: (helpLetters[0].x + helpLetters[helpLetters.length - 1].x + helpLetters[helpLetters.length - 1].w) / 2,
@@ -538,28 +397,22 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
   const askW = ask.offsetWidth
   const askFrom = { x: Math.min(helpFrom.x, hx - askW / 2), y: helpFrom.y }
   const askTo = { x: textBox.cx, y: textBox.cy }
-  const askOver = { x: askFrom.x + (askTo.x - askFrom.x) * 0.3 + 3 * U, y: askFrom.y + (askTo.y - askFrom.y) * 0.45 }
-  const askLand = 0.82
+  const askOver = { x: askFrom.x + (askTo.x - askFrom.x) * 0.45, y: Math.min(askFrom.y, askTo.y) - 4 * U }
+  const askLand = 0.84
   gsap.set(ask, { x: askFrom.x, y: askFrom.y, xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0 })
   demo
     .to(ask, { scale: 1, autoAlpha: 1, duration: 0.26, ease: 'back.out(1.8)' }, 0)
-    .to(ask, { motionPath: { path: [askOver, askTo], curviness: 1.2 }, scale: askScale, duration: 0.56, ease: 'power2.inOut' }, askLand - 0.56)
+    .to(ask, { motionPath: { path: [askOver, askTo], curviness: 1.2 }, scale: askScale, duration: 0.58, ease: 'power2.inOut' }, askLand - 0.58)
     .to(tkSkels, { autoAlpha: 0, duration: 0.1, ease: 'none' }, askLand - 0.08)
     .to(tkText, { autoAlpha: 1, duration: 0.1, ease: 'none' }, askLand - 0.07)
-    .to(ask, { autoAlpha: 0, duration: 0.12, ease: 'none' }, askLand - 0.03)
+    .to(ask, { autoAlpha: 0, duration: 0.08, ease: 'none' }, askLand - 0.04)
     .to(tkGlow, { autoAlpha: 1, duration: 0.1, ease: 'none' }, askLand - 0.05)
     .to(tkGlow, { autoAlpha: 0, duration: 0.3, ease: 'power1.out' }, askLand + 0.08)
-    .to(hero, { autoAlpha: 1, scale: 1, y: 0, duration: 0.42, ease: E.snap }, 0.7)
-    .to(raiseWrap, { autoAlpha: 1, scale: 1, duration: 0.4, ease: 'back.out(2.2)' }, askLand + 0.02)
-    .to(hint, { autoAlpha: 1, duration: 0.22 }, askLand + 0.14)
+    // …and the one control, under it
+    .to(raiseWrap, { autoAlpha: 1, scale: 1, duration: 0.36, ease: 'back.out(2.2)' }, askLand + 0.02)
   env.bump(demo, askLand - 0.03)
 
   // ---------------------------------------------------------------- run: she raises it, and SmartHelp solves it itself
-  const face = $('.smarthelp-raise-face')
-  const pills = $$('.smarthelp-pill > span')
-  const scan = $('.smarthelp-tkc-scan')
-  const work = $('.smarthelp-work')
-  const from = $('.smarthelp-from')
   const card = $('.smarthelp-card')
   const spins = $$('.smarthelp-node-spin')
   const ons = $$('.smarthelp-node-on')
@@ -569,32 +422,20 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
   const sweeps = $$('.smarthelp-step-sweep')
   const links = $$('.smarthelp-link i')
   const cmd = $('.smarthelp-cmd')
-  const code = $$('.smarthelp-cmd-code i')
+  const code = $$('.smarthelp-cmd-code > i:not(.smarthelp-cmd-caret)')
+  const codeRow = $('.smarthelp-cmd-code')
   const caret = $('.smarthelp-cmd-caret')
-  const cmdShield = $('.smarthelp-cmd-shield')
-  const bar = $('.smarthelp-cmd-bar i')
+  const safe = $('.smarthelp-cmd-safe')
+  const safeCheck = $('.smarthelp-safe-check')
+  const bar = $('.smarthelp-cmd-bar')
+  const barFill = $('.smarthelp-cmd-bar i')
   const out = $('.smarthelp-cmd-out')
   const cmdFlash = $('.smarthelp-cmd-flash')
-  const doneBg = $('.smarthelp-done-bg')
-  const doneTick = $('.smarthelp-done i')
-  const doneText = $('.smarthelp-done-txt')
-  const safe = $('.smarthelp-safe')
-  const safeRing = $('.smarthelp-safe-ring')
-  const safeCheck = $('.smarthelp-safe-check')
-  const stamp = $('.smarthelp-stamp')
-  const burst = $('.smarthelp-stamp-burst')
-  const wayGlow = $('.smarthelp-way-glow')
-  const wayTag = $('.smarthelp-way-tag')
-  const wayIco = $('.smarthelp-way--shown .smarthelp-way-ico')
-  const claims = $$('.smarthelp-claim-on')
   const fixRow = spins.length - 1
 
   gsap.set(pills[1], { autoAlpha: 0, y: 0.5 * U })
-  gsap.set(pills[2], { autoAlpha: 0, scale: 0.4, transformOrigin: '100% 50%' })
   gsap.set(scan, { xPercent: -105 })
-  gsap.set(work, { autoAlpha: 0 })
-  gsap.set(from, { autoAlpha: 0, x: -0.5 * U })
-  gsap.set(card, { autoAlpha: 0, y: 1.3 * U, scale: 0.94, transformOrigin: '0% 0%' })
+  gsap.set(card, { autoAlpha: 0, y: 2.2 * U, scale: 0.94, transformOrigin: '50% 0%' })
   gsap.set(spins, { autoAlpha: 0 })
   gsap.set(ons, { autoAlpha: 0, scale: 0 })
   gsap.set(kOn, { clipPath: clipShut })
@@ -606,47 +447,36 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
   // the caret stands where the next word will be typed
   const caretAt = (k: number) => (k < code.length ? code[k].offsetLeft - caret.offsetLeft : 0)
   gsap.set(caret, { x: caretAt(0) })
-  gsap.set(cmdShield, { autoAlpha: 0, scale: 0 })
-  gsap.set(bar, { scaleX: 0, transformOrigin: '0% 50%' })
+  gsap.set(safe, { autoAlpha: 0, x: -0.8 * U })
+  gsap.set(safeCheck, { drawSVG: '0%' })
+  gsap.set(barFill, { scaleX: 0, transformOrigin: '0% 50%' })
   gsap.set(out, { clipPath: clipShut })
   gsap.set(cmdFlash, { autoAlpha: 0 })
-  gsap.set(doneBg, { autoAlpha: 0 })
-  gsap.set(doneTick, { autoAlpha: 0, scale: 0 })
-  gsap.set(doneText, { clipPath: clipShut })
-  gsap.set(safe, { autoAlpha: 0, scale: 0.4, x: -1.4 * U, transformOrigin: '0% 50%' })
-  gsap.set(safeRing, { autoAlpha: 0 })
-  gsap.set(safeCheck, { drawSVG: '0%' })
-  gsap.set(stamp, { autoAlpha: 0, scale: 2.7, rotation: -22 })
+  gsap.set(stamp, { x: stampTo.x, y: stampTo.y, autoAlpha: 0, scale: 2.7, rotation: -22 })
   gsap.set(burst, { autoAlpha: 0 })
-  gsap.set(wayGlow, { autoAlpha: 0 })
-  gsap.set(wayTag, { autoAlpha: 0, scale: 0, transformOrigin: '100% 50%' })
-  gsap.set(claims, { clipPath: clipShut })
 
-  const picked = 0.3 // SmartHelp has the ticket
+  const picked = 0.42 // SmartHelp has the ticket
   run
-    // raise
+    // raise: the control is pressed and leaves; the ticket goes up to the top of the chat
     .to(face, { scale: 0.94, duration: 0.08, ease: 'power2.in' }, 0)
     .to(face, { scale: 1, duration: 0.2, ease: 'back.out(3.2)' }, 0.08)
-    .to(hint, { autoAlpha: 0, duration: 0.14 }, 0)
-    .to(hero, { autoAlpha: 0, scale: 0.86, y: -1.2 * U, duration: 0.2, ease: 'power2.in' }, 0)
+    .to(raiseWrap, { autoAlpha: 0, scale: 0.86, y: 1 * U, duration: 0.2, ease: 'power2.in' }, 0.14)
+    .to(tkc, { y: 0, duration: 0.46, ease: E.inOut }, 0.12)
     // no queue: it is with SmartHelp at once
-    .to(pills[0], { autoAlpha: 0, y: -0.4 * U, duration: 0.14, ease: 'power2.in' }, 0.06)
-    .to(pills[1], { autoAlpha: 1, y: 0, duration: 0.26, ease: 'back.out(2.4)' }, 0.15)
-    .to(tkGlow, { autoAlpha: 1, duration: 0.1, ease: 'none' }, 0.08)
-    .to(tkGlow, { autoAlpha: 0, duration: 0.34, ease: 'power1.out' }, 0.26)
-    .to(raiseWrap, { autoAlpha: 0, scale: 0.9, y: -0.7 * U, duration: 0.18, ease: 'power2.in' }, 0.14)
+    .to(pills[0], { autoAlpha: 0, y: -0.4 * U, duration: 0.14, ease: 'power2.in' }, 0.08)
+    .to(pills[1], { autoAlpha: 1, y: 0, duration: 0.26, ease: 'back.out(2.4)' }, 0.18)
+    .to(tkGlow, { autoAlpha: 1, duration: 0.1, ease: 'none' }, 0.14)
+    .to(tkGlow, { autoAlpha: 0, duration: 0.34, ease: 'power1.out' }, 0.5)
     // it reads the ticket…
-    .to(scan, { xPercent: 105, duration: 0.5, ease: 'power2.inOut' }, 0.3)
+    .to(scan, { xPercent: 105, duration: 0.5, ease: 'power2.inOut' }, 0.4)
     // …and works it, in the same chat
-    .to(work, { autoAlpha: 1, duration: 0.01 }, picked)
-    .to(from, { autoAlpha: 1, x: 0, duration: 0.25 }, picked)
     .to(card, { autoAlpha: 1, duration: 0.14, ease: 'none' }, picked)
     .to(card, { y: 0, scale: 1, duration: 0.42, ease: E.snap }, picked)
-  env.bump(run, picked + 0.08, 1.2)
+  env.bump(run, picked + 0.1, 1.2)
 
   // Understood, Found
-  const goes = [0.46, 0.86]
-  const dones = [0.8, 1.2]
+  const goes = [0.56, 0.92]
+  const dones = [0.86, 1.22]
   vs.forEach((v, k) => {
     run
       .to(spins[k], { autoAlpha: 1, duration: 0.1, ease: 'none' }, goes[k])
@@ -659,12 +489,10 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
       .to(links[k], { scaleY: 1, duration: 0.26, ease: 'power2.inOut' }, dones[k] + 0.04)
     env.bump(run, dones[k], 0.7)
   })
-  // it found the cause without asking her for anything
-  run.to(claims[0], { clipPath: clipOpen, duration: 0.4, ease: E.inOut }, dones[1] + 0.02)
 
-  // Fixed: it runs a command itself. A safe, pre-approved one.
-  const go = 1.26
-  const fix = 2.0
+  // Fixed: it runs a command itself. A safe, pre-approved one: the tag is part of the row.
+  const go = 1.28
+  const fix = 1.98
   run
     .to(spins[fixRow], { autoAlpha: 1, duration: 0.1, ease: 'none' }, go)
     .to(skels[fixRow], { autoAlpha: 0, duration: 0.12 }, go)
@@ -674,20 +502,15 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
     .to(caret, { x: caretAt(1), duration: 0.09, ease: 'power1.out' }, go + 0.16)
     .to(caret, { x: caretAt(2), duration: 0.09, ease: 'power1.out' }, go + 0.25)
     .to(caret, { x: caretAt(3), duration: 0.09, ease: 'power1.out' }, go + 0.34)
-    .to(bar, { scaleX: 1, duration: fix - go - 0.32, ease: 'power1.inOut' }, go + 0.3)
-    .to(cmdShield, { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'back.out(3)' }, go + 0.26)
-    // the tag on it: safe
-    .to(safe, { autoAlpha: 1, duration: 0.1, ease: 'none' }, go + 0.2)
-    .to(safe, { scale: 1, x: 0, duration: 0.4, ease: 'back.out(2)' }, go + 0.2)
+    .to(barFill, { scaleX: 1, duration: fix - go - 0.34, ease: 'power1.inOut' }, go + 0.3)
+    // safe: the tag comes in under the command while it runs, and its shield is ticked
+    .to(safe, { autoAlpha: 1, x: 0, duration: 0.3, ease: E.out }, go + 0.24)
     .to(safeCheck, { drawSVG: '100%', duration: 0.24, ease: 'power2.out' }, go + 0.44)
-    // this is the second of its two ways
-    .to(wayGlow, { autoAlpha: 1, duration: 0.2, ease: 'power1.out' }, go + 0.2)
-    .to(wayIco, { scale: 1.16, duration: 0.12, ease: 'power2.out' }, go + 0.2)
-    .to(wayIco, { scale: 1, duration: 0.3, ease: 'back.out(3)' }, go + 0.32)
-    // FIXED
+    // FIXED: the command gives way to what it did
     .to(spins[fixRow], { autoAlpha: 0, duration: 0.08, ease: 'none' }, fix)
-    .to(caret, { autoAlpha: 0, duration: 0.06, ease: 'none' }, fix - 0.08)
-    .to(out, { clipPath: clipOpen, duration: 0.26, ease: 'power2.out' }, fix - 0.1)
+    .to(codeRow, { autoAlpha: 0, x: 0.8 * U, duration: 0.12, ease: 'power2.in' }, fix - 0.16)
+    .to(out, { clipPath: clipOpen, duration: 0.28, ease: 'power2.out' }, fix - 0.08)
+    .to(bar, { autoAlpha: 0, duration: 0.2, ease: 'none' }, fix + 0.04)
     .to(cmdFlash, { autoAlpha: 0.55, duration: 0.06, ease: 'none' }, fix - 0.03)
     .to(cmdFlash, { autoAlpha: 0, duration: 0.4, ease: 'power1.out' }, fix + 0.03)
     .to(cmd, { scale: 1.035, duration: 0.08, ease: 'power2.out' }, fix - 0.03)
@@ -696,42 +519,63 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
     .to(sweeps[fixRow], { xPercent: 105, duration: 0.5, ease: 'power2.inOut' }, fix - 0.1)
     .to(ons[fixRow], { autoAlpha: 1, duration: 0.06, ease: 'none' }, fix)
     .to(ons[fixRow], { scale: 1, duration: 0.34, ease: 'back.out(4)' }, fix)
-    .to(safeRing, { autoAlpha: 0.8, duration: 0.01 }, fix)
-    .to(safeRing, { scale: 1.3, autoAlpha: 0, duration: 0.42, ease: 'power2.out' }, fix + 0.01)
-    .to(wayTag, { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'back.out(3)' }, fix + 0.04)
-    // the ticket flips to resolved, in the same chat
-    .to(pills[1], { autoAlpha: 0, duration: 0.1, ease: 'none' }, fix + 0.02)
-    .to(pills[2], { autoAlpha: 1, duration: 0.08, ease: 'none' }, fix + 0.06)
-    .to(pills[2], { scale: 1, duration: 0.34, ease: 'back.out(3.2)' }, fix + 0.06)
-    .to(tkGlow, { autoAlpha: 1, duration: 0.1, ease: 'none' }, fix + 0.06)
-    .to(tkGlow, { autoAlpha: 0, duration: 0.4, ease: 'power1.out' }, fix + 0.22)
-    .to(doneBg, { autoAlpha: 1, duration: 0.2, ease: 'power1.out' }, fix + 0.1)
-    .to(doneTick, { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'back.out(3.4)' }, fix + 0.14)
-    .to(doneText, { clipPath: clipOpen, duration: 0.32, ease: 'power2.out' }, fix + 0.16)
   env.bump(run, fix, 2.4)
 
-  // Ticket closed. No human needed.
+  // Ticket closed. No human needed. The ticket's own words have done their work: they give
+  // way, one after the other, and the stamp comes down across the ticket.
   const hit = 2.4
+  env.leave(run, [pills[1], tkText], fix + 0.1, { stagger: 0.06, dy: 0.6 })
   run
     .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.22)
-    // on a phone on its side it lands less askew: a tilted stamp is taller, and there it stands between the tag and the bar
-    .to(stamp, { scale: 1, rotation: env.small ? -4 : -7, duration: 0.22, ease: E.slam }, hit - 0.22)
+    .to(stamp, { scale: 1, rotation: -6, duration: 0.22, ease: E.slam }, hit - 0.22)
+    .to(tkGlow, { autoAlpha: 1, duration: 0.06, ease: 'none' }, hit - 0.02)
+    .to(tkGlow, { autoAlpha: 0, duration: 0.34, ease: 'power1.out' }, hit + 0.04)
     .to(burst, { autoAlpha: 0.8, duration: 0.01 }, hit)
-    .to(burst, { scale: 1.6, autoAlpha: 0, duration: 0.39, ease: 'power2.out' }, hit + 0.01)
-    .to(claims[1], { clipPath: clipOpen, duration: 0.38, ease: E.inOut }, hit - 0.02)
+    .to(burst, { scale: 1.5, autoAlpha: 0, duration: 0.38, ease: 'power2.out' }, hit + 0.01)
   env.bump(run, hit, 2.6)
 
-  // ---------------------------------------------------------------- result: the queue, struck through
-  const strike = $('.smarthelp-compare-old i')
-  gsap.set(strike, { scaleX: 0 })
-  result.to(strike, { scaleX: 1, duration: 0.26, ease: 'power2.inOut' }, 0.66)
+  // ---------------------------------------------------------------- result: the two lines of detail leave; three ticked words stay
+  // What the run used has already gone inside the run (the control, the typed command and its
+  // progress, the ticket's words under the stamp). What is left to clear is what SmartHelp said
+  // under Understood and under Found: it was read as it was worked out, and the resting screen
+  // has room for about six rows. They lift out, and the two ticked words take the room they
+  // leave: each moves to the middle of its row and grows, so the phone reads as a checklist:
+  // Understood. Found. Fixed (and what the fix was, which nothing else on screen says).
+  const steps = $$('.smarthelp-step')
+  const ks = $$('.smarthelp-step-k')
+  const nodes = $$('.smarthelp-node')
+  const linkWraps = $$('.smarthelp-link')
+  // (Fixed keeps its place over what the fix was; its word grows a little, with the other two)
+  const rowsOf = steps.map((step, k) => {
+    const moves = k < vs.length
+    const room = step.clientWidth - ks[k].offsetLeft
+    const grow = Math.max(1, Math.min(moves ? 1.45 : 1.2, (room * 0.94) / Math.max(1, ks[k].offsetWidth)))
+    const dy = moves ? step.offsetHeight / 2 - (ks[k].offsetTop + ks[k].offsetHeight / 2) : 0
+    const node = 1 + (grow - 1) * 0.6
+    return { grow, dy, node, half: (nodes[k].offsetHeight * (node - 1)) / 2 }
+  })
+  env.leave(result, vs, 0, { stagger: 0.06, dy: 0.4 })
+  rowsOf.forEach((r, k) => {
+    const at = 0.1 + k * 0.06
+    result
+      .to(ks[k], { y: r.dy, scale: r.grow, transformOrigin: '0% 50%', duration: 0.44, ease: E.inOut }, at)
+      .to(nodes[k], { y: r.dy, scale: r.node, duration: 0.44, ease: E.inOut }, at)
+    // the link under this mark still runs from it to the next one, wherever the two now stand
+    const next = rowsOf[k + 1]
+    if (!next || !linkWraps[k]) return
+    const len = Math.max(1, linkWraps[k].offsetHeight)
+    result.to(
+      linkWraps[k],
+      { y: r.dy + r.half, scaleY: Math.max(0.05, (len - r.dy - r.half + next.dy - next.half) / len), transformOrigin: '50% 0%', duration: 0.44, ease: E.inOut },
+      at,
+    )
+  })
 
   // ---------------------------------------------------------------- stat: fifteen in a hundred close themselves
   const cells = $$('.smarthelp-cell')
   const tks = $$('.smarthelp-tk')
   const tkOns = $$('.smarthelp-tk-on')
   const oursRing = $('.smarthelp-ours-ring')
-  const callout = $('.smarthelp-callout-in')
   const dist = (i: number) => Math.hypot((i % WALL_COLS) - OURS_COL, Math.floor(i / WALL_COLS) - OURS_ROW)
   // nearest first, hers thirteenth (the phone has just landed in it), the farthest last
   const others = CLOSED.filter((i) => i !== OURS).sort((a, b) => dist(a) - dist(b))
@@ -740,7 +584,6 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
   gsap.set(cells, { autoAlpha: 0, scale: 0.3 })
   gsap.set(tkOns, { autoAlpha: 0, scale: 0.4 })
   gsap.set(oursRing, { autoAlpha: 0, scale: 1.6 })
-  gsap.set(callout, { autoAlpha: 0, y: 1 * U, xPercent: -50 })
   stat.to(
     cells,
     {
@@ -761,7 +604,8 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
       .to(tks[i], { scale: 1.16, duration: 0.09, ease: 'power2.out' }, at)
       .to(tks[i], { scale: 1, duration: 0.11, ease: 'power2.inOut' }, at + 0.09)
   })
-  stat.to(oursRing, { autoAlpha: 1, scale: 1, duration: 0.3, ease: E.snap }, 0.9).to(callout, { autoAlpha: 1, y: 0, duration: 0.36, ease: E.snap }, 1.06)
+  // hers: ringed as the phone lands in it
+  stat.to(oursRing, { autoAlpha: 1, scale: 1, duration: 0.3, ease: E.snap }, 0.9)
 
   return { control: $<HTMLElement>('[data-ev-control]'), deviceLandsOn: $('.smarthelp-land') }
 }
@@ -769,14 +613,10 @@ function animate(env: MomentEnv<SmartHelpProduct>) {
 const smarthelp: MomentModule<SmartHelpProduct> = {
   key: 'smarthelp',
   device: 'phone',
-  demoTitle: `Support ticket ${SH.demo.ticket.id}`,
-  demoLine: SH.demo.ticket.text,
   highlight: 'Nobody had to pick it up',
   Before,
   Screen,
   Stat,
-  Under,
-  Beside,
   Proof,
   Extras,
   OnDevice,

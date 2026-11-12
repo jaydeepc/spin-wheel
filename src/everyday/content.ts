@@ -9,8 +9,12 @@
  *   5 Piramal Mind the engineering team's own product moment (not part of her day)
  *   6 CLOSING      the five names once more
  *
- * The products are the heroes: a visitor should walk away remembering the names
- * SmartHelp, BYOT, BYOA, Prastuti and Piramal Mind, and what each one does.
+ * The products are the heroes: a visitor should walk away knowing SmartHelp, BYOT, BYOA,
+ * Prastuti and Piramal Mind, and what each one does.
+ *
+ * Every screen keeps to a budget (moments/README.md): the name, at most one statement, Priya's
+ * line in her speech bubble, ONE picture. So not every field here is on screen: where one is
+ * kept for the record only, its comment says so.
  *
  * Everything on screen comes from here, so the story reads the same everywhere.
  * The demo details (ticket numbers, customer names, file names) are illustrative.
@@ -27,7 +31,7 @@ export type Step = (typeof STEPS)[number]
 
 interface ProductBase {
   key: ProductKey
-  /** The name to remember. */
+  /** The product's name: the hero of its moment. */
   name: string
   /** What the name stands for, word by word, for acronyms (B·Y·O·T → Build Your Own Tech). */
   expansion?: string[]
@@ -39,9 +43,9 @@ interface ProductBase {
   accent: Accent
   time: string
   place: string
-  /** A photo of this moment in her day, where there is one (small: about 460 x 540 px). */
+  /** A photo of this moment in her day, where there is one (about 460 x 540 px). Not drawn in the film at present: a moment shows ONE picture, the device. */
   photo?: string
-  /** The old way. */
+  /** The old way. On screen: nothing of it at the before rest (Priya's line tells it), except Piramal Mind's headline. `detail` is not shown. */
   before: { headline: string; detail: string }
   /** Priya, in her own words, at three points in the moment. */
   priya: { before: string; tool: string; after: string }
@@ -68,10 +72,13 @@ export interface SmartHelpProduct extends ProductBase {
     steps: { k: string; v: string }[]
     /** The tag on the fix: it can only run commands that were approved as safe. */
     safe: string
+    /** The chat's own closing line. Not drawn at present: the stamp (`closed`) says it, and the phone keeps to five rows. */
     resolved: string
     closed: string
     /** The two ways it resolves a ticket. The demo shows the second. */
     ways: { title: string; text: string }[]
+    /** The same two ways in ONE short line, for a screen that has room for one line only. */
+    twoWays: string
   }
 }
 export interface ByotProduct extends ProductBase {
@@ -205,6 +212,7 @@ export const PRODUCTS: Product[] = [
         { title: 'It guides', text: 'If it is a step she can take, it shows her where in Sales Central.' },
         { title: 'It fixes', text: 'If it is a real defect, it runs a safe, pre-approved command.' },
       ],
+      twoWays: 'It guides her in the app, or fixes the defect itself with a safe command.',
     },
   },
   {
@@ -361,13 +369,13 @@ export const OPENING = {
   title: 'Everyday AI',
   /** "our own job" is the phrase to emphasise. */
   headline: { lead: 'AI that every one of us can use, every day, to do ', em: 'our own job', tail: ' better.' },
+  /** On screen: the three TITLES only, as one quiet row. The `text` of each is not shown any more. */
   pillars: [
     { title: 'In every day’s work', text: 'It lives inside the job they already do.' },
     { title: 'It does the work', text: 'It writes the deck and solves the ticket. It does not stop at a chat.' },
     { title: 'Our people build it', text: 'The person with the problem builds the tool.' },
   ],
   start: 'See it in one Tuesday',
-  teaser: 'One Tuesday. Five names to remember.',
 } as const
 
 /** 2 · Then Priya comes in, and her Tuesday explains it. */
@@ -376,7 +384,7 @@ export const PRIYA = {
   role: 'Home-loan sales officer, Piramal Finance, Lucknow',
   /** "AI learned her job" is the phrase to emphasise. */
   line: { lead: 'She never learned AI. ', em: 'AI learned her job.', tail: ' This is her Tuesday.' },
-  /** Her own words on this screen (the subtitle). */
+  /** Her own words on this screen (in her speech bubble, by her photo). */
   said: 'I am not from Tech. Nobody on my team is.',
   portrait: '/everyday/priya.jpg', // 360 x 360, head and shoulders
   photo: '/everyday/priya-full.jpg', // 716 x 880, standing in the branch
@@ -386,26 +394,32 @@ export const PRIYA = {
 export const ENGINEERING = {
   eyebrow: 'Behind her Tuesday',
   headline: { lead: 'Someone builds the apps Priya works in. ', em: 'Our engineers', tail: ' have an Everyday AI of their own.' },
-  /** Her own words on this screen (the subtitle). */
+  /** Her own words on this screen (in her speech bubble). */
   said: 'Every app I opened today was built by our engineering team.',
 } as const
 
 /** 6 · The last screen: the five names once more. Short; the explanation was the first screen. */
 export const CLOSING = {
   eyebrow: 'That is Everyday AI',
-  recap: 'Five names to remember',
-  hint: 'Touch a name to play it again',
-  again: 'Watch again',
-  /** Her own words on this screen (the subtitle). */
+  /** Her own words on this screen (in her speech bubble). */
   said: 'That was my Tuesday.',
 } as const
 
-/** The two small prompts that tell a visitor the screen is waiting for them. */
+/**
+ * The few words on the controls. The film waits for the visitor at every step (it does not play
+ * by itself unless Auto-play is switched on), and the Next button is how it moves.
+ */
 export const PROMPTS = {
-  /** Beside a demo control, while it waits to be pressed. */
+  /** The one button that moves the film on a step. */
+  next: 'Next',
+  /** The small button beside it: a step back. */
+  back: 'Back',
+  /** What the Next button reads on the last screen, and the small restart button's label. */
+  again: 'Start again',
+  /** The small switch that lets the film play by itself (off unless asked for). */
+  auto: 'Auto-play',
+  /** Auto-play only: beside a demo control, while it waits for a visitor who is there. */
   yourTurn: 'Your turn',
-  /** In manual mode, while the film rests on a finished step. */
-  tapOn: 'Tap anywhere to continue',
 } as const
 
 /** Brand colours per accent (CSS variables from globals.css are also available: --flame, --azure, --ink-deep…). */

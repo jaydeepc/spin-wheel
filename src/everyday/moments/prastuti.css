@@ -1,33 +1,102 @@
 /* ============================================================
    Prastuti · प्रस्तुति · 4:00 pm, at the weekly review.
    She speaks in Hindi, and the deck builds itself in Hindi.
+
+   THE BUDGET (moments/README.md). Outside the frame, a resting
+   screen of this moment shows ONE picture and nothing else of ours:
+     before   the editor at night (one window)
+     demo     the laptop: the place the deck appears, the voice bar
+     result   the laptop: three finished slides, and ONE stamp on it
+     number   the stopwatch
+   Nothing of Prastuti's stands in the left column: her words in
+   Hindi are INSIDE the laptop (the live line in the voice bar).
+
    Everything here is Prastuti's own; classes are prefixed
-   "prastuti-". Sizes are in --u (a slide's own art in --s, a
-   hundredth of its width); colours come from the accent variables.
+   "prastuti-". Three units:
+     --u   the stage's unit (the before picture, the stat picture)
+     --a   the app's unit: a 29th of the laptop screen's width.
+           Everything inside the laptop is laid out in it, at its
+           real size (the frame does not enlarge this laptop: it is
+           given the picture area's own width).
+     --s   a slide's unit: a hundredth of that slide's width.
+   Colours come from the accent variables.
    ============================================================ */
 
-/* ---------- BEFORE: Sunday, 11 pm. Every formatting button, and an empty slide. ---------- */
+/* ---------- The laptop takes the picture area's whole width ----------
+   Its screen is 29a × 19.6a (about 3:2: a little taller than a slide, so one slide and the
+   voice bar fit under each other). The frame's chrome round it is 4u across and 2.6u down.
+   Where the area is low (it never is at the five sizes this is checked at) the height rules. */
+.ev-moment[data-key='prastuti'] {
+  --prastuti-w: min(var(--ev-pw), calc((var(--ev-ph) - var(--u) * 2.6) * 1.4796 + var(--u) * 4));
+  --a: calc((var(--prastuti-w) - var(--u) * 4) / 29);
+  /* the floor for type inside the laptop: none on a large screen (see the phone block) */
+  --pf: 0px;
+}
+.ev-moment[data-key='prastuti'][data-device='laptop'] .ev-deviceMover {
+  --ev-dw: var(--prastuti-w);
+  --ev-dh: calc(var(--a) * 19.6 + var(--u) * 2.6);
+}
+
+/* ---------- BEFORE: ONE picture. A slide editor late on Sunday night, and an empty slide. ----------
+   Laid out for the frame's 25u × 20u box (enlarged whole, up to 1.6×). Light: the only dark
+   thing in it is the clock in the title bar, which says when this is being done. */
 .prastuti-b {
   position: absolute;
   inset: 0;
 }
-.prastuti-b-night {
+.prastuti-b-win {
   position: absolute;
-  right: 0;
-  top: 0;
-  width: calc(var(--u) * 15.5);
-  height: calc(var(--u) * 9.3);
-  border-radius: calc(var(--u) * 1.6);
-  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
-  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.28);
+  inset: calc(var(--u) * 0.2) calc(var(--u) * 0.3) calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 1.2);
+  background: #eef2f8;
+  box-shadow:
+    0 calc(var(--u) * 1.2) calc(var(--u) * 2.6) rgba(7, 26, 80, 0.16),
+    0 0 0 1px rgba(7, 26, 80, 0.07);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.prastuti-b-top {
+  flex: none;
+  height: calc(var(--u) * 2.9);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.4);
+  padding: 0 calc(var(--u) * 0.6) 0 calc(var(--u) * 1);
+  background: #ffffff;
+}
+.prastuti-b-top > i {
+  width: calc(var(--u) * 0.56);
+  height: calc(var(--u) * 0.56);
+  border-radius: 50%;
+  background: #d7e2ee;
+}
+.prastuti-b-clock {
+  /* Sunday, 11 pm */
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.45);
+  height: calc(var(--u) * 2);
+  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 1);
+  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
+  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.22);
+  font-size: calc(var(--u) * 1.16);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  visibility: hidden;
   will-change: transform, opacity;
 }
-.prastuti-b-night svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+.prastuti-b-clock svg {
+  flex: none;
+  width: calc(var(--u) * 1.3);
+  height: calc(var(--u) * 1.3);
+  overflow: visible;
 }
 .prastuti-b-moon {
   fill: #ffd9cd;
@@ -35,66 +104,14 @@
 .prastuti-b-star {
   fill: #b9e2ff;
 }
-.prastuti-b-time {
-  position: absolute;
-  left: calc(var(--u) * 1.25);
-  top: calc(var(--u) * 1);
-  font-size: calc(var(--u) * 1.4);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #ffffff;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.prastuti-b-win {
-  position: absolute;
-  left: calc(var(--u) * 0.3);
-  bottom: calc(var(--u) * 0.3);
-  width: calc(var(--u) * 21.4);
-  height: calc(var(--u) * 15.3);
-  border-radius: calc(var(--u) * 1);
-  background: #eef2f8;
-  box-shadow:
-    0 calc(var(--u) * 1.1) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.16),
-    0 0 0 1px rgba(7, 26, 80, 0.07);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  will-change: transform, opacity;
-}
-.prastuti-b-top {
-  flex: none;
-  position: relative;
-  height: calc(var(--u) * 1.5);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.32);
-  padding: 0 calc(var(--u) * 0.75);
-  background: #ffffff;
-}
-.prastuti-b-top i {
-  width: calc(var(--u) * 0.46);
-  height: calc(var(--u) * 0.46);
-  border-radius: 50%;
-  background: #d7e2ee;
-}
-.prastuti-b-top span {
-  position: absolute;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: calc(var(--u) * 0.66);
-  font-weight: 700;
-  color: var(--ev-muted);
-}
 .prastuti-b-tools {
   flex: none;
   position: relative;
-  height: calc(var(--u) * 2.15);
+  height: calc(var(--u) * 2.7);
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.24);
-  padding: 0 calc(var(--u) * 0.75);
+  gap: calc(var(--u) * 0.3);
+  padding: 0 calc(var(--u) * 1);
   background: #ffffff;
   border-top: 1px solid #e3eaf3;
   border-bottom: 1px solid #d7e2ee;
@@ -103,21 +120,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(var(--u) * 3.5);
-  height: calc(var(--u) * 1.3);
-  padding: 0 calc(var(--u) * 0.36);
-  border-radius: calc(var(--u) * 0.3);
+  width: calc(var(--u) * 4.4);
+  height: calc(var(--u) * 1.6);
+  padding: 0 calc(var(--u) * 0.45);
+  border-radius: calc(var(--u) * 0.36);
   border: 1px solid #d7e2ee;
 }
 .prastuti-b-font i {
-  width: calc(var(--u) * 1.7);
-  height: calc(var(--u) * 0.34);
-  border-radius: calc(var(--u) * 0.17);
+  width: calc(var(--u) * 2.2);
+  height: calc(var(--u) * 0.4);
+  border-radius: calc(var(--u) * 0.2);
   background: #c5d1e2;
 }
 .prastuti-b-font svg {
-  width: calc(var(--u) * 0.6);
-  height: calc(var(--u) * 0.6);
+  width: calc(var(--u) * 0.74);
+  height: calc(var(--u) * 0.74);
   fill: none;
   stroke: #566481;
   stroke-width: 1.6;
@@ -129,10 +146,10 @@
   z-index: 1;
   display: grid;
   place-items: center;
-  width: calc(var(--u) * 1.3);
-  height: calc(var(--u) * 1.3);
-  border-radius: calc(var(--u) * 0.3);
-  font-size: calc(var(--u) * 0.86);
+  width: calc(var(--u) * 1.6);
+  height: calc(var(--u) * 1.6);
+  border-radius: calc(var(--u) * 0.36);
+  font-size: calc(var(--u) * 1.25);
   font-weight: 800;
   line-height: 1;
   color: var(--ev-ink);
@@ -156,18 +173,18 @@
 }
 .prastuti-b-sep {
   width: 1px;
-  height: calc(var(--u) * 1.1);
-  margin: 0 calc(var(--u) * 0.14);
+  height: calc(var(--u) * 1.3);
+  margin: 0 calc(var(--u) * 0.2);
   background: #d7e2ee;
 }
 .prastuti-b-swatch {
   position: relative;
   z-index: 1;
-  width: calc(var(--u) * 0.9);
-  height: calc(var(--u) * 0.9);
-  margin: 0 calc(var(--u) * 0.08);
+  width: calc(var(--u) * 1.1);
+  height: calc(var(--u) * 1.1);
+  margin: 0 calc(var(--u) * 0.1);
   border-radius: 50%;
-  box-shadow: 0 0 0 calc(var(--u) * 0.1) #ffffff, 0 0 0 calc(var(--u) * 0.16) #d7e2ee;
+  box-shadow: 0 0 0 calc(var(--u) * 0.12) #ffffff, 0 0 0 calc(var(--u) * 0.19) #d7e2ee;
 }
 .prastuti-b-swatch--a {
   background: #071a50;
@@ -183,71 +200,71 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: calc(var(--u) * 1.62);
-  height: calc(var(--u) * 1.62);
-  border-radius: calc(var(--u) * 0.42);
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 2);
+  border-radius: calc(var(--u) * 0.5);
   background: var(--acc-soft);
-  border: calc(var(--u) * 0.11) solid var(--acc);
+  border: calc(var(--u) * 0.13) solid var(--acc);
   visibility: hidden;
 }
 .prastuti-b-body {
   flex: 1;
   min-height: 0;
   display: flex;
-  gap: calc(var(--u) * 0.7);
-  padding: calc(var(--u) * 0.8);
+  gap: calc(var(--u) * 0.9);
+  padding: calc(var(--u) * 1);
 }
 .prastuti-b-strip {
   flex: none;
-  width: calc(var(--u) * 2.9);
+  width: calc(var(--u) * 3.6);
   display: flex;
   flex-direction: column;
-  gap: calc(var(--u) * 0.5);
+  gap: calc(var(--u) * 0.6);
 }
 .prastuti-b-thumb {
   display: block;
-  height: calc(var(--u) * 2.1);
-  border-radius: calc(var(--u) * 0.3);
+  height: calc(var(--u) * 2.5);
+  border-radius: calc(var(--u) * 0.36);
   background: rgba(255, 255, 255, 0.6);
-  border: calc(var(--u) * 0.08) dashed #b7c9e2;
+  border: calc(var(--u) * 0.09) dashed #b7c9e2;
 }
 .prastuti-b-thumb--on {
   background: #ffffff;
-  border: calc(var(--u) * 0.12) solid var(--acc);
+  border: calc(var(--u) * 0.14) solid var(--acc);
 }
 .prastuti-b-slide {
   position: relative;
   flex: 1;
-  border-radius: calc(var(--u) * 0.4);
+  border-radius: calc(var(--u) * 0.5);
   background: #ffffff;
   box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.1);
 }
 .prastuti-b-ph {
   position: absolute;
-  left: calc(var(--u) * 1.1);
-  right: calc(var(--u) * 1.1);
-  border-radius: calc(var(--u) * 0.3);
-  border: calc(var(--u) * 0.08) dashed #b7c9e2;
+  left: calc(var(--u) * 1.3);
+  right: calc(var(--u) * 1.3);
+  border-radius: calc(var(--u) * 0.36);
+  border: calc(var(--u) * 0.09) dashed #b7c9e2;
 }
 .prastuti-b-ph--title {
-  top: calc(var(--u) * 1.3);
-  height: calc(var(--u) * 2.7);
+  top: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 3.3);
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.3);
-  padding: 0 calc(var(--u) * 0.8);
+  gap: calc(var(--u) * 0.36);
+  padding: 0 calc(var(--u) * 0.9);
 }
 .prastuti-b-ph--title span {
-  font-size: calc(var(--u) * 1.06);
+  font-size: calc(var(--u) * 1.3);
   font-weight: 600;
-  color: #7a88a3;
+  color: #6b7994;
   white-space: nowrap;
 }
 .prastuti-b-cursor {
   flex: none;
-  width: calc(var(--u) * 0.16);
-  height: calc(var(--u) * 1.5);
-  border-radius: calc(var(--u) * 0.08);
+  width: calc(var(--u) * 0.18);
+  height: calc(var(--u) * 1.8);
+  border-radius: calc(var(--u) * 0.09);
   background: var(--acc);
   animation: prastuti-blink 1s steps(1, end) infinite;
 }
@@ -265,17 +282,17 @@
   animation: none;
 }
 .prastuti-b-ph--body {
-  top: calc(var(--u) * 4.6);
-  bottom: calc(var(--u) * 1.2);
+  top: calc(var(--u) * 5.6);
+  bottom: calc(var(--u) * 1.4);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: calc(var(--u) * 0.55);
-  padding: 0 calc(var(--u) * 0.8);
+  gap: calc(var(--u) * 0.7);
+  padding: 0 calc(var(--u) * 0.9);
 }
 .prastuti-b-ph--body i {
-  height: calc(var(--u) * 0.36);
-  border-radius: calc(var(--u) * 0.18);
+  height: calc(var(--u) * 0.42);
+  border-radius: calc(var(--u) * 0.21);
   background: #e9eef5;
 }
 .prastuti-b-ph--body i:nth-child(1) {
@@ -307,96 +324,14 @@
 }
 .prastuti-globe {
   flex: none;
-  width: calc(var(--u) * 0.9);
-  height: calc(var(--u) * 0.9);
+  width: calc(var(--a) * 0.96);
+  height: calc(var(--a) * 0.96);
 }
 
-/* ---------- The left column: what goes in ---------- */
-.prastuti-kit {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(var(--u) * 0.55);
-  max-width: calc(var(--u) * 25);
-}
-.prastuti-kit-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.45);
-  height: calc(var(--u) * 2.3);
-  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 0.7);
-  border-radius: calc(var(--u) * 0.7);
-  border: 1px solid var(--acc-line);
-  background: rgba(255, 255, 255, 0.82);
-  font-size: calc(var(--u) * 1);
-  font-weight: 700;
-  color: var(--ev-ink);
-  white-space: nowrap;
-}
-.prastuti-kit-chip svg {
-  flex: none;
-  width: calc(var(--u) * 1.15);
-  height: calc(var(--u) * 1.15);
-}
-.prastuti-kit-chip--solid {
-  padding: 0 calc(var(--u) * 0.95);
-  border-color: var(--ev-navy);
-  background: var(--ev-navy);
-  color: #ffffff;
-}
-
-/* ---------- Under the result headline: Sunday, 11 pm → प्रस्तुति तैयार ---------- */
-.prastuti-compare {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 1);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.prastuti-compare-old {
-  position: relative;
-  font-size: calc(var(--u) * 1.5);
-  font-weight: 600;
-  color: var(--ev-muted);
-}
-.prastuti-compare-old i {
-  position: absolute;
-  left: -4%;
-  right: -4%;
-  top: 52%;
-  height: calc(var(--u) * 0.16);
-  border-radius: 1px;
-  background: var(--acc-ink);
-  transform-origin: 0 50%;
-}
-.prastuti-compare svg {
-  width: calc(var(--u) * 2);
-  height: calc(var(--u) * 1);
-}
-.prastuti-compare-new {
-  display: inline-flex;
-  align-items: baseline;
-  gap: calc(var(--u) * 0.7);
-}
-.prastuti-compare-new .prastuti-hi {
-  font-size: calc(var(--u) * 1.7);
-  font-weight: 700;
-  color: var(--acc-ink);
-}
-.prastuti-compare-new > span:last-child {
-  font-size: calc(var(--u) * 1.05);
-  font-weight: 700;
-  color: var(--ev-muted);
-}
-
-/* ---------- Prastuti on the laptop ---------- */
+/* ---------- Prastuti on the laptop. The bar: the product's name and the language. Nothing else. ---------- */
 .prastuti-app {
-  /* laid out for the full-size laptop screen (29u × 18.8u); animate() fits it to a smaller laptop */
   position: absolute;
-  left: 0;
-  top: 0;
-  width: calc(var(--u) * 29);
-  height: calc(var(--u) * 18.8);
-  transform-origin: 0 0;
+  inset: 0;
   /* its own stacking context: the slides' layers stay under the stamp on the laptop */
   isolation: isolate;
   display: flex;
@@ -405,22 +340,22 @@
 }
 .prastuti-appbar {
   flex: none;
-  height: calc(var(--u) * 1.9);
+  height: calc(var(--a) * 2);
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.5);
-  padding: 0 calc(var(--u) * 0.8) 0 calc(var(--u) * 0.6);
+  gap: calc(var(--a) * 0.55);
+  padding: 0 calc(var(--a) * 0.7);
   border-bottom: 1px solid #e3eaf3;
 }
 .prastuti-appicon {
   flex: none;
   display: grid;
   place-items: center;
-  width: calc(var(--u) * 1.3);
-  height: calc(var(--u) * 1.3);
-  border-radius: calc(var(--u) * 0.38);
+  width: calc(var(--a) * 1.36);
+  height: calc(var(--a) * 1.36);
+  border-radius: calc(var(--a) * 0.4);
   background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
-  box-shadow: 0 calc(var(--u) * 0.2) calc(var(--u) * 0.5) rgba(235, 84, 44, 0.35);
+  box-shadow: 0 calc(var(--a) * 0.2) calc(var(--a) * 0.5) rgba(235, 84, 44, 0.35);
 }
 .prastuti-appicon svg {
   width: 66%;
@@ -429,17 +364,17 @@
 .prastuti-appname {
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.4);
+  gap: calc(var(--a) * 0.45);
   white-space: nowrap;
 }
 .prastuti-appname b {
-  font-size: calc(var(--u) * 0.94);
+  font-size: max(calc(var(--a) * 1.04), var(--pf));
   font-weight: 800;
   letter-spacing: -0.015em;
   color: var(--ev-navy);
 }
 .prastuti-appname .prastuti-hi {
-  font-size: calc(var(--u) * 0.8);
+  font-size: max(calc(var(--a) * 0.92), var(--pf));
   font-weight: 600;
   color: var(--acc-ink);
 }
@@ -448,186 +383,109 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.32);
-  height: calc(var(--u) * 1.3);
-  padding: 0 calc(var(--u) * 0.6) 0 calc(var(--u) * 0.4);
-  border-radius: calc(var(--u) * 0.65);
+  gap: calc(var(--a) * 0.36);
+  height: calc(var(--a) * 1.44);
+  padding: 0 calc(var(--a) * 0.66) 0 calc(var(--a) * 0.44);
+  border-radius: calc(var(--a) * 0.72);
   background: var(--acc-soft);
   border: 1px solid var(--acc-line);
   color: var(--acc-ink);
   white-space: nowrap;
 }
 .prastuti-lang .prastuti-hi {
-  font-size: calc(var(--u) * 0.78);
+  font-size: max(calc(var(--a) * 0.88), var(--pf));
   font-weight: 700;
 }
 .prastuti-lang > span:last-child {
-  padding-left: calc(var(--u) * 0.36);
+  padding-left: calc(var(--a) * 0.4);
   border-left: 1px solid var(--acc-line);
-  font-size: calc(var(--u) * 0.62);
+  font-size: max(calc(var(--a) * 0.8), var(--pf));
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--ev-ink);
 }
-.prastuti-appwho {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.32);
-  font-size: calc(var(--u) * 0.64);
-  font-weight: 700;
-  color: var(--ev-ink);
-  white-space: nowrap;
-}
-.prastuti-appwho img {
-  width: calc(var(--u) * 1.2);
-  height: calc(var(--u) * 1.2);
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 0 1px #d7e2ee;
-}
+
+/* ---------- The canvas: 29a × 17.6a ---------- */
 .prastuti-canvas {
+  /* Where a slide is built (above the voice bar): 20.6a wide, a slide's shape. */
+  --build-x: calc(var(--a) * 4.2);
+  --build-y: calc(var(--a) * 1.25);
+  --build-w: calc(var(--a) * 20.6);
+  /* The finished deck, dealt out over the whole canvas: how wide the cover, the bars and the
+     rising line lie. The bars lie low on the left, the line high on the right and over the
+     bars' empty corner, the cover behind them both: only its title shows. */
+  --out-cover: calc(var(--a) * 15.6);
+  --out-bars: calc(var(--a) * 18.4);
+  --out-trend: calc(var(--a) * 15.6);
+  --out-pad: calc(var(--a) * 0.6);
   position: relative;
   flex: 1;
   min-height: 0;
-  background: linear-gradient(180deg, #f6f8fc 0%, #ebeff6 100%);
+  overflow: hidden;
+  background: linear-gradient(180deg, #f6f8fc 0%, #e9eef6 100%);
 }
 
-/* the filmstrip: four places, filled one by one */
-.prastuti-strip {
-  position: absolute;
-  left: calc(var(--u) * 0.5);
-  top: calc(var(--u) * 0.55);
-  width: calc(var(--u) * 5.6);
-  height: calc(var(--u) * 12.15);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.prastuti-thumb {
-  position: relative;
-  height: calc(var(--u) * 2.7);
-  visibility: hidden;
-}
-.prastuti-thumb-n {
-  position: absolute;
-  left: 0;
-  top: calc(var(--u) * 0.1);
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 0.66);
-  height: calc(var(--u) * 0.66);
-  font-size: calc(var(--u) * 0.52);
-  font-weight: 800;
-  line-height: 1;
-  color: var(--ev-muted);
-}
-.prastuti-thumb-ok {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--acc);
-}
-.prastuti-thumb-ok svg {
-  width: 62%;
-  height: 62%;
-}
-.prastuti-thumb-slot {
-  /* the empty place a slide will take */
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: calc(var(--u) * 4.8);
-  height: calc(var(--u) * 2.7);
-  border-radius: calc(var(--u) * 0.3);
-  border: calc(var(--u) * 0.07) dashed #c0cde0;
-  background: rgba(255, 255, 255, 0.55);
-}
-.prastuti-thumb-ring {
-  /* the slide that is being built now */
-  position: absolute;
-  inset: calc(var(--u) * -0.2);
-  border-radius: calc(var(--u) * 0.46);
-  border: calc(var(--u) * 0.12) solid var(--acc);
-  visibility: hidden;
-}
-
-/* the canvas: 21.6u × 12.15u, a slide at full size */
-.prastuti-main {
-  /* The finished deck, laid out (animate() reads these): how large the cover, the bars and the
-     rising line lie on the canvas, as a share of a full slide; and a nudge for the stamp, as a
-     share of the canvas. The bars lie low on the left, the line high on the right. */
-  --out-title: 0.52;
-  --out-bars: 0.62;
-  --out-trend: 0.61;
-  /* 1: the spread takes the filmstrip's room too, and the filmstrip steps aside */
-  --out-wide: 0;
-  --stamp-dx: 0.02;
-  --stamp-dy: 0;
-  position: absolute;
-  left: calc(var(--u) * 6.6);
-  top: calc(var(--u) * 0.55);
-  width: calc(var(--u) * 21.6);
-  height: calc(var(--u) * 12.15);
-}
+/* the place the deck will appear: at the demo rest it says one thing, the language */
 .prastuti-empty {
   position: absolute;
-  inset: 0;
+  left: var(--build-x);
+  top: var(--build-y);
+  width: var(--build-w);
+  height: calc(var(--build-w) * 0.5625);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: calc(var(--u) * 0.6);
-  border: calc(var(--u) * 0.09) dashed #f0b9aa;
-  background: rgba(255, 255, 255, 0.7);
+  border-radius: calc(var(--a) * 0.7);
+  border: calc(var(--a) * 0.09) dashed #f0b9aa;
+  background: rgba(255, 255, 255, 0.72);
   text-align: center;
   visibility: hidden;
 }
 .prastuti-empty-k {
-  font-size: calc(var(--u) * 0.62);
+  font-size: max(calc(var(--a) * 0.8), var(--pf));
   font-weight: 800;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
   text-transform: uppercase;
+  line-height: 1.3;
   color: var(--ev-muted);
 }
 .prastuti-empty-lang {
   display: flex;
   align-items: baseline;
-  gap: calc(var(--u) * 0.7);
-  margin-top: calc(var(--u) * 0.1);
+  gap: calc(var(--a) * 0.9);
 }
 .prastuti-empty-lang .prastuti-hi {
-  font-size: calc(var(--u) * 2.9);
+  font-size: calc(var(--a) * 4.6);
   font-weight: 700;
+  line-height: 1.5;
   color: var(--acc-ink);
 }
 .prastuti-empty-lang > span:last-child {
-  font-size: calc(var(--u) * 1.15);
+  font-size: calc(var(--a) * 1.7);
   font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--ev-navy);
-}
-.prastuti-empty-p {
-  margin-top: calc(var(--u) * 0.15);
-  font-size: calc(var(--u) * 0.74);
-  font-weight: 600;
-  color: var(--ev-body);
 }
 
 /* ---------- A SLIDE. Everything inside is drawn in its own unit, --s: a hundredth of its width. ---------- */
 .prastuti-slide {
-  --s: calc(var(--u) * 0.216);
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
   border-radius: calc(var(--s) * 2.4);
   box-shadow:
     0 calc(var(--s) * 3) calc(var(--s) * 7) rgba(7, 26, 80, 0.2),
     0 0 0 1px rgba(7, 26, 80, 0.08);
   visibility: hidden;
   will-change: transform, opacity;
+}
+/* as it is built: large, over the voice bar */
+.prastuti-build {
+  --s: calc(var(--build-w) / 100);
+  left: var(--build-x);
+  top: var(--build-y);
+  width: var(--build-w);
+  height: calc(var(--build-w) * 0.5625);
 }
 .prastuti-f {
   position: absolute;
@@ -676,9 +534,9 @@
   position: absolute;
   left: calc(var(--s) * 8);
   top: calc(var(--s) * 7.4);
-  font-size: calc(var(--s) * 2.9);
+  font-size: max(calc(var(--s) * 3.3), var(--pf));
   font-weight: 800;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   line-height: 1.3;
   color: #ffd0c2;
@@ -710,7 +568,7 @@
   position: absolute;
   left: calc(var(--s) * 8);
   top: calc(var(--s) * 44.8);
-  font-size: calc(var(--s) * 3.5);
+  font-size: max(calc(var(--s) * 3.7), var(--pf));
   font-weight: 500;
   line-height: 1.6;
   color: #ffe1d8;
@@ -735,7 +593,7 @@
 }
 .prastuti-head-t {
   display: block;
-  font-size: calc(var(--s) * 5.5);
+  font-size: calc(var(--s) * 5.6);
   font-weight: 700;
   line-height: 1.5;
   color: var(--ev-navy);
@@ -743,9 +601,9 @@
 }
 .prastuti-head-en {
   display: block;
-  font-size: calc(var(--s) * 2.8);
+  font-size: max(calc(var(--s) * 3.3), var(--pf));
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1.4;
   color: var(--ev-muted);
@@ -760,10 +618,10 @@
 }
 .prastuti-bars {
   /* --lab: the height of a branch's label; the bars stand on the line above it */
-  --lab: calc(var(--s) * 5.4);
+  --lab: max(calc(var(--s) * 6.2), calc(var(--pf) * 1.55));
   position: absolute;
-  left: calc(var(--s) * 8);
-  right: calc(var(--s) * 8);
+  left: calc(var(--s) * 4.5);
+  right: calc(var(--s) * 4.5);
   top: calc(var(--s) * 21.5);
   bottom: calc(var(--s) * 3.4);
   display: flex;
@@ -818,9 +676,9 @@
 .prastuti-bar-l {
   flex: none;
   height: var(--lab);
-  padding: 0 calc(var(--s) * 1.6);
+  padding: 0 calc(var(--s) * 1.3);
   border-radius: calc(var(--lab) / 2);
-  font-size: calc(var(--s) * 3.05);
+  font-size: max(calc(var(--s) * 4.1), var(--pf));
   font-weight: 600;
   line-height: var(--lab);
   color: var(--ev-body);
@@ -898,12 +756,13 @@
   fill: rgba(241, 100, 67, 0.24);
 }
 .prastuti-trend-call {
-  /* a point above the last point of the line: the pill stands on it, centred */
+  /* a point above and a little right of the last point of the line: the pill ends on it, and
+     reaches back to the left, so it never leaves the slide (CALL_REACH in prastuti.tsx) */
   position: absolute;
   width: 0;
   height: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: flex-end;
 }
 .prastuti-trend-pill {
@@ -911,10 +770,11 @@
   flex: none;
   display: flex;
   align-items: center;
+  --pill: max(calc(var(--s) * 7.2), calc(var(--pf) * 1.7));
   gap: calc(var(--s) * 1);
-  height: calc(var(--s) * 6.6);
+  height: var(--pill);
   padding: 0 calc(var(--s) * 2.6) 0 calc(var(--s) * 1.9);
-  border-radius: calc(var(--s) * 3.3);
+  border-radius: calc(var(--pill) / 2);
   background: var(--ev-navy);
   box-shadow: 0 calc(var(--s) * 1) calc(var(--s) * 2.4) rgba(7, 26, 80, 0.3);
   white-space: nowrap;
@@ -923,11 +783,11 @@
 .prastuti-trend-pill::after {
   content: '';
   position: absolute;
-  left: 50%;
+  /* the tail stands over the last point: CALL_REACH (7) in from the pill's right end */
+  right: calc(var(--s) * 6.2);
   bottom: calc(var(--s) * -0.7);
   width: calc(var(--s) * 1.6);
   height: calc(var(--s) * 1.6);
-  margin-left: calc(var(--s) * -0.8);
   border-radius: calc(var(--s) * 0.25);
   background: var(--ev-navy);
   transform: rotate(45deg);
@@ -938,9 +798,9 @@
   height: calc(var(--s) * 2.9);
 }
 .prastuti-trend-pill .prastuti-hi {
-  font-size: calc(var(--s) * 3.3);
+  font-size: max(calc(var(--s) * 4.2), var(--pf));
   font-weight: 700;
-  line-height: calc(var(--s) * 6.6);
+  line-height: var(--pill);
   color: #ffffff;
 }
 
@@ -988,9 +848,9 @@
   position: absolute;
   left: calc(var(--s) * 6.5);
   top: calc(var(--s) * 21);
-  font-size: calc(var(--s) * 2.8);
+  font-size: max(calc(var(--s) * 3.3), var(--pf));
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1.4;
   color: #ffd0c2;
@@ -1051,69 +911,92 @@
   fill: #ffe3d8;
 }
 .prastuti-p-text {
-  font-size: calc(var(--s) * 4.4);
+  font-size: max(calc(var(--s) * 4.6), var(--pf));
   font-weight: 600;
   line-height: 1.6;
   color: var(--ev-navy);
   white-space: nowrap;
 }
 
-/* ---------- The finished deck, laid out ----------
-   The cover and the two charts once more, as real slides, lying on the canvas at a little over
-   half their size (--out-* on .prastuti-main). Their small print is set a little larger for
-   that, so the branch names and the callout can still be read. */
-.prastuti-out .prastuti-trend-pill {
-  /* nothing builds here: the slide is finished */
-  visibility: inherit;
+/* ---------- The finished deck, dealt out ----------
+   The cover and the two charts once more, each laid out at the size it rests at (so its type is
+   drawn at its real size). A resting slide carries Hindi and a picture, no more: the small
+   English captions were read while the slide was being built, and are left out here. */
+.prastuti-out--title {
+  --s: calc(var(--out-cover) / 100);
+  left: var(--out-pad);
+  top: var(--out-pad);
+  width: var(--out-cover);
+  height: calc(var(--out-cover) * 0.5625);
+}
+.prastuti-out--bars {
+  --s: calc(var(--out-bars) / 100);
+  left: var(--out-pad);
+  bottom: var(--out-pad);
+  width: var(--out-bars);
+  height: calc(var(--out-bars) * 0.5625);
+}
+.prastuti-out--trend {
+  --s: calc(var(--out-trend) / 100);
+  right: var(--out-pad);
+  top: var(--out-pad);
+  width: var(--out-trend);
+  height: calc(var(--out-trend) * 0.5625);
 }
 .prastuti-out .prastuti-head-en,
-.prastuti-out .prastuti-t-en {
-  font-size: calc(var(--s) * 3.3);
-  letter-spacing: 0.1em;
+.prastuti-out .prastuti-t-en,
+.prastuti-out .prastuti-t-rule,
+.prastuti-out .prastuti-t-sub,
+.prastuti-out .prastuti-trend-call {
+  /* (the callout too: the last point of the line, in its halo, says it without words) */
+  display: none;
+}
+/* the cover lies under the two charts: its title stands in the corner they leave free */
+.prastuti-out .prastuti-t-title {
+  left: calc(var(--s) * 7);
+  top: calc(var(--s) * 4.6);
+  font-size: calc(var(--s) * 8.6);
+}
+.prastuti-out .prastuti-head {
+  top: calc(var(--s) * 4.6);
+}
+.prastuti-out .prastuti-head-t {
+  font-size: max(calc(var(--s) * 5.8), var(--pf));
 }
 .prastuti-out .prastuti-bars {
-  --lab: calc(var(--s) * 6.2);
-  left: calc(var(--s) * 6);
-  right: calc(var(--s) * 6);
-  top: calc(var(--s) * 20.4);
+  top: calc(var(--s) * 17);
 }
-.prastuti-out .prastuti-bar-l {
-  padding: 0 calc(var(--s) * 1.5);
-  font-size: calc(var(--s) * 3.8);
-}
-.prastuti-out .prastuti-trend-pill {
-  height: calc(var(--s) * 7.6);
-  border-radius: calc(var(--s) * 3.8);
-}
-.prastuti-out .prastuti-trend-pill .prastuti-hi {
-  font-size: calc(var(--s) * 4);
-  line-height: calc(var(--s) * 7.6);
+.prastuti-out .prastuti-bar {
+  height: calc(var(--s) * 0.27 * var(--v));
 }
 
-/* ---------- The place to talk: the one control, her voice, the tracker ---------- */
-.prastuti-talk {
+/* ---------- The voice bar: the one control, her words as she says them, the tracker ---------- */
+.prastuti-dock {
   position: absolute;
-  left: calc(var(--u) * 0.6);
-  right: calc(var(--u) * 0.6);
-  bottom: calc(var(--u) * 0.55);
-  height: calc(var(--u) * 3.1);
+  z-index: 12;
+  left: calc(var(--a) * 0.6);
+  right: calc(var(--a) * 0.6);
+  bottom: calc(var(--a) * 0.55);
+  height: calc(var(--a) * 3.3);
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.75);
-  padding: 0 calc(var(--u) * 0.6) 0 calc(var(--u) * 0.22);
-  border-radius: calc(var(--u) * 1.55);
+  gap: calc(var(--a) * 0.7);
+  padding: 0 calc(var(--a) * 0.6) 0 calc(var(--a) * 0.3);
+  border-radius: calc(var(--a) * 1.65);
   background: #ffffff;
   box-shadow:
-    0 calc(var(--u) * 0.5) calc(var(--u) * 1.4) rgba(7, 26, 80, 0.12),
+    0 calc(var(--a) * 0.5) calc(var(--a) * 1.4) rgba(7, 26, 80, 0.12),
     0 0 0 1px rgba(7, 26, 80, 0.06);
+  visibility: hidden;
+  will-change: transform, opacity;
 }
 .prastuti-micWrap {
   position: relative;
   flex: none;
-  width: calc(var(--u) * 2.66);
-  height: calc(var(--u) * 2.66);
+  width: calc(var(--a) * 2.7);
+  height: calc(var(--a) * 2.7);
 }
-.prastuti-mic {
+.ev-touch.prastuti-mic {
   width: 100%;
   height: 100%;
 }
@@ -1123,7 +1006,7 @@
   border-radius: 50%;
   background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
   box-shadow:
-    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(235, 84, 44, 0.42),
+    0 calc(var(--a) * 0.4) calc(var(--a) * 1) rgba(235, 84, 44, 0.42),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .prastuti-mic-face svg {
@@ -1134,104 +1017,117 @@
   height: 56%;
   overflow: visible;
 }
-.prastuti-talk-mid {
+.prastuti-say {
+  /* her words, or (before she speaks) what to do */
+  position: relative;
   flex: 1;
   min-width: 0;
+  height: 100%;
 }
-.prastuti-hint {
-  position: relative;
-  height: calc(var(--u) * 0.9);
-  font-size: calc(var(--u) * 0.6);
+.prastuti-idle,
+.prastuti-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.prastuti-idle-k {
+  font-size: max(calc(var(--a) * 0.8), var(--pf));
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  line-height: 1.3;
   color: var(--acc-ink);
-}
-.prastuti-hint span {
-  position: absolute;
-  left: 0;
-  top: 0;
-  line-height: calc(var(--u) * 0.9);
   white-space: nowrap;
-  visibility: hidden;
 }
-.prastuti-talk-body {
-  position: relative;
-  height: calc(var(--u) * 1.2);
-  margin-top: calc(var(--u) * 0.1);
-}
-.prastuti-talk-ph {
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: calc(var(--u) * 0.82);
+.prastuti-idle-p {
+  font-size: max(calc(var(--a) * 1.08), var(--pf));
   font-weight: 600;
-  line-height: calc(var(--u) * 1.2);
-  color: #5d6a85;
+  line-height: 1.3;
+  color: #56637f;
+  white-space: nowrap;
+}
+.prastuti-line {
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.prastuti-line-hi {
+  margin: 0;
+  font-size: max(calc(var(--a) * 1.12), var(--pf));
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.prastuti-w {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+.prastuti-line-en {
+  margin: 0;
+  font-size: max(calc(var(--a) * 0.76), var(--pf));
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ev-muted);
   white-space: nowrap;
 }
 .prastuti-wave {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: calc(var(--u) * 11);
-  height: 100%;
+  /* she is being heard */
+  flex: none;
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.16);
+  gap: calc(var(--a) * 0.18);
+  height: calc(var(--a) * 1.5);
   visibility: hidden;
 }
 .prastuti-wave i {
-  flex: 1;
+  width: calc(var(--a) * 0.2);
   height: 100%;
-  border-radius: calc(var(--u) * 0.2);
+  border-radius: calc(var(--a) * 0.1);
   background: var(--acc);
-  transform: scaleY(0.12);
-  opacity: 0.85;
   will-change: transform;
 }
 .prastuti-attach {
   position: relative;
   flex: none;
-  width: calc(var(--u) * 9.4);
-  height: calc(var(--u) * 2.1);
+  width: calc(var(--a) * 2.3);
+  height: calc(var(--a) * 2.3);
 }
 .prastuti-attach-outline {
   /* where the tracker will land */
   position: absolute;
   inset: 0;
-  border-radius: calc(var(--u) * 1.05);
-  border: calc(var(--u) * 0.09) dashed #b7c9e2;
+  border-radius: calc(var(--a) * 0.7);
+  border: calc(var(--a) * 0.09) dashed #b7c9e2;
   background: rgba(238, 242, 248, 0.6);
 }
-.prastuti-attach-chip {
+.prastuti-attach-tile {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.45);
-  padding: 0 calc(var(--u) * 0.7) 0 calc(var(--u) * 0.55);
-  border-radius: calc(var(--u) * 1.05);
+  display: grid;
+  place-items: center;
+  border-radius: calc(var(--a) * 0.7);
   background: #f3f6fb;
   border: 1px solid #d7e2ee;
-  font-size: calc(var(--u) * 0.72);
-  font-weight: 700;
-  color: var(--ev-navy);
-  white-space: nowrap;
   overflow: hidden;
   visibility: hidden;
+  will-change: transform, opacity;
 }
-.prastuti-attach-chip .prastuti-sheet {
-  width: calc(var(--u) * 1.15);
-  height: calc(var(--u) * 1.15);
+.prastuti-attach-tile .prastuti-sheet {
+  width: calc(var(--a) * 1.45);
+  height: calc(var(--a) * 1.45);
 }
 .prastuti-attach-sweep {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(241, 100, 67, 0) 0%, rgba(241, 100, 67, 0.3) 50%, rgba(241, 100, 67, 0) 100%);
+  background: linear-gradient(90deg, rgba(241, 100, 67, 0) 0%, rgba(241, 100, 67, 0.34) 50%, rgba(241, 100, 67, 0) 100%);
 }
 
-/* ---------- The tracker. It flies out of the name and into the laptop. ---------- */
+/* ---------- The tracker. It flies out of the name and into the voice bar. ---------- */
 .prastuti-file {
   position: absolute;
   left: 0;
@@ -1239,13 +1135,13 @@
   display: flex;
   align-items: center;
   gap: calc(var(--u) * 0.6);
-  height: calc(var(--u) * 3);
-  padding: 0 calc(var(--u) * 1.2) 0 calc(var(--u) * 0.8);
-  border-radius: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 3.2);
+  padding: 0 calc(var(--u) * 1.3) 0 calc(var(--u) * 0.9);
+  border-radius: calc(var(--u) * 1.6);
   background: #ffffff;
   border: calc(var(--u) * 0.12) solid var(--acc);
   box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(235, 84, 44, 0.24);
-  font-size: calc(var(--u) * 1.08);
+  font-size: calc(var(--u) * 1.2);
   font-weight: 800;
   color: var(--ev-navy);
   white-space: nowrap;
@@ -1253,40 +1149,41 @@
   will-change: transform, opacity;
 }
 .prastuti-file .prastuti-sheet {
-  width: calc(var(--u) * 1.6);
-  height: calc(var(--u) * 1.6);
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 1.7);
 }
 
-/* ---------- प्रस्तुति तैयार ----------
+/* ---------- प्रस्तुति तैयार: the ONE thing on the laptop at the result ----------
    On the laptop, not in its screen. animate() sets it down on the corner of the canvas that
-   the laid-out deck leaves free (low on the right), so it never covers a chart. */
+   the dealt-out deck leaves free (low on the right), so it never covers a chart. Sized in the
+   app's unit, so it keeps its proportion to the slides on every screen. */
 .prastuti-stamp {
   position: absolute;
   left: 0;
   top: 0;
-  padding: calc(var(--u) * 0.3) calc(var(--u) * 1.2) calc(var(--u) * 0.55);
-  border-radius: calc(var(--u) * 0.8);
-  border: calc(var(--u) * 0.2) solid var(--acc-ink);
-  background: rgba(255, 255, 255, 0.96);
+  padding: calc(var(--a) * 0.15) calc(var(--a) * 0.85) calc(var(--a) * 0.45);
+  border-radius: calc(var(--a) * 0.7);
+  border: calc(var(--a) * 0.17) solid var(--acc-ink);
+  background: rgba(255, 255, 255, 0.97);
   color: var(--acc-ink);
   text-align: center;
   box-shadow:
-    inset 0 0 0 calc(var(--u) * 0.16) #ffffff,
-    inset 0 0 0 calc(var(--u) * 0.24) rgba(200, 67, 28, 0.55),
-    0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(200, 67, 28, 0.2);
+    inset 0 0 0 calc(var(--a) * 0.14) #ffffff,
+    inset 0 0 0 calc(var(--a) * 0.21) rgba(200, 67, 28, 0.55),
+    0 calc(var(--a) * 0.7) calc(var(--a) * 1.6) rgba(200, 67, 28, 0.22);
   white-space: nowrap;
   visibility: hidden;
   will-change: transform, opacity;
 }
 .prastuti-stamp .prastuti-hi {
   display: block;
-  font-size: calc(var(--u) * 1.75);
+  font-size: calc(var(--a) * 1.36);
   font-weight: 700;
   line-height: 1.5;
 }
 .prastuti-stamp > span:last-child {
   display: block;
-  font-size: calc(var(--u) * 0.86);
+  font-size: calc(var(--a) * 0.7);
   font-weight: 800;
   letter-spacing: 0.2em;
   text-indent: 0.2em;
@@ -1295,100 +1192,19 @@
 }
 .prastuti-stamp-burst {
   position: absolute;
-  inset: calc(var(--u) * -0.2);
-  border-radius: calc(var(--u) * 0.9);
-  border: calc(var(--u) * 0.16) solid var(--acc);
+  inset: calc(var(--a) * -0.17);
+  border-radius: calc(var(--a) * 0.8);
+  border: calc(var(--a) * 0.14) solid var(--acc);
   pointer-events: none;
-}
-
-/* ---------- Under the photo: what she says, in Hindi, with its English beneath ----------
-   The photo is a little shorter in this moment, to give her words their room. */
-.ev-moment[data-key='prastuti'] .ev-photo-frame {
-  height: calc(var(--u) * 14.2);
-}
-.ev-moment[data-key='prastuti'] .ev-photo-frame img {
-  object-position: 50% 12%;
-}
-.ev-moment[data-key='prastuti'] .ev-beside {
-  margin-top: calc(var(--u) * 1.1);
-}
-.prastuti-said {
-  position: relative;
-  padding-left: calc(var(--u) * 1.3);
-}
-.prastuti-said-line {
-  /* the rule beside her words: it draws down as she speaks */
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: calc(var(--u) * 0.2);
-  border-radius: calc(var(--u) * 0.1);
-  background: var(--acc);
-}
-.prastuti-said-who {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.6);
-  font-size: calc(var(--u) * 0.82);
-  font-weight: 800;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--acc-ink);
-  line-height: 1.4;
-  white-space: nowrap;
-  visibility: hidden;
-}
-.prastuti-said-wave {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.16);
-  height: calc(var(--u) * 1.1);
-}
-.prastuti-said-wave i {
-  width: calc(var(--u) * 0.18);
-  height: 100%;
-  border-radius: calc(var(--u) * 0.09);
-  background: var(--acc);
-  will-change: transform;
-}
-.prastuti-sent {
-  margin-top: calc(var(--u) * 0.5);
-}
-.prastuti-sent-hi {
-  font-size: calc(var(--u) * 1.24);
-  font-weight: 600;
-  line-height: 1.55;
-  color: var(--ev-ink);
-}
-.prastuti-w {
-  position: relative;
-  display: inline-block;
-  will-change: transform, opacity;
-}
-.prastuti-w-kept {
-  /* the same word, in the accent: her words that the deck keeps as she said them */
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: var(--acc-ink);
-  white-space: nowrap;
-  visibility: hidden;
-}
-.prastuti-sent-en {
-  font-size: calc(var(--u) * 0.88);
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--ev-muted);
 }
 
 /* ---------- STAT: a stopwatch that stops at 18 minutes, the deck at its centre ---------- */
 .prastuti-clock {
-  /* a little taller than the picture box: the stopwatch is the picture */
-  --d: calc(var(--ev-pitch) * 24);
+  /* The stopwatch is the whole picture: taller than the picture box (20 pitches), centred on it. */
+  --d: calc(var(--ev-pitch) * 27);
   position: absolute;
-  top: calc(var(--ev-pitch) * -2.2);
-  left: calc(var(--ev-pitch) * 2.4);
+  top: calc(var(--ev-pitch) * 10 - var(--d) / 2);
+  left: calc(var(--ev-pitch) * 16 - var(--d) / 2);
   width: var(--d);
   height: var(--d);
 }
@@ -1461,9 +1277,9 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: calc(var(--d) * 0.36);
-  height: calc(var(--d) * 0.2025);
-  margin: calc(var(--d) * -0.083) 0 0 calc(var(--d) * -0.2);
+  width: calc(var(--d) * 0.46);
+  height: calc(var(--d) * 0.25875);
+  margin: calc(var(--d) * -0.112) 0 0 calc(var(--d) * -0.245);
   visibility: hidden;
 }
 .prastuti-mini-card {
@@ -1476,8 +1292,18 @@
     0 0 0 1px rgba(7, 26, 80, 0.08);
 }
 .prastuti-mini-card--1 {
-  /* the cover, drawn in the mini deck's own unit */
-  --s: calc(var(--d) * 0.0036);
+  /* the cover, drawn in the mini deck's own unit: its title and its sun, nothing smaller */
+  --s: calc(var(--d) * 0.0046);
+}
+.prastuti-mini .prastuti-t-en,
+.prastuti-mini .prastuti-t-rule,
+.prastuti-mini .prastuti-t-sub {
+  display: none;
+}
+.prastuti-mini .prastuti-t-title {
+  top: calc(var(--s) * 11.5);
+  font-size: calc(var(--s) * 10);
+  line-height: 1.6;
 }
 .prastuti-mini-card--2 {
   background: #ffeee7;
@@ -1504,427 +1330,70 @@
   width: 58%;
   height: 58%;
 }
-.prastuti-callout {
-  /* at the 18-minute mark */
-  position: absolute;
-  z-index: 3;
-  left: 81.9%;
-  top: 60.4%;
-  width: 0;
-  height: 0;
-}
-.prastuti-callout-in {
-  position: absolute;
-  left: calc(var(--u) * 2.3);
-  top: 0;
-  padding: calc(var(--u) * 0.3) calc(var(--u) * 1) calc(var(--u) * 0.6);
-  border-radius: calc(var(--u) * 0.8);
-  background: #ffffff;
-  box-shadow:
-    0 calc(var(--u) * 0.8) calc(var(--u) * 2) rgba(7, 26, 80, 0.18),
-    0 0 0 1px rgba(7, 26, 80, 0.06);
-  white-space: nowrap;
-  visibility: hidden;
-}
-.prastuti-callout-in::after {
-  content: '';
-  position: absolute;
-  left: calc(var(--u) * -0.4);
-  top: 50%;
-  width: calc(var(--u) * 0.8);
-  height: calc(var(--u) * 0.8);
-  margin-top: calc(var(--u) * -0.4);
-  background: #ffffff;
-  transform: rotate(45deg);
-  border-radius: calc(var(--u) * 0.12);
-}
-.prastuti-callout-in .prastuti-hi {
-  display: block;
-  font-size: calc(var(--u) * 1.2);
-  font-weight: 700;
-  line-height: 1.5;
-  color: var(--ev-navy);
-}
-.prastuti-callout-in > span:last-child {
-  display: block;
-  font-size: calc(var(--u) * 0.8);
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--ev-muted);
-}
-
-/* ---------- 17:10 and wider (the touch screen itself): the deck is the hero ----------
-   The shared layout gives a laptop 33u. On a wide screen there is room for more between the
-   docked name and the photo (up to 38.5u at 16:9), and this is the moment in which a deck is
-   built in front of the visitor: every slide is drawn up to a sixth larger. animate() fits the
-   app to the larger screen; the shared frame draws the laptop back for the result headline. */
-@media (min-aspect-ratio: 17/10) and (min-height: 481px) {
-  .ev-moment[data-key='prastuti'][data-device='laptop'] .ev-deviceMover {
-    --prastuti-w: clamp(calc(var(--u) * 33), calc(var(--hx) * 2 - var(--u) * 53.5), calc(var(--u) * 38.5));
-    --ev-dw: var(--prastuti-w);
-    --ev-dh: calc((var(--prastuti-w) - var(--u) * 4) * 0.64828 + var(--u) * 2.6);
-    --ev-dx: calc(var(--u) * 6.4);
-  }
-}
-
-/* ---------- Narrower than 16:9 (a 16:10 laptop, a 4:3 tablet) ----------
-   The shared layout gives the laptop 33u, which there runs into the docked name on its
-   left and the photo on its right. For this moment only: a smaller laptop (27u to 31u,
-   by the room there is), a narrower photo and result column, and the stamp kept inside
-   the laptop's edge. The app inside is fitted to the smaller screen by animate(). */
-@media (max-aspect-ratio: 17/10) {
-  .ev-moment[data-key='prastuti'][data-device='laptop'] .ev-deviceMover {
-    --prastuti-w: clamp(calc(var(--u) * 27), calc(var(--hx) * 2 - var(--u) * 49.8), calc(var(--u) * 31));
-    --ev-dw: var(--prastuti-w);
-    --ev-dh: calc((var(--prastuti-w) - var(--u) * 4) * 0.64828 + var(--u) * 2.6);
-    --ev-dx: max(calc(var(--u) * 4.6), calc(var(--prastuti-w) / 2 + var(--u) * 32 - var(--hx)));
-  }
-  .ev-moment[data-key='prastuti'] .ev-side {
-    left: calc(var(--hx) - var(--u) * 14.5);
-    width: calc(var(--u) * 14.5);
-  }
-  .ev-moment[data-key='prastuti'] .ev-photo-frame {
-    height: calc(var(--u) * 12);
-  }
-  .ev-moment[data-key='prastuti'] .ev-col--result {
-    width: calc(var(--u) * 33);
-  }
-  .prastuti-stamp {
-    padding: calc(var(--u) * 0.15) calc(var(--u) * 0.8) calc(var(--u) * 0.4);
-  }
-  .prastuti-stamp .prastuti-hi {
-    font-size: calc(var(--u) * 1.3);
-  }
-  .prastuti-stamp > span:last-child {
-    font-size: calc(var(--u) * 0.72);
-  }
-  .prastuti-sent-hi {
-    font-size: calc(var(--u) * 1.14);
-  }
-  .prastuti-said-who {
-    letter-spacing: 0.16em;
-  }
-  /* the narrower photo: its caption a touch smaller, so it stays inside the frame */
-  .ev-moment[data-key='prastuti'] .ev-photo-cap {
-    left: calc(var(--u) * 0.55);
-    bottom: calc(var(--u) * 0.55);
-    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.6);
-    font-size: calc(var(--u) * 0.76);
-  }
-}
-
-/* ---------- Where the laptop is small: the spread is the two charts ----------
-   Narrower than 16:9, and on a phone on its side, the laptop's screen is too small to lay three
-   slides out and still read the branch names. So there the finished deck is the two charts,
-   larger: the bars at four fifths of a slide, the rising line at three fifths, over the bars'
-   empty corner. The filmstrip steps aside for them (--out-wide; animate() reads it) and the
-   cover stays with it. Their small print is set larger still, in sentence case; what could
-   not be read at that size (the arrow in the callout) is left out. */
-@media (max-aspect-ratio: 17/10), (max-height: 480px) {
-  .prastuti-main {
-    --out-title: 0;
-    --out-bars: 0.8;
-    --out-trend: 0.6;
-    --out-wide: 1;
-    --stamp-dx: 0.012;
-    --stamp-dy: -0.02;
-  }
-  .prastuti-out--title {
-    display: none;
-  }
-  .prastuti-out .prastuti-head {
-    top: calc(var(--s) * 4.4);
-  }
-  .prastuti-out .prastuti-head-en {
-    font-size: calc(var(--s) * 4);
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: none;
-    line-height: 1.3;
-  }
-  .prastuti-out--trend .prastuti-head-t {
-    font-size: calc(var(--s) * 6);
-  }
-  .prastuti-out--trend .prastuti-head-en {
-    font-size: calc(var(--s) * 5);
-  }
-  .prastuti-out--bars .prastuti-bars {
-    --lab: calc(var(--s) * 7.4);
-    left: calc(var(--s) * 3.5);
-    right: calc(var(--s) * 3.5);
-    top: calc(var(--s) * 19.5);
-  }
-  .prastuti-out--bars .prastuti-bar {
-    /* a little lower, for the taller labels under them and the rising line over the corner */
-    height: calc(var(--s) * 0.19 * var(--v));
-  }
-  .prastuti-out--bars .prastuti-bar-mark {
-    width: calc(var(--s) * 6);
-    height: calc(var(--s) * 6);
-    margin-bottom: calc(var(--s) * 1);
-  }
-  .prastuti-out--bars .prastuti-bar-l {
-    padding: 0 calc(var(--s) * 0.6);
-    font-size: calc(var(--s) * 4.6);
-  }
-  .prastuti-out--bars .prastuti-barcol--flag .prastuti-bar-l {
-    padding: 0 calc(var(--s) * 1.4);
-  }
-  .prastuti-out--trend .prastuti-trend-pill {
-    height: calc(var(--s) * 9.6);
-    padding: 0 calc(var(--s) * 2.2);
-    border-radius: calc(var(--s) * 5);
-  }
-  .prastuti-out--trend .prastuti-trend-pill svg {
-    display: none;
-  }
-  .prastuti-out--trend .prastuti-trend-pill .prastuti-hi {
-    font-size: calc(var(--s) * 5.8);
-    line-height: calc(var(--s) * 9.6);
-  }
-}
 
 /* ============================================================
-   A phone on its side. The deck is the hero, so the laptop takes
-   the right of the stage, as large as the height allows (its app
-   is drawn about 1.5× there). The photo gives way; her Hindi
-   words, with their English, stand on the left under the title,
-   and leave when the result headline arrives. Nothing on the
-   laptop's screen is under 9 px (--pdt is that floor before the
-   enlargement; a slide's thumbnail in the filmstrip is a picture
-   of the slide, not text to read), nothing around it under 11 px.
+   A phone on its side. The same picture, with its own numbers:
+   the laptop still takes the picture area's whole width (48u at
+   844 × 390 and 874 × 296, 44u at 667 × 375), and nothing in it
+   is under 9 px (--pf: 8.2 px at 874 × 296, where the whole
+   stage is smaller). The dealt-out deck gives the bars more of
+   the canvas there, so that four branch names can still be read
+   side by side.
    ============================================================ */
 @media (max-height: 480px) {
   .ev-moment[data-key='prastuti'] {
-    --prastuti-w: calc(var(--u) * 43.5);
-    --pdt: calc(var(--fl) * 6);
+    --pf: calc(var(--fl) * 9);
   }
-  .ev-moment[data-key='prastuti'][data-device='laptop'] .ev-deviceMover {
-    --ev-dw: var(--prastuti-w);
-    --ev-dh: calc((var(--prastuti-w) - var(--u) * 4) * 0.64828 + var(--u) * 2.6);
-    /* its right edge, enlarged 1.12×, stands on the right edge of the field */
-    --ev-dx: calc(var(--hx) - var(--prastuti-w) * 0.56 - var(--u) * 0.4);
+  .prastuti-canvas {
+    --out-cover: calc(var(--a) * 14.6);
+    --out-bars: calc(var(--a) * 19.6);
+    --out-trend: calc(var(--a) * 14.6);
+    --out-pad: calc(var(--a) * 0.4);
   }
-
-  /* ----- her words, on the left ----- */
-  .ev-moment[data-key='prastuti'] .ev-photo-frame {
-    display: none;
+  .prastuti-out--trend .prastuti-head-t {
+    font-size: max(calc(var(--s) * 6.6), var(--pf));
   }
-  .ev-moment[data-key='prastuti'] .ev-side {
-    left: calc(var(--hx) * -1);
-    top: calc(var(--u) * -0.6);
-    width: calc(var(--hx) * 2 - var(--prastuti-w) * 1.12 - var(--u) * 4.6);
+  /* the small English captions stand at the floor here: they are set closer, and the band of
+     the last slide is a little wider for its own */
+  .prastuti-app .prastuti-head-en,
+  .prastuti-app .prastuti-t-en {
+    letter-spacing: 0.08em;
   }
-  .ev-moment[data-key='prastuti'] .ev-beside {
-    margin-top: 0;
+  .prastuti-app .prastuti-p-en {
+    letter-spacing: 0.03em;
   }
-  /* the promise has just been read under the name: here the title stands alone */
-  .ev-moment[data-key='prastuti'] .ev-col--demo .ev-col-p {
-    display: none;
+  .prastuti-p-band {
+    width: calc(var(--s) * 41);
   }
-  .ev-moment[data-key='prastuti'] .ev-col--result {
-    width: calc(var(--u) * 35);
-  }
-  .prastuti-said-who {
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    letter-spacing: 0.14em;
-  }
-  .prastuti-said-wave {
-    height: calc(var(--u) * 1.4);
-  }
-  .prastuti-sent {
-    margin-top: calc(var(--u) * 0.3);
-  }
-  .prastuti-sent-hi {
-    font-size: max(calc(var(--u) * 1.75), calc(var(--fl) * 13));
-    line-height: 1.44;
-  }
-  .prastuti-sent-en {
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
-    line-height: 1.24;
+  .prastuti-p-list {
+    left: calc(var(--s) * 45);
+    right: calc(var(--s) * 3);
   }
   .prastuti-file {
     font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
   }
-  .prastuti-compare-old {
-    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
-  }
-  .prastuti-compare-new > span:last-child {
-    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11));
-  }
-
-  /* ----- before: the editor at night (drawn 1.2× by the shared frame) -----
-     It is a picture, not a device: what is read in it stands at 11 px on the screen (9.2 px
-     before the enlargement). What was only decoration is left out, not shrunk: the window's
-     title, and the letters on the B / I / U buttons (they stay, as blank keys). */
-  .prastuti-b-top span {
-    display: none;
-  }
-  .prastuti-b-tool--b,
-  .prastuti-b-tool--i,
-  .prastuti-b-tool--u {
-    font-size: 0;
-  }
-  .prastuti-b-tool--b::before,
-  .prastuti-b-tool--i::before,
-  .prastuti-b-tool--u::before {
-    content: '';
-    width: calc(var(--u) * 0.7);
-    height: calc(var(--u) * 0.7);
-    border-radius: calc(var(--u) * 0.18);
-    background: #c5d1e2;
-  }
-  .prastuti-b-time {
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 9.2));
-  }
-  .prastuti-b-ph--title {
-    padding: 0 calc(var(--u) * 0.5);
-  }
-  .prastuti-b-ph--title span {
-    font-size: max(calc(var(--u) * 1.1), calc(var(--fl) * 9.2));
-  }
-
-  /* ----- Prastuti on the laptop ----- */
-  .prastuti-appname .prastuti-hi {
-    font-size: max(calc(var(--u) * 0.86), var(--pdt));
-  }
-  .prastuti-lang .prastuti-hi {
-    font-size: max(calc(var(--u) * 0.84), var(--pdt));
-  }
-  .prastuti-lang > span:last-child,
-  .prastuti-appwho {
-    font-size: max(calc(var(--u) * 0.8), var(--pdt));
-    letter-spacing: 0;
-  }
-  /* the filmstrip's numbers are too small to be numbers here: the tick that replaces each one stays */
-  .prastuti-thumb-n {
-    font-size: 0;
-  }
-  .prastuti-empty-k {
-    font-size: max(calc(var(--u) * 0.84), var(--pdt));
-    letter-spacing: 0.14em;
-  }
-  .prastuti-empty-p {
-    font-size: max(calc(var(--u) * 0.9), var(--pdt));
-  }
-  .prastuti-app .prastuti-head-en,
-  .prastuti-app .prastuti-p-en {
-    font-size: max(calc(var(--s) * 3.7), var(--pdt));
-    letter-spacing: 0.12em;
-  }
-  /* the cover rests a little smaller on top of the finished deck: its small print is set for that */
-  .prastuti-app .prastuti-t-en {
-    font-size: max(calc(var(--s) * 4.1), calc(var(--fl) * 6.8));
-    letter-spacing: 0.12em;
-  }
-  .prastuti-app .prastuti-t-sub {
-    font-size: max(calc(var(--s) * 4.2), calc(var(--fl) * 6.8));
-  }
-  .prastuti-app .prastuti-bar-l,
-  .prastuti-app .prastuti-trend-pill .prastuti-hi {
-    font-size: max(calc(var(--s) * 3.8), var(--pdt));
-  }
-  .prastuti-app .prastuti-p-text {
-    font-size: max(calc(var(--s) * 4.4), var(--pdt));
-  }
-  /* ----- the finished deck, laid out: the two charts (see the block above this one) -----
-     Here every word on them stands at the 9 px floor or over it. --pf is that floor for a slide
-     lying at less than full size: --pdt divided by the size it lies at. */
-  .prastuti-out--bars {
-    --pf: calc(var(--pdt) / var(--out-bars));
-  }
-  .prastuti-out--trend {
-    --pf: calc(var(--pdt) / var(--out-trend));
-  }
-  .prastuti-out--bars .prastuti-head-t {
-    font-size: max(calc(var(--s) * 5.5), var(--pf));
-  }
-  .prastuti-out--bars .prastuti-head-en {
-    font-size: max(calc(var(--s) * 4), var(--pf));
-    letter-spacing: 0;
-  }
-  .prastuti-out--trend .prastuti-head-t {
-    font-size: max(calc(var(--s) * 6), var(--pf));
-  }
-  .prastuti-out--trend .prastuti-head-en {
-    font-size: max(calc(var(--s) * 5), var(--pf));
-    letter-spacing: 0;
-  }
-  .prastuti-out--bars .prastuti-bars {
-    --lab: max(calc(var(--s) * 7.4), calc(var(--pf) * 1.6));
-  }
-  .prastuti-out--bars .prastuti-bar-l {
-    font-size: max(calc(var(--s) * 4.6), var(--pf));
-  }
-  .prastuti-out--trend .prastuti-trend-pill {
-    height: max(calc(var(--s) * 9.6), calc(var(--pf) * 1.6));
-  }
-  .prastuti-out--trend .prastuti-trend-pill .prastuti-hi {
-    font-size: max(calc(var(--s) * 5.8), var(--pf));
-    line-height: max(calc(var(--s) * 9.6), calc(var(--pf) * 1.6));
-  }
-  .prastuti-talk {
-    gap: calc(var(--u) * 0.6);
-  }
-  .prastuti-hint {
-    height: calc(var(--u) * 1.15);
-    font-size: max(calc(var(--u) * 0.84), var(--pdt));
-    letter-spacing: 0;
-    text-transform: none;
-  }
-  .prastuti-hint span {
-    line-height: calc(var(--u) * 1.15);
-  }
-  .prastuti-talk-body {
-    margin-top: 0;
-  }
-  .prastuti-talk-ph {
-    font-size: max(calc(var(--u) * 0.9), var(--pdt));
-  }
-  .prastuti-wave {
-    width: calc(var(--u) * 9.6);
-  }
-  .prastuti-attach {
-    width: calc(var(--u) * 11.2);
-  }
-  .prastuti-attach-chip {
-    gap: calc(var(--u) * 0.35);
-    padding: 0 calc(var(--u) * 0.5) 0 calc(var(--u) * 0.45);
-    font-size: max(calc(var(--u) * 0.82), var(--pdt));
-    letter-spacing: -0.01em;
-  }
+  /* the stamp, set for the narrower corner the wider bars leave it */
   .prastuti-stamp {
-    padding: calc(var(--u) * 0.2) calc(var(--u) * 1) calc(var(--u) * 0.45);
+    padding: calc(var(--a) * 0.1) calc(var(--a) * 0.5) calc(var(--a) * 0.35);
   }
   .prastuti-stamp .prastuti-hi {
-    font-size: calc(var(--u) * 1.75);
+    font-size: max(calc(var(--a) * 1.15), calc(var(--fl) * 12));
   }
   .prastuti-stamp > span:last-child {
-    font-size: max(calc(var(--u) * 1.25), calc(var(--fl) * 9.9));
-    letter-spacing: 0.12em;
-    text-indent: 0.12em;
+    font-size: max(calc(var(--a) * 0.7), calc(var(--fl) * 9));
+    letter-spacing: 0.05em;
+    text-indent: 0.05em;
   }
 
   /* ----- the number's picture: the stopwatch keeps inside the stage ----- */
   .prastuti-clock {
-    --d: calc(var(--ev-pitch) * 22.4);
-    top: calc(var(--ev-pitch) * -1);
-    left: calc(var(--ev-pitch) * 3.4);
+    --d: calc(var(--ev-pitch) * 25);
   }
   .prastuti-clock-num {
     font-size: 16px;
   }
-  /* (its words are at their floor here, so the box is taller: it hangs a little lower, clear of the dial's "15") */
-  .prastuti-callout-in {
-    margin-top: calc(var(--fl) * 6);
-  }
-  .prastuti-callout-in::after {
-    margin-top: calc(var(--u) * -0.4 - var(--fl) * 6);
-  }
-  .prastuti-callout-in .prastuti-hi {
-    font-size: max(calc(var(--u) * 1.6), calc(var(--fl) * 12));
-  }
-  .prastuti-callout-in > span:last-child {
-    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11));
+  /* the deck at its centre: its title is read, so it keeps the story floor */
+  .prastuti-mini .prastuti-t-title {
+    font-size: max(calc(var(--s) * 10), calc(var(--fl) * 11));
   }
 }

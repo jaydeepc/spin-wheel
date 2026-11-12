@@ -4,7 +4,7 @@ import Experience from '@/everyday/Experience'
 export const metadata: Metadata = {
   title: 'Everyday AI — Piramal.ai',
   description:
-    'Everyday AI at Piramal Finance: AI that every one of us can use, every day, to do our own job better. See it in one Tuesday, and remember five names: SmartHelp, BYOT, BYOA, Prastuti and Piramal Mind.',
+    'Everyday AI at Piramal Finance: AI that every one of us can use, every day, to do our own job better. See it in one Tuesday: SmartHelp, BYOT, BYOA, Prastuti and Piramal Mind.',
 }
 
 /**

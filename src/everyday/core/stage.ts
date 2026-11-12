@@ -21,7 +21,7 @@ export interface Stage {
   Z: number
   /** Half the width of the content field, in stage pixels: content runs from -hx to +hx. */
   hx: number
-  /** A phone on its side (short screen): devices are enlarged during the demo. */
+  /** A phone on its side (short screen): its own layout numbers, and type held to its floors. */
   small: boolean
   /** Re-read U, Z and the stage origin (call after a resize, before measuring). */
   measure(): void

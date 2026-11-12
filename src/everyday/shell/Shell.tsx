@@ -1,20 +1,24 @@
 'use client'
 
 /**
- * EVERYDAY AI · the shell: everything that stays on screen through the whole film.
- * The light, the header (the clock of her Tuesday, or the engineering mark), Priya's
- * subtitle line, the two quiet controls and the rail. It only reads the store; the
- * director moves the film.
+ * EVERYDAY AI · the shell: THE QUIET FRAME, everything that stays on screen through the film.
+ *
+ *   the light        the soft haze behind everything
+ *   the header       the logo, alone (top left); a one-line clock chip (top right)
+ *   Priya's voice    her face and her line in a speech bubble: the bottom of the left half
+ *   the strip        along the bottom: five small progress dots (left), Back and Next (right)
+ *
+ * Nothing here is a sentence except what Priya says. Next is the only control with visual
+ * weight. The shell only reads the store; the director moves the film.
  */
 
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
-import gsap from 'gsap'
-import { CLOSING, ENGINEERING, OPENING, PRIYA, PRODUCTS, PROMPTS, STEPS, productByKey, type Product, type ProductKey } from '../content'
+import { useState, type MouseEvent } from 'react'
+import { CLOSING, ENGINEERING, OPENING, PRIYA, PRODUCTS, PROMPTS, productByKey, type Product } from '../content'
 import { director } from '../core/director'
-import { INTRO_TIME } from '../core/timing'
 import { CodeGlyph, withName } from '../moments/parts'
 import { SCENES, isEngineering, isProduct, stepIndex, useEveryday, type SceneId } from '../store'
 
+/** A press on a button of the shell is that button's alone: it is never also a tap on the stage. */
 const own = (fn: () => void) => (e: MouseEvent) => {
   e.stopPropagation()
   fn()
@@ -47,10 +51,10 @@ export function Backdrop() {
 
 // ---------------------------------------------------------------------- header
 /**
- * Top right: where the film is. Through her Tuesday, a clock and a place. In the engineering
- * chapter the clock gives way to a code mark, and the words are the chapter's own
- * ("Every day · With the engineering team"): it is not a time in her day. On the opening
- * screen there is no Priya yet, and so no clock.
+ * Top left: the logo, alone. Top right: where the film is, in one line. Through her Tuesday, a
+ * small clock and "9:10 am · At the branch". In the engineering chapter the clock gives way to
+ * a code mark and the words are the chapter's own ("Every day · With the engineering team").
+ * On the opening and on the closing there is no chip (the stylesheet fades it out).
  */
 export function Header() {
   const scene = useEveryday((s) => s.scene)
@@ -58,16 +62,13 @@ export function Header() {
   const eng = isEngineering(scene)
   const chapter: Product | undefined = ENG[0]
   const minutes = eng ? 19 * 60 : product ? minutesOf(product.time) : scene === 'finale' ? 18 * 60 + 30 : 8 * 60 + 30
-  const time = eng ? (product ?? chapter)?.time : product ? `Tuesday, ${product.time}` : scene === 'finale' ? 'Tuesday evening' : 'Tuesday'
+  const time = eng ? (product ?? chapter)?.time : product ? product.time : 'Tuesday'
   const place = eng ? (product ?? chapter)?.place : product ? product.place : 'Lucknow'
   return (
     <header className="ev-header">
-      <div className="ev-brand">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="ev-logo" src="/brand/piramal-ai-lockup.png" alt="Piramal.ai" draggable={false} />
-        <span className="ev-kicker">{OPENING.title}</span>
-      </div>
-      <div className="ev-clock" data-kind={eng ? 'engineering' : 'day'} aria-hidden={scene === 'intro'}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="ev-logo" src="/brand/piramal-ai-lockup.png" alt="Piramal.ai" draggable={false} />
+      <div className="ev-clock" data-kind={eng ? 'engineering' : 'day'} aria-hidden={scene === 'intro' || scene === 'finale'}>
         <span className="ev-clock-dial">
           <svg viewBox="0 0 40 40" aria-hidden="true">
             <circle className="ev-clock-face" cx="20" cy="20" r="18" />
@@ -79,18 +80,19 @@ export function Header() {
           </svg>
           <CodeGlyph className="ev-clock-code" />
         </span>
-        <div className="ev-clock-txt">
+        <span className="ev-clock-txt">
           <span className="ev-clock-swap" key={eng ? 'engineering' : scene}>
-            <span className="ev-clock-time">{time}</span>
+            <b className="ev-clock-time">{time}</b>
+            <i className="ev-clock-sep"> · </i>
             <span className="ev-clock-place">{place}</span>
           </span>
-        </div>
+        </span>
       </div>
     </header>
   )
 }
 
-// ---------------------------------------------------------------------- Priya's line
+// ---------------------------------------------------------------------- Priya's voice
 interface Line {
   key: string
   text: string
@@ -98,9 +100,14 @@ interface Line {
 }
 
 /**
- * Her words for this step. In a product moment: before (and on while the name lands, for as
- * long as the line takes to read) · tool (the name and the demo) · after (the run, the result,
- * the stat). On the opening screen she has not come in yet.
+ * Her words for this instant, or null while she is not on screen.
+ *
+ * In a product moment: her 'before' line through the before step; NOTHING while the name lands
+ * at centre stage (the name has the screen to itself); her 'tool' line from the device's arrival
+ * through the demo; her 'after' line from late in the run through the result; NOTHING at the
+ * number (the number has the screen). The moment's timeline says which (its cues: 'before',
+ * 'tool', 'after', 'off'), so the line is right under a debug hold and when stepping back.
+ * On the opening she has not come in yet.
  */
 function lineFor(scene: SceneId, step: string, cue: string | null): Line | null {
   if (scene === 'intro') return null
@@ -108,334 +115,181 @@ function lineFor(scene: SceneId, step: string, cue: string | null): Line | null 
   if (scene === 'engineering') return step === 'out' ? null : { key: 'engineering', text: ENGINEERING.said, name: '' }
   if (scene === 'finale') return { key: 'finale', text: CLOSING.said, name: '' }
   if (!isProduct(scene)) return null
+  if (step === 'done' || cue === 'off') return null
   const p = productByKey(scene)
   const i = stepIndex(step)
-  if (step === 'done') return null // the hand-over: the stage clears, and so does her line
-  // The moment's timeline says which line it has reached (her 'before' line is still being read
-  // while the name lands); until it has spoken, the step does.
-  const which = cue === 'before' || cue === 'tool' || cue === 'after' ? cue : i <= 0 ? 'before' : i <= 2 ? 'tool' : 'after'
+  // until the timeline has spoken, the step does
+  const which = cue === 'before' || cue === 'tool' || cue === 'after' ? cue : i <= 0 ? 'before' : i === 2 ? 'tool' : i === 3 ? 'after' : null
+  if (!which) return null
   return { key: `${scene}:${which}`, text: p.priya[which], name: p.name }
 }
 
-export function Subtitle() {
+/**
+ * PRIYA'S VOICE: her face and her line in a speech bubble, always in the same place (the
+ * bottom of the left half, above the strip), with a clear zone around it that nothing else
+ * enters. It is the second most prominent text on screen, after the headline.
+ *
+ * The bubble is keyed by its line: when her line changes, the old bubble is gone and the new one
+ * pops in, one small crisp move (a CSS animation: .ev-voice-card). When she has nothing to say
+ * the block fades out whole, face and all, and the last line stays in it while it does.
+ *
+ * `[data-ev="avatar"]` is the hook the Meet Priya scene irises her photo into. On that scene the
+ * bubble can be stood beside her photo from the scene's own stylesheet: see "Priya's voice" in
+ * moments/README.md (--ev-vb-left, --ev-vb-bottom, --ev-vb-w on .ev-voice, and .ev-voice-tail).
+ */
+export function Voice() {
   const scene = useEveryday((s) => s.scene)
   const step = useEveryday((s) => s.step)
   const cue = useEveryday((s) => s.cue)
-  const hold = useEveryday((s) => s.hold)
   const line = lineFor(scene, step, cue)
-  const [cur, setCur] = useState<Line | null>(line)
-  const [prev, setPrev] = useState<Line | null>(null)
-  if ((line?.key ?? '') !== (cur?.key ?? '')) {
-    setPrev(cur)
-    setCur(line)
-  }
-  const curRef = useRef<HTMLDivElement>(null)
-  const prevRef = useRef<HTMLDivElement>(null)
-
-  useLayoutEffect(() => {
-    const inEl = curRef.current?.querySelector('.ev-rise') ?? null
-    const outEl = prevRef.current?.querySelector('.ev-rise') ?? null
-    if (hold) {
-      if (inEl) gsap.set(inEl, { yPercent: 0 })
-      if (outEl) gsap.set(outEl, { yPercent: -118 })
-      return
-    }
-    const t = gsap.timeline()
-    if (outEl) t.fromTo(outEl, { yPercent: 0 }, { yPercent: -118, duration: 0.3, ease: 'power3.in' }, 0)
-    if (inEl) t.fromTo(inEl, { yPercent: 118 }, { yPercent: 0, duration: 0.7, ease: 'expo.out' }, outEl ? 0.24 : 0.12)
-    return () => {
-      t.progress(1).kill()
-    }
-  }, [cur?.key, hold])
-
-  const render = (l: Line) => (
-    <p>
-      <span className="ev-mask">
-        <span className="ev-rise">
-          <span className="ev-sub-who">Priya</span>
-          {l.name ? withName(l.text, l.name) : l.text}
-        </span>
-      </span>
-    </p>
-  )
+  const [shown, setShown] = useState<Line | null>(line)
+  if (line && line.key !== shown?.key) setShown(line)
+  const cur = line ?? shown
 
   return (
-    <div className="ev-sub">
-      <div className="ev-sub-avatar" data-ev="avatar">
+    <div className="ev-voice" data-on={line ? '1' : '0'} aria-live="polite">
+      <div className="ev-voice-avatar" data-ev="avatar">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={PRIYA.portrait} alt="Priya" draggable={false} />
       </div>
-      <div className="ev-sub-lines" aria-live="polite">
-        {prev ? (
-          <div className="ev-sub-line" key={prev.key} ref={prevRef} aria-hidden="true">
-            {render(prev)}
-          </div>
-        ) : null}
+      <div className="ev-voice-bubble" aria-hidden={!line}>
         {cur ? (
-          <div className="ev-sub-line" key={cur.key} ref={curRef}>
-            {render(cur)}
+          <div className="ev-voice-card" key={cur.key}>
+            <i className="ev-voice-tail" />
+            <p className="ev-voice-text">{cur.name ? withName(cur.text, cur.name) : cur.text}</p>
           </div>
         ) : null}
       </div>
-      <TapHint />
-      <Controls />
     </div>
   )
 }
 
-// ---------------------------------------------------------------------- manual mode says what it wants
+// ---------------------------------------------------------------------- the strip: dots, Back, Next
 /**
- * In manual mode the film stops after every step. While it rests on one that a plain tap moves
- * on from, it says so, quietly, beside the two controls (on a phone on its side: at the end of
- * Priya's line). Not on the opening screen and not while a demo's control is waiting: there the
- * control itself, and "Your turn", are the prompt. The director decides when (`tapHint`).
- */
-export function TapHint() {
-  const on = useEveryday((s) => s.tapHint)
-  return (
-    <div className="ev-taphint" data-on={on ? '1' : '0'} role="status" aria-hidden={!on}>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle className="ev-taphint-ring" cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
-        <circle cx="12" cy="12" r="4.2" fill="currentColor" />
-      </svg>
-      <span>{PROMPTS.tapOn}</span>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------- the two quiet controls
-/**
- * One capsule, two halves: how the film plays (by itself, or a tap at every step), and start again.
+ * Five small dots: four for her day, a small gap, one for Piramal Mind. No words (the name is
+ * the button's label and title). The current one is a slightly longer pill in the product's
+ * accent, the visited ones are filled, the ones ahead are hollow. A dot jumps to its moment.
+ * Hidden on the opening, on Meet Priya and on the closing (the stylesheet fades them).
  *
- * The first half works as a player's button does: its ICON is what pressing it will do (two bars
- * while the film plays by itself: press to hold it at every step; a triangle in manual: press to
- * let it play), and the WORD beside it is the state it is in now ("Auto" / "Manual"). On a phone
- * on its side there is no room for the word, and the icon alone still reads the way every player
- * does: bars while it is playing.
+ * `data-ev-rail="<product key>"` is the hook core/buildMoment.ts aims the docked name at when a
+ * moment hands over (`.ev-dot-mark` inside it is the dot that is drawn).
  */
-export function Controls() {
-  const mode = useEveryday((s) => s.mode)
-  return (
-    <div className="ev-ctl" data-own role="group" aria-label="Playback">
-      <button
-        type="button"
-        className="ev-ctl-btn ev-ctl-mode"
-        aria-label={mode === 'auto' ? 'Playing by itself. Switch to manual: wait for a tap at every step' : 'Manual: waiting for a tap at every step. Switch to auto: play by itself'}
-        title={mode === 'auto' ? 'Playing by itself. Press for manual' : 'Manual. Press to play by itself'}
-        onClick={own(() => useEveryday.getState().toggleMode())}
-      >
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <circle className="ev-ctl-track" cx="20" cy="20" r="17" />
-          <circle className="ev-ctl-ring" data-ev="ring" cx="20" cy="20" r="17" />
-          {mode === 'auto' ? (
-            <path d="M15.5 14v12M24.5 14v12" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" fill="none" />
-          ) : (
-            <path d="M16.2 13.4v13.2l10.8-6.6z" fill="currentColor" />
-          )}
-        </svg>
-        <span className="ev-ctl-label">{mode === 'auto' ? 'Auto' : 'Manual'}</span>
-      </button>
-      <i className="ev-ctl-divider" />
-      <button type="button" className="ev-ctl-btn ev-ctl-again" aria-label="Start again from the beginning" title="Start again" onClick={own(() => director.restart())}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5.2 13.2a7 7 0 1 0 1.7-5.4" />
-          <path d="M4.4 4.6v4h4" />
-        </svg>
-        <span className="ev-ctl-label">Start again</span>
-      </button>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------- the rail
-/**
- * The film as one line, in two tracks.
- *
- *   Everyday AI · SmartHelp · BYOT · BYOA · Prastuti  ╌╌  Piramal Mind · Five names
- *   └ the opening   └──────── her Tuesday ────────┘      └ engineering  └ the closing
- *
- * The four stops of her Tuesday carry their times. The line then breaks, and Piramal Mind
- * stands apart on its own stretch under an "Engineering" tag: it is not a time in her day.
- * Where the marker stands is handed to the CSS in column units (--a … --e), so the
- * stylesheet alone decides how wide a cap, a day, the break and the engineering stop are.
- */
-function railPosition(scene: SceneId, step: string) {
-  const si = Math.max(0, stepIndex(step)) / STEPS.length
-  const dayAt = DAY.findIndex((p) => p.key === scene)
-  const engAt = ENG.findIndex((p) => p.key === scene)
-  // a: the opening cap · b: day columns · c: the break · d: engineering columns · e: the closing cap
-  if (scene === 'intro') return { a: 0.5, b: 0, c: 0, d: 0, e: 0 }
-  if (scene === 'priya') return { a: 1, b: 0.14, c: 0, d: 0, e: 0 }
-  if (dayAt >= 0) return { a: 1, b: Math.min(DAY.length, dayAt + 0.5 + si * 0.8), c: 0, d: 0, e: 0 }
-  if (scene === 'engineering') return { a: 1, b: DAY.length, c: 1, d: 0.06, e: 0 }
-  if (engAt >= 0) return { a: 1, b: DAY.length, c: 1, d: Math.min(ENG.length, engAt + 0.5 + si * 0.48), e: 0 }
-  return { a: 1, b: DAY.length, c: 1, d: ENG.length, e: 0.5 }
-}
-
-export function Rail() {
+function Dots() {
   const scene = useEveryday((s) => s.scene)
-  const step = useEveryday((s) => s.step)
-  const preview = useEveryday((s) => s.preview)
-  const hold = useEveryday((s) => s.hold)
-  const setPreview = useEveryday((s) => s.setPreview)
   const at = SCENES.indexOf(scene)
-  const si = isProduct(scene) ? stepIndex(step) : -1
-  const pos = railPosition(scene, step)
-  const previewProduct = preview ? productByKey(preview) : null
-  const stateOf = (stop: SceneId) => {
-    const i = SCENES.indexOf(stop)
-    return i === at ? 'current' : i < at ? 'past' : 'next'
-  }
-
-  // A preview holds the opening screen's own countdown, and closes by itself.
-  useEffect(() => {
-    if (!preview || hold) return
-    director.suspend()
-    const t = setTimeout(() => setPreview(null), INTRO_TIME.preview * 1000)
-    return () => {
-      clearTimeout(t)
-      director.resume()
-    }
-  }, [preview, hold, setPreview])
-
-  const onStop = (key: ProductKey) => {
-    if (scene === 'intro') setPreview(preview === key ? null : key)
-    else director.jump(key)
-  }
-
-  const vars = {
-    '--a': pos.a,
-    '--b': pos.b.toFixed(3),
-    '--c': pos.c,
-    '--d': pos.d.toFixed(3),
-    '--e': pos.e,
-    '--nd': DAY.length,
-    '--ne': ENG.length,
-  } as CSSProperties
-
-  const stop = (p: Product, i: number, k: number) => {
-    const state = stateOf(p.key)
-    const engineering = p.track === 'engineering'
+  const dot = (p: Product) => {
+    const i = SCENES.indexOf(p.key)
+    const state = i === at ? 'current' : i < at ? 'past' : 'next'
     return (
       <button
         type="button"
         key={p.key}
-        className={engineering ? 'ev-stop ev-stop--eng' : 'ev-stop ev-stop--day'}
+        className="ev-dot"
         data-own
         data-ev-rail={p.key}
         data-accent={p.accent}
-        data-long={p.name.length > 9 ? '1' : '0'}
         data-state={state}
-        data-steps={state === 'current' && si >= 0 ? '1' : '0'}
-        data-preview={preview === p.key ? '1' : '0'}
-        style={{ ['--i' as string]: i, ['--k' as string]: k } as CSSProperties}
-        aria-label={engineering ? `${p.name}, engineering` : `${p.name}, ${p.time}`}
-        onClick={own(() => onStop(p.key))}
+        aria-label={p.name}
+        aria-current={state === 'current' ? 'step' : undefined}
+        title={p.name}
+        onClick={own(() => director.jump(p.key))}
       >
-        {engineering ? (
-          <span className="ev-stop-time ev-stop-tag">
-            <span>
-              <CodeGlyph />
-              Engineering
-            </span>
-          </span>
-        ) : (
-          <span className="ev-stop-time">{p.time}</span>
-        )}
-        <i className="ev-stop-dot" />
-        <span className="ev-stop-name">
-          <span className="ev-stop-pop">{p.name}</span>
-        </span>
-        <span className="ev-pips" aria-hidden="true">
-          {STEPS.map((s, n) => (
-            <i key={s} data-on={state === 'current' && n <= si ? '1' : '0'} />
-          ))}
-        </span>
+        <i className="ev-dot-mark" />
       </button>
     )
   }
-
   return (
-    <nav className="ev-rail" style={vars} aria-label="The film: Everyday AI, Priya’s Tuesday, engineering, the five names">
-      <div className="ev-rail-track">
-        <i className="ev-rail-line" />
-        <i className="ev-rail-fill" />
-      </div>
-      <i className="ev-rail-break" aria-hidden="true" />
-      <div className="ev-rail-carrier">
-        <i className="ev-rail-marker" />
-      </div>
+    <div className="ev-dots" role="group" aria-label="The five products">
+      {DAY.map(dot)}
+      <i className="ev-dots-gap" aria-hidden="true" />
+      {ENG.map(dot)}
+    </div>
+  )
+}
 
+/**
+ * One faint utility, on the OPENING only and on large screens only: the Auto-play switch (off
+ * unless asked for; it shows on / off truthfully). Once the film is under way it is gone (the
+ * stylesheet hides it, and it cannot be focused): the strip is the dots and the two buttons, and
+ * nothing stands under Priya's bubble. There is no separate "Start again": the closing's Next
+ * button is that, and the dots jump to any moment.
+ */
+function Utilities() {
+  const mode = useEveryday((s) => s.mode)
+  const scene = useEveryday((s) => s.scene)
+  const on = mode === 'auto'
+  const shown = scene === 'intro'
+  return (
+    <div className="ev-util" data-own aria-hidden={!shown}>
       <button
         type="button"
-        className="ev-stop ev-stop--cap ev-stop--first"
-        data-own
-        data-state={stateOf('intro')}
-        // while the first name of her day is the large one, the cap beside it is only its dot
-        data-tight={DAY[0]?.key === scene ? '1' : '0'}
-        aria-label={`${OPENING.title}: what it is`}
-        onClick={own(() => {
-          // back to the opening as the next visitor should find it (auto), like Start again
-          if (scene !== 'intro') director.restart()
-        })}
+        className="ev-auto"
+        role="switch"
+        aria-checked={on}
+        data-on={on ? '1' : '0'}
+        title={PROMPTS.auto}
+        tabIndex={shown ? 0 : -1}
+        onClick={own(() => useEveryday.getState().toggleMode())}
       >
-        <span className="ev-stop-time">Start</span>
-        <i className="ev-stop-dot" />
-        <span className="ev-stop-name">{OPENING.title}</span>
+        <span className="ev-auto-track" aria-hidden="true">
+          <i />
+        </span>
+        <span className="ev-auto-word">{PROMPTS.auto}</span>
       </button>
+    </div>
+  )
+}
 
-      {DAY.map((p, i) => stop(p, i, i))}
-      {ENG.map((p, k) => stop(p, DAY.length + k, k))}
-
-      <button
-        type="button"
-        className="ev-stop ev-stop--cap ev-stop--end"
-        data-own
-        data-state={stateOf('finale')}
-        aria-label={CLOSING.recap}
-        onClick={own(() => {
-          if (scene !== 'finale') director.jump('finale')
-        })}
-      >
-        <span className="ev-stop-time">Recap</span>
-        <i className="ev-stop-dot" />
-        <span className="ev-stop-name">Five names</span>
+/**
+ * NEXT, always in the same place (bottom right), and Back beside it. Next is how the film
+ * moves: one press, one step (see "Manual first" in moments/README.md).
+ *
+ *   data-state="moving"   the film is travelling: Next is quiet (a press finishes the move)
+ *   data-state="ready"    the film rests: Next is at full strength, pulses once as it arrives, and
+ *                         breathes gently if nobody presses for about 4 s
+ *
+ * On the film's last frame it reads "Start again" and restarts. Neither button is shown on the
+ * opening: the opening's own start button is the action there.
+ */
+function Nav() {
+  const resting = useEveryday((s) => s.resting)
+  const atEnd = useEveryday((s) => s.atEnd)
+  const label = atEnd ? PROMPTS.again : PROMPTS.next
+  return (
+    <div className="ev-nav" data-own>
+      <button type="button" className="ev-back" aria-label={PROMPTS.back} title={PROMPTS.back} onClick={own(() => director.press(-1))}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14.5 5.5 8 12l6.5 6.5" />
+        </svg>
       </button>
+      <button type="button" className="ev-next" data-state={resting ? 'ready' : 'moving'} data-end={atEnd ? '1' : '0'} onClick={own(() => director.press(1))}>
+        <i className="ev-next-halo" aria-hidden="true" />
+        <span className="ev-next-word" key={label}>
+          {label}
+        </span>
+        {atEnd ? (
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5.2 13.2a7 7 0 1 0 1.7-5.4" />
+            <path d="M4.4 4.6v4h4" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4.5 12h14" />
+            <path d="M13 5.8 19.2 12 13 18.2" />
+          </svg>
+        )}
+      </button>
+    </div>
+  )
+}
 
-      {previewProduct ? (
-        <div
-          className="ev-preview ev-acc"
-          data-own
-          data-accent={previewProduct.accent}
-          key={previewProduct.key}
-          onClick={own(() => director.jump(previewProduct.key))}
-        >
-          <p className="ev-preview-name">
-            <b>{previewProduct.name}</b>
-            {previewProduct.expansion ? (
-              <span>{previewProduct.expansion.join(' ')}</span>
-            ) : previewProduct.devanagari ? (
-              <span>
-                <span className="ev-hi" lang="hi">
-                  {previewProduct.devanagari}
-                </span>{' '}
-                · {previewProduct.meaning}
-              </span>
-            ) : null}
-          </p>
-          <div className="ev-preview-txt">
-            <p className="ev-preview-when">
-              {previewProduct.track === 'engineering' ? previewProduct.place : `${previewProduct.time} · ${previewProduct.place}`}
-            </p>
-            <p className="ev-preview-promise">{previewProduct.promise}</p>
-          </div>
-          <button type="button" className="ev-preview-go" aria-label={`Play the ${previewProduct.name} moment`} onClick={own(() => director.jump(previewProduct.key))}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 3.8v16.4L20 12z" fill="#ffffff" />
-            </svg>
-          </button>
-        </div>
-      ) : null}
+/** The bottom strip: the dots on the left (on the opening, the Auto-play switch in their place), Back and Next on the right. No sentences. */
+export function Strip() {
+  return (
+    <nav className="ev-strip" aria-label="The film">
+      <Dots />
+      <Utilities />
+      <Nav />
     </nav>
   )
 }

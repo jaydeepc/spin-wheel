@@ -5,49 +5,38 @@
  *
  * The one idea: PIRAMAL MIND IS THE ENGINEERING TEAM'S MEMORY AND INTELLIGENCE.
  * Memory: every codebase, every Jira ticket and every discussion flows into it by itself
- * (the client's word: it is auto-ingested). The tag beside "Memory" says so, and a slow
- * pulse keeps travelling down the thread into the core for as long as the board is up.
- * Intelligence: it connects them, so it talks back before something is built the old way.
+ * (the client's word: it is auto-ingested). Intelligence: it connects them, so it talks back
+ * before something is built the old way.
+ *
+ * ONE IDEA PER REST (moments/README.md, THE BUDGET):
  *
  * Before   what was decided, and why, is scattered: an old ticket, old code, somebody's head,
- *          each with a loose end
- * Demo     the request from Priya's team has reached an engineer who is coding with AI. His
- *          prompt is typed. Beside the session, Piramal Mind: the three streams leave the
- *          letters of its name and settle into it. Then it TALKS BACK: the blue theme he
- *          asked for was replaced, in a ticket from three weeks ago
- * Run      touch "Use the new theme": the step is written, the header turns from the blue
- *          theme to the new one, it is stamped Built in the new theme; and Piramal Mind shows
- *          what it joined up to know: the request, the discussion, the code, on one thread
- * Result   the picture stays; under the headline, the other thing it does: a defect, traced
+ *          each with a loose end. (The headline is the frame's: `beforeHeadline`.)
+ * Demo     IT TALKS BACK BEFORE ANYTHING IS BUILT. The engineer's one line, and Piramal Mind's
+ *          reply with the one control. Nothing else: six rows of words. (Its memory is not
+ *          shown here: it is the result's picture, and it is shown once.)
+ * Run      touch "Use the new theme": Piramal Mind opens over the conversation from the very
+ *          button that was pressed. Its memory arrives at the head of it, one strip: the
+ *          three things that flow into it, and "Auto-ingested". From it one thread joins the
+ *          request, the discussion and the code. Then the ONE move: the new theme sweeps
+ *          across the header he asked for in blue, and it is stamped Built in the new theme.
+ * Result   IT REMEMBERS, AND IT CONNECTS. That picture stays: the memory, and the three
+ *          things it joined, each named in two words (no second lines). Under the headline,
+ *          the other thing it does: a defect, traced (the one supporting line).
  * Stat     100 tiles of AI cost; 80 fall away
  *
- * There is no device frame here (device: 'none'): the Screen is the centrepiece itself, a
- * board of 56u × 31.6u with the coding session on the left and Piramal Mind on the right.
- * On a phone on its side and on a squarer screen (3:2 and under) the board is set again in
- * fewer, larger words (mind.css, "compact"): the motion below is the same for both.
+ * There is no device frame here (device: 'none'): the Screen is the centrepiece itself, and it
+ * takes the picture area's own box. Everything on it is sized from --m, the board's own unit
+ * (the area is 46m wide and 42m tall at the least), so it is the same picture at every size.
  */
 
 import gsap from 'gsap'
-import { productByKey, type MindProduct } from '../content'
-import { Rise, TouchControl } from './parts'
+import type { MindProduct } from '../content'
+import { TouchControl } from './parts'
 import type { MomentEnv, MomentModule, PartProps } from './types'
 import './mind.css'
 
 type P = PartProps<MindProduct>
-const MIND = productByKey('mind') as MindProduct
-
-/** The board, in units of --u. Its wires are an SVG laid over it at 10 units per u. */
-const BOARD_W = 56
-const BOARD = { w: 560, h: 316 }
-/** The thread inside Piramal Mind: what flows in runs down it to the core; what it connects hangs from it. */
-const SPINE = 394
-const IN_Y = [67, 90, 113]
-const CORE = { y: 150, r: 19 }
-const LINK_Y = [201.5, 230.5, 259.5]
-/** Where the Mind's answer enters the session: the edge of the talk-back card. */
-const TALK_X = 333
-/** The file the header lives in (illustrative, like the ticket numbers). */
-const CODE_FILE = 'Header.tsx'
 
 const COST_COLS = 10
 const COST_ROWS = 10
@@ -120,20 +109,22 @@ function Tick() {
 }
 
 // ====================================================================== BEFORE
-/** The old way: the decision lives in an old ticket, old code and somebody's head. Three pieces, each with a loose end. */
+/**
+ * The old way: the decision lives in an old ticket, old code and somebody's head. Three pieces,
+ * each with a loose end, and nobody can say why. (25u × 20u; the headline is in the statement slot.)
+ */
 function Before({ product }: P) {
   const d = product.demo
   return (
     <div className="mind-b">
       <svg className="mind-b-ends" viewBox="0 0 250 200" aria-hidden="true">
-        <path className="mind-b-tail" d="M54 110C50 116 58 119 55 124" />
-        <path className="mind-b-tail" d="M178 135C173 141 182 144 177 150" />
-        <path className="mind-b-tail" d="M141 170C148 165 153 175 160 170" />
-        <circle className="mind-b-end" cx="55" cy="127.5" r="3.6" />
-        <circle className="mind-b-end" cx="177" cy="153.5" r="3.6" />
-        <circle className="mind-b-end" cx="163.5" cy="170" r="3.6" />
+        <path className="mind-b-tail" d="M62 80C57 87 67 91 63 98" />
+        <path className="mind-b-tail" d="M190 124C184 131 195 135 190 142" />
+        <path className="mind-b-tail" d="M150 157C158 151 164 163 172 157" />
+        <circle className="mind-b-end" cx="63" cy="102" r="4" />
+        <circle className="mind-b-end" cx="190" cy="146" r="4" />
+        <circle className="mind-b-end" cx="176" cy="157" r="4" />
       </svg>
-      <p className="mind-b-what">{product.before.headline}</p>
       <div className="mind-b-card mind-b-card--ticket">
         <p className="mind-b-cap">
           <Glyph kind="ticket" />
@@ -179,28 +170,11 @@ function Screen({ product }: P) {
   const d = product.demo
   const tb = d.talksBack
   const [builtWord, ...builtRest] = d.built.split(' ')
-  const ids = [d.request.id, tb.source.id, CODE_FILE]
   return (
     <div className="mind-board">
-      <i className="mind-panel-bg">
-        <i className="mind-panel-light" />
-      </i>
-
-      {/* ---------- the engineer's session: he is coding with AI ---------- */}
-      <div className="mind-win">
-        <div className="mind-win-bar">
-          <i className="mind-win-dot" />
-          <i className="mind-win-dot" />
-          <i className="mind-win-dot" />
-          <span className="mind-win-who">
-            <i>{d.developer[0]}</i>
-            {d.developer}
-          </span>
-          <span className="mind-win-tag">Coding with AI</span>
-        </div>
-
-        {/* what he typed */}
-        <div className="mind-prompt">
+      {/* ---------- DEMO: the engineer's one line, and Piramal Mind talks back ---------- */}
+      <div className="mind-chat">
+        <div className="mind-prompt" aria-label={d.developer}>
           <p className="mind-prompt-text">
             {lines(d.prompt).map((l) => (
               <span className="mind-prompt-line" key={l}>
@@ -208,248 +182,134 @@ function Screen({ product }: P) {
               </span>
             ))}
           </p>
-          <span className="mind-id">{d.request.id}</span>
+          <i className="mind-who" aria-hidden="true">
+            {d.developer[0]}
+          </i>
         </div>
 
-        {/* Piramal Mind talks back, before anything is built */}
         <div className="mind-talk">
-          <i className="mind-talk-port" />
-          <div className="mind-talk-head">
-            <i className="mind-badge">
-              <MindGlyph />
-            </i>
-            <b>{product.name}</b>
-            <span className="mind-talk-lead">{tb.lead}</span>
-          </div>
-          <p className="mind-talk-text">{tb.text}</p>
-          <div className="mind-src">
-            <i className="mind-src-ico">
-              <Glyph kind="talk" />
-            </i>
-            <div className="mind-src-txt">
-              <b>{tb.source.title}</b>
-              <span>
-                <span className="mind-id">{tb.source.id}</span>
-                {tb.source.when}
-              </span>
-            </div>
-          </div>
-          <div className="mind-ask">
-            <p className="mind-ask-q">{tb.ask}</p>
-            <div className="mind-acceptWrap">
-              <TouchControl label={d.accept} className="mind-accept">
-                <span className="mind-accept-face">
-                  <i className="mind-accept-sw">
-                    <i />
-                    <Tick />
-                  </i>
-                  {d.accept}
-                </span>
-              </TouchControl>
-              <div className="mind-stamp">
-                <i className="mind-stamp-burst" />
-                <b>{builtWord}</b>
-                <span>{builtRest.join(' ')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* the code, and the app it makes */}
-        <div className="mind-work">
-          <div className="mind-code">
-            <div className="mind-code-tab">
-              <Glyph kind="code" />
-              {CODE_FILE}
-            </div>
-            <div className="mind-code-line">
-              <i className="mind-code-mark mind-code-mark--chg" />
-              <span className="mind-code-no">1</span>
-              <span className="mind-code-txt">
-                <em>&lt;Header</em> <u>theme</u>=
-                <span className="mind-tok">
-                  <span className="mind-tok-old">
-                    <s>&quot;blue&quot;</s> <em>/&gt;</em>
-                  </span>
-                  <span className="mind-tok-new">
-                    <b>&quot;new&quot;</b> <em>/&gt;</em>
-                  </span>
-                </span>
-              </span>
-            </div>
-            <div className="mind-code-line">
-              <span className="mind-code-no">2</span>
-              <span className="mind-code-txt">
-                <em>&lt;Step</em> <u>name</u>=<q>&quot;applicant&quot;</q> <em>/&gt;</em>
-              </span>
-            </div>
-            <div className="mind-code-line">
-              <i className="mind-code-mark mind-code-mark--add" />
-              <span className="mind-code-no">3</span>
-              <span className="mind-code-txt mind-code-typed">
-                <em>&lt;Step</em> <u>name</u>=<q>&quot;co-applicant&quot;</q> <em>/&gt;</em>
-              </span>
-              <i className="mind-code-slot" />
-            </div>
-          </div>
-          <div className="mind-pre">
-            <p className="mind-pre-strip">Preview</p>
-            <div className="mind-pre-band">
-              <i className="mind-pre-band-new" />
-              <span>Home loan</span>
-            </div>
-            <div className="mind-pre-row">
-              <i className="mind-pre-dot">
-                <Tick />
+          <div className="mind-talk-in">
+            <div className="mind-talk-head">
+              <i className="mind-badge">
+                <MindGlyph />
               </i>
-              Applicant
+              <b>{product.name}</b>
+              <span className="mind-talk-lead">{tb.lead}</span>
             </div>
-            <div className="mind-pre-row mind-pre-row--new">
-              <i className="mind-pre-slot" />
-              <span className="mind-pre-rowin">
-                <i className="mind-pre-dot">
-                  <Tick />
-                </i>
-                Co-applicant
-              </span>
+            <p className="mind-talk-text">{tb.text}</p>
+            <div className="mind-ask">
+              <p className="mind-ask-q">{tb.ask}</p>
+              <div className="mind-acceptWrap">
+                <TouchControl label={d.accept} className="mind-accept">
+                  <span className="mind-accept-face">
+                    <i className="mind-accept-sw">
+                      <i />
+                      <Tick />
+                    </i>
+                    {d.accept}
+                  </span>
+                </TouchControl>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ---------- the thread: what flows in, what it says, what it joins ---------- */}
-      <svg className="mind-wires" viewBox={`0 0 ${BOARD.w} ${BOARD.h}`} aria-hidden="true">
-        <path className="mind-spine" d={`M${SPINE} ${IN_Y[0]}V${CORE.y - CORE.r}`} />
-        {/* auto-ingested: quiet traffic down the thread, and a pulse from each stream into the core, all the time */}
-        <g className="mind-intake">
-          <path className="mind-spine-flow" d={`M${SPINE} ${IN_Y[0]}V${CORE.y - CORE.r}`} />
-          {IN_Y.map((y, i) => (
-            <circle
-              className="mind-bead"
-              key={y}
-              cx={SPINE}
-              cy={y}
-              r="3.3"
-              style={{ ['--i' as string]: i, ['--d' as string]: `${CORE.y - CORE.r + 4 - y}px` }}
-            />
-          ))}
-        </g>
-        <path className="mind-spine mind-spine--low" d={`M${SPINE} ${CORE.y + CORE.r}V${LINK_Y[LINK_Y.length - 1]}`} />
-        <path className="mind-wire" d={`M${SPINE - CORE.r - 3} ${CORE.y}H${TALK_X + 3}`} />
-        <circle className="mind-wire-pulse" cx={SPINE - CORE.r - 3} cy={CORE.y} r="4.4" />
-        {LINK_Y.map((y, i) => (
-          <path className={`mind-chain mind-chain--${i}`} key={y} d={`M${SPINE} ${i === 0 ? CORE.y + CORE.r : LINK_Y[i - 1]}V${y}`} />
-        ))}
-      </svg>
-
-      {/* ---------- Piramal Mind: memory above the core, intelligence below it ---------- */}
+      {/* ---------- RESULT: Piramal Mind, opened. One thread joins the request, the discussion and the code ---------- */}
       <div className="mind-panel">
-        <p className="mind-panel-name">
-          <MindGlyph />
-          {product.name}
-        </p>
-        <p className="mind-eyebrow mind-eyebrow--mem">Memory</p>
-        {/* it fills by itself: the client's own word for it */}
-        <span className="mind-auto">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path className="mind-auto-in" d="M12 3.2v10M7.6 9.2l4.4 4.4 4.4-4.4" />
-            <path d="M4.2 14.6v3.6a2 2 0 0 0 2 2h11.6a2 2 0 0 0 2-2v-3.6" />
-          </svg>
-          {d.ingested}
-        </span>
-        {d.ingests.map((t, i) => (
-          <div className="mind-in" style={{ ['--i' as string]: i }} key={t}>
-            <i className="mind-in-node" />
-            <span className="mind-in-pill">
-              <Glyph kind={INGEST_KIND[i] ?? 'ticket'} />
-              {t}
-            </span>
-          </div>
-        ))}
-        <div className="mind-core">
-          <i className="mind-core-halo" />
-          <i className="mind-core-take" />
-          <i className="mind-core-burst" />
-          <i className="mind-core-ring" />
-          <span className="mind-core-face">
-            <MindGlyph />
-          </span>
-        </div>
-        <p className="mind-eyebrow mind-eyebrow--int">Intelligence</p>
-        {d.connects.map((c, i) => (
-          <div className={`mind-link mind-link--${i}`} style={{ ['--i' as string]: i }} key={c}>
-            <i className="mind-link-slot" />
-            <i className="mind-link-hole" />
-            <i className="mind-link-node">
-              <Glyph kind={CONNECT_KIND[i] ?? 'ticket'} />
-            </i>
-            <span className="mind-link-card">
-              <b>{c}</b>
-              <span>{ids[i]}</span>
-            </span>
-          </div>
-        ))}
-        <p className="mind-close">
-          {lines(d.line).map((l) => (
-            <Rise key={l}>{l}</Rise>
+        <i className="mind-panel-light" />
+        <i className="mind-thread">
+          <i className="mind-thread-line" />
+          <i className="mind-thread-bead" />
+        </i>
+        <div className="mind-links">
+          {d.connects.map((c, i) => (
+            <div className={`mind-link mind-link--${i}`} key={c}>
+              <i className="mind-link-node">
+                <Glyph kind={CONNECT_KIND[i] ?? 'ticket'} />
+              </i>
+              <i className="mind-link-stub" />
+              <div className="mind-link-card">
+                <b>{c}</b>
+                {/* the request and the discussion are named, and no more; the code is the picture itself */}
+                {i < d.connects.length - 1 ? null : (
+                  <>
+                    {/* the header he was about to build in the blue theme: the new theme sweeps across it */}
+                    <i className="mind-app">
+                      <i className="mind-app-band">
+                        <i className="mind-app-new" />
+                        <i className="mind-app-mark" />
+                        <i className="mind-app-title" />
+                      </i>
+                      <i className="mind-app-step" />
+                      <i className="mind-app-step mind-app-step--new" />
+                    </i>
+                    <div className="mind-stamp">
+                      <i className="mind-stamp-burst" />
+                      <b>{builtWord}</b>
+                      <span>{builtRest.join(' ')}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           ))}
-        </p>
+        </div>
+      </div>
+
+      {/* ---------- its memory: one strip, at the head of the opened Mind. It fills by itself, all the time ---------- */}
+      <div className="mind-mem">
+        <div className="mind-mem-in" data-ev-solid>
+          <div className="mind-mem-top">
+            <span className="mind-core">
+              <i className="mind-core-take" />
+              <i className="mind-core-burst" />
+              <i className="mind-core-ring" />
+              <span className="mind-core-face">
+                <MindGlyph />
+              </span>
+            </span>
+            {/* the client's own word for it */}
+            <span className="mind-auto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path className="mind-auto-in" d="M12 3.2v10M7.6 9.2l4.4 4.4 4.4-4.4" />
+                <path d="M4.2 14.6v3.6a2 2 0 0 0 2 2h11.6a2 2 0 0 0 2-2v-3.6" />
+              </svg>
+              {d.ingested}
+            </span>
+            {/* quiet traffic toward the core, for as long as the board is up */}
+            <i className="mind-flow">
+              <i />
+            </i>
+          </div>
+          <div className="mind-mem-items">
+            {d.ingests.map((t, i) => (
+              <span className="mind-in" style={{ ['--i' as string]: i }} key={t}>
+                <i className="mind-in-ico">
+                  <Glyph kind={INGEST_KIND[i] ?? 'ticket'} />
+                </i>
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
 // ====================================================================== AROUND THE CENTREPIECE
-/** Left column: the request is a ticket, and it is on its way to an engineer. */
-function Under({ product }: P) {
-  return (
-    <div className="mind-req">
-      <p className="mind-req-from">{product.demo.request.from}</p>
-      <div className="mind-req-row">
-        <span className="mind-req-chip">
-          <Glyph kind="ticket" />
-          <span>Jira ticket</span>
-          <b>{product.demo.request.id}</b>
-        </span>
-        <svg className="mind-req-arrow" viewBox="0 0 64 20" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M2 10h56M50 3l8 7-8 7" />
-        </svg>
-      </div>
-    </div>
-  )
-}
-
-/** Under the result headline: the other thing it does. A defect comes in, and it is traced back to the change that caused it. */
+/**
+ * The one supporting line under the result headline: the other thing it does. A defect comes in,
+ * and it is traced back to the change that caused it. The script's two halves (demo.defect.title,
+ * demo.defect.text) are set as ONE sentence: the title, a comma, the text.
+ */
 function Proof({ product }: P) {
   const df = product.demo.defect
   return (
-    <div className="mind-defect">
-      <p className="mind-defect-h">
-        <svg className="mind-defect-pic" viewBox="0 0 76 24" fill="none" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle className="mind-defect-cause" cx="11" cy="12" r="7" />
-          <path className="mind-defect-pm" d="M7.6 12h6.8M11 8.6v6.8" />
-          <path className="mind-defect-trace" d="M52 12H22M28.5 6.5 22 12l6.5 5.5" />
-          <rect className="mind-defect-tk" x="55" y="2.5" width="19" height="19" rx="4.6" />
-          <path className="mind-defect-bang" d="M64.5 7.5v6M64.5 17.2v.2" />
-        </svg>
-        {df.title}
-      </p>
-      <p className="mind-defect-p">{df.text}</p>
-    </div>
-  )
-}
-
-/** In flight: what flows into it by itself. Born from the letters of the name, settling into the Mind. */
-function Extras({ product }: P) {
-  return (
-    <>
-      {product.demo.ingests.map((t, i) => (
-        <span className="mind-fly" key={t} aria-hidden="true">
-          <Glyph kind={INGEST_KIND[i] ?? 'ticket'} />
-          {t}
-        </span>
-      ))}
-    </>
+    <p className="mind-defect">
+      <b>{df.title},</b> {df.text.charAt(0).toLowerCase() + df.text.slice(1)}
+    </p>
   )
 }
 
@@ -484,242 +344,165 @@ function Stat({ product }: P) {
 
 // ====================================================================== MOTION
 function animate(env: MomentEnv<MindProduct>) {
-  const { $, $$, U, hx, ease: E, loc, letters, before, demo, run, result, stat } = env
+  const { $, $$, U, ease: E, loc, before, demo, run, result, stat } = env
   const clipShut = 'inset(-12% 100% -12% 0%)'
   const clipOpen = 'inset(-12% -3% -12% 0%)'
-
-  // The board keeps clear of the docked name and its caption (the promise, which is a long line here):
-  // it stands at the right edge of the content, and on a squarer screen it is drawn a little smaller.
-  // Its width is the stylesheet's to say (56u; set again for a phone on its side and a squarer screen).
-  const board = $('.mind-board')
-  const dockcap = $('.ev-dockcap')
-  const boardW = board.offsetWidth || BOARD_W * U
-  /** mind.css sets this where the board is laid out again in fewer, larger words. */
-  const compact = getComputedStyle(board).getPropertyValue('--mind-compact').trim() === '1'
-  const cap = loc(dockcap)
-  const capRight = cap.w > 0 ? cap.x + cap.w : 35 * U - hx
-  const room = hx - Math.max(capRight, 31 * U - hx) - 1.5 * U
-  const fit = Math.min(1, room / boardW)
-  gsap.set(board, { scale: fit, transformOrigin: '100% 50%' })
 
   // ---------------------------------------------------------------- before: three pieces, three loose ends
   const bCards = $$('.mind-b-card')
   const bTails = $$<SVGPathElement>('.mind-b-tail')
   const bEnds = $$<SVGCircleElement>('.mind-b-end')
   const bQ = $('.mind-b-q')
-  const bWhat = $('.mind-b-what')
   const tilt = [-5, 4, -3]
   gsap.set(bCards, { autoAlpha: 0, y: 2.2 * U, scale: 0.9, rotation: (i) => tilt[i] * 2.6 })
   gsap.set(bTails, { drawSVG: '0%' })
   gsap.set(bEnds, { scale: 0, transformOrigin: '50% 50%' })
   gsap.set(bQ, { scale: 0, rotation: -40 })
-  gsap.set(bWhat, { autoAlpha: 0, y: 0.8 * U })
   before
-    .to(bWhat, { autoAlpha: 1, y: 0, duration: 0.4 }, 0.1)
     .to(bCards, { autoAlpha: 1, y: 0, scale: 1, rotation: (i) => tilt[i], duration: 0.5, ease: E.snap, stagger: 0.09 }, 0.06)
     .to(bTails, { drawSVG: '100%', duration: 0.26, ease: 'power1.inOut', stagger: 0.07 }, 0.36)
     .to(bEnds, { scale: 1, duration: 0.2, ease: 'back.out(3)', stagger: 0.07 }, 0.5)
     .to(bQ, { scale: 1, rotation: 8, duration: 0.3, ease: 'back.out(2.8)' }, 0.55)
 
-  // ---------------------------------------------------------------- demo: the session, the Mind filling up, and the Mind talking back
-  const pills = $$('.mind-in-pill')
-  const inNodes = $$('.mind-in-node')
-  const flies = $$('.mind-fly')
-  const intake = $<SVGGElement>('.mind-intake')
-  const auto = $('.mind-auto')
-  const spine = $<SVGPathElement>('.mind-spine')
-  const core = $('.mind-core')
-  const halo = $('.mind-core-halo')
-  const burst = $('.mind-core-burst')
+  // ---------------------------------------------------------------- the cast of the board
+  const chat = $('.mind-chat')
   const prompt = $('.mind-prompt')
   const promptLines = $$('.mind-prompt-line')
-  const wire = $<SVGPathElement>('.mind-wire')
-  const wirePulse = $<SVGCircleElement>('.mind-wire-pulse')
-  const port = $('.mind-talk-port')
   const talk = $('.mind-talk')
-  const src = $('.mind-src')
+  const talkText = $('.mind-talk-text')
   const ask = $('.mind-ask-q')
   const acceptWrap = $('.mind-acceptWrap')
-  const spineLow = $<SVGPathElement>('.mind-spine--low')
-  const eyebrowInt = $('.mind-eyebrow--int')
-  const linkSlots = $$('.mind-link-slot')
-  const linkHoles = $$('.mind-link-hole')
+  const control = $<HTMLElement>('[data-ev-control]')
+  const panel = $('.mind-panel')
+  const memIn = $('.mind-mem-in')
+  const items = $$('.mind-in')
+  const auto = $('.mind-auto')
+  const flow = $('.mind-flow')
+  const core = $('.mind-core')
+  const burst = $('.mind-core-burst')
 
-  // measure first: where each stream settles, as the stage stands during the demo
-  const slots = pills.map((p) => loc(p))
-  const flyBox = flies.map((f) => ({ w: f.offsetWidth, h: f.offsetHeight }))
-  /** The letters of the name the three are born from, spread along the word. */
-  const birth = flies.map((_, i) => letters[Math.round(((i + 0.5) * (letters.length - 1)) / flies.length)] ?? { cx: 0, cy: -3 * U })
-  /** How far the answer travels along its wire, in the wire's own units. */
-  const wireLen = SPINE - CORE.r - 3 - (TALK_X + 3)
+  // Measure first, as the stage stands during the demo.
+  const pb = loc(panel)
+  const press = loc(control)
+  /** The Mind opens from the button that was pressed: a circle, from its centre to the farthest corner. */
+  const from = { x: press.cx - pb.x, y: press.cy - pb.y }
+  const reach = Math.hypot(Math.max(from.x, pb.w - from.x), Math.max(from.y, pb.h - from.y)) + 5 * U
+  // Whole pixels, written as plain numbers: a value like "830.0px" (toFixed) cannot be tweened.
+  // GSAP reads its unit as ".0px", writes "415.2.0px" on the way, the browser drops that, and the
+  // Mind then opens in one jump at the end instead of growing from the button.
+  const circle = (r: number) => `circle(${Math.round(r)}px at ${Math.round(from.x)}px ${Math.round(from.y)}px)`
 
-  gsap.set(pills, { autoAlpha: 0, scale: 1.1 })
-  gsap.set(inNodes, { scale: 0 })
-  gsap.set([spine, spineLow], { drawSVG: '0%' })
-  gsap.set(eyebrowInt, { autoAlpha: 0, y: 0.5 * U })
-  gsap.set(linkSlots, { autoAlpha: 0, x: -0.8 * U })
-  gsap.set(linkHoles, { scale: 0 })
-  gsap.set(intake, { autoAlpha: 0 })
-  gsap.set(auto, { autoAlpha: 0, x: -0.7 * U })
-  gsap.set(core, { scale: 0, autoAlpha: 0 })
-  gsap.set(halo, { autoAlpha: 0, scale: 0.6 })
-  gsap.set(burst, { autoAlpha: 0, scale: 1 })
-  gsap.set(prompt, { autoAlpha: 0, scale: 0.9, y: 0.6 * U, transformOrigin: '100% 100%' })
+  // ---------------------------------------------------------------- demo: his one line, and the Mind talks back
+  gsap.set(prompt, { autoAlpha: 0, scale: 0.9, y: 0.8 * U, transformOrigin: '100% 100%' })
   gsap.set(promptLines, { clipPath: clipShut })
-  gsap.set(wire, { drawSVG: '0%' })
-  gsap.set(wirePulse, { autoAlpha: 0 })
-  gsap.set(port, { scale: 0 })
-  gsap.set(talk, { autoAlpha: 0, x: 2.2 * U, scale: 0.94, transformOrigin: '100% 50%' })
-  gsap.set([src, ask], { autoAlpha: 0, y: 0.6 * U })
+  gsap.set(talk, { autoAlpha: 0, y: 2.4 * U, scale: 0.95, transformOrigin: '0% 0%' })
+  gsap.set(talkText, { autoAlpha: 0, y: 1 * U })
+  gsap.set(ask, { autoAlpha: 0, y: 0.7 * U })
   gsap.set(acceptWrap, { autoAlpha: 0, scale: 0.6 })
-  gsap.set(flies, { x: (i) => birth[i].cx, y: (i) => birth[i].cy, xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0 })
+  // (its memory is the result's picture: it arrives in the run, at the head of the opened Mind)
+  gsap.set(memIn, { autoAlpha: 0, y: -1.6 * U })
+  gsap.set(items, { autoAlpha: 0, scale: 1.14, y: 0.5 * U })
+  gsap.set(auto, { autoAlpha: 0, x: -0.8 * U })
+  gsap.set(flow, { autoAlpha: 0 })
+  gsap.set(core, { scale: 0 })
+  gsap.set(burst, { autoAlpha: 0, scale: 1 })
 
-  flies.forEach((f, i) => {
-    const from = { x: birth[i].cx, y: birth[i].cy }
-    const to = { x: slots[i].cx, y: slots[i].cy }
-    // a drift, not a throw: each one swings out on its own curve and settles into the Mind
-    const mid = { x: from.x + (to.x - from.x) * 0.5, y: Math.min(from.y, to.y) - (2.4 + (2 - i) * 1.5) * U }
-    const born = 0.03 + i * 0.05
-    const fly = 0.2 + i * 0.07
-    const dur = 0.52
-    const land = fly + dur
-    demo
-      .to(f, { scale: 1, autoAlpha: 1, duration: 0.3, ease: 'back.out(2.2)' }, born)
-      .to(f, { motionPath: { path: [mid, to], curviness: 1.3 }, duration: dur, ease: 'power2.inOut' }, fly)
-      .to(f, { rotation: 7, duration: dur * 0.45, ease: 'sine.out' }, fly)
-      .to(f, { rotation: 0, duration: dur * 0.55, ease: 'sine.inOut' }, fly + dur * 0.45)
-      .to(f, { scaleX: slots[i].w / (flyBox[i].w || 1), scaleY: slots[i].h / (flyBox[i].h || 1), autoAlpha: 0, duration: 0.18, ease: 'power2.out' }, land - 0.05)
-      .to(pills[i], { autoAlpha: 1, scale: 1, duration: 0.3, ease: E.snap }, land - 0.06)
-      .to(inNodes[i], { scale: 1, duration: 0.26, ease: 'back.out(3)' }, land - 0.02)
-    env.bump(demo, land - 0.06, 0.6)
-  })
   demo
-    // the core, and the thread that carries everything down into it
-    .to(core, { autoAlpha: 1, duration: 0.1, ease: 'none' }, 0.5)
-    .to(core, { scale: 1, duration: 0.4, ease: 'back.out(2.2)' }, 0.5)
-    .to(halo, { autoAlpha: 1, scale: 1, duration: 0.45 }, 0.52)
-    .to(spine, { drawSVG: '100%', duration: 0.3, ease: 'power2.inOut' }, 0.66)
-    // from here on the traffic never stops (CSS, on what is inside this group): it is auto-ingested
-    .to(intake, { autoAlpha: 1, duration: 0.25 }, 0.86)
-    .to(auto, { autoAlpha: 1, x: 0, duration: 0.28 }, 0.96)
-    // below the core: room for what it will join up
-    .to(spineLow, { drawSVG: '100%', duration: 0.34, ease: 'power2.inOut' }, 0.72)
-    .to(eyebrowInt, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.74)
-    .to(linkHoles, { scale: 1, duration: 0.24, ease: 'back.out(3)', stagger: 0.06 }, 0.8)
-    .to(linkSlots, { autoAlpha: 1, x: 0, duration: 0.28, stagger: 0.06 }, 0.82)
-    // the engineer types what he wants
-    .to(prompt, { autoAlpha: 1, scale: 1, y: 0, duration: 0.34, ease: E.snap }, 0.32)
-    .to(promptLines, { clipPath: clipOpen, duration: 0.2, ease: 'none', stagger: 0.17 }, 0.42)
-    // …and before anything is built, the Mind talks back
-    .to(burst, { autoAlpha: 0.9, duration: 0.01 }, 0.8)
-    .to(burst, { scale: 2.1, autoAlpha: 0, duration: 0.42, ease: 'power2.out' }, 0.81)
-    .to(wire, { drawSVG: '100%', duration: 0.16, ease: 'power1.in' }, 0.8)
-    .to(wirePulse, { autoAlpha: 1, duration: 0.03, ease: 'none' }, 0.8)
-    .to(wirePulse, { x: -wireLen, duration: 0.16, ease: 'power1.in' }, 0.8)
-    .to(wirePulse, { autoAlpha: 0, duration: 0.06, ease: 'none' }, 0.95)
-    .to(port, { scale: 1, duration: 0.24, ease: 'back.out(3)' }, 0.94)
-    .to(talk, { autoAlpha: 1, x: 0, scale: 1, duration: 0.34, ease: E.snap }, 0.88)
-    .to([src, ask], { autoAlpha: 1, y: 0, duration: 0.26, stagger: 0.05 }, 0.94)
-    .to(acceptWrap, { autoAlpha: 1, duration: 0.1, ease: 'none' }, 0.98)
-    .to(acceptWrap, { scale: 1, duration: 0.27, ease: 'back.out(2.4)' }, 0.98)
+    // the engineer types what he wants (once the name has left the middle of the stage)
+    .to(prompt, { autoAlpha: 1, scale: 1, y: 0, duration: 0.36, ease: E.snap }, 0.4)
+    .to(promptLines, { clipPath: clipOpen, duration: 0.2, ease: 'none', stagger: 0.14 }, 0.48)
+    // …and before anything is built, Piramal Mind talks back
+    .to(talk, { autoAlpha: 1, duration: 0.16, ease: 'none' }, 0.54)
+    .to(talk, { y: 0, scale: 1, duration: 0.46, ease: E.snap }, 0.54)
+    .to(talkText, { autoAlpha: 1, y: 0, duration: 0.34 }, 0.7)
+    .to(ask, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.84)
+    .to(acceptWrap, { autoAlpha: 1, duration: 0.1, ease: 'none' }, 0.93)
+    .to(acceptWrap, { scale: 1, duration: 0.3, ease: 'back.out(2.4)' }, 0.93)
 
-  // ---------------------------------------------------------------- run: built in the new theme; and how it knew
+  // ---------------------------------------------------------------- run: the Mind opens, joins the three, and it is built in the new theme
   const face = $('.mind-accept-face')
   const swatch = $('.mind-accept-sw > i')
   const swTick = $<SVGPathElement>('.mind-accept-sw path')
-  const slot = $('.mind-code-slot')
-  const typed = $('.mind-code-typed')
-  const markAdd = $('.mind-code-mark--add')
-  const markChg = $('.mind-code-mark--chg')
-  const tokOld = $('.mind-tok-old')
-  const tokNew = $('.mind-tok-new')
-  const preSlot = $('.mind-pre-slot')
-  const preRow = $('.mind-pre-rowin')
-  const bandNew = $('.mind-pre-band-new')
+  const threadLine = $('.mind-thread-line')
+  const bead = $('.mind-thread-bead')
+  const nodes = $$('.mind-link-node')
+  const stubs = $$('.mind-link-stub')
+  const cards = $$('.mind-link-card')
+  const bandNew = $('.mind-app-new')
+  const stepNew = $('.mind-app-step--new')
   const stamp = $('.mind-stamp')
   const stampBurst = $('.mind-stamp-burst')
-  const coreFace = $('.mind-core-face')
-  const chains = $$<SVGPathElement>('.mind-chain')
-  const linkNodes = $$('.mind-link-node')
-  const linkCards = $$('.mind-link-card')
-  const closeLines = $$('.mind-close .ev-rise')
+  const threadLen = loc($('.mind-thread')).h
 
   gsap.set(swTick, { drawSVG: '0%' })
-  gsap.set(typed, { clipPath: clipShut })
-  gsap.set([markAdd, markChg], { autoAlpha: 0 })
-  gsap.set(tokNew, { yPercent: 118 })
-  gsap.set(preRow, { autoAlpha: 0, scale: 0.9 })
+  gsap.set(panel, { autoAlpha: 0, clipPath: circle(0) })
+  gsap.set(threadLine, { scaleY: 0, transformOrigin: '50% 0%' })
+  gsap.set(bead, { autoAlpha: 0, y: 0 })
+  gsap.set(nodes, { scale: 0 })
+  gsap.set(stubs, { scaleX: 0, transformOrigin: '0% 50%' })
+  gsap.set(cards, { autoAlpha: 0, x: -1.6 * U })
   gsap.set(bandNew, { clipPath: 'inset(0% 100% 0% 0%)' })
-  gsap.set(stamp, { autoAlpha: 0, scale: 2.6, rotation: -22, xPercent: -50, yPercent: -50 })
+  gsap.set(stepNew, { autoAlpha: 0, scaleX: 0.7, transformOrigin: '0% 50%' })
+  gsap.set(stamp, { autoAlpha: 0, scale: 2.6, rotation: -22 })
   gsap.set(stampBurst, { autoAlpha: 0 })
-  gsap.set(chains, { drawSVG: '0%' })
-  gsap.set(linkNodes, { scale: 0 })
-  gsap.set(linkCards, { autoAlpha: 0, x: -1 * U })
 
-  const hit = 1.3
+  const open = 0.14
+  /** Its memory arrives at the head of the opened Mind, once the opening has reached it. */
+  const remember = open + 0.46
+  const join = 0.92
+  const each = 0.22
+  /** The one move: the new theme sweeps across the header he asked for in blue. */
+  const sweep = join + each * 2 + 0.42
+  const hit = sweep + 0.56
   run
     // the touch: yes, the new theme
     .to(face, { scale: 0.94, duration: 0.08, ease: 'power2.in' }, 0)
-    .to(face, { scale: 1, duration: 0.4, ease: 'back.out(3.2)' }, 0.08)
-    .to(swatch, { scale: 0, duration: 0.14, ease: 'power2.in' }, 0.03)
-    .to(swTick, { drawSVG: '100%', duration: 0.26, ease: 'power2.out' }, 0.14)
-    .to(ask, { autoAlpha: 0.62, duration: 0.2 }, 0.1)
-    // the step is written…
-    .to(slot, { autoAlpha: 0, duration: 0.14 }, 0.26)
-    .to(markAdd, { autoAlpha: 1, duration: 0.2 }, 0.26)
-    .to(typed, { clipPath: clipOpen, duration: 0.4, ease: 'none' }, 0.3)
-    .to(preSlot, { autoAlpha: 0, duration: 0.14 }, 0.5)
-    .to(preRow, { autoAlpha: 1, scale: 1, duration: 0.3, ease: E.snap }, 0.52)
-    // …and the header is built in the new theme, not the blue one
-    .to(markChg, { autoAlpha: 1, duration: 0.2 }, 0.66)
-    .to(tokOld, { yPercent: -118, duration: 0.24, ease: 'power3.in' }, 0.68)
-    .to(tokNew, { yPercent: 0, duration: 0.34, ease: 'power3.out' }, 0.84)
-    .to(bandNew, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.46, ease: E.inOut }, 0.8)
-    // Built in the new theme
-    .to(face, { autoAlpha: 0, duration: 0.16, ease: 'power1.in' }, hit - 0.26)
+    .to(face, { scale: 1, duration: 0.36, ease: 'back.out(3.2)' }, 0.08)
+    .to(swatch, { scale: 0, duration: 0.12, ease: 'power2.in' }, 0.02)
+    .to(swTick, { drawSVG: '100%', duration: 0.22, ease: 'power2.out' }, 0.1)
+    // Piramal Mind opens over the conversation, from the button itself…
+    .to(panel, { autoAlpha: 1, duration: 0.01, ease: 'none' }, open)
+    .to(panel, { clipPath: circle(reach), duration: 0.62, ease: 'power2.inOut' }, open)
+    .to(chat, { autoAlpha: 0, duration: 0.01, ease: 'none' }, open + 0.62)
+    // …and at the head of it, its memory: what flows into it by itself, all the time
+    .to(memIn, { autoAlpha: 1, duration: 0.12, ease: 'none' }, remember)
+    .to(memIn, { y: 0, duration: 0.4, ease: E.snap }, remember)
+    .to(core, { scale: 1, duration: 0.34, ease: 'back.out(2.4)' }, remember + 0.06)
+    .to(items, { autoAlpha: 1, scale: 1, y: 0, duration: 0.3, ease: E.snap, stagger: 0.07 }, remember + 0.1)
+    // from here on the traffic never stops (CSS, idle): it is auto-ingested
+    .to(auto, { autoAlpha: 1, x: 0, duration: 0.28 }, remember + 0.24)
+    .to(flow, { autoAlpha: 1, duration: 0.25 }, remember + 0.28)
+    .to(burst, { autoAlpha: 0.9, duration: 0.01, ease: 'none' }, join - 0.06)
+    .to(burst, { scale: 2.2, autoAlpha: 0, duration: 0.45, ease: 'power2.out' }, join - 0.05)
+    // one thread, from the memory, through the request, the discussion and the code
+    .to(threadLine, { scaleY: 1, duration: each * 2 + 0.3, ease: 'power1.inOut' }, join)
+  cards.forEach((c, k) => {
+    const s = join + 0.14 + k * each
+    run
+      .to(nodes[k], { scale: 1, duration: 0.3, ease: 'back.out(3)' }, s)
+      .to(stubs[k], { scaleX: 1, duration: 0.14, ease: 'power1.out' }, s + 0.08)
+      .to(c, { autoAlpha: 1, duration: 0.12, ease: 'none' }, s + 0.1)
+      .to(c, { x: 0, duration: 0.38, ease: E.snap }, s + 0.1)
+  })
+  run
+    // BUILT IN THE NEW THEME: one sweep across the header, the new step with it, and the stamp
+    .to(bandNew, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.5, ease: E.inOut }, sweep)
+    .to(stepNew, { autoAlpha: 1, scaleX: 1, duration: 0.32, ease: E.snap }, sweep + 0.2)
     .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.24)
-    .to(stamp, { scale: 1, rotation: compact ? -3.5 : -6, duration: 0.24, ease: E.slam }, hit - 0.24)
-    .to(stampBurst, { autoAlpha: 0.8, duration: 0.01 }, hit)
+    .to(stamp, { scale: 1, rotation: -6, duration: 0.24, ease: E.slam }, hit - 0.24)
+    .to(stampBurst, { autoAlpha: 0.8, duration: 0.01, ease: 'none' }, hit)
     .to(stampBurst, { scale: 1.5, autoAlpha: 0, duration: 0.44, ease: 'power2.out' }, hit + 0.01)
   env.bump(run, hit, 2.4)
-  // how it knew: the request, the discussion and the code, on one thread
-  const join = 1.52
-  run
-    .to(coreFace, { scale: 1.12, duration: 0.1, ease: 'power2.out' }, join - 0.06)
-    .to(coreFace, { scale: 1, duration: 0.3, ease: 'back.out(2.6)' }, join + 0.04)
-    .to(burst, { scale: 1, autoAlpha: 0.9, duration: 0.01 }, join - 0.06)
-    .to(burst, { scale: 2.1, autoAlpha: 0, duration: 0.45, ease: 'power2.out' }, join - 0.05)
-  chains.forEach((c, k) => {
-    const s = join + k * 0.22
-    run
-      .to(c, { drawSVG: '100%', duration: 0.2, ease: 'power1.inOut' }, s)
-      .to(linkNodes[k], { scale: 1, duration: 0.3, ease: 'back.out(3)' }, s + 0.16)
-      .to(linkSlots[k], { autoAlpha: 0, duration: 0.16 }, s + 0.2)
-      .to(linkCards[k], { autoAlpha: 1, x: 0, duration: 0.34, ease: E.snap }, s + 0.2)
-  })
-  run.to(closeLines, { yPercent: 0, duration: 0.46, stagger: 0.12 }, 2.2)
 
-  // ---------------------------------------------------------------- result: the other thing it does, a defect traced back
-  const trace = $<SVGPathElement>('.mind-defect-trace')
-  const cause = $$<SVGElement>('.mind-defect-cause, .mind-defect-pm')
-  gsap.set(trace, { drawSVG: '0%' })
-  gsap.set(cause, { scale: 0, transformOrigin: '50% 50%' })
-  result.to(trace, { drawSVG: '100%', duration: 0.3, ease: 'power2.inOut' }, 0.5).to(cause, { scale: 1, duration: 0.26, ease: 'back.out(3)' }, 0.66)
-  if (!env.small) {
-    // The shared frame draws a centrepiece back to this for the result (core/buildMoment.ts). Where the
-    // board is already smaller than that (a squarer screen), it gives back what the headline does not need.
-    const FRAME_BACK = 0.84
-    const rc = loc($('.ev-col--result'))
-    const free = hx - (rc.x + rc.w) - 1.5 * U
-    const own = Math.min(fit, FRAME_BACK, free / boardW) / FRAME_BACK
-    if (Math.abs(own - fit) > 0.004) result.to(board, { scale: own, duration: 0.85, ease: E.inOut }, 0)
-  }
-  if (compact) {
-    // The promise under the name has been read since the name step; here it is on two lines, and the
-    // headline needs its place. It is back for the number.
-    result.to(dockcap, { autoAlpha: 0, duration: 0.2, ease: 'power1.in' }, 0)
-    stat.to(dockcap, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' }, 0.24)
-  }
+  // ---------------------------------------------------------------- result: it connects them. One pulse runs the thread, as the headline says so
+  result
+    .to(bead, { autoAlpha: 1, duration: 0.08, ease: 'none' }, 0.22)
+    .to(bead, { y: threadLen, duration: 0.56, ease: 'power1.inOut' }, 0.22)
+    .to(bead, { autoAlpha: 0, duration: 0.1, ease: 'none' }, 0.74)
+  nodes.forEach((n, k) => {
+    const at = 0.3 + k * 0.18
+    result.to(n, { scale: 1.16, duration: 0.09, ease: 'power2.out' }, at).to(n, { scale: 1, duration: 0.2, ease: 'back.out(2.6)' }, at + 0.09)
+  })
 
   // ---------------------------------------------------------------- stat: 80 of every 100 fall away
   const tiles = $$('.mind-tile')
@@ -757,22 +540,19 @@ function animate(env: MomentEnv<MindProduct>) {
     .to(keptFills, { scale: 1.14, duration: 0.09, ease: 'power2.out', stagger: { each: 0.004, from: 'start' } }, 1.2)
     .to(keptFills, { scale: 1, duration: 0.14, ease: 'power2.inOut', stagger: { each: 0.004, from: 'start' } }, 1.28)
 
-  return { control: $<HTMLElement>('[data-ev-control]'), deviceLandsOn: $('.mind-cost-core') }
+  return { control, deviceLandsOn: $('.mind-cost-core') }
 }
 
 const mind: MomentModule<MindProduct> = {
   key: 'mind',
   device: 'none',
-  // Priya's side of it: what her team asked for. "The request" is also the first thing the Mind joins up.
-  demoTitle: MIND.demo.connects[0],
-  demoLine: MIND.demo.request.text,
+  // Her 'before' line sets up the request, not the problem: the old way is stated in the statement slot.
+  beforeHeadline: true,
   highlight: 'it connects them',
   Before,
   Screen,
   Stat,
-  Under,
   Proof,
-  Extras,
   animate,
 }
 

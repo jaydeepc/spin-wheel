@@ -3,26 +3,31 @@
 /**
  * BYOT · Build Your Own Tech · 10:30 am, on a site visit.     THE REFERENCE MOMENT.
  *
+ * THE BUDGET (moments/README.md): at every rest the screen holds the name, at most one
+ * statement, Priya's bubble and ONE picture. So everything BYOT has to say is INSIDE the phone:
+ *
  * Before   a notebook page at 11:40 pm: the same four fields, half of them forgotten
- * Demo     the four parts her team put together fly out of B·Y·O·T and become the app
- * Run      she speaks; the key phrases of her note lift off as chips and fly into the
- *          fields they fill; the note is stamped Filed 10:42 am
- * Result   11:40 pm, struck through, becomes Filed 10:42 am
+ * Demo     the four parts her team put together fly out of B·Y·O·T and become the app:
+ *          its name and who built it, the four fields, and the voice dock with the one control
+ * Run      she speaks: her words appear in the dock, the key phrases lift off as chips and fly
+ *          up into the fields they fill; then her words leave and the note is stamped
+ *          Filed 10:42 am in their place
+ * Result   the form's labels and ticks leave: the phone rests on the filed note (four lines)
+ *          under the app's name, and the one stamp
  * Stat     634 tiles, one per employee-built tool; the phone flies into its own tile
  *
- * Everything here is BYOT's own. The name, the phone, the photo, the headline, the
- * number, the hand-over and the touch invitation come from the shared frame.
+ * Everything here is BYOT's own. The name, the phone, the headline, the number, Priya's
+ * bubble, the hand-over and the touch invitation come from the shared frame.
  */
 
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
-import { productByKey, type ByotProduct } from '../content'
+import type { ByotProduct } from '../content'
 import { TouchControl } from './parts'
 import type { MomentEnv, MomentModule, PartProps } from './types'
 import './byot.css'
 
 type P = PartProps<ByotProduct>
-const BYOT = productByKey('byot') as ByotProduct
 
 /** The words of the spoken note that fill each field: Customer, Property, Stage, Next step. */
 const PHRASES = [
@@ -40,7 +45,11 @@ const GRID_ROWS = Math.ceil(TILE_COUNT / GRID_COLS)
 /** Which of the 634 is Visit Notes. */
 const OUR_TILE = 7 * GRID_COLS + 20
 
-const WAVE = [0.5, 0.9, 0.35, 0.7, 1, 0.45, 0.8, 0.3, 0.95, 0.6, 0.4, 0.85, 0.55, 1, 0.38, 0.72, 0.9, 0.5, 0.33, 0.8, 0.62, 0.95, 0.42, 0.7]
+/** Her voice, either side of the mic: eight bars a side. */
+const WAVE = [0.5, 0.9, 0.35, 0.7, 1, 0.45, 0.8, 0.3, 0.95, 0.6, 0.4, 0.85, 0.55, 1, 0.38, 0.72]
+const WAVE_SIDE = WAVE.length / 2
+/** "Built by the Lucknow sales team, on BYOT" → who built it: the line in the app's own header. */
+const builtByTeam = (builtBy: string) => builtBy.split(',')[0]
 
 const phraseText = (spoken: string, idx: number[]) =>
   idx
@@ -56,22 +65,6 @@ function Before({ product }: P) {
   const kept = [fields[0].v, `${fields[1].v.split(',')[0]},`, '', '']
   return (
     <div className="byot-b">
-      <div className="byot-b-night">
-        <svg viewBox="0 0 115 86" aria-hidden="true">
-          <path className="byot-b-moon" d="M105 27A15 15 0 0 1 87 9 15 15 0 1 0 105 27z" />
-          {[
-            [111, 40, 1.5],
-            [79, 34, 1],
-            [104, 50, 1.4],
-            [88, 62, 1],
-            [106, 76, 1.2],
-            [98, 68, 0.8],
-          ].map(([x, y, r], i) => (
-            <circle className="byot-b-star" key={i} cx={x} cy={y} r={r} />
-          ))}
-        </svg>
-        <span className="byot-b-time">{beforeWhen}</span>
-      </div>
       <div className="byot-b-page">
         <i className="byot-b-holes" />
         {fields.map((f, i) => (
@@ -89,14 +82,35 @@ function Before({ product }: P) {
           </p>
         ))}
       </div>
+      {/* the hour it was written at lies over the corner of the page */}
+      <div className="byot-b-night">
+        <svg viewBox="0 0 125 80" aria-hidden="true">
+          <path className="byot-b-moon" d="M110 60A15 15 0 0 1 92 42 15 15 0 1 0 110 60z" />
+          {[
+            [16, 54, 1.5],
+            [34, 68, 1],
+            [56, 50, 1.4],
+            [70, 70, 1],
+            [117, 34, 1.2],
+            [48, 62, 0.8],
+          ].map(([x, y, r], i) => (
+            <circle className="byot-b-star" key={i} cx={x} cy={y} r={r} />
+          ))}
+        </svg>
+        <span className="byot-b-time">{beforeWhen}</span>
+      </div>
     </div>
   )
 }
 
 // ====================================================================== SCREEN
-/** Visit Notes, the app her team built: a voice note and the fields it fills. */
+/**
+ * Visit Notes, the app her team built. Top to bottom: its name and who built it; the four
+ * fields; the voice dock, where her words appear above the one control.
+ */
 function Screen({ product }: P) {
   const d = product.demo
+  const bars = (from: number) => WAVE.slice(from, from + WAVE_SIDE).map((_, i) => <i key={i} />)
   return (
     <div className="byot-app">
       <div className="byot-appbar">
@@ -106,35 +120,13 @@ function Screen({ product }: P) {
             <path d="M9.500 12.500h6M9.500 16h4" />
           </svg>
         </span>
-        <span className="byot-apptitle">
-          <b>{d.app}</b>
-          <span>New note · Tuesday</span>
-        </span>
-        <span className="byot-appbadge">on {product.name}</span>
-      </div>
-
-      <div className="byot-slot byot-slot--voice">
-        <i className="byot-slot-outline" />
-        <div className="byot-block byot-voice">
-          <div className="byot-voice-head">
-            <span>{d.blocks[0]}</span>
-            <span className="byot-voice-state">Listening</span>
-            <span className="byot-voice-state">0:08</span>
-          </div>
-          <div className="byot-voice-body">
-            <p className="byot-voice-ph">Speak right after the visit. The note fills itself in.</p>
-            <div className="byot-wave">
-              {WAVE.map((_, i) => (
-                <i key={i} />
-              ))}
-            </div>
-          </div>
-        </div>
+        <b className="byot-apptitle">{d.app}</b>
+        <span className="byot-appby">{builtByTeam(d.builtBy)}</span>
       </div>
 
       <div className="byot-fields">
         {FIELD_GROUPS.map((group) => (
-          <div className="byot-slot" key={group.join('-')}>
+          <div className="byot-slot byot-slot--field" key={group.join('-')}>
             <i className="byot-slot-outline" />
             <div className="byot-block">
               {group.map((fi) => (
@@ -155,32 +147,39 @@ function Screen({ product }: P) {
         ))}
       </div>
 
-      <div className="byot-miczone">
-        <div className="byot-micWrap">
-          <TouchControl label="Speak a visit note" className="byot-mic">
-            <span className="byot-mic-face">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <g className="byot-mic-g--mic">
-                <rect x="9" y="2.500" width="6" height="11.500" rx="3" fill="#fff" stroke="none" />
-                <path d="M5.500 11.500a6.500 6.500 0 0 0 13 0M12 18v3.500" />
-              </g>
-              <rect className="byot-mic-g--stop" x="7" y="7" width="10" height="10" rx="2.400" fill="#fff" stroke="none" />
-              <path className="byot-mic-g--check" d="M5 12.500 10 17.500 19.500 7" strokeWidth="2.800" />
-            </svg>
-            </span>
-          </TouchControl>
-        </div>
-        <div className="byot-mic-hint">
-          <span>Tap to speak</span>
-          <span>Listening</span>
-          <span>Saved to {d.app}</span>
+      <div className="byot-slot byot-slot--voice">
+        <i className="byot-slot-outline" />
+        <div className="byot-block byot-dock">
+          {/* where her words appear as she speaks; once the note is filed, the stamp stands here */}
+          <div className="byot-note">
+            <p className="byot-note-ph">Tap to speak</p>
+            <p className="byot-note-text">{d.spoken}</p>
+          </div>
+          <div className="byot-microw">
+            <div className="byot-wave">{bars(0)}</div>
+            <div className="byot-micWrap">
+              <TouchControl label="Speak a visit note" className="byot-mic">
+                <span className="byot-mic-face">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <g className="byot-mic-g--mic">
+                      <rect x="9" y="2.500" width="6" height="11.500" rx="3" fill="#fff" stroke="none" />
+                      <path d="M5.500 11.500a6.500 6.500 0 0 0 13 0M12 18v3.500" />
+                    </g>
+                    <rect className="byot-mic-g--stop" x="7" y="7" width="10" height="10" rx="2.400" fill="#fff" stroke="none" />
+                    <path className="byot-mic-g--check" d="M5 12.500 10 17.500 19.500 7" strokeWidth="2.800" />
+                  </svg>
+                </span>
+              </TouchControl>
+            </div>
+            <div className="byot-wave">{bars(WAVE_SIDE)}</div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-/** The stamp sits on the phone's edge and travels with it. */
+/** The ONE thing on the phone at the result: the stamp, where her spoken words were. */
 function OnDevice({ product }: P) {
   const [word, ...rest] = product.demo.filed.split(' ')
   return (
@@ -192,47 +191,7 @@ function OnDevice({ product }: P) {
   )
 }
 
-// ====================================================================== AROUND THE DEVICE
-/** Left column: the parts the team put together. */
-function Under({ product }: P) {
-  return (
-    <div className="byot-kit">
-      {product.demo.blocks.map((b) => (
-        <span className="byot-kit-chip" key={b}>
-          {b}
-        </span>
-      ))}
-      <span className="byot-kit-chip byot-kit-chip--solid">No code</span>
-    </div>
-  )
-}
-
-/** Under the photo: what she says into the phone. */
-function Beside({ product }: P) {
-  return (
-    <div className="byot-said">
-      <p className="byot-said-who">Priya says</p>
-      <p className="byot-said-text">{product.demo.spoken}</p>
-    </div>
-  )
-}
-
-/** Under the result headline: the old time, struck through, and the new one. */
-function Proof({ product }: P) {
-  return (
-    <div className="byot-compare">
-      <span className="byot-compare-old">
-        {product.demo.beforeWhen}
-        <i />
-      </span>
-      <svg viewBox="0 0 40 20" fill="none" stroke="#c8431c" strokeWidth="2.600" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M2 10h34M28 3l8 7-8 7" />
-      </svg>
-      <span className="byot-compare-new">{product.demo.filed}</span>
-    </div>
-  )
-}
-
+// ====================================================================== THE THINGS THAT FLY
 /** Things that fly: the four parts (letters → phone) and the four phrases (her words → the fields). */
 function Extras({ product }: P) {
   return (
@@ -265,7 +224,7 @@ function Stat({ product }: P) {
       <div className="byot-callout">
         <div className="byot-callout-in">
           <b>{product.demo.app}</b>
-          <span>Lucknow sales team</span>
+          <span>{builtByTeam(product.demo.builtBy)}</span>
         </div>
       </div>
     </div>
@@ -274,7 +233,7 @@ function Stat({ product }: P) {
 
 // ====================================================================== MOTION
 function animate(env: MomentEnv<ByotProduct>) {
-  const { $, $$, U, hx, ease: E, loc, letters, before, demo, run, result, stat } = env
+  const { $, $$, U, ease: E, loc, letters, area, before, demo, run, result, stat } = env
   const clipShut = 'inset(0% 100% 0% 0%)'
   const clipOpen = 'inset(0% 0% 0% 0%)'
 
@@ -287,38 +246,72 @@ function animate(env: MomentEnv<ByotProduct>) {
   const inks = $$('.byot-b-ink')
   const gaps = $$('.byot-b-gap')
   const qs = $$('.byot-b-q')
-  gsap.set(night, { autoAlpha: 0, y: 2 * U, rotation: 9 })
+  gsap.set(night, { autoAlpha: 0, y: -2 * U, rotation: 10 })
   gsap.set(moon, { scale: 0, rotation: -40, transformOrigin: '50% 50%' })
   gsap.set(stars, { scale: 0, transformOrigin: '50% 50%' })
-  gsap.set(page, { autoAlpha: 0, y: 3 * U, rotation: -12 })
+  gsap.set(page, { autoAlpha: 0, y: 3 * U, rotation: -10 })
   gsap.set(rows, { autoAlpha: 0, x: -0.6 * U })
   gsap.set(inks, { clipPath: clipShut })
   gsap.set(gaps, { scaleX: 0, transformOrigin: '0 50%' })
   gsap.set(qs, { scale: 0, autoAlpha: 0 })
   before
-    .to(night, { autoAlpha: 1, y: 0, rotation: 4, duration: 0.6, ease: E.snap }, 0.05)
-    .to(page, { autoAlpha: 1, y: 0, rotation: -4, duration: 0.65, ease: E.snap }, 0.12)
-    .to(moon, { scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2)' }, 0.3)
-    .to(stars, { scale: 1, duration: 0.3, stagger: 0.04, ease: 'back.out(3)' }, 0.38)
-    .to(rows, { autoAlpha: 1, x: 0, duration: 0.3, stagger: 0.05 }, 0.26)
+    .to(page, { autoAlpha: 1, y: 0, rotation: -3, duration: 0.65, ease: E.snap }, 0.05)
+    // the hour drops onto the corner of the page
+    .to(night, { autoAlpha: 1, y: 0, rotation: 4, duration: 0.55, ease: E.snap }, 0.18)
+    .to(moon, { scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2)' }, 0.34)
+    .to(stars, { scale: 1, duration: 0.3, stagger: 0.04, ease: 'back.out(3)' }, 0.4)
+    .to(rows, { autoAlpha: 1, x: 0, duration: 0.3, stagger: 0.05 }, 0.22)
     // she writes what she remembers…
-    .to(inks, { clipPath: clipOpen, duration: 0.26, stagger: 0.1, ease: 'power1.inOut' }, 0.36)
+    .to(inks, { clipPath: clipOpen, duration: 0.26, stagger: 0.1, ease: 'power1.inOut' }, 0.34)
     // …and the rest has slipped
-    .to(gaps, { scaleX: 1, duration: 0.2, stagger: 0.05, ease: 'power2.out' }, 0.48)
-    .to(qs, { scale: 1, autoAlpha: 1, duration: 0.22, stagger: 0.05, ease: 'back.out(3.5)' }, 0.52)
+    .to(gaps, { scaleX: 1, duration: 0.2, stagger: 0.05, ease: 'power2.out' }, 0.46)
+    .to(qs, { scale: 1, autoAlpha: 1, duration: 0.22, stagger: 0.05, ease: 'back.out(3.5)' }, 0.5)
 
   // ---------------------------------------------------------------- demo: four parts leave the letters and become the app
-  const parts = $$('.byot-part')
-  const slots = $$('.byot-slot')
-  const blocks = $$('.byot-block')
-  const outlines = $$('.byot-slot-outline')
+  const parts = $$('.byot-part') // Voice note · Customer · Property · Next step
+  const slots = [$('.byot-slot--voice'), ...$$('.byot-slot--field')]
+  const blocks = slots.map((s) => s.querySelector('.byot-block') as HTMLElement)
+  const outlines = slots.map((s) => s.querySelector('.byot-slot-outline') as HTMLElement)
   const micWrap = $('.byot-micWrap')
-  const hints = $$('.byot-mic-hint span')
+  const placeholder = $('.byot-note-ph')
+  const note = $('.byot-note')
+  const noteText = $('.byot-note-text')
+  const stamp = $('.byot-stamp')
+  const burst = $('.byot-stamp-burst')
+  const labels = $$('.byot-field-k')
+  const values = $$('.byot-field-v')
+  const fields = $$('.byot-field')
+  const phrases = $$('.byot-phrase')
+
+  // ---- measured while the stage stands as it does during the demo, the run and the result ----
+  const dev = loc(env.shared.device)
+  /** how much the frame has enlarged the phone: a length on the glass is this many times its own */
+  const zoom = dev.w / (env.shared.device.offsetWidth || 1)
   const slotBox = slots.map((s) => loc(s))
   const partBox = parts.map((p) => ({ w: p.offsetWidth, h: p.offsetHeight }))
+  // the stamp stands where her words were: over the note, hanging a little off the phone's right edge
+  const noteBox = loc(note)
+  const stampBox = loc(stamp)
+  const stampAt = { x: (noteBox.cx - stampBox.cx) / zoom + 1.1 * U, y: (noteBox.cy - stampBox.cy) / zoom }
+  // the filed note: each value comes to the middle of its row, and all four grow together, as
+  // far as the longest of them has room for
+  const grow = Math.max(1, Math.min(1.14, ...values.map((v, i) => (fields[i].offsetWidth - v.offsetLeft * 2) / (v.offsetWidth || 1))))
+  const settle = values.map((v, i) => ({ y: fields[i].offsetHeight / 2 - (v.offsetTop + v.offsetHeight / 2), scale: grow }))
+  // her words, one by one
+  const words = SplitText.create(noteText, { type: 'words' }).words as HTMLElement[]
+  // where each phrase lifts from (her words in the dock) and where it lands (its field)
+  const phraseFrom = PHRASES.map((idx) => loc(words[idx[0]]))
+  const phraseTo = values.map((v) => loc(v))
+  const phraseH = phrases[0].offsetHeight
+  const padX = parseFloat(getComputedStyle(phrases[0]).paddingLeft)
+  const fit = (parseFloat(getComputedStyle(values[0]).fontSize) * zoom) / parseFloat(getComputedStyle(phrases[0]).fontSize)
+  // a lifted phrase is one line; one that starts near the right edge is drawn back inside the picture area
+  const rightEdge = Math.min(area.x + area.w, dev.x + dev.w + 2 * U)
+  const liftX = phrases.map((p, k) => Math.min(phraseFrom[k].x - padX, rightEdge - p.offsetWidth * 1.08))
+
   gsap.set(blocks, { autoAlpha: 0, scale: 0.94 })
   gsap.set(micWrap, { autoAlpha: 0, scale: 0 })
-  gsap.set(hints, { autoAlpha: 0 })
+  gsap.set(placeholder, { autoAlpha: 0 })
   gsap.set(parts, { x: (i) => letters[i].cx, y: (i) => letters[i].cy, xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0 })
   parts.forEach((p, i) => {
     const from = { x: letters[i].cx, y: letters[i].cy }
@@ -339,49 +332,28 @@ function animate(env: MomentEnv<ByotProduct>) {
       .to(blocks[i], { autoAlpha: 1, scale: 1, duration: 0.32, ease: E.snap }, land - 0.05)
     env.bump(demo, land - 0.06)
   })
-  demo.to(micWrap, { autoAlpha: 1, scale: 1, duration: 0.42, ease: 'back.out(2.4)' }, 0.78).to(hints[0], { autoAlpha: 1, duration: 0.25 }, 0.95)
+  // the one control, and the words that say what it does
+  demo.to(micWrap, { autoAlpha: 1, scale: 1, duration: 0.42, ease: 'back.out(2.4)' }, 0.8).to(placeholder, { autoAlpha: 1, duration: 0.25 }, 0.95)
 
   // ---------------------------------------------------------------- run: she speaks, her words fly into the fields, the note is filed
   const mic = $('.byot-mic-face')
   const micGlyph = $('.byot-mic-g--mic')
   const stopGlyph = $('.byot-mic-g--stop')
   const checkGlyph = $('.byot-mic-g--check')
-  const placeholder = $('.byot-voice-ph')
-  const wave = $('.byot-wave')
   const bars = $$('.byot-wave i')
-  const states = $$('.byot-voice-state')
-  const said = $('.byot-said')
-  const words = SplitText.create($('.byot-said-text'), { type: 'words' }).words as HTMLElement[]
-  const phrases = $$('.byot-phrase')
-  const values = $$('.byot-field-v')
   const skels = $$('.byot-field-skel')
   const sweeps = $$('.byot-field-sweep')
   const ticks = $$('.byot-field-tick')
-  const stamp = $('.byot-stamp')
-  const burst = $('.byot-stamp-burst')
-
-  // where each phrase lifts from (her words) and where it lands (its field), as the stage is during the run
-  const phraseFrom = PHRASES.map((idx) => loc(words[idx[0]]))
-  const phraseTo = values.map((v) => loc(v))
-  const phraseH = phrases[0].offsetHeight
-  const padX = parseFloat(getComputedStyle(phrases[0]).paddingLeft)
-  const fit = parseFloat(getComputedStyle(values[0]).fontSize) / parseFloat(getComputedStyle(phrases[0]).fontSize)
-  const landScale = fit * (phraseTo[0].h / (values[0].offsetHeight || 1))
-  // a lifted phrase is one line; one that starts near the right edge is drawn back inside the field
-  const liftX = phrases.map((p, k) => Math.min(phraseFrom[k].x - padX, hx - p.offsetWidth * 1.08))
 
   gsap.set(stopGlyph, { autoAlpha: 0, scale: 0.4, transformOrigin: '50% 50%' })
   gsap.set(micGlyph, { transformOrigin: '50% 50%' })
   gsap.set(checkGlyph, { drawSVG: '0%' })
-  gsap.set(states, { autoAlpha: 0 })
-  gsap.set(wave, { autoAlpha: 0.35 })
-  gsap.set(said, { autoAlpha: 0 })
   gsap.set(words, { autoAlpha: 0, y: 0.4 * U })
   gsap.set(phrases, { x: (i) => liftX[i], y: (i) => phraseFrom[i].cy - phraseH / 2, transformOrigin: '0 50%', autoAlpha: 0 })
-  gsap.set(values, { clipPath: clipShut })
+  gsap.set(values, { clipPath: clipShut, transformOrigin: '0 50%' })
   gsap.set(sweeps, { xPercent: -105 })
   gsap.set(ticks, { autoAlpha: 0, scale: 0 })
-  gsap.set(stamp, { autoAlpha: 0, scale: 2.7, rotation: -24 })
+  gsap.set(stamp, { x: stampAt.x, y: stampAt.y, autoAlpha: 0, scale: 2.7, rotation: -24 })
   gsap.set(burst, { autoAlpha: 0 })
 
   const wordAt = (i: number) => 0.16 + i * 0.058
@@ -390,10 +362,8 @@ function animate(env: MomentEnv<ByotProduct>) {
     .to(mic, { scale: 1, duration: 0.4, ease: 'back.out(3.2)' }, 0.08)
     .to(micGlyph, { autoAlpha: 0, scale: 0.4, duration: 0.16, ease: 'power2.in' }, 0.03)
     .to(stopGlyph, { autoAlpha: 1, scale: 1, duration: 0.28, ease: 'back.out(2.4)' }, 0.14)
-    .to([hints[0], placeholder], { autoAlpha: 0, duration: 0.14 }, 0)
-    .to([hints[1], states[0]], { autoAlpha: 1, duration: 0.2 }, 0.1)
-    .to(wave, { autoAlpha: 1, duration: 0.2 }, 0.05)
-    .to(said, { autoAlpha: 1, duration: 0.25 }, 0.05)
+    .to(placeholder, { autoAlpha: 0, y: -0.5 * U, duration: 0.14, ease: 'power2.in' }, 0)
+  // her voice, either side of the mic
   bars.forEach((b, i) => {
     run.to(b, { scaleY: WAVE[i % WAVE.length], duration: 0.15, repeat: 7, yoyo: true, ease: 'sine.inOut' }, 0.08 + (i % 6) * 0.025)
   })
@@ -405,10 +375,11 @@ function animate(env: MomentEnv<ByotProduct>) {
     const lift = spoken + 0.1
     const fly = lift + 0.14
     const land = fly + 0.5
+    const landScale = fit
     const from = { x: liftX[k], y: phraseFrom[k].cy - phraseH / 2 }
     const to = { x: phraseTo[k].x - padX * landScale, y: phraseTo[k].cy - phraseH / 2 }
-    // each phrase leaves on its own arc: up off the line, across, and down into its field
-    const over = { x: from.x + (to.x - from.x) * 0.4, y: Math.min(from.y, to.y) - (1.6 + k * 0.5) * U }
+    // each phrase leaves on its own arc: off the line, out to the side, and up into its field
+    const over = { x: Math.min(from.x, to.x) - (0.9 + k * 0.45) * U, y: from.y + (to.y - from.y) * 0.5 }
     run
       .to(
         idx.map((i) => words[i]),
@@ -426,26 +397,30 @@ function animate(env: MomentEnv<ByotProduct>) {
     env.bump(run, land - 0.04, 0.6)
   })
   const heard = wordAt(words.length - 1) + 0.3
+  const filled = wordAt(words.length - 1) + 0.74 // the last phrase has landed in its field
   const hit = 2.34
   run
-    // the recording stays in the note as a quiet waveform
-    .to(bars, { scaleY: (i) => 0.2 + WAVE[i % WAVE.length] * 0.6, duration: 0.3, ease: 'power2.out', stagger: 0.006 }, heard)
-    .to(wave, { autoAlpha: 0.5, duration: 0.3 }, heard)
+    // she has stopped speaking: the recording stays as a quiet waveform
+    .to(bars, { scaleY: (i) => 0.16 + WAVE[i % WAVE.length] * 0.34, duration: 0.3, ease: 'power2.out', stagger: 0.006 }, heard)
     .to(stopGlyph, { autoAlpha: 0, scale: 0.4, duration: 0.14, ease: 'power2.in' }, heard)
     .to(checkGlyph, { drawSVG: '100%', duration: 0.32, ease: 'power2.out' }, heard + 0.1)
-    .to([hints[1], states[0]], { autoAlpha: 0, duration: 0.14 }, heard)
-    .to([hints[2], states[1]], { autoAlpha: 1, duration: 0.2 }, heard + 0.1)
-    // Filed 10:42 am
+    // the fields have what they need: her words leave the dock, line by line…
+    .to(words, { autoAlpha: 0, y: -0.6 * U, duration: 0.2, ease: 'power2.in', stagger: 0.007 }, filled)
+    // …and in their place: Filed 10:42 am
     .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.24)
-    .to(stamp, { scale: 1, rotation: -8, duration: 0.24, ease: E.slam }, hit - 0.24)
+    .to(stamp, { scale: 1, rotation: -7, duration: 0.24, ease: E.slam }, hit - 0.24)
     .to(burst, { autoAlpha: 0.8, duration: 0.01 }, hit)
-    .to(burst, { scale: 1.7, autoAlpha: 0, duration: 0.44, ease: 'power2.out' }, hit + 0.01)
+    .to(burst, { scale: 1.5, autoAlpha: 0, duration: 0.44, ease: 'power2.out' }, hit + 0.01)
   env.bump(run, hit, 3)
 
-  // ---------------------------------------------------------------- result: 11:40 pm, struck through
-  const strike = $('.byot-compare-old i')
-  gsap.set(strike, { scaleX: 0 })
-  result.to(strike, { scaleX: 1, duration: 0.26, ease: 'power2.inOut' }, 0.66)
+  // ---------------------------------------------------------------- result: the form steps back, the filed note stays
+  // The labels and the ticks have done their work. They leave, row by row; each value comes to
+  // the middle of its row, a size up: four lines under the app's name, and the stamp.
+  env.leave(result, labels, 0, { stagger: 0.05, dy: 0.5 })
+  env.leave(result, ticks, 0.03, { stagger: 0.05, dy: 0.5 })
+  values.forEach((v, i) => {
+    result.to(v, { y: settle[i].y, scale: settle[i].scale, duration: 0.5, ease: E.snap }, 0.14 + i * 0.05)
+  })
 
   // ---------------------------------------------------------------- stat: one of 634
   const tiles = $$('.byot-tile')
@@ -472,16 +447,10 @@ function animate(env: MomentEnv<ByotProduct>) {
 const byot: MomentModule<ByotProduct> = {
   key: 'byot',
   device: 'phone',
-  demoTitle: BYOT.demo.app,
-  demoLine: BYOT.demo.builtBy,
   highlight: 'on the spot',
-  clock: '10:41',
   Before,
   Screen,
   Stat,
-  Under,
-  Beside,
-  Proof,
   Extras,
   OnDevice,
   animate,

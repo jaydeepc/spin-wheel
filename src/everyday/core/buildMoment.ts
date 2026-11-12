@@ -7,13 +7,18 @@
  *
  *   start ─ before ─ name ─ demo ─ ran ─ result ─ stat ─ done
  *
- *   before   the old way: the before card is in
- *   name     the wordmark has landed, opened and closed; its promise is under it
- *   demo     the name is docked, the device is in, the control is waiting for a touch
+ *   before   the old way: its picture is in the picture area under a "Before" tag (REST)
+ *   name     the wordmark has landed, opened and closed, alone at centre stage (manual passes through)
+ *   demo     the name is docked with its caption, the device is in, the control is waiting (REST)
  *   ran      the demo has been performed (the module's `run` timeline has played)
- *   result   the result headline is in
- *   stat     the number has counted up beside its picture
- *   done     the stage is clear and the name has been filed into the rail
+ *   result   the result headline is in the statement slot (REST)
+ *   stat     the number has counted up in the statement slot, beside its picture (REST)
+ *   done     the stage is clear and the name has been filed into its progress dot
+ *
+ * THE LAYOUT every rest keeps to (moments/README.md): the name, the statement and Priya's voice
+ * down the left; ONE picture in the picture area on the right. The device is fitted to that
+ * area once (enlarged as far as the area allows) and never moves aside again: the left column
+ * is clear of it at every step.
  *
  * The module's five small timelines (before, demo, run, result, stat) are dropped in at
  * the start of their step. The director (core/director.ts) plays from label to label.
@@ -27,15 +32,17 @@ import type { SceneHandle } from './director'
 import type { Eases } from './motion'
 import { prepareName } from './name'
 import type { Stage } from './stage'
-import { CAP, HOLD, NAME_SCORE, READ } from './timing'
+import { CAP, HOLD, MOMENT, READ, TOUCH } from './timing'
 
 /**
- * How much a device is enlarged on a phone on its side, so its text can be read. The phone
- * fills the stage's whole height there, from the top of the docked name to the foot of
- * Priya's line (see "A phone on its side" in everyday.css), and stands that much lower than centre.
+ * The device is FITTED to the picture area: enlarged until it fills the area's height or width,
+ * but never more than this. (A phone grows to about 1.3× on a 16:9 screen, 1.5× on a 4:3 one and
+ * 1.2× on a phone on its side.) A centrepiece of its own ('none') is never enlarged: it is given the area's
+ * own box by its module, and only ever scaled down to fit.
  */
-const SMALL_ZOOM = { phone: 1.2, laptop: 1.12, none: 1 } as const
-const SMALL_DROP = 2.45
+const ZOOM_CAP = { phone: 1.5, laptop: 1.4, none: 1 } as const
+/** The old-way picture is laid out for 25u × 20u and enlarged whole, up to this. */
+const BEFORE_ZOOM = 1.6
 
 export function buildMoment(
   root: HTMLElement,
@@ -53,36 +60,52 @@ export function buildMoment(
 
   // ---------------------------------------------------------------- the shared cast
   const beforePic = $('.ev-before-pic')
-  const beforeEl = $('.ev-before')
-  const beforeRise = $$('.ev-before-txt .ev-rise')
+  const beforeTag = $('.ev-before-tag')
+  const beforeH = $('.ev-before-h .ev-rise')
   const flash = $('.ev-flash')
   const nameGroup = $('.ev-name')
-  const promise = $('.ev-promise .ev-rise')
   const dockcap = $('.ev-dockcap .ev-rise')
-  const demoRise = $$('.ev-col--demo > p .ev-rise')
-  const under = $('.ev-col-under')
+  /** What the name stands for, under the docked name (BYOT, BYOA, Prastuti only). */
+  const dockexp = $('.ev-dockexp .ev-rise')
   const resultCol = $('.ev-col--result')
   const sentenceEl = $('.ev-sentence')
   const proof = $('.ev-proof')
-  const side = $('.ev-side')
   const statPic = $('.ev-stat-pic')
   const statRise = $$('.ev-stat .ev-rise')
   const numEl = $('.ev-stat-n')
   const mover = $('.ev-deviceMover')
   const nudge = $('.ev-deviceNudge')
   const extras = $('.ev-extras')
-  const railStop = document.querySelector<HTMLElement>(`[data-ev-rail="${product.key}"]`)
-  const railName = railStop?.querySelector<HTMLElement>('.ev-stop-pop') ?? null
+  /** This product's progress dot (shell/Shell.tsx): where the name is filed at the hand-over. */
+  const dot = document.querySelector<HTMLElement>(`[data-ev-rail="${product.key}"] .ev-dot-mark`)
 
-  // ---------------------------------------------------------------- pose the stage as it is during the demo, and measure
-  const zoom = stage.small ? SMALL_ZOOM[deviceKind] : 1
-  const zoomY = stage.small && deviceKind === 'phone' ? SMALL_DROP * U : 0
+  // ---------------------------------------------------------------- THE LAYOUT, measured
+  const area = stage.loc($('.ev-picarea'))
   const m0 = stage.loc(mover)
-  gsap.set(mover, { scale: zoom, y: zoomY })
+  // the device: centred in the picture area, as large as the area allows
+  // (on a large screen a phone keeps a little air above and below; on a phone on its side it
+  // takes every pixel of the height: what is on it is at its type floor there)
+  const air = deviceKind === 'phone' && !stage.small ? 0.96 : 1
+  const zoom = Math.min(ZOOM_CAP[deviceKind], (area.w * air) / Math.max(1, m0.w), (area.h * air) / Math.max(1, m0.h))
+  const home = { x: area.cx - m0.cx, y: area.cy - m0.cy }
+  gsap.set(mover, { x: home.x, y: home.y, scale: zoom })
+  // The old-way picture: the same, under its tag (which needs 3u above it). It stands beside
+  // Priya's bubble, or, where that lets it be larger (a squarer screen), above it.
+  const tagRoom = 3 * U
+  const b0 = stage.loc(beforePic)
+  const fitBefore = (a: typeof area) => Math.max(0.6, Math.min(BEFORE_ZOOM, (a.w * 0.96) / Math.max(1, b0.w), (a.h - tagRoom) / Math.max(1, b0.h)))
+  const beside = stage.loc($('.ev-picarea--before'))
+  const above = stage.loc($('.ev-picarea--above'))
+  const beforeArea = fitBefore(above) > fitBefore(beside) * 1.04 ? above : beside
+  const bz = fitBefore(beforeArea)
+  const bHome = { x: beforeArea.cx - b0.cx, y: beforeArea.cy + tagRoom / 2 - b0.cy }
+  gsap.set(beforePic, { x: bHome.x, y: bHome.y, scale: bz })
+  const tag0 = stage.loc(beforeTag)
+  const tagHome = { x: beforeArea.cx - (b0.w * bz) / 2 - tag0.x, y: beforeArea.cy + tagRoom / 2 - (b0.h * bz) / 2 - 0.5 * U - tag0.h - tag0.y }
+
   const name = prepareName(root, stage, E)
   const dockAt = stage.loc($('.ev-dock'))
   const rc = stage.loc(resultCol)
-  const sideBox = side ? stage.loc(side) : null
 
   // ---------------------------------------------------------------- the module adds its own
   const section = () => gsap.timeline({ paused: true, defaults: { ease: E.out, duration: 0.5 } })
@@ -99,9 +122,13 @@ export function buildMoment(
     $$,
     loc: (el) => stage.loc(el),
     letters: name.letters,
-    shared: { device: mover, photo: $<HTMLElement>('.ev-photo-frame'), name: nameGroup },
+    shared: { device: mover, name: nameGroup },
+    area,
     bump(s, at, strength = 1) {
       s.to(nudge, { y: 0.16 * U * strength, duration: 0.07, ease: 'power1.out' }, at).to(nudge, { y: 0, duration: 0.3, ease: 'power2.out' }, at + 0.07)
+    },
+    leave(s, targets, at = 0, opts) {
+      s.to(targets, { autoAlpha: 0, y: -(opts?.dy ?? 0.9) * U, duration: 0.26, ease: 'power2.in', stagger: opts?.stagger ?? 0.045 }, at)
     },
   }
   let handles: MomentHandles = { control: null }
@@ -121,50 +148,51 @@ export function buildMoment(
 
   // ---------------------------------------------------------------- shared starting states
   gsap.set($$('.ev-mask > .ev-rise'), { yPercent: 118 })
-  gsap.set(beforePic, { autoAlpha: 0, y: 2.6 * U, scale: 0.92, rotation: -5 })
+  gsap.set(beforePic, { autoAlpha: 0, x: bHome.x + 5 * U, y: bHome.y + 1.2 * U, scale: bz * 0.9, rotation: 3 })
+  gsap.set(beforeTag, { autoAlpha: 0, x: tagHome.x - 1.6 * U, y: tagHome.y })
   gsap.set(flash, { autoAlpha: 0, scale: 0.6 })
   name.setInitial()
-  gsap.set(mover, { autoAlpha: 0, y: zoomY + 46 * U, rotation: deviceKind === 'phone' ? 5 : 0, scale: zoom })
-  if (under) gsap.set(under, { autoAlpha: 0, y: 0.8 * U })
-  if (side) gsap.set(side, { autoAlpha: 0, x: 5 * U, scale: 0.95 })
+  gsap.set(mover, { autoAlpha: 0, x: home.x, y: home.y + 50 * U, rotation: deviceKind === 'phone' ? 5 : 0, scale: zoom })
   if (proof) gsap.set(proof, { autoAlpha: 0, y: 1 * U })
   gsap.set(statPic, { autoAlpha: 0 })
   gsap.set(numEl, { textContent: 0 })
 
-  // ================================================================ BEFORE: the old way, small
+  // ================================================================ BEFORE: the old way. ONE picture; Priya's bubble tells it.
   const tB = 0
   t.addLabel('start', 0)
-  t.to(beforePic, { autoAlpha: 1, y: 0, scale: 1, rotation: 0, duration: 0.7, ease: E.snap }, tB)
-    .to(beforeRise, { yPercent: 0, duration: 0.65, stagger: 0.09 }, tB + 0.12)
-    .add(sec.before.paused(false), tB)
+  t.to(beforePic, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' }, tB)
+    .to(beforePic, { x: bHome.x, y: bHome.y, scale: bz, rotation: 0, duration: 0.75, ease: E.snap }, tB)
+    .to(beforeTag, { autoAlpha: 1, x: tagHome.x, duration: 0.5 }, tB + 0.28)
+  if (beforeH) t.to(beforeH, { yPercent: 0, duration: 0.65 }, tB + 0.16)
+  t.add(sec.before.paused(false), tB)
   const tN = tB + Math.max(0.85, sec.before.duration())
   t.addLabel('before', tN)
 
-  // ================================================================ NAME: the hero
-  t.to(beforeEl, { autoAlpha: 0, scale: 0.92, y: -1.6 * U, duration: 0.36, ease: 'power2.in' }, tN).to(
-    flash,
-    { autoAlpha: 1, scale: 1, duration: 1.1 },
-    tN + 0.1,
-  )
+  // ================================================================ NAME: the hero, alone at centre stage
+  // The old way leaves with intent: the tag first, then the picture, drawn off to the right, and
+  // (Piramal Mind) the headline up through its mask. Priya's bubble leaves on the same beat (cue 'off').
+  t.to(beforeTag, { autoAlpha: 0, x: tagHome.x + 1.2 * U, duration: 0.16, ease: 'power2.in' }, tN)
+    .to(beforePic, { autoAlpha: 0, x: bHome.x + 6 * U, scale: bz * 0.92, rotation: 2.5, duration: 0.26, ease: 'power2.in' }, tN)
+    .to(flash, { autoAlpha: 1, scale: 1, duration: 1.1 }, tN + 0.1)
+  // (out fast: the name's first letters land where its second line stands, a tenth of a second later)
+  if (beforeH) t.to(beforeH, { yPercent: -118, duration: 0.14, ease: 'power1.in' }, tN)
   // every name takes exactly CAP.name: its choreography is scored on NAME_SCORE seconds (core/name.ts)
   const nameDur = name.addTo(t, tN)
-  t.to(promise, { yPercent: 0, duration: 0.6 }, tN + ((name.opens ? 1.35 : 1.0) * CAP.name) / NAME_SCORE)
   const tD = tN + nameDur
   t.addLabel('name', tD)
 
-  // ================================================================ DEMO: the name docks, the device arrives
-  const dock = name.dock(dockAt.x, dockAt.y, 31 * U, 7.05 * U)
+  // ================================================================ DEMO: the name docks, the device arrives in the picture area
+  // The docked name is as wide as the left column lets it be, and never taller than 7.4u (7.05u on a phone on its side).
+  const dock = name.dock(dockAt.x, dockAt.y, Math.max(20 * U, rc.w - 4 * U), (stage.small ? 7.05 : 7.4) * U)
   name.addLeaveCentre(t, tD)
-  t.to(promise, { yPercent: -118, duration: 0.32, ease: 'power3.in' }, tD)
-    .to(nameGroup, { ...dock, duration: 0.85, ease: E.inOut }, tD + 0.04)
+  t.to(nameGroup, { ...dock, duration: 0.85, ease: E.inOut }, tD + 0.04)
     .to(flash, { autoAlpha: 0.5, duration: 0.85, ease: 'power1.inOut' }, tD)
     .to(dockcap, { yPercent: 0, duration: 0.55 }, tD + 0.65)
     .to(mover, { autoAlpha: 1, duration: 0.01 }, tD + 0.05)
-    .to(mover, { y: zoomY, rotation: 0, duration: 0.95 }, tD + 0.05)
-    .to(demoRise, { yPercent: 0, duration: 0.6, stagger: 0.07 }, tD + 0.5)
-  if (under) t.to(under, { autoAlpha: 1, y: 0, duration: 0.45 }, tD + 0.75)
-  if (side) t.to(side, { autoAlpha: 1, x: 0, scale: 1, duration: 0.8 }, tD + 0.4)
-  t.add(sec.demo.paused(false), tD)
+  // What the name stands for rests under the docked name for as long as the demo rest lasts: at
+  // centre stage it was open for under a second. It rises in just ahead of the caption.
+  if (dockexp) t.to(dockexp, { yPercent: 0, duration: 0.5 }, tD + 0.52)
+  t.to(mover, { y: home.y, rotation: 0, duration: 0.95 }, tD + 0.05).add(sec.demo.paused(false), tD)
   const tU = tD + Math.max(1.25, sec.demo.duration())
   t.addLabel('demo', tU)
 
@@ -173,7 +201,7 @@ export function buildMoment(
   const tR = tU + Math.max(0.2, sec.run.duration())
   t.addLabel('ran', tR)
 
-  // ================================================================ RESULT: the new way, in one sentence
+  // ================================================================ RESULT: the new way, in one sentence, in the statement slot
   const sentence = SplitText.create(sentenceEl, { type: 'lines,words', mask: 'lines' })
   const lines = sentence.lines as HTMLElement[]
   const wanted = (sentenceEl.dataset.highlight ?? '').toLowerCase().split(/\s+/).filter(Boolean)
@@ -188,51 +216,22 @@ export function buildMoment(
     }
   }
   gsap.set(lines, { yPercent: 118 })
-  // the device makes room: it settles between the headline and the photo
-  let resultX = 0
-  let resultScale = 1
-  // A side panel that a moment has moved to the headline's own place (Prastuti, on a phone on its
-  // side: her words stand left of the laptop) is not a neighbour to keep clear of: it leaves
-  // when the headline arrives.
-  const sideLeaves = !!sideBox && sideBox.x < rc.x + rc.w
-  if (deviceKind !== 'none') {
-    const loEdge = rc.x + rc.w + 2.2 * U
-    const hiEdge = sideBox && !sideLeaves ? sideBox.x - 2.2 * U : stage.hx
-    // a phone steps back a little; a laptop only as far as it must to stand clear of both.
-    // On a phone on its side a device keeps its enlarged size if it can: what is on it is still being read.
-    resultScale = deviceKind === 'phone' ? (stage.small ? zoom : 0.94) : Math.min(zoom, Math.max(0.8, (hiEdge - loEdge) / m0.w))
-    const half = (m0.w * resultScale) / 2
-    const lo = loEdge + half
-    const hi = hiEdge - half
-    const cx = lo <= hi ? Math.min(Math.max(m0.cx, lo), hi) : (lo + hi) / 2
-    resultX = cx - m0.cx
-  } else {
-    // a centrepiece of its own draws back toward the right edge, to give the headline its room.
-    // On a phone on its side it keeps its size: its words are at their floor already, and the
-    // moment lays its headline out beside it (see the moment's own phone block).
-    resultScale = stage.small ? 1 : 0.84
-    resultX = (m0.w * (1 - resultScale)) / 2
-  }
-  t.to(demoRise, { yPercent: -118, duration: 0.3, ease: 'power3.in', stagger: 0.03 }, tR)
-  if (under) t.to(under, { autoAlpha: 0, duration: 0.22, ease: 'power1.in' }, tR)
-  if (side && sideLeaves) t.to(side, { autoAlpha: 0, duration: 0.24, ease: 'power1.in' }, tR)
-  t.to(mover, { x: resultX, y: stage.small && deviceKind === 'phone' ? zoomY : 0, scale: resultScale, duration: 0.85, ease: E.inOut }, tR).to(
-    lines,
-    { yPercent: 0, duration: 0.65, stagger: 0.07 },
-    tR + 0.16,
-  )
-  // the proof comes in with the headline, so it has the whole step to be read (for Piramal Mind
-  // it is the other half of the product: the defect, traced back to its change)
-  if (proof) t.to(proof, { autoAlpha: 1, y: 0, duration: 0.4 }, tR + 0.2)
+  // The caption has done its work (it named the promise while the demo was shown): it leaves as
+  // the headline takes the slot under the name. The device stays exactly where it is.
+  // (What the name stands for leaves with it, a beat behind: the caption stands where the
+  // headline's first line arrives, so it goes first. The name slot is the name alone again.)
+  t.to(dockcap, { yPercent: -118, duration: 0.26, ease: 'power2.in' }, tR).to(lines, { yPercent: 0, duration: 0.7, stagger: 0.08 }, tR + 0.16)
+  if (dockexp) t.to(dockexp, { yPercent: -118, duration: 0.26, ease: 'power2.in' }, tR + 0.06)
+  // the one supporting line (SmartHelp, Piramal Mind) follows the headline in
+  if (proof) t.to(proof, { autoAlpha: 1, y: 0, duration: 0.4 }, tR + 0.45)
   t.add(sec.result.paused(false), tR)
   const tT = tR + Math.max(0.95, sec.result.duration())
   t.addLabel('result', tT)
 
-  // ================================================================ STAT: a huge number, with a picture of it
+  // ================================================================ STAT: the number has the screen (Priya's bubble leaves: cue 'off')
   const target = Number((numEl.parentElement?.dataset.value ?? '0').replace(/[^\d.]/g, '')) || 0
   t.to(lines, { yPercent: -118, duration: 0.32, ease: 'power3.in', stagger: 0.03 }, tT)
-  if (proof) t.to(proof, { autoAlpha: 0, duration: 0.22, ease: 'power1.in' }, tT)
-  if (side) t.to(side, { autoAlpha: 0, x: 5 * U, duration: 0.4, ease: 'power2.in' }, tT)
+  if (proof) t.to(proof, { autoAlpha: 0, y: -0.6 * U, duration: 0.22, ease: 'power1.in' }, tT)
   if (landOn) {
     // the device flies into its place in the picture, and becomes part of it
     t.to(
@@ -241,7 +240,7 @@ export function buildMoment(
       tT + 0.05,
     ).to(mover, { autoAlpha: 0, duration: 0.14, ease: 'power1.in' }, tT + 0.73)
   } else {
-    t.to(mover, { y: 7 * U, scale: resultScale * 0.9, autoAlpha: 0, duration: 0.45, ease: 'power2.in' }, tT)
+    t.to(mover, { y: home.y + 7 * U, scale: zoom * 0.9, autoAlpha: 0, duration: 0.45, ease: 'power2.in' }, tT)
   }
   t.to(statPic, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' }, tT + 0.2)
     .to(statRise[0], { yPercent: 0, duration: 0.6 }, tT + 0.3)
@@ -253,62 +252,57 @@ export function buildMoment(
   const tH = tT + Math.max(1.5, sec.stat.duration())
   t.addLabel('stat', tH)
 
-  // ================================================================ HAND OVER: the name is filed into the day
-  t.to(statRise, { yPercent: -118, duration: 0.36, ease: 'power3.in', stagger: 0.04 }, tH)
+  // ================================================================ HAND OVER: the name is filed into its dot
+  t.to(statRise, { yPercent: -118, duration: 0.28, ease: 'power3.in', stagger: 0.03 }, tH)
     .to(statPic, { autoAlpha: 0, scale: 0.97, duration: 0.3, ease: 'power2.in' }, tH)
-    .to(dockcap, { yPercent: -118, duration: 0.28, ease: 'power3.in' }, tH)
     .to(flash, { autoAlpha: 0, duration: 0.5, ease: 'power1.inOut' }, tH)
   if (extras) t.to(extras, { autoAlpha: 0, duration: 0.25, ease: 'power1.in' }, tH)
-  if (railName && railStop) {
-    // The name lands exactly on its own name in the rail, at the size the rail shows the current
-    // name. That size is worked out from the stop's CSS, not measured: when a moment is built
-    // the rail is still easing into it. The rail is outside the stage, so its lengths are ÷ Z.
-    const cs = getComputedStyle(railStop)
-    const grow = parseFloat(cs.getPropertyValue('--cur-scale')) || 1
-    const lean = parseFloat(cs.getPropertyValue('--cur-dx')) || 0
-    const sb = stage.loc(railStop)
-    const nameCs = getComputedStyle(railName.parentElement as HTMLElement)
-    const top = parseFloat(nameCs.top) || 0
-    const lh = parseFloat(nameCs.lineHeight) || 0
-    const railFont = (parseFloat(nameCs.fontSize) * grow) / stage.Z
-    const railWidth = (railName.offsetWidth * grow) / stage.Z
-    t.to(nameGroup, { ...name.rail(sb.cx + (lean * U) / stage.Z, sb.y + (top + lh / 2) / stage.Z, railFont, railWidth), duration: 0.58, ease: E.inOut }, tH + 0.04)
-    // ONE name, not two. The rail already shows this name, so its own copy steps aside for the
-    // flight, and is back in the frame the flying one has landed on it (tH + 0.62) and goes.
-    t.to(railName, { autoAlpha: 0, duration: 0.14, ease: 'none' }, tH + 0.02).to(railName, { autoAlpha: 1, duration: 0.02, ease: 'none' }, tH + 0.62)
-    // Nothing of the rail cuts through it on the way down. What stands over its stop (the time,
-    // or Piramal Mind's "Engineering" tag, which is the name's own colour) steps aside too and
-    // comes back as it lands; and for the flight the stage is drawn over the rail, so the line
-    // and the dots pass behind the word. Everything else on the stage is leaving, clear of the rail.
-    const over = railStop.querySelector<HTMLElement>('.ev-stop-time')
-    if (over) t.to(over, { autoAlpha: 0, duration: 0.14, ease: 'none' }, tH + 0.02).to(over, { autoAlpha: 1, duration: 0.2, ease: 'none' }, tH + 0.52)
-    const wrapEl = root.closest<HTMLElement>('.ev-wrap')
-    if (wrapEl) t.set(wrapEl, { zIndex: 9 }, tH + 0.02).set(wrapEl, { zIndex: 0 }, tH + 0.74)
+  if (dot) {
+    // The docked name travels down into its own progress dot, shrinking as it goes, and is gone
+    // as it lands: ONE name on the way, and nothing left over the dot. It sets off once the
+    // number and its label have risen out (they stand in its path). The dot then fills (it
+    // turns from the current pill into a filled dot as the next scene begins: the shell's CSS).
+    // The dots are outside the stage and drawn over it, so for the flight the stage is raised
+    // over them: nothing cuts through the word on its way down. The raise is the stylesheet's
+    // (.ev-root[data-step='done'] .ev-wrap in everyday.css), keyed on the step, so it can never
+    // outlive the hand-over, and presses fall through it to Next, Back and the dots.
+    const db = stage.loc(dot)
+    t.to(nameGroup, { ...name.rail(db.cx, db.cy, 0.5 * U), duration: 0.52, ease: E.inOut }, tH + 0.2).to(nameGroup, { autoAlpha: 0, duration: 0.1, ease: 'power1.in' }, tH + 0.63)
+  } else {
+    t.to(nameGroup, { autoAlpha: 0, y: '-=' + 2 * U, duration: 0.3, ease: 'power2.in' }, tH + 0.1)
   }
-  t.to(nameGroup, { autoAlpha: 0, duration: 0.06, ease: 'none' }, tH + 0.64)
   t.addLabel('done', tH + 0.75)
 
-  // ================================================================ PRIYA'S LINE, on the same clock
-  // Her 'before' line is read, not heard: it stays on screen while the name lands, for as long
-  // as it takes to read (see READ in timing.ts), and her next line arrives after it. The longest
-  // lines hand over just before the name has finished, so the name always ends with her saying it.
-  // Her 'after' line is the outcome, in the past tense: it arrives when the demo has all but
-  // shown it (READ.afterAt of the way through the run), never at the touch.
+  // ================================================================ PRIYA'S VOICE, on the same clock
+  // Her bubble is read, not heard. It is on screen for the before step (her 'before' line), away
+  // while the name has the stage, back as the device arrives (her 'tool' line), changes late in
+  // the run to the outcome (her 'after' line: never at the touch), and leaves as the number
+  // arrives. These are cues on this timeline, so they hold under a debug URL and when stepping back.
+  //
+  // Auto-play: the before rest is the only time her 'before' line has, so it is as long as the
+  // line needs at reading pace, as far as this moment's own budget allows (see MOMENT.budget).
   const beforeWords = product.priya.before.trim().split(/\s+/).length
   const readFor = READ.settle + beforeWords / READ.wordsPerSecond
-  const lag = Math.min(Math.max(readFor - (tN + HOLD.before), 0), Math.max(0, nameDur - READ.nameTail))
+  const lap = (dur: number, cap: number) => Math.min(dur, cap)
+  const rest =
+    CAP.name + HOLD.name + lap(tU - tD, CAP.demo) + TOUCH.wait + TOUCH.travel + lap(tR - tU, CAP.run) + lap(tT - tR, CAP.result) + HOLD.result + lap(tH - tT, CAP.stat) + HOLD.stat + CAP.done
+  const beforeIn = lap(tN, CAP.before)
+  const beforeHold = Math.max(HOLD.before, Math.min(readFor - beforeIn, MOMENT.budget - rest - beforeIn))
 
   return {
     tl: t,
     cues: [
       { at: 0, id: 'before' },
-      { at: tN + lag, id: 'tool' },
+      { at: tN, id: 'off' },
+      { at: tD + READ.toolAt, id: 'tool' },
       { at: tU + READ.afterAt * (tR - tU), id: 'after' },
+      { at: tT, id: 'off' },
     ],
     stops: [
-      { label: 'before', cap: CAP.before, hold: HOLD.before },
-      { label: 'name', cap: CAP.name, hold: HOLD.name },
-      // the one control: live as soon as it can be seen; "Your turn" beside it when somebody is there
+      { label: 'before', cap: CAP.before, hold: beforeHold },
+      // the name is the biggest moment of every product, and not a place to wait: manual passes through
+      { label: 'name', cap: CAP.name, hold: HOLD.name, pass: true },
+      // the one control: live as soon as it can be seen; Next presses it too
       handles.control ? { label: 'demo', cap: CAP.demo, control: handles.control, invite: true } : { label: 'demo', cap: CAP.demo, hold: 1 },
       {
         label: 'result',

@@ -1,58 +1,47 @@
 /* ============================================================
    EVERYDAY AI · the closing: the five names once more.
-   The natural layout below is the LAST frame: "That is Everyday AI"
-   across the top, and the five names with the whole stage under it.
-   Earlier frames are this layout, moved (see Finale.tsx).
+   The film's own layout: "That is Everyday AI" in the left
+   column, Priya's bubble in its usual place under it (the
+   shell's), and ONE picture in the picture area: the five
+   names, as one list on one sheet.
+   The natural layout below is the LAST frame; earlier frames
+   are this layout, moved (see Finale.tsx).
    ============================================================ */
 
 .ev-scene--finale {
-  --fin-top: calc(var(--u) * -17.7);
-  --fin-h: calc(var(--u) * 34.3);
-  --fin-hs: calc(var(--u) * 4.5); /* "That is Everyday AI" */
-  --fin-ns: calc(var(--u) * 2.85); /* the five names */
-  --fin-ss: calc(var(--u) * 1.12); /* what a name stands for */
-  --fin-ps: calc(var(--u) * 1.26); /* what it does */
-  --fin-vs: calc(var(--u) * 3.7); /* its number */
-  --fin-ls: calc(var(--u) * 1.1); /* and what the number counts */
-  --fin-pad: calc(var(--u) * 1.2);
-  --fin-gap: calc(var(--u) * 1.05);
-  --fin-play: calc(var(--u) * 2.3);
-  --fin-ll: 2; /* lines kept for what the number counts, so the five numbers stand on one line */
+  --fin-hs: calc(var(--u) * 7.2); /* "That is Everyday AI": "Everyday AI" is 5.6 em wide, and the column 44u */
+  --fin-htop: calc(var(--u) * -9.6);
+  --fin-up: calc(var(--u) * 5.2); /* how far the list reaches above the picture area's top: to the logo's own top */
+  --fin-down: calc(var(--u) * 0.8); /* and how far above the area's foot it ends: 2u clear of the Next button under it */
+  --fin-ns: calc(var(--u) * 4.1); /* the five names: each row is the name and one line, so the name is large */
+  --fin-ss: calc(var(--u) * 1.2); /* what a name stands for */
+  --fin-ps: calc(var(--u) * 1.6); /* what it does */
+  --fin-padx: calc(var(--u) * 2.2);
+  --fin-apart: calc(var(--u) * 1.1); /* how far Piramal Mind stands from the four of her day */
 }
 
-.fin-area {
+/* ---------- That is Everyday AI: the left column ---------- */
+.fin-h {
   position: absolute;
   left: calc(var(--hx) * -1);
-  top: var(--fin-top);
-  width: calc(var(--hx) * 2);
-  height: var(--fin-h);
-  display: flex;
-  flex-direction: column;
-}
-
-/* ---------- That is Everyday AI ---------- */
-.fin-head {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--u) * 2);
-}
-.fin-h {
-  flex: none;
+  top: var(--fin-htop);
   font-size: var(--fin-hs);
   font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.2;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
   color: var(--ev-navy);
   white-space: nowrap;
+  pointer-events: none;
   will-change: transform;
+}
+.fin-line {
+  display: block;
 }
 .fin-h .fin-wm {
   display: inline-block;
   vertical-align: top;
-  padding-bottom: 0.16em;
-  margin-bottom: -0.16em;
+  padding: 0 0.06em 0.16em;
+  margin: 0 -0.06em -0.16em;
 }
 .fin-w {
   display: block;
@@ -65,483 +54,196 @@
   color: transparent;
   -webkit-text-fill-color: transparent;
 }
-.fin-again {
-  position: relative;
-  flex: none;
+
+/* ---------- the five names: one list, in the picture area ---------- */
+/* The closing has no clock chip, so the list may stand taller than the picture area: it starts
+   beside the logo's band (--fin-up above the area's top) and ends on the area's foot. */
+.fin-names {
+  position: absolute;
+  left: var(--ev-px0);
+  top: calc(var(--ev-top) - var(--fin-up));
+  width: var(--ev-pw);
+  height: calc(var(--ev-ph) + var(--fin-up) - var(--fin-down));
   display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.75);
-  height: calc(var(--u) * 3.6);
-  padding: 0 calc(var(--u) * 1.8) 0 calc(var(--u) * 1.35);
-  border-radius: calc(var(--u) * 1.8);
-  background: var(--ev-navy);
-  color: #ffffff;
-  font-size: calc(var(--u) * 1.4);
-  font-weight: 700;
-  white-space: nowrap;
+  flex-direction: column;
+  padding: calc(var(--u) * 0.7) 0;
+}
+/* the room "That is Everyday AI" has when it is alone on the stage: the picture area's height (measured, never drawn) */
+.fin-room {
+  position: absolute;
+  left: 0;
+  top: var(--ev-top);
+  width: 0;
+  height: var(--ev-ph);
+  visibility: hidden;
+  pointer-events: none;
+}
+/* the sheet they stand on */
+.fin-sheet {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 2.2);
+  background: #ffffff;
   box-shadow:
-    0 calc(var(--u) * 0.8) calc(var(--u) * 1.9) rgba(7, 26, 80, 0.26),
-    0 calc(var(--u) * 0.15) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.2);
+    0 calc(var(--u) * 1.8) calc(var(--u) * 4.4) rgba(7, 26, 80, 0.13),
+    0 calc(var(--u) * 0.2) calc(var(--u) * 0.6) rgba(7, 26, 80, 0.06),
+    0 0 0 1px rgba(7, 26, 80, 0.06);
   pointer-events: none;
   visibility: hidden;
+  will-change: transform, opacity;
 }
-.fin-again::after {
-  /* a generous touch target */
-  content: '';
-  position: absolute;
-  inset: calc(var(--u) * -0.9);
-  border-radius: calc(var(--u) * 2.8);
-}
-.fin-again svg {
-  width: calc(var(--u) * 1.7);
-  height: calc(var(--u) * 1.7);
-}
-.fin-again:active {
-  background: #24376f;
-}
-
-/* ---------- Five names to remember ---------- */
-.fin-bar {
-  flex: none;
-  margin-top: calc(var(--u) * 0.7);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 1.5);
-  height: calc(var(--u) * 2.6);
-}
-.fin-bar-h {
-  flex: none;
-  font-size: calc(var(--u) * 1.1);
-  font-weight: 800;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  line-height: 1.5;
-  color: var(--ev-flame-text);
-  white-space: nowrap;
-}
-.fin-bar-rule {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, #c3d2e4 0%, #d7e2ee 100%);
-}
-.fin-hint {
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.6);
-  font-size: calc(var(--u) * 1.2);
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--ev-ink);
-  white-space: nowrap;
-  visibility: hidden;
-}
-.fin-hint svg {
-  width: calc(var(--u) * 1.7);
-  height: calc(var(--u) * 1.7);
-  overflow: visible;
-  fill: var(--ev-flame);
-}
-.fin-hint-ring {
-  fill: none;
-  stroke: var(--ev-flame);
-  stroke-width: 1.6;
-  opacity: 0.55;
-  transform-origin: 12px 12px;
-}
-
-.fin-names {
-  flex: 1;
-  min-height: 0;
-  margin-top: calc(var(--u) * 1.5);
-  display: flex;
-  align-items: stretch;
-  gap: var(--fin-gap);
-}
-.fin-card {
-  /* the four of her day share the row equally, whatever the length of their names */
+.fin-row {
+  /* the five share the height equally */
   position: relative;
   flex: 1 1 0;
+  min-height: 0;
   display: flex;
+  align-items: center;
+  padding: 0 var(--fin-padx);
   text-align: left;
   pointer-events: none;
 }
-/* the engineering name stands a little apart from the four of her day, and is the longest: a wider card */
-.fin-card[data-track='engineering'] {
-  flex: 1.22 1 0;
-  margin-left: calc(var(--u) * 1.5);
-}
-.fin-divider {
-  position: absolute;
-  left: calc((var(--u) * 1.5 + var(--fin-gap)) / -2);
-  top: calc(var(--u) * 0.6);
-  bottom: calc(var(--u) * 0.6);
-  width: 0;
-  border-left: calc(var(--u) * 0.14) dashed #9fb2cf;
-}
-/* a card and "Watch again" are buttons only once the names have landed */
-.ev-root[data-step='fin-done'][data-resting='1'] .fin-card,
-.ev-root[data-step='fin-done'][data-resting='1'] .fin-again {
+/* a row is a button only once the names have landed */
+.ev-root[data-step='fin-done'][data-resting='1'] .fin-row {
   pointer-events: auto;
 }
-.fin-card-lift {
+.fin-row-in {
   position: relative;
-  flex: 1;
-  display: flex;
+  display: block;
+  min-width: 0;
+  width: 100%;
   transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1);
 }
-.fin-card-bg {
+.fin-row:active .fin-row-in {
+  transform: scale(0.985);
+}
+/* the hairline between two names */
+.fin-rule {
   position: absolute;
-  inset: 0;
-  border-radius: calc(var(--u) * 1.6);
-  background: linear-gradient(180deg, #ffffff 34%, var(--acc-soft) 100%);
-  box-shadow:
-    0 calc(var(--u) * 1.3) calc(var(--u) * 3) rgba(7, 26, 80, 0.12),
-    0 calc(var(--u) * 0.15) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.06),
-    0 0 0 1px var(--acc-line);
-  visibility: hidden;
+  left: var(--fin-padx);
+  right: var(--fin-padx);
+  top: 0;
+  height: 1px;
+  background: var(--ev-line);
+  will-change: transform;
 }
-.fin-card-in {
-  position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--u) * 1.05) var(--fin-pad) calc(var(--u) * 1.15);
+/* Piramal Mind is not a time in her day: it stands a little apart, under a firmer line */
+.fin-row[data-track='engineering'] {
+  flex: 1 1 var(--fin-apart);
+  padding-top: var(--fin-apart);
 }
-.fin-when {
-  display: flex;
-  align-items: center;
-  height: calc(var(--u) * 1.7);
-  font-size: calc(var(--u) * 1.06);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--ev-body);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  visibility: hidden;
-}
-.fin-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.4);
-  height: calc(var(--u) * 1.7);
-  padding: 0 calc(var(--u) * 0.85) 0 calc(var(--u) * 0.6);
-  border-radius: calc(var(--u) * 0.85);
+.fin-row[data-track='engineering'] .fin-rule {
+  top: calc(var(--fin-apart) / 2);
+  height: max(2px, calc(var(--u) * 0.16));
+  border-radius: calc(var(--u) * 0.08);
   background: var(--ev-navy);
-  color: #ffffff;
-  font-size: calc(var(--u) * 0.86);
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
 }
-.fin-tag svg {
-  flex: none;
-  width: calc(var(--u) * 1.05);
-  height: calc(var(--u) * 1.05);
+
+/* 1 · the name, and beside it, small, what it stands for */
+.fin-top {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 1.1);
+  white-space: nowrap;
 }
 .fin-name {
-  display: block;
-  margin-top: calc(var(--u) * 0.35);
-  line-height: 1.1;
+  flex: none;
+  padding: 0 0.08em 0.14em 0.04em;
+  margin: 0 -0.08em -0.14em -0.04em;
 }
 .fin-name-t {
-  display: inline-block;
+  display: block;
   font-size: var(--fin-ns);
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   line-height: 1.1;
-  padding-bottom: 0.08em;
-  white-space: nowrap;
-  background: linear-gradient(180deg, var(--acc-g2) 10%, var(--acc-g3) 90%);
+  background: linear-gradient(180deg, var(--acc-g1) 6%, var(--acc-g2) 50%, var(--acc-g3) 94%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  visibility: hidden;
+  will-change: transform;
 }
 .fin-stands {
-  display: block;
   font-size: var(--fin-ss);
   font-weight: 600;
-  line-height: 1.4;
-  color: var(--ev-body);
-  white-space: nowrap;
+  line-height: 1.3;
+  color: var(--ev-muted);
+  visibility: hidden;
 }
 .fin-stands b {
   font-weight: 800;
   color: var(--acc-ink);
 }
+.fin-stands--tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: calc(var(--fin-ss) * 0.9);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ev-navy);
+}
+.fin-stands--tag svg {
+  flex: none;
+  width: 1.25em;
+  height: 1.25em;
+}
+
+/* 2 · what it does: one line */
 .fin-promise {
-  /* it takes the card's width; it never sets it */
   display: block;
-  width: 0;
-  min-width: 100%;
-  margin-top: calc(var(--u) * 0.55);
-  padding-bottom: calc(var(--u) * 0.9);
+  margin-top: calc(var(--u) * 0.2);
   font-size: var(--fin-ps);
   font-weight: 600;
-  line-height: 1.36;
+  letter-spacing: -0.008em;
+  line-height: 1.3;
   color: var(--ev-ink);
-  text-wrap: pretty;
-  visibility: hidden;
-}
-.fin-stat {
-  display: block;
-  width: 0;
-  min-width: 100%;
-  margin-top: auto;
-  padding-top: calc(var(--u) * 0.7);
-  border-top: 1px solid var(--acc-line);
-  visibility: hidden;
-}
-.fin-v {
-  display: block;
-  font-size: var(--fin-vs);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.08;
-  color: var(--ev-navy);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.fin-num {
-  display: inline-block;
-  min-width: calc(var(--d) * 1ch - 0.06em);
-  text-align: left;
-}
-/* what follows the figure is smaller than the figure: "%", and smaller still a word ("min") */
-.fin-post {
-  font-size: 0.72em;
-  letter-spacing: -0.02em;
-  margin-left: 0.04em;
-}
-.fin-post--word {
-  font-size: 0.5em;
-  letter-spacing: -0.01em;
-}
-.fin-label {
-  display: block;
-  margin-top: calc(var(--u) * 0.15);
-  min-height: calc(var(--fin-ls) * 1.34 * var(--fin-ll));
-  font-size: var(--fin-ls);
-  font-weight: 600;
-  line-height: 1.34;
-  color: var(--ev-body);
   text-wrap: balance;
 }
-.fin-play {
-  position: absolute;
-  z-index: 1;
-  right: calc(var(--u) * 0.9);
-  top: calc(var(--u) * 0.85);
-  display: grid;
-  place-items: center;
-  width: var(--fin-play);
-  height: var(--fin-play);
-  border-radius: 50%;
-  background: linear-gradient(150deg, var(--acc-g1) 0%, var(--acc-g3) 100%);
-  box-shadow: 0 calc(var(--u) * 0.45) calc(var(--u) * 1.1) color-mix(in srgb, var(--acc-g3) 36%, transparent);
-}
-.fin-play svg {
-  position: relative;
-  width: 52%;
-  height: 52%;
-  fill: #ffffff;
-}
-.fin-play-ping {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: calc(var(--u) * 0.16) solid var(--acc);
-  opacity: 0;
-}
-.fin-card:active .fin-card-lift {
-  transform: scale(0.965);
-}
 
-/* ---------- at rest: the five names take turns to lift, so it is plain they can be touched ---------- */
-.ev-root[data-step='fin-done'][data-resting='1'] .fin-card-lift {
-  animation: fin-turn 7.5s cubic-bezier(0.3, 0, 0.2, 1) infinite;
-  animation-delay: calc(var(--i) * 0.6s + 1.4s);
-}
-.ev-root[data-step='fin-done'][data-resting='1'] .fin-play-ping {
-  animation: fin-ping 7.5s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
-  animation-delay: calc(var(--i) * 0.6s + 1.5s);
-}
-.ev-root[data-step='fin-done'][data-resting='1'] .fin-hint-ring {
-  animation: fin-hint 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
-}
-.ev-root[data-step='fin-done'][data-resting='1'] .fin-card:active .fin-card-lift {
-  animation: none;
-}
-.ev-root[data-hold='1'] .fin-card-lift,
-.ev-root[data-hold='1'] .fin-play-ping,
-.ev-root[data-hold='1'] .fin-hint-ring {
-  animation: none !important;
-}
-@keyframes fin-turn {
-  0%,
-  14%,
-  100% {
-    transform: none;
-  }
-  5% {
-    transform: translateY(calc(var(--u) * -0.6)) scale(1.015);
-  }
-}
-@keyframes fin-ping {
-  0% {
-    transform: scale(1);
-    opacity: 0;
-  }
-  2% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  12%,
-  100% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-}
-@keyframes fin-hint {
-  0% {
-    transform: scale(0.5);
-    opacity: 0.8;
-  }
-  70%,
-  100% {
-    transform: scale(1.25);
-    opacity: 0;
-  }
-}
+/* (No third line: the five numbers are not repeated here. Each had the whole screen a moment ago.) */
 
-/* ---------- squarer screens (a tablet): narrower, but taller ---------- */
+/* ---------- squarer screens (a tablet): the column and the picture area are narrower, and taller ---------- */
 @media (max-aspect-ratio: 3/2) {
   .ev-scene--finale {
-    --fin-top: calc(var(--u) * -21.2);
-    --fin-h: calc(var(--u) * 37.9);
-    --fin-hs: calc(var(--u) * 4.2);
-    --fin-ns: calc(var(--u) * 2.3);
-    --fin-ss: calc(var(--u) * 1.02);
-    --fin-ps: calc(var(--u) * 1.32);
-    --fin-vs: calc(var(--u) * 3.9);
-    --fin-ls: calc(var(--u) * 1.14);
-    --fin-pad: calc(var(--u) * 0.95);
-    --fin-gap: calc(var(--u) * 0.75);
-    --fin-play: calc(var(--u) * 2);
-    --fin-ll: 3;
-  }
-  .fin-card[data-track='engineering'] {
-    margin-left: calc(var(--u) * 1.1);
-  }
-  .fin-divider {
-    left: calc((var(--u) * 1.1 + var(--fin-gap)) / -2);
-  }
-  .fin-play {
-    right: calc(var(--u) * 0.7);
-    top: calc(var(--u) * 0.75);
-  }
-  /* what the word means may take two lines here: the screen is taller than it is wide */
-  .fin-card[data-key='prastuti'] .fin-stands {
-    width: 0;
-    min-width: 100%;
-    white-space: normal;
-  }
-  .fin-names {
-    margin-top: calc(var(--u) * 1.8);
+    --fin-hs: calc(var(--u) * 6.3);
+    --fin-htop: calc(var(--u) * -12);
+    --fin-ns: calc(var(--u) * 3.2); /* "Piramal Mind" and its tag keep inside the sheet's own margin */
+    --fin-ss: calc(var(--u) * 1.12);
+    --fin-ps: calc(var(--u) * 1.6);
+    --fin-up: calc(var(--u) * 5.2);
+    --fin-padx: calc(var(--u) * 1.8);
+    --fin-apart: calc(var(--u) * 1.4);
   }
 }
 
-/* ---------- a phone on its side: the whole height above Priya's line, and every word at 11 px or more ---------- */
+/* ---------- a phone on its side: the list has the whole height of the room, and every word at 11 px or more ---------- */
 @media (max-height: 480px) {
   .ev-scene--finale {
-    --fin-top: calc(var(--u) * -17.2);
-    --fin-h: calc(var(--u) * 34.8);
-    --fin-hs: calc(var(--u) * 3.7);
-    --fin-ns: calc(var(--u) * 2.7);
-    --fin-ss: max(calc(var(--u) * 1.32), calc(var(--fl) * 11.4));
-    --fin-ps: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
-    --fin-vs: calc(var(--u) * 3.3);
-    --fin-ls: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    --fin-pad: calc(var(--u) * 0.9);
-    --fin-gap: max(calc(var(--u) * 1.05), 9px); /* five touch targets side by side: 8 px or more between them */
-    --fin-play: calc(var(--u) * 2.1);
-    /* each number stands on its own card's foot: the cards are too narrow here to keep a spare line for all five */
-    --fin-ll: 2;
+    --fin-hs: calc(var(--u) * 6.7);
+    --fin-htop: calc(var(--u) * -12.6);
+    --fin-up: calc(var(--u) * 0.2); /* no header band here: the list has the room's own height */
+    --fin-down: calc(var(--u) * 0.5); /* …and ends a little above the bar, clear of the Next button */
+    --fin-ns: calc(var(--u) * 3.3);
+    --fin-ss: max(calc(var(--u) * 1.3), calc(var(--fl) * 11.2));
+    --fin-ps: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+    --fin-padx: calc(var(--u) * 1.5);
+    --fin-apart: calc(var(--u) * 0.5);
   }
-  .fin-card[data-track='engineering'] {
-    flex: 1.16 1 0;
-    margin-left: calc(var(--u) * 1.2);
-  }
-  .fin-divider {
-    left: calc((var(--u) * 1.2 + var(--fin-gap)) / -2);
-  }
-  .fin-bar {
-    margin-top: calc(var(--u) * 0.2);
-    height: calc(var(--u) * 2.3);
-  }
-  .fin-bar-h {
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-    letter-spacing: 0.2em;
-  }
-  .fin-hint {
-    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11));
-  }
-  /* On the narrowest phones every small word is at its floor and a card is full to the brim:
-     the gaps give a little, so the last line keeps its margin over the card's foot. */
   .fin-names {
-    margin-top: calc(var(--u) * 0.6);
+    padding: calc(var(--u) * 0.2) 0;
   }
-  .fin-card-in {
-    padding: calc(var(--u) * 0.65) var(--fin-pad) calc(var(--u) * 0.8);
-  }
-  /* the row of the times never gives way, in any card: the five names stay on one line */
-  .fin-when {
-    flex: none;
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
-  }
-  /* The pill is as tall as its floored type needs (15 px for 11 px letters). It stands centred on
-     the row the four times stand on, and may reach a pixel past it: the row keeps its height,
-     so the five names stay on one line. */
-  .fin-tag {
-    height: max(calc(var(--u) * 1.7), calc(var(--fl) * 15));
-    border-radius: 999px;
-    font-size: max(calc(var(--u) * 1.25), calc(var(--fl) * 11));
-    line-height: 1;
-    letter-spacing: 0;
-    text-transform: none;
-  }
-  /* what a name stands for may take two lines: the cards are narrow here */
-  .fin-stands {
-    width: 0;
-    min-width: 100%;
-    white-space: normal;
-    line-height: 1.3;
+  .fin-top {
+    gap: calc(var(--u) * 0.9);
   }
   .fin-promise {
-    margin-top: calc(var(--u) * 0.4);
-    padding-bottom: calc(var(--u) * 0.45);
-    line-height: 1.3;
+    margin-top: 0;
+    line-height: 1.22;
   }
-  .fin-stat {
-    padding-top: calc(var(--u) * 0.4);
-  }
-  .fin-post--word {
-    font-size: max(0.5em, calc(var(--fl) * 11.5));
-  }
-  .fin-play {
-    right: calc(var(--u) * 0.7);
-    top: calc(var(--u) * 0.5);
-  }
-  /* Watch again: a full fingertip with its halo */
-  .fin-again {
-    z-index: 2; /* its halo lies over the row under it */
-    height: max(calc(var(--u) * 4.3), calc(var(--fl) * 34));
-    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 12));
-  }
-  /* it stands at the top of the screen: the halo reaches down, not up */
-  .fin-again::after {
-    inset: -4px -6px -11px;
+  .fin-stands--tag {
+    font-size: var(--fin-ss);
+    letter-spacing: 0.08em;
   }
 }

@@ -2,13 +2,14 @@
 
 /**
  * THE NAME. The one piece of choreography every moment shares, so that five product
- * names are learnt the same way: a giant wordmark lands at centre stage, opens into what
- * it stands for, closes again, then docks top-left and stays for the rest of the moment.
+ * names are learnt the same way: a giant wordmark lands at centre stage, ALONE (nothing else
+ * is on screen while it does, not even Priya), opens into what it stands for, closes again,
+ * then docks top-left, in the name slot, and stays for the rest of the moment.
  *
  *   acronym  BYOT, BYOA       four giant initials open into "Build Your Own Tech" and close
  *   hindi    Prastuti         the word turns into प्रस्तुति with its meaning, and turns back
- *   plain    SmartHelp, Piramal Mind   the wordmark lands, is underlined with its promise, and
- *                                     the underline runs out under the whole word and back
+ *   plain    SmartHelp, Piramal Mind   the wordmark lands, is underlined, and the underline
+ *                                     runs out under the whole word and back
  *
  * Open Sans metrics used below (for a line box with line-height 1):
  * cap top 0.174 em, cap middle 0.531 em, baseline 0.888 em from the top of the box.
@@ -39,10 +40,10 @@ export interface NameRig {
   /** The transform that docks the wordmark with its left edge at x and its baseline at y. */
   dock(x: number, baselineY: number, maxWidth: number, maxCap: number): { x: number; y: number; scale: number }
   /**
-   * The transform that lays the wordmark over a rail label of the given font size, centred on
-   * (cx, cy). Give the label's own width as well and the wordmark is fitted to that instead (the
-   * rail tracks its letters a little wider than the wordmark does), so the two coincide edge to
-   * edge when one takes the other's place.
+   * The transform that shrinks the wordmark to the given font size, centred on (cx, cy): how
+   * the docked name is filed into its progress dot at the hand-over (a very small size: it is
+   * gone as it lands). Give a width as well and the wordmark is fitted to that instead, within
+   * a tenth of the scale its font size asks for.
    */
   rail(cx: number, cy: number, fontPx: number, widthPx?: number): { x: number; y: number; scale: number }
 }
