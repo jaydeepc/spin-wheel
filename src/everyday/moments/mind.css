@@ -1,0 +1,1719 @@
+/* ============================================================
+   PIRAMAL MIND · the engineering team's memory and intelligence.
+   Everything here is Piramal Mind's own; classes are prefixed
+   "mind-". Sizes are in --u. The moment is navy, with both
+   accents: azure is the blue theme and what flows in, flame is
+   the new theme.
+   ============================================================ */
+
+/* ---------- Shared layout, for this moment only ---------- */
+/* The centrepiece draws back to 0.84 for the result, which leaves the headline this much room.
+   The sentence is the longest of the five and has the second ability under it, so it is set a
+   little smaller: four lines, and the proof stays clear of Priya's line. */
+.ev-moment[data-key='mind'][data-device='none'] .ev-col--result {
+  width: calc(var(--u) * 33);
+}
+.ev-moment[data-key='mind'] .ev-col--result .ev-sentence {
+  font-size: calc(var(--u) * 3.3);
+}
+.ev-moment[data-key='mind'] .ev-col--result .ev-proof {
+  margin-top: calc(var(--u) * 1.4);
+}
+/* Navy's own ink is the headline's colour, so the phrase is picked out in azure. */
+.ev-moment[data-key='mind'] .ev-col--result .ev-sentence .ev-hl {
+  color: var(--ev-azure-ink);
+}
+
+.mind-id {
+  /* a ticket number */
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: calc(var(--u) * 1.5);
+  padding: 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.4);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px #c7ddf5;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: calc(var(--u) * 0.84);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--ev-azure-ink);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* ---------- BEFORE: an old ticket, old code, somebody's head; each with a loose end ---------- */
+.mind-b {
+  position: absolute;
+  inset: 0;
+}
+.mind-b-ends {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.mind-b-tail {
+  fill: none;
+  stroke: #9fb2d3;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.mind-b-end {
+  fill: #ffffff;
+  stroke: #9fb2d3;
+  stroke-width: 1.8;
+}
+.mind-b-what {
+  /* what was scattered: the decision, and the reason for it */
+  position: absolute;
+  left: calc(var(--u) * 0.2);
+  top: 0;
+  /* wide enough for "What was decided, and why," and no wider */
+  width: calc(var(--u) * 23.4);
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 800;
+  line-height: 1.22;
+  letter-spacing: -0.018em;
+  color: var(--ev-navy);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-b-card {
+  position: absolute;
+  padding: calc(var(--u) * 0.8) calc(var(--u) * 1) 0;
+  border-radius: calc(var(--u) * 1.1);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 1) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.15),
+    0 0 0 1px rgba(7, 26, 80, 0.07);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-b-card--ticket {
+  left: 0;
+  top: calc(var(--u) * 5);
+  width: calc(var(--u) * 11.2);
+  height: calc(var(--u) * 5.9);
+}
+.mind-b-card--code {
+  left: calc(var(--u) * 13.4);
+  top: calc(var(--u) * 7.6);
+  width: calc(var(--u) * 11.4);
+  height: calc(var(--u) * 5.9);
+  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.28);
+}
+.mind-b-card--head {
+  left: calc(var(--u) * 2.2);
+  top: calc(var(--u) * 13.7);
+  width: calc(var(--u) * 11.8);
+  height: calc(var(--u) * 5.9);
+}
+.mind-b-cap {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.45);
+  font-size: calc(var(--u) * 0.78);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.mind-b-cap svg {
+  flex: none;
+  width: calc(var(--u) * 1.25);
+  height: calc(var(--u) * 1.25);
+  color: var(--ev-azure);
+}
+.mind-b-card--code .mind-b-cap {
+  color: #c9d6f2;
+}
+.mind-b-card--code .mind-b-cap svg {
+  color: #8cc2fb;
+}
+.mind-b-card--head .mind-b-cap svg {
+  color: var(--ev-flame);
+}
+/* (two classes, so the margins outweigh the stage's reset of every p) */
+.mind-b .mind-b-id {
+  margin-top: calc(var(--u) * 0.55);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: calc(var(--u) * 1.3);
+  font-weight: 700;
+  color: var(--ev-navy);
+  line-height: 1.2;
+}
+.mind-b .mind-b-code {
+  margin-top: calc(var(--u) * 0.6);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: calc(var(--u) * 1.18);
+  font-weight: 600;
+  color: #dfe7f8;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.mind-b-code b {
+  font-weight: 700;
+  color: #8cc2fb;
+}
+.mind-b-skel {
+  display: block;
+  margin-top: calc(var(--u) * 0.6);
+  width: 78%;
+  height: calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.25);
+  background: #e3e9f3;
+}
+.mind-b-card--code .mind-b-skel {
+  width: 58%;
+  background: rgba(255, 255, 255, 0.2);
+}
+.mind-b-think {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.42);
+  margin-top: calc(var(--u) * 0.7);
+  height: calc(var(--u) * 1.3);
+}
+.mind-b-think i {
+  width: calc(var(--u) * 0.62);
+  height: calc(var(--u) * 0.62);
+  border-radius: 50%;
+  background: #b7c4dc;
+}
+.mind-b-think i:nth-child(2) {
+  background: #cfd8e9;
+}
+.mind-b-think i:nth-child(3) {
+  background: #e3e9f3;
+}
+.mind-b-q {
+  /* why was it decided? nobody can say */
+  position: absolute;
+  left: calc(var(--u) * 19.3);
+  top: calc(var(--u) * 14.9);
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 4.3);
+  height: calc(var(--u) * 4.3);
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(7, 26, 80, 0.2);
+}
+.mind-b-q::before {
+  /* both accents, around the question */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #65a9f5, #4384d4 30%, #f16443 62%, #f8957c 80%, #65a9f5);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--u) * 0.38), #000 calc(100% - var(--u) * 0.36));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--u) * 0.38), #000 calc(100% - var(--u) * 0.36));
+}
+.mind-b-q b {
+  font-size: calc(var(--u) * 2.5);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ev-navy);
+}
+
+/* ---------- The left column: the request is a ticket, on its way to an engineer ---------- */
+.mind-req-from {
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.mind-req-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+  margin-top: calc(var(--u) * 0.6);
+}
+.mind-req-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 2.5);
+  padding: 0 calc(var(--u) * 1) 0 calc(var(--u) * 0.75);
+  border-radius: calc(var(--u) * 0.75);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid #c7ddf5;
+  white-space: nowrap;
+}
+.mind-req-chip svg {
+  width: calc(var(--u) * 1.35);
+  height: calc(var(--u) * 1.35);
+  color: var(--ev-azure);
+}
+.mind-req-chip span {
+  font-size: calc(var(--u) * 1);
+  font-weight: 600;
+  color: var(--ev-body);
+}
+.mind-req-chip b {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 700;
+  color: var(--ev-azure-ink);
+}
+.mind-req-arrow {
+  width: calc(var(--u) * 3.6);
+  height: calc(var(--u) * 1.12);
+  stroke: var(--ev-azure);
+}
+
+/* ---------- THE CENTREPIECE: a board of 56u × 31.6u ---------- */
+.mind-board {
+  position: absolute;
+  top: 0;
+  /* placed from the right edge of its box; animate() centres it on a wide screen and fits it on a squarer one */
+  right: 0;
+  width: calc(var(--u) * 56);
+  height: calc(var(--u) * 31.6);
+}
+
+/* ---------- the engineer's session ---------- */
+.mind-win {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 34.4);
+  height: 100%;
+  border-radius: calc(var(--u) * 1.5);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 2.4) calc(var(--u) * 4.8) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.6) calc(var(--u) * 1.3) rgba(7, 26, 80, 0.1),
+    0 0 0 1px rgba(7, 26, 80, 0.08);
+  z-index: 2;
+}
+.mind-win-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--u) * 2.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.42);
+  padding: 0 calc(var(--u) * 1.1);
+  border-radius: calc(var(--u) * 1.5) calc(var(--u) * 1.5) 0 0;
+  background: #f4f7fb;
+  border-bottom: 1px solid #e1e8f2;
+}
+.mind-win-dot {
+  flex: none;
+  width: calc(var(--u) * 0.62);
+  height: calc(var(--u) * 0.62);
+  border-radius: 50%;
+  background: #cfd9e8;
+}
+.mind-win-who {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  margin-left: calc(var(--u) * 0.7);
+  font-size: calc(var(--u) * 1);
+  font-weight: 700;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.mind-win-who i {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.55);
+  height: calc(var(--u) * 1.55);
+  border-radius: 50%;
+  background: var(--ev-navy);
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+}
+.mind-win-tag {
+  margin-left: auto;
+  font-size: calc(var(--u) * 0.74);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+
+/* what he typed */
+.mind-prompt {
+  position: absolute;
+  right: calc(var(--u) * 1.1);
+  top: calc(var(--u) * 3.15);
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--u) * 1.1);
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 0.85) calc(var(--u) * 0.68) calc(var(--u) * 1.15);
+  border-radius: calc(var(--u) * 1.2) calc(var(--u) * 1.2) calc(var(--u) * 0.35) calc(var(--u) * 1.2);
+  background: #eef1f8;
+  box-shadow: inset 0 0 0 1px #dbe2f0;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-prompt-text {
+  font-size: calc(var(--u) * 1.18);
+  font-weight: 600;
+  line-height: 1.38;
+  letter-spacing: -0.005em;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.mind-prompt-line {
+  display: block;
+  width: max-content;
+}
+.mind-prompt .mind-id {
+  margin-top: calc(var(--u) * 0.08);
+}
+
+/* Piramal Mind talks back */
+.mind-talk {
+  position: absolute;
+  left: calc(var(--u) * 1.1);
+  right: calc(var(--u) * 1.1);
+  top: calc(var(--u) * 8.2);
+  height: calc(var(--u) * 14.4);
+  padding: calc(var(--u) * 0.78) calc(var(--u) * 1.05) 0;
+  border-radius: calc(var(--u) * 1.3);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.15) var(--ev-navy),
+    0 calc(var(--u) * 1.1) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.18);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-talk-port {
+  /* where the Mind's answer comes in */
+  position: absolute;
+  right: calc(var(--u) * -0.5);
+  top: calc(var(--u) * 6.75);
+  width: calc(var(--u) * 1);
+  height: calc(var(--u) * 1);
+  margin-top: calc(var(--u) * -0.5);
+  border-radius: 50%;
+  background: #65a9f5;
+  box-shadow: 0 0 0 calc(var(--u) * 0.18) #ffffff;
+}
+.mind-talk-head {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 1.7);
+  white-space: nowrap;
+}
+.mind-badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 1.7);
+  border-radius: 50%;
+  background: var(--ev-navy);
+}
+.mind-badge svg {
+  width: 66%;
+  height: 66%;
+  color: #ffffff;
+}
+.mind-talk-head b {
+  font-size: calc(var(--u) * 1.08);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ev-navy);
+}
+.mind-talk-lead {
+  margin-left: calc(var(--u) * 0.2);
+  padding: calc(var(--u) * 0.2) calc(var(--u) * 0.65) calc(var(--u) * 0.24);
+  border-radius: calc(var(--u) * 0.7);
+  background: #fff1ea;
+  box-shadow: inset 0 0 0 1px #f0c2b8;
+  font-size: calc(var(--u) * 0.94);
+  font-weight: 700;
+  color: var(--ev-flame-text);
+  line-height: 1.2;
+}
+.mind-talk .mind-talk-text {
+  margin-top: calc(var(--u) * 0.36);
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.018em;
+  color: var(--ev-navy);
+  text-wrap: balance;
+}
+.mind-src {
+  /* the ticket it remembered */
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.8);
+  margin-top: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 3.5);
+  padding: 0 calc(var(--u) * 0.8) 0 calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 0.9);
+  background: #eaf3ff;
+  box-shadow: inset 0 0 0 1px #c7ddf5;
+}
+.mind-src-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.2);
+  height: calc(var(--u) * 2.2);
+  border-radius: calc(var(--u) * 0.6);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px #c7ddf5;
+}
+.mind-src-ico svg {
+  width: 62%;
+  height: 62%;
+  color: var(--ev-azure-ink);
+}
+.mind-src-txt {
+  display: grid;
+  gap: calc(var(--u) * 0.18);
+  min-width: 0;
+}
+.mind-src-txt > b {
+  font-size: calc(var(--u) * 1.08);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.mind-src-txt > span {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  font-size: calc(var(--u) * 0.94);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ev-body);
+  white-space: nowrap;
+}
+.mind-src-txt .mind-id {
+  height: calc(var(--u) * 1.3);
+  font-size: calc(var(--u) * 0.8);
+}
+.mind-ask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 2.8);
+}
+.mind-ask-q {
+  font-size: calc(var(--u) * 1.22);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+
+/* the one control: Use the new theme */
+.mind-acceptWrap {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 13.6);
+  height: calc(var(--u) * 2.8);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-accept {
+  /* the touch pulse reads on white */
+  --acc: #65a9f5;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--u) * 1.4);
+}
+.mind-accept-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.55);
+  border-radius: inherit;
+  background: linear-gradient(160deg, #1f3470 0%, #071a50 78%);
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  font-size: calc(var(--u) * 1.1);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  color: #ffffff;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+.mind-accept-sw {
+  /* a swatch of the new theme; it becomes a tick */
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 1.05);
+  height: calc(var(--u) * 1.05);
+}
+.mind-accept-sw > i {
+  position: absolute;
+  inset: calc(var(--u) * 0.08);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f8957c 0%, #f16443 100%);
+  box-shadow: 0 0 0 calc(var(--u) * 0.14) rgba(255, 255, 255, 0.9);
+}
+.mind-accept-sw svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: #f8957c;
+  overflow: visible;
+}
+/* a pill pulses outward by the same margin all round, not twice its width */
+.ev-touch.mind-accept[data-live='1'] .ev-touch-ring {
+  animation-name: mind-pulse;
+}
+@keyframes mind-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.13, 1.64);
+    opacity: 0;
+  }
+}
+.ev-root[data-hold='1'] .ev-touch.mind-accept[data-live='1'] .ev-touch-ring {
+  opacity: 0.5;
+  transform: scale(1.055, 1.27);
+}
+.ev-root[data-hold='1'] .ev-touch.mind-accept[data-live='1'] .ev-touch-ring--2 {
+  opacity: 0.22;
+  transform: scale(1.1, 1.5);
+}
+
+/* Built in the new theme */
+.mind-stamp {
+  position: absolute;
+  left: 52%;
+  top: 50%;
+  padding: calc(var(--u) * 0.45) calc(var(--u) * 1.1) calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.8);
+  border: calc(var(--u) * 0.2) solid var(--ev-flame-ink);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ev-flame-ink);
+  text-align: center;
+  line-height: 1.1;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.16) #ffffff,
+    inset 0 0 0 calc(var(--u) * 0.24) rgba(200, 67, 28, 0.55),
+    0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(200, 67, 28, 0.2);
+  white-space: nowrap;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-stamp b {
+  display: block;
+  font-size: calc(var(--u) * 1.6);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-transform: uppercase;
+}
+.mind-stamp span {
+  display: block;
+  margin-top: calc(var(--u) * 0.08);
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 800;
+}
+.mind-stamp-burst {
+  position: absolute;
+  inset: calc(var(--u) * -0.2);
+  border-radius: calc(var(--u) * 0.9);
+  border: calc(var(--u) * 0.16) solid var(--ev-flame);
+  pointer-events: none;
+}
+
+/* the code, and the app it makes */
+.mind-work {
+  position: absolute;
+  left: calc(var(--u) * 1.1);
+  right: calc(var(--u) * 1.1);
+  top: calc(var(--u) * 23.2);
+  height: calc(var(--u) * 7.6);
+  display: flex;
+  gap: calc(var(--u) * 0.8);
+}
+.mind-code {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 21);
+  border-radius: calc(var(--u) * 1);
+  background: linear-gradient(165deg, #15244b 0%, #071a50 70%);
+  overflow: hidden;
+}
+.mind-code-tab {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.4);
+  height: calc(var(--u) * 1.6);
+  padding: 0 calc(var(--u) * 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: calc(var(--u) * 0.78);
+  font-weight: 600;
+  color: #c9d6f2;
+  white-space: nowrap;
+}
+.mind-code-tab svg {
+  width: calc(var(--u) * 0.95);
+  height: calc(var(--u) * 0.95);
+  color: #8cc2fb;
+}
+.mind-code-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: calc(var(--u) * 1.86);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: calc(var(--u) * 0.98);
+  font-weight: 500;
+  line-height: 1.5;
+  color: #dfe7f8;
+  white-space: nowrap;
+}
+.mind-code-line:nth-child(2) {
+  margin-top: calc(var(--u) * 0.22);
+}
+.mind-code-mark {
+  /* a changed line, an added line */
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+.mind-code-mark--chg {
+  background: rgba(248, 149, 124, 0.16);
+  box-shadow: inset calc(var(--u) * 0.2) 0 0 #f8957c;
+}
+.mind-code-mark--add {
+  background: rgba(140, 194, 251, 0.14);
+  box-shadow: inset calc(var(--u) * 0.2) 0 0 #8cc2fb;
+}
+.mind-code-no {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 2.1);
+  padding-right: calc(var(--u) * 0.7);
+  text-align: right;
+  color: #8799c4;
+  font-size: calc(var(--u) * 0.8);
+}
+.mind-code-txt {
+  position: relative;
+  display: block;
+  height: 1.5em;
+  white-space: pre;
+}
+.mind-code-txt em {
+  font-style: normal;
+  color: #8cc2fb;
+}
+.mind-code-txt u {
+  text-decoration: none;
+  color: #c9d6f2;
+}
+.mind-code-txt q {
+  quotes: none;
+  color: #ffffff;
+}
+.mind-code-txt q::before,
+.mind-code-txt q::after {
+  content: none;
+}
+.mind-tok {
+  /* the theme, as it is written: "blue" rises out, "new" rises in */
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  height: 1.5em;
+}
+.mind-tok-old,
+.mind-tok-new {
+  display: block;
+  will-change: transform;
+}
+.mind-tok-new {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.mind-tok s {
+  text-decoration: none;
+  font-weight: 700;
+  color: #8cc2fb;
+}
+.mind-tok b {
+  font-weight: 700;
+  color: #ffb39e;
+}
+.mind-code-slot {
+  /* the step that is still to be written */
+  position: absolute;
+  left: calc(var(--u) * 2.1);
+  right: calc(var(--u) * 2.4);
+  top: calc(var(--u) * 0.22);
+  bottom: calc(var(--u) * 0.22);
+  border-radius: calc(var(--u) * 0.4);
+  border: calc(var(--u) * 0.09) dashed rgba(185, 226, 255, 0.5);
+  background: rgba(185, 226, 255, 0.07);
+}
+
+.mind-pre {
+  /* the app, as the customer's sales officer will see it */
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  border-radius: calc(var(--u) * 1);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px #d7e2ee;
+  overflow: hidden;
+}
+.mind-pre .mind-pre-strip {
+  display: flex;
+  align-items: center;
+  height: calc(var(--u) * 1.5);
+  padding: 0 calc(var(--u) * 0.8);
+  font-size: calc(var(--u) * 0.7);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  background: #f4f7fb;
+  border-bottom: 1px solid #e1e8f2;
+}
+.mind-pre-band {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: calc(var(--u) * 1.95);
+  padding: 0 calc(var(--u) * 0.8);
+  /* the blue theme */
+  background: linear-gradient(120deg, #3472d6 0%, #2d6ad1 100%);
+}
+.mind-pre-band-new {
+  /* the new theme wipes across it */
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #cf4519 0%, #c8431c 100%);
+  will-change: clip-path;
+}
+.mind-pre-band span {
+  position: relative;
+  font-size: calc(var(--u) * 0.94);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.mind-pre-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 1.72);
+  margin: calc(var(--u) * 0.3) calc(var(--u) * 0.6) 0;
+  padding: 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.5);
+  background: #f4f7fb;
+  font-size: calc(var(--u) * 0.9);
+  font-weight: 700;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.mind-pre-row--new {
+  background: none;
+  padding: 0;
+}
+.mind-pre-slot {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: calc(var(--u) * 0.09) dashed #b7c9e2;
+}
+.mind-pre-rowin {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  padding: 0 calc(var(--u) * 0.5);
+  border-radius: inherit;
+  background: #fff1ea;
+  box-shadow: inset 0 0 0 1px #f0c2b8;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-pre-dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 0.95);
+  height: calc(var(--u) * 0.95);
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px #c7ddf5;
+  color: var(--ev-azure-ink);
+}
+.mind-pre-rowin .mind-pre-dot {
+  box-shadow: inset 0 0 0 1px #f0c2b8;
+  color: var(--ev-flame-ink);
+}
+.mind-pre-dot svg {
+  width: 60%;
+  height: 60%;
+}
+
+/* ---------- the thread ---------- */
+.mind-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 3;
+  pointer-events: none;
+}
+.mind-spine {
+  fill: none;
+  stroke: rgba(185, 226, 255, 0.3);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.mind-spine-flow {
+  /* quiet traffic into the Mind, all the time */
+  fill: none;
+  stroke: #b9e2ff;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 11.5;
+  animation: mind-flow 1.5s linear infinite;
+  visibility: hidden;
+}
+@keyframes mind-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -11.6;
+  }
+}
+.mind-wire {
+  fill: none;
+  stroke: #65a9f5;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.mind-wire-pulse {
+  fill: #ffffff;
+  stroke: #65a9f5;
+  stroke-width: 2.4;
+  visibility: hidden;
+}
+.mind-chain {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+}
+.mind-chain--0 {
+  stroke: #ffffff;
+}
+.mind-chain--1 {
+  stroke: #8cc2fb;
+}
+.mind-chain--2 {
+  stroke: #f8957c;
+}
+
+/* ---------- Piramal Mind ---------- */
+.mind-panel-bg {
+  position: absolute;
+  left: calc(var(--u) * 36.6);
+  top: 0;
+  width: calc(var(--u) * 19.4);
+  height: 100%;
+  border-radius: calc(var(--u) * 1.9);
+  background: linear-gradient(170deg, #1a2c5c 0%, #0b1e55 38%, #071a50 100%);
+  box-shadow:
+    0 calc(var(--u) * 2.4) calc(var(--u) * 4.8) rgba(7, 26, 80, 0.3),
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+  z-index: 1;
+}
+.mind-panel-light {
+  /* both accents, glowing from inside it */
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 46% at 0% 104%, rgba(101, 169, 245, 0.42) 0%, rgba(101, 169, 245, 0) 70%),
+    radial-gradient(90% 46% at 100% 104%, rgba(241, 100, 67, 0.36) 0%, rgba(241, 100, 67, 0) 70%),
+    radial-gradient(80% 30% at 50% 0%, rgba(185, 226, 255, 0.2) 0%, rgba(185, 226, 255, 0) 100%);
+  animation: mind-breathe 5s ease-in-out infinite alternate;
+}
+@keyframes mind-breathe {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.mind-panel {
+  position: absolute;
+  left: calc(var(--u) * 36.6);
+  top: 0;
+  width: calc(var(--u) * 19.4);
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+}
+.mind-panel-name {
+  position: absolute;
+  left: calc(var(--u) * 1.75);
+  top: calc(var(--u) * 1.2);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 2.1);
+  font-size: calc(var(--u) * 1.42);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  white-space: nowrap;
+  line-height: 1;
+}
+.mind-panel-name svg {
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 2.1);
+  color: #b9e2ff;
+}
+.mind-eyebrow {
+  position: absolute;
+  left: calc(var(--u) * 4.45);
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #a9cdfb;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.mind-eyebrow--mem {
+  top: calc(var(--u) * 4.25);
+}
+.mind-eyebrow--int {
+  top: calc(var(--u) * 17.5);
+  color: #fbb9a6;
+  visibility: hidden;
+}
+
+/* memory: what flows in, by itself */
+.mind-in {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * (5.7 + var(--i) * 2.3));
+  width: 100%;
+  height: calc(var(--u) * 2);
+}
+.mind-in-node {
+  position: absolute;
+  left: calc(var(--u) * 2.8);
+  top: 50%;
+  width: calc(var(--u) * 0.96);
+  height: calc(var(--u) * 0.96);
+  margin: calc(var(--u) * -0.48) 0 0 calc(var(--u) * -0.48);
+  border-radius: 50%;
+  background: #0b1e55;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.18) #b9e2ff;
+}
+.mind-in-node::after {
+  /* something has just arrived */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #b9e2ff;
+  animation: mind-arrive 2.4s ease-out infinite;
+  animation-delay: calc(var(--i) * 0.8s);
+}
+@keyframes mind-arrive {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+  45%,
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+.mind-in-pill,
+.mind-fly {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 2);
+  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 0.65);
+  border-radius: calc(var(--u) * 1);
+  font-size: calc(var(--u) * 1.05);
+  font-weight: 700;
+  letter-spacing: 0.002em;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+.mind-in-pill svg,
+.mind-fly svg {
+  flex: none;
+  width: calc(var(--u) * 1.15);
+  height: calc(var(--u) * 1.15);
+}
+.mind-in-pill {
+  /* settled: part of the Mind */
+  position: absolute;
+  left: calc(var(--u) * 4.4);
+  top: 0;
+  background: rgba(255, 255, 255, 0.11);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  visibility: hidden;
+}
+.mind-in-pill svg {
+  color: #b9e2ff;
+}
+.mind-fly {
+  /* in flight: on its way in */
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  border: calc(var(--u) * 0.12) solid var(--ev-navy);
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(7, 26, 80, 0.22);
+  color: var(--ev-navy);
+  font-weight: 800;
+  visibility: hidden;
+}
+.mind-fly svg {
+  color: var(--ev-azure);
+}
+
+/* the core: where it all meets */
+.mind-core {
+  position: absolute;
+  left: calc(var(--u) * 0.9);
+  top: calc(var(--u) * 13.1);
+  width: calc(var(--u) * 3.8);
+  height: calc(var(--u) * 3.8);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-core-halo {
+  position: absolute;
+  inset: calc(var(--u) * -1.7);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(185, 226, 255, 0.46) 0%, rgba(185, 226, 255, 0.14) 55%, rgba(185, 226, 255, 0) 100%);
+}
+.mind-core-burst {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: calc(var(--u) * 0.2) solid #8cc2fb;
+}
+.mind-core-ring {
+  /* both accents, turning slowly around the core */
+  position: absolute;
+  inset: calc(var(--u) * -0.42);
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #65a9f5, #4384d4 22%, #b9e2ff 42%, #f16443 62%, #f8957c 80%, #65a9f5);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--u) * 0.3), #000 calc(100% - var(--u) * 0.28));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--u) * 0.3), #000 calc(100% - var(--u) * 0.28));
+  animation: mind-turn 9s linear infinite;
+}
+@keyframes mind-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mind-core-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 26%, #ffffff 0%, #f4f8ff 46%, #dfe9fa 100%);
+  box-shadow:
+    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 #ffffff;
+  will-change: transform;
+}
+.mind-core-face svg {
+  width: 62%;
+  height: 62%;
+  color: var(--ev-navy);
+}
+
+/* intelligence: what it joined up, on one thread */
+.mind-link {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * (19 + var(--i) * 2.9));
+  width: 100%;
+  height: calc(var(--u) * 2.3);
+}
+.mind-link-node {
+  position: absolute;
+  left: calc(var(--u) * 2.8);
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.8);
+  height: calc(var(--u) * 1.8);
+  margin: calc(var(--u) * -0.9) 0 0 calc(var(--u) * -0.9);
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 0 calc(var(--u) * 0.2) #8cc2fb;
+  color: var(--ev-navy);
+  will-change: transform;
+}
+.mind-link-slot {
+  /* the place for something it will join up */
+  position: absolute;
+  left: calc(var(--u) * 4.4);
+  right: calc(var(--u) * 1.15);
+  top: calc(var(--u) * 0.1);
+  bottom: calc(var(--u) * 0.1);
+  border-radius: calc(var(--u) * 0.8);
+  border: calc(var(--u) * 0.09) dashed rgba(185, 226, 255, 0.42);
+  background: rgba(255, 255, 255, 0.04);
+  visibility: hidden;
+}
+.mind-link-hole {
+  position: absolute;
+  left: calc(var(--u) * 2.8);
+  top: 50%;
+  width: calc(var(--u) * 0.96);
+  height: calc(var(--u) * 0.96);
+  margin: calc(var(--u) * -0.48) 0 0 calc(var(--u) * -0.48);
+  border-radius: 50%;
+  background: #0b1e55;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.14) rgba(185, 226, 255, 0.5);
+}
+.mind-link-node svg {
+  width: 62%;
+  height: 62%;
+}
+.mind-link--2 .mind-link-node {
+  box-shadow: 0 0 0 calc(var(--u) * 0.2) #f8957c;
+}
+.mind-link-card {
+  position: absolute;
+  left: calc(var(--u) * 4.4);
+  right: calc(var(--u) * 1.15);
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--u) * 0.4);
+  padding: 0 calc(var(--u) * 0.75) 0 calc(var(--u) * 0.8);
+  border-radius: calc(var(--u) * 0.8);
+  background: #ffffff;
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(0, 0, 0, 0.22);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-link-card b {
+  font-size: calc(var(--u) * 1.04);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ev-navy);
+}
+.mind-link-card span {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: calc(var(--u) * 0.76);
+  font-weight: 600;
+  color: var(--ev-muted);
+}
+.mind-close {
+  position: absolute;
+  left: calc(var(--u) * 1.75);
+  right: calc(var(--u) * 1);
+  top: calc(var(--u) * 27.75);
+  font-size: calc(var(--u) * 1.3);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* ---------- Under the result headline: a defect, traced back to the change that caused it ---------- */
+.mind-defect {
+  padding-left: calc(var(--u) * 1.1);
+  border-left: calc(var(--u) * 0.2) solid var(--ev-flame);
+}
+.mind-defect-h {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+  font-size: calc(var(--u) * 1.46);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.mind-defect-pic {
+  flex: none;
+  order: 2;
+  width: calc(var(--u) * 5.7);
+  height: calc(var(--u) * 1.8);
+  overflow: visible;
+}
+.mind-defect-tk {
+  fill: #fff1ea;
+  stroke: var(--ev-flame-ink);
+  stroke-width: 2;
+}
+.mind-defect-bang {
+  stroke: var(--ev-flame-ink);
+  stroke-width: 2.6;
+}
+.mind-defect-trace {
+  stroke: var(--ev-navy);
+  stroke-width: 2.2;
+}
+.mind-defect-cause {
+  fill: var(--ev-navy);
+}
+.mind-defect-pm {
+  stroke: #ffffff;
+  stroke-width: 2.2;
+}
+.mind-defect .mind-defect-p {
+  margin-top: calc(var(--u) * 0.12);
+  font-size: calc(var(--u) * 1.28);
+  font-weight: 500;
+  line-height: 1.36;
+  color: var(--ev-body);
+  /* one line: it may run a little past the headline's column, never as far as the centrepiece */
+  white-space: nowrap;
+}
+
+/* ---------- STAT: a hundred tiles of AI cost; eighty fall away ---------- */
+.mind-cost {
+  position: absolute;
+  inset: 0;
+  --mind-t: calc(var(--ev-pitch) * 2);
+}
+.mind-tiles {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(var(--mind-t) * 10);
+  display: grid;
+  grid-template-columns: repeat(10, var(--mind-t));
+  grid-auto-rows: var(--mind-t);
+}
+.mind-tile {
+  /* the place a tile of cost used to be */
+  position: relative;
+  width: 78%;
+  height: 78%;
+  margin: auto;
+  border-radius: 24%;
+  background: #f4f7fc;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.11) #cbd8ea;
+  visibility: hidden;
+}
+.mind-tile > i {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #b9d6fb;
+  will-change: transform, opacity;
+}
+.mind-tile:nth-child(3n + 1) > i {
+  background: #fbd6cd;
+}
+.mind-tile:nth-child(4n + 2) > i {
+  background: #8cc2fb;
+}
+.mind-tile:nth-child(7n + 3) > i {
+  background: #f8b9a6;
+}
+.mind-tile:nth-child(5n) > i {
+  background: #c9d6f2;
+}
+.mind-tile.mind-tile--kept > i {
+  /* what is left */
+  background: linear-gradient(160deg, #1f3470 0%, #071a50 80%);
+  box-shadow: 0 calc(var(--u) * 0.35) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.28);
+}
+.mind-cost-arrow {
+  position: absolute;
+  right: calc(var(--mind-t) * 10 + var(--ev-pitch) * 0.5);
+  top: 0;
+  width: var(--mind-t);
+  height: calc(var(--mind-t) * 8);
+  overflow: visible;
+}
+.mind-cost-line {
+  fill: none;
+  stroke: var(--ev-navy);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+.mind-cost-head {
+  fill: none;
+  stroke: var(--ev-navy);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mind-cost-label {
+  position: absolute;
+  right: calc(var(--mind-t) * 11 + var(--ev-pitch) * 0.4);
+  top: calc(var(--u) * 0.1);
+  font-size: calc(var(--u) * 1.05);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  white-space: nowrap;
+  line-height: 1.3;
+  visibility: hidden;
+}
+.mind-cost-tag {
+  position: absolute;
+  right: calc(var(--mind-t) * 10 + var(--ev-pitch) * 0.7);
+  top: calc(var(--mind-t) * 9);
+  width: 0;
+  height: 0;
+}
+.mind-cost-tag-in {
+  position: absolute;
+  right: 0;
+  top: calc(var(--u) * -1.55);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 3.1);
+  padding: 0 calc(var(--u) * 1.2) 0 calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 1.55);
+  background: linear-gradient(160deg, #15244b 0%, #071a50 80%);
+  box-shadow: 0 calc(var(--u) * 0.7) calc(var(--u) * 1.7) rgba(7, 26, 80, 0.26);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.mind-cost-tag-in::after {
+  content: '';
+  position: absolute;
+  right: calc(var(--u) * -0.38);
+  top: 50%;
+  width: calc(var(--u) * 0.9);
+  height: calc(var(--u) * 0.9);
+  margin-top: calc(var(--u) * -0.45);
+  background: #071a50;
+  transform: rotate(45deg);
+  border-radius: calc(var(--u) * 0.14);
+}
+.mind-cost-core {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 2.1);
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 26%, #ffffff 0%, #f4f8ff 46%, #dfe9fa 100%);
+  box-shadow: 0 0 0 calc(var(--u) * 0.16) #65a9f5;
+}
+.mind-cost-core svg {
+  width: 62%;
+  height: 62%;
+  color: var(--ev-navy);
+}
+.mind-cost-tag-in b {
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+/* ============================================================
+   A phone on its side. The board keeps its shape (its thread is
+   drawn to it), but it is set again in fewer, larger words:
+   the code editor goes, the preview becomes one line under the
+   talk-back, the ticket numbers on the three links go. Nothing on
+   the board is under 9 px, nothing around it under 11 px.
+   ============================================================ */
+@media (max-height: 480px) {
+  .ev-moment[data-key='mind'] {
+    --md-k: max(calc(var(--u) * 1.15), calc(var(--fl) * 9)); /* the board's small print */
+    --md-v: max(calc(var(--u) * 1.25), calc(var(--fl) * 9.4)); /* what is read */
+  }
+
+  /* ----- around the board ----- */
+  /* the promise under the docked name takes two lines, so the board can stand at full size beside it */
+  .ev-moment[data-key='mind'] .ev-dockcap {
+    width: calc(var(--u) * 27);
+    white-space: normal;
+    line-height: 1.24;
+  }
+  .ev-moment[data-key='mind'] .ev-col--demo {
+    top: calc(var(--u) * -2.7);
+  }
+  .ev-moment[data-key='mind'] .ev-col--result {
+    top: calc(var(--u) * -4.5);
+    width: calc(var(--u) * 31);
+  }
+  /* four lines of headline and two of proof, above Priya's line: set a size down, and closer */
+  .ev-moment[data-key='mind'] .ev-sentence {
+    font-size: calc(var(--u) * 2.8);
+    line-height: 1.12;
+  }
+  .ev-moment[data-key='mind'] .ev-proof {
+    margin-top: calc(var(--u) * 0.3);
+  }
+  .ev-moment[data-key='mind'] .ev-stat {
+    top: calc(var(--u) * -5.4);
+  }
+  .mind-defect-h {
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+  .mind-defect .mind-defect-p {
+    margin-top: 0;
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+    line-height: 1.22;
+    white-space: normal;
+  }
+
+  /* ----- before: three pieces, three loose ends (drawn 1.2× by the shared frame) ----- */
+  .mind-b-cap {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+    letter-spacing: 0.1em;
+  }
+
+  /* ----- the engineer's session: a little narrower, so Piramal Mind has room for its words ----- */
+  .mind-win {
+    width: calc(var(--u) * 33.4);
+  }
+  .mind-win-dot {
+    display: none;
+  }
+  .mind-win-who {
+    min-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--md-v);
+  }
+  .mind-win-who i {
+    display: none;
+  }
+  .mind-win-tag {
+    flex: none;
+    padding-left: calc(var(--u) * 0.8);
+    font-size: var(--md-k);
+    letter-spacing: 0.06em;
+  }
+  .mind-id {
+    font-size: var(--md-k);
+    height: calc(var(--u) * 1.8);
+  }
+  .mind-prompt {
+    top: calc(var(--u) * 3.05);
+    gap: calc(var(--u) * 0.8);
+    padding: calc(var(--u) * 0.45) calc(var(--u) * 0.7) calc(var(--u) * 0.5) calc(var(--u) * 1);
+  }
+  .mind-prompt-text {
+    font-size: var(--md-v);
+    line-height: 1.3;
+  }
+  .mind-talk {
+    top: calc(var(--u) * 8.3);
+    height: calc(var(--u) * 18.8);
+    padding: calc(var(--u) * 0.6) calc(var(--u) * 0.9) 0;
+  }
+  .mind-talk-port {
+    top: calc(var(--u) * 6.7);
+  }
+  .mind-talk-head {
+    height: calc(var(--u) * 1.9);
+  }
+  .mind-talk-head b {
+    font-size: var(--md-v);
+  }
+  .mind-talk-lead {
+    font-size: var(--md-k);
+    padding: calc(var(--u) * 0.15) calc(var(--u) * 0.6) calc(var(--u) * 0.2);
+  }
+  .mind-talk .mind-talk-text {
+    margin-top: calc(var(--u) * 0.3);
+    font-size: max(calc(var(--u) * 1.7), calc(var(--fl) * 11));
+    line-height: 1.18;
+  }
+  .mind-src {
+    margin-top: calc(var(--u) * 0.45);
+    height: auto;
+    min-height: calc(var(--u) * 4.1);
+    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.7) calc(var(--u) * 0.45) calc(var(--u) * 0.6);
+    gap: calc(var(--u) * 0.7);
+  }
+  .mind-src-txt > b {
+    font-size: var(--md-v);
+    white-space: normal;
+  }
+  .mind-src-txt > span {
+    font-size: var(--md-k);
+  }
+  .mind-src-txt .mind-id {
+    height: calc(var(--u) * 1.6);
+    font-size: var(--md-k);
+  }
+  /* the question, and under it the one control */
+  .mind-ask {
+    display: block;
+    height: auto;
+    margin-top: calc(var(--u) * 0.45);
+  }
+  .mind-ask-q {
+    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 9.6));
+    line-height: 1.3;
+  }
+  .mind-acceptWrap {
+    width: 100%;
+    height: calc(var(--u) * 3.3);
+    margin-top: calc(var(--u) * 0.35);
+  }
+  .mind-accept {
+    border-radius: calc(var(--u) * 1.65);
+  }
+  .mind-accept-face {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 10));
+  }
+  .mind-stamp span {
+    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.4));
+  }
+  /* the code he would have written is too small to be read here: the app it makes says it, on one line */
+  .mind-work {
+    top: calc(var(--u) * 27.75);
+    height: calc(var(--u) * 3);
+  }
+  .mind-code {
+    display: none;
+  }
+  .mind-pre {
+    display: flex;
+    align-items: stretch;
+    gap: calc(var(--u) * 0.4);
+    border-radius: calc(var(--u) * 0.9);
+    padding-right: calc(var(--u) * 0.4);
+  }
+  .mind-pre .mind-pre-strip {
+    display: none;
+  }
+  .mind-pre-band {
+    flex: none;
+    height: auto;
+    padding: 0 calc(var(--u) * 0.9);
+  }
+  .mind-pre-band span {
+    font-size: var(--md-v);
+  }
+  .mind-pre-row {
+    flex: 1 1 0;
+    height: auto;
+    margin: calc(var(--u) * 0.4) 0;
+    gap: calc(var(--u) * 0.4);
+    font-size: var(--md-k);
+  }
+  .mind-pre-row--new {
+    flex: 1.3 1 0;
+  }
+  .mind-pre-rowin {
+    gap: calc(var(--u) * 0.4);
+  }
+  .mind-pre-dot {
+    width: calc(var(--u) * 1.2);
+    height: calc(var(--u) * 1.2);
+  }
+
+  /* ----- the thread, and Piramal Mind: both one unit to the left with the session's edge ----- */
+  .mind-wires {
+    left: calc(var(--u) * -1);
+  }
+  .mind-panel-bg,
+  .mind-panel {
+    left: calc(var(--u) * 35.6);
+    width: calc(var(--u) * 20.4);
+  }
+  .mind-panel-name {
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 10));
+  }
+  .mind-eyebrow {
+    font-size: var(--md-k);
+    letter-spacing: 0.16em;
+  }
+  .mind-eyebrow--mem {
+    top: calc(var(--u) * 3.95);
+  }
+  .mind-eyebrow--int {
+    top: calc(var(--u) * 17.2);
+  }
+  .mind-in-pill,
+  .mind-fly {
+    gap: calc(var(--u) * 0.4);
+    padding: 0 calc(var(--u) * 0.7) 0 calc(var(--u) * 0.5);
+    font-size: var(--md-v);
+    letter-spacing: -0.01em;
+  }
+  .mind-in-pill {
+    left: calc(var(--u) * 4.1);
+  }
+  .mind-link-card b {
+    font-size: var(--md-v);
+  }
+  /* the ticket numbers are on the session beside it; the three links keep their names */
+  .mind-link-card span {
+    display: none;
+  }
+  .mind-close {
+    top: calc(var(--u) * 27.6);
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 9.8));
+    line-height: 1.18;
+  }
+
+  /* ----- the number's picture ----- */
+  .mind-cost-label {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+    letter-spacing: 0.16em;
+  }
+  .mind-cost-tag-in b {
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+}

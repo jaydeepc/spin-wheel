@@ -1,0 +1,331 @@
+/* ============================================================
+   EVERYDAY AI · the chapter card: the people who build the apps
+   she works in. The words on the left; on the right, her Tuesday
+   gathered into one card, and the engineering team's panel under it.
+   ============================================================ */
+
+.ev-scene--eng {
+  --eng-top: calc(var(--u) * -17.2);
+  --eng-h: calc(var(--u) * 33.4);
+  --eng-pw: calc(var(--u) * 35); /* the picture's column */
+  --eng-gap: calc(var(--u) * 4.5);
+  --eng-ls: calc(var(--u) * 2.75); /* the lead sentence */
+  --eng-hs: calc(var(--u) * 4.7); /* the headline */
+  --eng-name: calc(var(--u) * 2.05); /* a name of her day */
+}
+
+.eng-area {
+  position: absolute;
+  left: calc(var(--hx) * -1);
+  top: var(--eng-top);
+  width: calc(var(--hx) * 2);
+  height: var(--eng-h);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--eng-pw);
+  column-gap: var(--eng-gap);
+  align-items: center;
+  pointer-events: none;
+}
+
+/* ---------- the words ---------- */
+.eng-eyebrow {
+  font-size: calc(var(--u) * 1.25);
+  font-weight: 800;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.eng-lead {
+  margin-top: calc(var(--u) * 1.1);
+  max-width: 17.5em;
+  font-size: var(--eng-ls);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--ev-body);
+  text-wrap: balance;
+}
+.eng-h {
+  margin-top: calc(var(--u) * 1);
+  max-width: 11.4em;
+  font-size: var(--eng-hs);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: var(--ev-navy);
+  text-wrap: balance;
+}
+/* each line rises through its own mask (SplitText): room for the descenders at this leading */
+.eng-lead > div,
+.eng-h > div {
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.eng-h em {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #f16443 6%, #eb542c 48%, #d6411a 96%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.eng-h em svg {
+  position: absolute;
+  left: -1%;
+  bottom: -0.03em;
+  width: 102%;
+  height: 0.24em;
+  overflow: visible;
+}
+.eng-h em path {
+  fill: none;
+  stroke: var(--ev-flame);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+/* ---------- the picture ---------- */
+.eng-pic {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  will-change: transform, opacity;
+}
+
+/* her Tuesday, gathered into one card */
+.eng-day {
+  position: relative;
+  padding: calc(var(--u) * 1.25) calc(var(--u) * 1.5) calc(var(--u) * 1.5);
+  will-change: transform;
+}
+.eng-day-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.7);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 1.3) calc(var(--u) * 3) rgba(7, 26, 80, 0.12),
+    0 calc(var(--u) * 0.15) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.06),
+    0 0 0 1px rgba(7, 26, 80, 0.06);
+  visibility: hidden;
+}
+.eng-day-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(var(--u) * 2.2);
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--ev-ink);
+  white-space: nowrap;
+}
+.eng-day-tick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.2);
+  height: calc(var(--u) * 2.2);
+  border-radius: 50%;
+  background: var(--ev-navy);
+}
+.eng-day-tick svg {
+  width: 62%;
+  height: 62%;
+}
+.eng-chips {
+  position: relative;
+  margin: calc(var(--u) * 0.9) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--u) * 0.85);
+}
+.eng-chip {
+  position: relative;
+  display: block;
+  padding: calc(var(--u) * 0.7) calc(var(--u) * 1.1) calc(var(--u) * 0.8);
+}
+.eng-chip-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.05);
+  background: var(--acc-soft);
+  box-shadow: 0 0 0 1px var(--acc-line);
+  visibility: hidden;
+}
+.eng-chip-time {
+  position: relative;
+  display: block;
+  font-size: calc(var(--u) * 0.98);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ev-body);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.eng-chip-name {
+  position: relative;
+  display: block;
+  line-height: 1.2;
+}
+.eng-chip-t {
+  display: inline-block;
+  font-size: var(--eng-name);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--acc-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+/* the line between them */
+.eng-link {
+  position: relative;
+  align-self: center;
+  width: calc(var(--u) * 1);
+  height: calc(var(--u) * 3.2);
+}
+.eng-link-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--u) * 0.2);
+  margin-left: calc(var(--u) * -0.1);
+  background: linear-gradient(180deg, #b7c9e2 0%, var(--ev-navy) 100%);
+}
+.eng-link-dot {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * -0.45);
+  width: calc(var(--u) * 0.9);
+  height: calc(var(--u) * 0.9);
+  margin-left: calc(var(--u) * -0.45);
+  border-radius: 50%;
+  background: #ffffff;
+  border: calc(var(--u) * 0.2) solid var(--ev-navy);
+  z-index: 1;
+}
+
+/* the people who build her apps: the one navy panel on the card */
+.eng-team {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.3);
+  padding: calc(var(--u) * 1.5) calc(var(--u) * 1.6);
+  border-radius: calc(var(--u) * 1.7);
+  background: linear-gradient(140deg, #15244b 0%, #071a50 70%);
+  box-shadow:
+    0 calc(var(--u) * 1.5) calc(var(--u) * 3.4) rgba(7, 26, 80, 0.3),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.2);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.eng-team-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 4.3);
+  height: calc(var(--u) * 4.3);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ev-navy);
+}
+.eng-team-mark svg {
+  width: 54%;
+  height: 54%;
+}
+.eng-team-txt {
+  display: grid;
+  min-width: 0;
+}
+.eng-team-txt b {
+  font-size: calc(var(--u) * 1.8);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.eng-team-txt > span {
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: #c9d6f2;
+  white-space: nowrap;
+}
+
+/* ---------- squarer screens (a tablet): narrower, but taller ---------- */
+@media (max-aspect-ratio: 3/2) {
+  .ev-scene--eng {
+    --eng-top: calc(var(--u) * -20.6);
+    --eng-h: calc(var(--u) * 37);
+    --eng-pw: calc(var(--u) * 30.5);
+    --eng-gap: calc(var(--u) * 2.6);
+    --eng-ls: calc(var(--u) * 2.4);
+    --eng-hs: calc(var(--u) * 4);
+    --eng-name: calc(var(--u) * 1.9);
+  }
+  .eng-day {
+    padding: calc(var(--u) * 1.2) calc(var(--u) * 1.2) calc(var(--u) * 1.3);
+  }
+  .eng-chip {
+    padding: calc(var(--u) * 0.7) calc(var(--u) * 0.9) calc(var(--u) * 0.8);
+  }
+  .eng-team {
+    gap: calc(var(--u) * 1.2);
+    padding: calc(var(--u) * 1.4) calc(var(--u) * 1.4);
+  }
+  .eng-team-mark {
+    width: calc(var(--u) * 3.9);
+    height: calc(var(--u) * 3.9);
+  }
+  .eng-team-txt b {
+    font-size: calc(var(--u) * 1.58);
+  }
+}
+
+/* ---------- a phone on its side: the card has the whole height above Priya's line, and its small print a floor ---------- */
+@media (max-height: 480px) {
+  .ev-scene--eng {
+    --eng-top: calc(var(--u) * -16.6);
+    --eng-h: calc(var(--u) * 33.6);
+  }
+  .eng-eyebrow {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+    letter-spacing: 0.3em;
+  }
+  .eng-team-txt > span {
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+    letter-spacing: 0.2em;
+  }
+  /* her day's card steps back to 0.93 when the engineering panel arrives: its small print is set a size up for that */
+  .eng-day-head {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 12));
+    letter-spacing: 0.2em;
+  }
+  .eng-chip-time {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 12));
+  }
+}
+
+/* a name is never broken across two lines */
+.eng-nobreak {
+  white-space: nowrap;
+}

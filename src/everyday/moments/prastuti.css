@@ -1,0 +1,1772 @@
+/* ============================================================
+   Prastuti · प्रस्तुति · 4:00 pm, at the weekly review.
+   She speaks in Hindi, and the deck builds itself in Hindi.
+   Everything here is Prastuti's own; classes are prefixed
+   "prastuti-". Sizes are in --u (a slide's own art in --s, a
+   hundredth of its width); colours come from the accent variables.
+   ============================================================ */
+
+/* ---------- BEFORE: Sunday, 11 pm. Every formatting button, and an empty slide. ---------- */
+.prastuti-b {
+  position: absolute;
+  inset: 0;
+}
+.prastuti-b-night {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(var(--u) * 15.5);
+  height: calc(var(--u) * 9.3);
+  border-radius: calc(var(--u) * 1.6);
+  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.28);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+.prastuti-b-night svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.prastuti-b-moon {
+  fill: #ffd9cd;
+}
+.prastuti-b-star {
+  fill: #b9e2ff;
+}
+.prastuti-b-time {
+  position: absolute;
+  left: calc(var(--u) * 1.25);
+  top: calc(var(--u) * 1);
+  font-size: calc(var(--u) * 1.4);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.prastuti-b-win {
+  position: absolute;
+  left: calc(var(--u) * 0.3);
+  bottom: calc(var(--u) * 0.3);
+  width: calc(var(--u) * 21.4);
+  height: calc(var(--u) * 15.3);
+  border-radius: calc(var(--u) * 1);
+  background: #eef2f8;
+  box-shadow:
+    0 calc(var(--u) * 1.1) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.16),
+    0 0 0 1px rgba(7, 26, 80, 0.07);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  will-change: transform, opacity;
+}
+.prastuti-b-top {
+  flex: none;
+  position: relative;
+  height: calc(var(--u) * 1.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.32);
+  padding: 0 calc(var(--u) * 0.75);
+  background: #ffffff;
+}
+.prastuti-b-top i {
+  width: calc(var(--u) * 0.46);
+  height: calc(var(--u) * 0.46);
+  border-radius: 50%;
+  background: #d7e2ee;
+}
+.prastuti-b-top span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 0.66);
+  font-weight: 700;
+  color: var(--ev-muted);
+}
+.prastuti-b-tools {
+  flex: none;
+  position: relative;
+  height: calc(var(--u) * 2.15);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.24);
+  padding: 0 calc(var(--u) * 0.75);
+  background: #ffffff;
+  border-top: 1px solid #e3eaf3;
+  border-bottom: 1px solid #d7e2ee;
+}
+.prastuti-b-font {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(var(--u) * 3.5);
+  height: calc(var(--u) * 1.3);
+  padding: 0 calc(var(--u) * 0.36);
+  border-radius: calc(var(--u) * 0.3);
+  border: 1px solid #d7e2ee;
+}
+.prastuti-b-font i {
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 0.34);
+  border-radius: calc(var(--u) * 0.17);
+  background: #c5d1e2;
+}
+.prastuti-b-font svg {
+  width: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 0.6);
+  fill: none;
+  stroke: #566481;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.prastuti-b-tool {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.3);
+  height: calc(var(--u) * 1.3);
+  border-radius: calc(var(--u) * 0.3);
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ev-ink);
+}
+.prastuti-b-tool--i {
+  font-style: italic;
+  font-weight: 600;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.prastuti-b-tool--u {
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+.prastuti-b-tool svg {
+  width: 62%;
+  height: 62%;
+  fill: none;
+  stroke: #33415f;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+}
+.prastuti-b-sep {
+  width: 1px;
+  height: calc(var(--u) * 1.1);
+  margin: 0 calc(var(--u) * 0.14);
+  background: #d7e2ee;
+}
+.prastuti-b-swatch {
+  position: relative;
+  z-index: 1;
+  width: calc(var(--u) * 0.9);
+  height: calc(var(--u) * 0.9);
+  margin: 0 calc(var(--u) * 0.08);
+  border-radius: 50%;
+  box-shadow: 0 0 0 calc(var(--u) * 0.1) #ffffff, 0 0 0 calc(var(--u) * 0.16) #d7e2ee;
+}
+.prastuti-b-swatch--a {
+  background: #071a50;
+}
+.prastuti-b-swatch--b {
+  background: #f16443;
+}
+.prastuti-b-swatch--c {
+  background: #65a9f5;
+}
+.prastuti-b-press {
+  /* the button she is trying now */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 1.62);
+  height: calc(var(--u) * 1.62);
+  border-radius: calc(var(--u) * 0.42);
+  background: var(--acc-soft);
+  border: calc(var(--u) * 0.11) solid var(--acc);
+  visibility: hidden;
+}
+.prastuti-b-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: calc(var(--u) * 0.7);
+  padding: calc(var(--u) * 0.8);
+}
+.prastuti-b-strip {
+  flex: none;
+  width: calc(var(--u) * 2.9);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 0.5);
+}
+.prastuti-b-thumb {
+  display: block;
+  height: calc(var(--u) * 2.1);
+  border-radius: calc(var(--u) * 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  border: calc(var(--u) * 0.08) dashed #b7c9e2;
+}
+.prastuti-b-thumb--on {
+  background: #ffffff;
+  border: calc(var(--u) * 0.12) solid var(--acc);
+}
+.prastuti-b-slide {
+  position: relative;
+  flex: 1;
+  border-radius: calc(var(--u) * 0.4);
+  background: #ffffff;
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.1);
+}
+.prastuti-b-ph {
+  position: absolute;
+  left: calc(var(--u) * 1.1);
+  right: calc(var(--u) * 1.1);
+  border-radius: calc(var(--u) * 0.3);
+  border: calc(var(--u) * 0.08) dashed #b7c9e2;
+}
+.prastuti-b-ph--title {
+  top: calc(var(--u) * 1.3);
+  height: calc(var(--u) * 2.7);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.3);
+  padding: 0 calc(var(--u) * 0.8);
+}
+.prastuti-b-ph--title span {
+  font-size: calc(var(--u) * 1.06);
+  font-weight: 600;
+  color: #7a88a3;
+  white-space: nowrap;
+}
+.prastuti-b-cursor {
+  flex: none;
+  width: calc(var(--u) * 0.16);
+  height: calc(var(--u) * 1.5);
+  border-radius: calc(var(--u) * 0.08);
+  background: var(--acc);
+  animation: prastuti-blink 1s steps(1, end) infinite;
+}
+@keyframes prastuti-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0;
+  }
+}
+.ev-root[data-hold='1'] .prastuti-b-cursor {
+  animation: none;
+}
+.prastuti-b-ph--body {
+  top: calc(var(--u) * 4.6);
+  bottom: calc(var(--u) * 1.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--u) * 0.55);
+  padding: 0 calc(var(--u) * 0.8);
+}
+.prastuti-b-ph--body i {
+  height: calc(var(--u) * 0.36);
+  border-radius: calc(var(--u) * 0.18);
+  background: #e9eef5;
+}
+.prastuti-b-ph--body i:nth-child(1) {
+  width: 72%;
+}
+.prastuti-b-ph--body i:nth-child(2) {
+  width: 54%;
+}
+.prastuti-b-ph--body i:nth-child(3) {
+  width: 63%;
+}
+
+/* ---------- Hindi, wherever it is shown ----------
+   System Devanagari faces (never Open Sans), no tracking, no capitals, and a line tall
+   enough that the matras above and below the letters are never cut. */
+.prastuti-hi {
+  font-family: 'Kohinoor Devanagari', 'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+/* ---------- A spreadsheet, a globe: drawn ---------- */
+.prastuti-sheet {
+  flex: none;
+  width: calc(var(--u) * 1.3);
+  height: calc(var(--u) * 1.3);
+}
+.prastuti-globe {
+  flex: none;
+  width: calc(var(--u) * 0.9);
+  height: calc(var(--u) * 0.9);
+}
+
+/* ---------- The left column: what goes in ---------- */
+.prastuti-kit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 0.55);
+  max-width: calc(var(--u) * 25);
+}
+.prastuti-kit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.45);
+  height: calc(var(--u) * 2.3);
+  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 0.7);
+  border: 1px solid var(--acc-line);
+  background: rgba(255, 255, 255, 0.82);
+  font-size: calc(var(--u) * 1);
+  font-weight: 700;
+  color: var(--ev-ink);
+  white-space: nowrap;
+}
+.prastuti-kit-chip svg {
+  flex: none;
+  width: calc(var(--u) * 1.15);
+  height: calc(var(--u) * 1.15);
+}
+.prastuti-kit-chip--solid {
+  padding: 0 calc(var(--u) * 0.95);
+  border-color: var(--ev-navy);
+  background: var(--ev-navy);
+  color: #ffffff;
+}
+
+/* ---------- Under the result headline: Sunday, 11 pm → प्रस्तुति तैयार ---------- */
+.prastuti-compare {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.prastuti-compare-old {
+  position: relative;
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 600;
+  color: var(--ev-muted);
+}
+.prastuti-compare-old i {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 52%;
+  height: calc(var(--u) * 0.16);
+  border-radius: 1px;
+  background: var(--acc-ink);
+  transform-origin: 0 50%;
+}
+.prastuti-compare svg {
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 1);
+}
+.prastuti-compare-new {
+  display: inline-flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 0.7);
+}
+.prastuti-compare-new .prastuti-hi {
+  font-size: calc(var(--u) * 1.7);
+  font-weight: 700;
+  color: var(--acc-ink);
+}
+.prastuti-compare-new > span:last-child {
+  font-size: calc(var(--u) * 1.05);
+  font-weight: 700;
+  color: var(--ev-muted);
+}
+
+/* ---------- Prastuti on the laptop ---------- */
+.prastuti-app {
+  /* laid out for the full-size laptop screen (29u × 18.8u); animate() fits it to a smaller laptop */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 29);
+  height: calc(var(--u) * 18.8);
+  transform-origin: 0 0;
+  /* its own stacking context: the slides' layers stay under the stamp on the laptop */
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+.prastuti-appbar {
+  flex: none;
+  height: calc(var(--u) * 1.9);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  padding: 0 calc(var(--u) * 0.8) 0 calc(var(--u) * 0.6);
+  border-bottom: 1px solid #e3eaf3;
+}
+.prastuti-appicon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.3);
+  height: calc(var(--u) * 1.3);
+  border-radius: calc(var(--u) * 0.38);
+  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
+  box-shadow: 0 calc(var(--u) * 0.2) calc(var(--u) * 0.5) rgba(235, 84, 44, 0.35);
+}
+.prastuti-appicon svg {
+  width: 66%;
+  height: 66%;
+}
+.prastuti-appname {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.4);
+  white-space: nowrap;
+}
+.prastuti-appname b {
+  font-size: calc(var(--u) * 0.94);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--ev-navy);
+}
+.prastuti-appname .prastuti-hi {
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 600;
+  color: var(--acc-ink);
+}
+.prastuti-lang {
+  /* the language marker */
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.32);
+  height: calc(var(--u) * 1.3);
+  padding: 0 calc(var(--u) * 0.6) 0 calc(var(--u) * 0.4);
+  border-radius: calc(var(--u) * 0.65);
+  background: var(--acc-soft);
+  border: 1px solid var(--acc-line);
+  color: var(--acc-ink);
+  white-space: nowrap;
+}
+.prastuti-lang .prastuti-hi {
+  font-size: calc(var(--u) * 0.78);
+  font-weight: 700;
+}
+.prastuti-lang > span:last-child {
+  padding-left: calc(var(--u) * 0.36);
+  border-left: 1px solid var(--acc-line);
+  font-size: calc(var(--u) * 0.62);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--ev-ink);
+}
+.prastuti-appwho {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.32);
+  font-size: calc(var(--u) * 0.64);
+  font-weight: 700;
+  color: var(--ev-ink);
+  white-space: nowrap;
+}
+.prastuti-appwho img {
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.2);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px #d7e2ee;
+}
+.prastuti-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: linear-gradient(180deg, #f6f8fc 0%, #ebeff6 100%);
+}
+
+/* the filmstrip: four places, filled one by one */
+.prastuti-strip {
+  position: absolute;
+  left: calc(var(--u) * 0.5);
+  top: calc(var(--u) * 0.55);
+  width: calc(var(--u) * 5.6);
+  height: calc(var(--u) * 12.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.prastuti-thumb {
+  position: relative;
+  height: calc(var(--u) * 2.7);
+  visibility: hidden;
+}
+.prastuti-thumb-n {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 0.1);
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 0.66);
+  height: calc(var(--u) * 0.66);
+  font-size: calc(var(--u) * 0.52);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ev-muted);
+}
+.prastuti-thumb-ok {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--acc);
+}
+.prastuti-thumb-ok svg {
+  width: 62%;
+  height: 62%;
+}
+.prastuti-thumb-slot {
+  /* the empty place a slide will take */
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(var(--u) * 4.8);
+  height: calc(var(--u) * 2.7);
+  border-radius: calc(var(--u) * 0.3);
+  border: calc(var(--u) * 0.07) dashed #c0cde0;
+  background: rgba(255, 255, 255, 0.55);
+}
+.prastuti-thumb-ring {
+  /* the slide that is being built now */
+  position: absolute;
+  inset: calc(var(--u) * -0.2);
+  border-radius: calc(var(--u) * 0.46);
+  border: calc(var(--u) * 0.12) solid var(--acc);
+  visibility: hidden;
+}
+
+/* the canvas: 21.6u × 12.15u, a slide at full size */
+.prastuti-main {
+  position: absolute;
+  left: calc(var(--u) * 6.6);
+  top: calc(var(--u) * 0.55);
+  width: calc(var(--u) * 21.6);
+  height: calc(var(--u) * 12.15);
+}
+.prastuti-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--u) * 0.6);
+  border: calc(var(--u) * 0.09) dashed #f0b9aa;
+  background: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  visibility: hidden;
+}
+.prastuti-empty-k {
+  font-size: calc(var(--u) * 0.62);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+}
+.prastuti-empty-lang {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 0.7);
+  margin-top: calc(var(--u) * 0.1);
+}
+.prastuti-empty-lang .prastuti-hi {
+  font-size: calc(var(--u) * 2.9);
+  font-weight: 700;
+  color: var(--acc-ink);
+}
+.prastuti-empty-lang > span:last-child {
+  font-size: calc(var(--u) * 1.15);
+  font-weight: 800;
+  color: var(--ev-navy);
+}
+.prastuti-empty-p {
+  margin-top: calc(var(--u) * 0.15);
+  font-size: calc(var(--u) * 0.74);
+  font-weight: 600;
+  color: var(--ev-body);
+}
+
+/* ---------- A SLIDE. Everything inside is drawn in its own unit, --s: a hundredth of its width. ---------- */
+.prastuti-slide,
+.prastuti-back {
+  --s: calc(var(--u) * 0.216);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--s) * 2.4);
+  box-shadow:
+    0 calc(var(--s) * 3) calc(var(--s) * 7) rgba(7, 26, 80, 0.2),
+    0 0 0 1px rgba(7, 26, 80, 0.08);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.prastuti-cover {
+  z-index: 20;
+}
+.prastuti-back {
+  /* the slides behind the cover of the finished deck */
+  background: #ffffff;
+}
+.prastuti-back--2 {
+  background: #ffeee7;
+}
+.prastuti-back--3 {
+  background: #fbd6cd;
+}
+.prastuti-f {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* 1 · the cover */
+.prastuti-f--title {
+  background: linear-gradient(140deg, #10297a 0%, #071a50 52%, #05123c 100%);
+}
+.prastuti-t-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.prastuti-t-ring {
+  fill: none;
+  stroke: rgba(255, 196, 178, 0.7);
+  stroke-width: 0.34;
+}
+.prastuti-t-ring--2 {
+  stroke: rgba(185, 226, 255, 0.38);
+  stroke-width: 0.3;
+}
+.prastuti-t-dot {
+  fill: #ffd9cd;
+}
+.prastuti-t-dot--sky {
+  fill: #65a9f5;
+}
+.prastuti-t-sun {
+  position: absolute;
+  left: calc(var(--s) * 58);
+  top: calc(var(--s) * 24);
+  width: calc(var(--s) * 52);
+  height: calc(var(--s) * 52);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 24%, #ff9b7d 0%, #f16443 36%, #e24a22 78%, #d6411a 100%);
+  box-shadow: 0 0 calc(var(--s) * 12) rgba(241, 100, 67, 0.42);
+}
+.prastuti-t-en {
+  position: absolute;
+  left: calc(var(--s) * 8);
+  top: calc(var(--s) * 7.4);
+  font-size: calc(var(--s) * 2.9);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: #ffd0c2;
+  white-space: nowrap;
+}
+.prastuti-t-title {
+  position: absolute;
+  left: calc(var(--s) * 8);
+  top: calc(var(--s) * 12.4);
+  font-size: calc(var(--s) * 9.4);
+  font-weight: 700;
+  line-height: 1.5;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.prastuti-t-title > span {
+  display: block;
+}
+.prastuti-t-rule {
+  position: absolute;
+  left: calc(var(--s) * 8);
+  top: calc(var(--s) * 42.6);
+  width: calc(var(--s) * 9);
+  height: calc(var(--s) * 0.9);
+  border-radius: calc(var(--s) * 0.45);
+  background: #f16443;
+}
+.prastuti-t-sub {
+  position: absolute;
+  left: calc(var(--s) * 8);
+  top: calc(var(--s) * 44.8);
+  font-size: calc(var(--s) * 3.5);
+  font-weight: 500;
+  line-height: 1.6;
+  color: #ffe1d8;
+  white-space: nowrap;
+}
+
+/* the heading of a chart slide */
+.prastuti-head {
+  position: absolute;
+  left: calc(var(--s) * 7);
+  top: calc(var(--s) * 5.4);
+  padding-left: calc(var(--s) * 2.8);
+}
+.prastuti-head-bar {
+  position: absolute;
+  left: 0;
+  top: calc(var(--s) * 1.2);
+  bottom: calc(var(--s) * 0.5);
+  width: calc(var(--s) * 1);
+  border-radius: calc(var(--s) * 0.5);
+  background: linear-gradient(180deg, #f4714d 0%, #e24a22 100%);
+}
+.prastuti-head-t {
+  display: block;
+  font-size: calc(var(--s) * 5.5);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.prastuti-head-en {
+  display: block;
+  font-size: calc(var(--s) * 2.8);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+
+/* 2 · the bars */
+.prastuti-f--bars {
+  background:
+    radial-gradient(circle at 100% 0%, #ffe9e0 0%, rgba(255, 233, 224, 0) 46%),
+    #ffffff;
+}
+.prastuti-bars {
+  position: absolute;
+  left: calc(var(--s) * 8);
+  right: calc(var(--s) * 8);
+  top: calc(var(--s) * 21.5);
+  bottom: calc(var(--s) * 3.4);
+  display: flex;
+}
+.prastuti-bars-grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--s) * 14.4);
+  height: 0;
+  border-top: 1px dashed #dbe3ef;
+}
+.prastuti-bars-grid + .prastuti-bars-grid {
+  bottom: calc(var(--s) * 22.2);
+}
+.prastuti-bars-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--s) * 6.3);
+  height: calc(var(--s) * 0.36);
+  border-radius: calc(var(--s) * 0.18);
+  background: #b7c5da;
+}
+.prastuti-barcol {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+.prastuti-bar {
+  /* --v is the branch's value, 0 to 100: the tallest bar stands 23 slide units */
+  flex: none;
+  width: calc(var(--s) * 10.5);
+  height: calc(var(--s) * 0.25 * var(--v));
+  margin-bottom: calc(var(--s) * 0.9);
+  border-radius: calc(var(--s) * 1.5) calc(var(--s) * 1.5) calc(var(--s) * 0.3) calc(var(--s) * 0.3);
+  background: linear-gradient(180deg, #f4714d 0%, #e24a22 100%);
+  will-change: transform;
+}
+.prastuti-barcol--1 .prastuti-bar {
+  background: linear-gradient(180deg, #f79377 0%, #f16443 100%);
+}
+.prastuti-barcol--2 .prastuti-bar {
+  background: linear-gradient(180deg, #fbc1b0 0%, #f79377 100%);
+}
+.prastuti-barcol--flag .prastuti-bar {
+  background: linear-gradient(180deg, #24397a 0%, #071a50 100%);
+}
+.prastuti-bar-l {
+  flex: none;
+  height: calc(var(--s) * 5.4);
+  padding: 0 calc(var(--s) * 1.6);
+  border-radius: calc(var(--s) * 2.7);
+  font-size: calc(var(--s) * 3.05);
+  font-weight: 600;
+  line-height: calc(var(--s) * 5.4);
+  color: var(--ev-body);
+  white-space: nowrap;
+}
+.prastuti-barcol--flag .prastuti-bar-l {
+  /* the branch that lags */
+  background: var(--ev-navy);
+  font-weight: 700;
+  color: #ffffff;
+}
+.prastuti-bar-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--s) * 7);
+  height: calc(var(--s) * 7);
+  margin-bottom: calc(var(--s) * 1.4);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
+  box-shadow:
+    0 0 0 calc(var(--s) * 1) rgba(241, 100, 67, 0.18),
+    0 calc(var(--s) * 0.8) calc(var(--s) * 2) rgba(235, 84, 44, 0.4);
+}
+.prastuti-bar-mark svg {
+  width: 56%;
+  height: 56%;
+}
+
+/* 3 · the rising line */
+.prastuti-f--trend {
+  background: linear-gradient(165deg, #fff8f4 0%, #ffece3 58%, #fddfd4 100%);
+}
+.prastuti-trend-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.prastuti-trend-fill {
+  position: absolute;
+  inset: 0;
+}
+.prastuti-trend-grid {
+  fill: none;
+  stroke: rgba(7, 26, 80, 0.1);
+  stroke-width: 0.22;
+  stroke-dasharray: 0.9 0.9;
+}
+.prastuti-trend-floor {
+  fill: none;
+  stroke: rgba(7, 26, 80, 0.3);
+  stroke-width: 0.34;
+  stroke-linecap: round;
+}
+.prastuti-trend-line {
+  fill: none;
+  stroke: #eb542c;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.prastuti-trend-dot {
+  fill: #ffffff;
+  stroke: #eb542c;
+  stroke-width: 0.8;
+}
+.prastuti-trend-dot--last {
+  fill: #eb542c;
+  stroke: #ffffff;
+  stroke-width: 0.9;
+}
+.prastuti-trend-halo {
+  fill: rgba(241, 100, 67, 0.24);
+}
+.prastuti-trend-call {
+  /* a point above the last point of the line: the pill stands on it, centred */
+  position: absolute;
+  width: 0;
+  height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.prastuti-trend-pill {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--s) * 1);
+  height: calc(var(--s) * 6.6);
+  padding: 0 calc(var(--s) * 2.6) 0 calc(var(--s) * 1.9);
+  border-radius: calc(var(--s) * 3.3);
+  background: var(--ev-navy);
+  box-shadow: 0 calc(var(--s) * 1) calc(var(--s) * 2.4) rgba(7, 26, 80, 0.3);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.prastuti-trend-pill::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--s) * -0.7);
+  width: calc(var(--s) * 1.6);
+  height: calc(var(--s) * 1.6);
+  margin-left: calc(var(--s) * -0.8);
+  border-radius: calc(var(--s) * 0.25);
+  background: var(--ev-navy);
+  transform: rotate(45deg);
+}
+.prastuti-trend-pill svg {
+  flex: none;
+  width: calc(var(--s) * 2.9);
+  height: calc(var(--s) * 2.9);
+}
+.prastuti-trend-pill .prastuti-hi {
+  font-size: calc(var(--s) * 3.3);
+  font-weight: 700;
+  line-height: calc(var(--s) * 6.6);
+  color: #ffffff;
+}
+
+/* 4 · what moved */
+.prastuti-p-band {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--s) * 37);
+  background: linear-gradient(160deg, #10297a 0%, #071a50 58%, #05123c 100%);
+  overflow: hidden;
+  will-change: transform;
+}
+.prastuti-p-arc {
+  position: absolute;
+  left: calc(var(--s) * -11);
+  bottom: calc(var(--s) * -17);
+  width: calc(var(--s) * 34);
+  height: calc(var(--s) * 34);
+  border-radius: 50%;
+  border: calc(var(--s) * 5.5) solid #f16443;
+  box-shadow: 0 0 0 calc(var(--s) * 3.4) rgba(255, 196, 178, 0.2);
+}
+.prastuti-p-rule {
+  position: absolute;
+  left: calc(var(--s) * 6.5);
+  top: calc(var(--s) * 8);
+  width: calc(var(--s) * 7);
+  height: calc(var(--s) * 0.9);
+  border-radius: calc(var(--s) * 0.45);
+  background: #f16443;
+}
+.prastuti-p-title {
+  position: absolute;
+  left: calc(var(--s) * 6.5);
+  top: calc(var(--s) * 9.6);
+  font-size: calc(var(--s) * 7.4);
+  font-weight: 700;
+  line-height: 1.5;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.prastuti-p-en {
+  position: absolute;
+  left: calc(var(--s) * 6.5);
+  top: calc(var(--s) * 21);
+  font-size: calc(var(--s) * 2.8);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: #ffd0c2;
+  white-space: nowrap;
+}
+.prastuti-p-list {
+  position: absolute;
+  left: calc(var(--s) * 42);
+  right: calc(var(--s) * 4);
+  top: calc(var(--s) * 5.6);
+  bottom: calc(var(--s) * 5.6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.prastuti-p-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--s) * 3);
+  border-bottom: 1px solid #e3eaf3;
+}
+.prastuti-p-row:last-child {
+  border-bottom-color: transparent;
+}
+.prastuti-p-tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--s) * 8.6);
+  height: calc(var(--s) * 8.6);
+  border-radius: calc(var(--s) * 2.4);
+  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
+  box-shadow: 0 calc(var(--s) * 0.8) calc(var(--s) * 2) rgba(235, 84, 44, 0.3);
+}
+.prastuti-p-tile svg {
+  width: 58%;
+  height: 58%;
+  stroke: #ffffff;
+}
+.prastuti-p-tile--1 {
+  background: linear-gradient(145deg, #24397a 0%, #071a50 100%);
+  box-shadow: 0 calc(var(--s) * 0.8) calc(var(--s) * 2) rgba(7, 26, 80, 0.26);
+}
+.prastuti-p-tile--1 svg path:last-child {
+  fill: #ffffff;
+}
+.prastuti-p-tile--2 {
+  background: #ffe3d8;
+  box-shadow: 0 0 0 1px #f8c6b8;
+}
+.prastuti-p-tile--2 svg {
+  stroke: #c8431c;
+}
+.prastuti-p-tile--2 svg path:last-child {
+  fill: #ffe3d8;
+}
+.prastuti-p-text {
+  font-size: calc(var(--s) * 4.4);
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+
+/* ---------- The place to talk: the one control, her voice, the tracker ---------- */
+.prastuti-talk {
+  position: absolute;
+  left: calc(var(--u) * 0.6);
+  right: calc(var(--u) * 0.6);
+  bottom: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 3.1);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.75);
+  padding: 0 calc(var(--u) * 0.6) 0 calc(var(--u) * 0.22);
+  border-radius: calc(var(--u) * 1.55);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.4) rgba(7, 26, 80, 0.12),
+    0 0 0 1px rgba(7, 26, 80, 0.06);
+}
+.prastuti-micWrap {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 2.66);
+  height: calc(var(--u) * 2.66);
+}
+.prastuti-mic {
+  width: 100%;
+  height: 100%;
+}
+.prastuti-mic-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
+  box-shadow:
+    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(235, 84, 44, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.prastuti-mic-face svg {
+  position: absolute;
+  left: 22%;
+  top: 22%;
+  width: 56%;
+  height: 56%;
+  overflow: visible;
+}
+.prastuti-talk-mid {
+  flex: 1;
+  min-width: 0;
+}
+.prastuti-hint {
+  position: relative;
+  height: calc(var(--u) * 0.9);
+  font-size: calc(var(--u) * 0.6);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--acc-ink);
+}
+.prastuti-hint span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  line-height: calc(var(--u) * 0.9);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.prastuti-talk-body {
+  position: relative;
+  height: calc(var(--u) * 1.2);
+  margin-top: calc(var(--u) * 0.1);
+}
+.prastuti-talk-ph {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: calc(var(--u) * 0.82);
+  font-weight: 600;
+  line-height: calc(var(--u) * 1.2);
+  color: #5d6a85;
+  white-space: nowrap;
+}
+.prastuti-wave {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 11);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.16);
+  visibility: hidden;
+}
+.prastuti-wave i {
+  flex: 1;
+  height: 100%;
+  border-radius: calc(var(--u) * 0.2);
+  background: var(--acc);
+  transform: scaleY(0.12);
+  opacity: 0.85;
+  will-change: transform;
+}
+.prastuti-attach {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 9.4);
+  height: calc(var(--u) * 2.1);
+}
+.prastuti-attach-outline {
+  /* where the tracker will land */
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.05);
+  border: calc(var(--u) * 0.09) dashed #b7c9e2;
+  background: rgba(238, 242, 248, 0.6);
+}
+.prastuti-attach-chip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.45);
+  padding: 0 calc(var(--u) * 0.7) 0 calc(var(--u) * 0.55);
+  border-radius: calc(var(--u) * 1.05);
+  background: #f3f6fb;
+  border: 1px solid #d7e2ee;
+  font-size: calc(var(--u) * 0.72);
+  font-weight: 700;
+  color: var(--ev-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  visibility: hidden;
+}
+.prastuti-attach-chip .prastuti-sheet {
+  width: calc(var(--u) * 1.15);
+  height: calc(var(--u) * 1.15);
+}
+.prastuti-attach-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(241, 100, 67, 0) 0%, rgba(241, 100, 67, 0.3) 50%, rgba(241, 100, 67, 0) 100%);
+}
+
+/* ---------- The tracker. It flies out of the name and into the laptop. ---------- */
+.prastuti-file {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 1.2) 0 calc(var(--u) * 0.8);
+  border-radius: calc(var(--u) * 1.5);
+  background: #ffffff;
+  border: calc(var(--u) * 0.12) solid var(--acc);
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(235, 84, 44, 0.24);
+  font-size: calc(var(--u) * 1.08);
+  font-weight: 800;
+  color: var(--ev-navy);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.prastuti-file .prastuti-sheet {
+  width: calc(var(--u) * 1.6);
+  height: calc(var(--u) * 1.6);
+}
+
+/* ---------- प्रस्तुति तैयार ---------- */
+.prastuti-stamp {
+  position: absolute;
+  right: calc(var(--u) * -1.9);
+  top: calc(var(--u) * 3.3);
+  padding: calc(var(--u) * 0.3) calc(var(--u) * 1.2) calc(var(--u) * 0.55);
+  border-radius: calc(var(--u) * 0.8);
+  border: calc(var(--u) * 0.2) solid var(--acc-ink);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--acc-ink);
+  text-align: center;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.16) #ffffff,
+    inset 0 0 0 calc(var(--u) * 0.24) rgba(200, 67, 28, 0.55),
+    0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(200, 67, 28, 0.2);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.prastuti-stamp .prastuti-hi {
+  display: block;
+  font-size: calc(var(--u) * 1.75);
+  font-weight: 700;
+  line-height: 1.5;
+}
+.prastuti-stamp > span:last-child {
+  display: block;
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.prastuti-stamp-burst {
+  position: absolute;
+  inset: calc(var(--u) * -0.2);
+  border-radius: calc(var(--u) * 0.9);
+  border: calc(var(--u) * 0.16) solid var(--acc);
+  pointer-events: none;
+}
+
+/* ---------- Under the photo: what she says, in Hindi, with its English beneath ----------
+   The photo is a little shorter in this moment, to give her words their room. */
+.ev-moment[data-key='prastuti'] .ev-photo-frame {
+  height: calc(var(--u) * 14.2);
+}
+.ev-moment[data-key='prastuti'] .ev-photo-frame img {
+  object-position: 50% 12%;
+}
+.ev-moment[data-key='prastuti'] .ev-beside {
+  margin-top: calc(var(--u) * 1.1);
+}
+.prastuti-said {
+  position: relative;
+  padding-left: calc(var(--u) * 1.3);
+}
+.prastuti-said-line {
+  /* the rule beside her words: it draws down as she speaks */
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--u) * 0.2);
+  border-radius: calc(var(--u) * 0.1);
+  background: var(--acc);
+}
+.prastuti-said-who {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  font-size: calc(var(--u) * 0.82);
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--acc-ink);
+  line-height: 1.4;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.prastuti-said-wave {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.16);
+  height: calc(var(--u) * 1.1);
+}
+.prastuti-said-wave i {
+  width: calc(var(--u) * 0.18);
+  height: 100%;
+  border-radius: calc(var(--u) * 0.09);
+  background: var(--acc);
+  will-change: transform;
+}
+.prastuti-sent {
+  margin-top: calc(var(--u) * 0.5);
+}
+.prastuti-sent-hi {
+  font-size: calc(var(--u) * 1.24);
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--ev-ink);
+}
+.prastuti-w {
+  position: relative;
+  display: inline-block;
+  will-change: transform, opacity;
+}
+.prastuti-w-kept {
+  /* the same word, in the accent: her words that the deck keeps as she said them */
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--acc-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.prastuti-sent-en {
+  font-size: calc(var(--u) * 0.88);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ev-muted);
+}
+
+/* ---------- STAT: a stopwatch that stops at 18 minutes, the deck at its centre ---------- */
+.prastuti-clock {
+  /* a little taller than the picture box: the stopwatch is the picture */
+  --d: calc(var(--ev-pitch) * 24);
+  position: absolute;
+  top: calc(var(--ev-pitch) * -2.2);
+  left: calc(var(--ev-pitch) * 2.4);
+  width: var(--d);
+  height: var(--d);
+}
+.prastuti-clock svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.prastuti-clock-shadow {
+  position: absolute;
+  left: 12.6%;
+  top: 12.6%;
+  width: 74.8%;
+  height: 74.8%;
+  border-radius: 50%;
+  box-shadow:
+    0 calc(var(--u) * 1.6) calc(var(--u) * 3.6) rgba(7, 26, 80, 0.16),
+    0 0 0 1px rgba(7, 26, 80, 0.05);
+  visibility: hidden;
+}
+.prastuti-clock-face {
+  fill: #ffffff;
+}
+.prastuti-clock-track {
+  fill: none;
+  stroke: #fde4dc;
+  stroke-width: 17;
+}
+.prastuti-clock-arc {
+  fill: none;
+  stroke: url(#prastuti-arc);
+  stroke-width: 17;
+  stroke-linecap: round;
+}
+.prastuti-tick {
+  stroke: #c5d1e2;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+.prastuti-tick--major {
+  stroke: #8794ad;
+  stroke-width: 2.4;
+}
+.prastuti-tick-lit {
+  stroke: #eb542c;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.prastuti-clock-num {
+  font-size: 13px;
+  font-weight: 800;
+  fill: #566481;
+  font-variant-numeric: tabular-nums;
+}
+.prastuti-clock-crown rect {
+  fill: #15244b;
+}
+.prastuti-clock-head circle:first-child {
+  fill: #ffffff;
+  stroke: #eb542c;
+  stroke-width: 4.5;
+}
+.prastuti-clock-head circle:last-child {
+  fill: #eb542c;
+}
+.prastuti-mini {
+  /* the deck: where the laptop lands. 16:9, like its slides. */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--d) * 0.36);
+  height: calc(var(--d) * 0.2025);
+  margin: calc(var(--d) * -0.083) 0 0 calc(var(--d) * -0.2);
+  visibility: hidden;
+}
+.prastuti-mini-card {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--d) * 0.014);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.3) rgba(7, 26, 80, 0.2),
+    0 0 0 1px rgba(7, 26, 80, 0.08);
+}
+.prastuti-mini-card--1 {
+  /* the cover, drawn in the mini deck's own unit */
+  --s: calc(var(--d) * 0.0036);
+}
+.prastuti-mini-card--2 {
+  background: #ffeee7;
+}
+.prastuti-mini-card--3 {
+  background: #fbd6cd;
+}
+.prastuti-mini-check {
+  position: absolute;
+  z-index: 2;
+  right: calc(var(--d) * -0.03);
+  bottom: calc(var(--d) * -0.03);
+  display: grid;
+  place-items: center;
+  width: calc(var(--d) * 0.075);
+  height: calc(var(--d) * 0.075);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.18) #ffffff,
+    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(235, 84, 44, 0.4);
+}
+.prastuti-mini-check svg {
+  width: 58%;
+  height: 58%;
+}
+.prastuti-callout {
+  /* at the 18-minute mark */
+  position: absolute;
+  z-index: 3;
+  left: 81.9%;
+  top: 60.4%;
+  width: 0;
+  height: 0;
+}
+.prastuti-callout-in {
+  position: absolute;
+  left: calc(var(--u) * 2.3);
+  top: 0;
+  padding: calc(var(--u) * 0.3) calc(var(--u) * 1) calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 0.8);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2) rgba(7, 26, 80, 0.18),
+    0 0 0 1px rgba(7, 26, 80, 0.06);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.prastuti-callout-in::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--u) * -0.4);
+  top: 50%;
+  width: calc(var(--u) * 0.8);
+  height: calc(var(--u) * 0.8);
+  margin-top: calc(var(--u) * -0.4);
+  background: #ffffff;
+  transform: rotate(45deg);
+  border-radius: calc(var(--u) * 0.12);
+}
+.prastuti-callout-in .prastuti-hi {
+  display: block;
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--ev-navy);
+}
+.prastuti-callout-in > span:last-child {
+  display: block;
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ev-muted);
+}
+
+/* ---------- 17:10 and wider (the touch screen itself): the deck is the hero ----------
+   The shared layout gives a laptop 33u. On a wide screen there is room for more between the
+   docked name and the photo (up to 38.5u at 16:9), and this is the moment in which a deck is
+   built in front of the visitor: every slide is drawn up to a sixth larger. animate() fits the
+   app to the larger screen; the shared frame draws the laptop back for the result headline. */
+@media (min-aspect-ratio: 17/10) and (min-height: 481px) {
+  .ev-moment[data-key='prastuti'][data-device='laptop'] .ev-deviceMover {
+    --prastuti-w: clamp(calc(var(--u) * 33), calc(var(--hx) * 2 - var(--u) * 53.5), calc(var(--u) * 38.5));
+    --ev-dw: var(--prastuti-w);
+    --ev-dh: calc((var(--prastuti-w) - var(--u) * 4) * 0.64828 + var(--u) * 2.6);
+    --ev-dx: calc(var(--u) * 6.4);
+  }
+  /* the stamp keeps to the laptop's edge: the photo is close */
+  .prastuti-stamp {
+    right: calc(var(--u) * -0.6);
+  }
+}
+
+/* ---------- Narrower than 16:9 (a 16:10 laptop, a 4:3 tablet) ----------
+   The shared layout gives the laptop 33u, which there runs into the docked name on its
+   left and the photo on its right. For this moment only: a smaller laptop (27u to 31u,
+   by the room there is), a narrower photo and result column, and the stamp kept inside
+   the laptop's edge. The app inside is fitted to the smaller screen by animate(). */
+@media (max-aspect-ratio: 17/10) {
+  .ev-moment[data-key='prastuti'][data-device='laptop'] .ev-deviceMover {
+    --prastuti-w: clamp(calc(var(--u) * 27), calc(var(--hx) * 2 - var(--u) * 49.8), calc(var(--u) * 31));
+    --ev-dw: var(--prastuti-w);
+    --ev-dh: calc((var(--prastuti-w) - var(--u) * 4) * 0.64828 + var(--u) * 2.6);
+    --ev-dx: max(calc(var(--u) * 4.6), calc(var(--prastuti-w) / 2 + var(--u) * 32 - var(--hx)));
+  }
+  .ev-moment[data-key='prastuti'] .ev-side {
+    left: calc(var(--hx) - var(--u) * 14.5);
+    width: calc(var(--u) * 14.5);
+  }
+  .ev-moment[data-key='prastuti'] .ev-photo-frame {
+    height: calc(var(--u) * 12);
+  }
+  .ev-moment[data-key='prastuti'] .ev-col--result {
+    width: calc(var(--u) * 33);
+  }
+  .prastuti-stamp {
+    right: calc(var(--u) * 0.2);
+    padding: calc(var(--u) * 0.2) calc(var(--u) * 0.9) calc(var(--u) * 0.45);
+  }
+  .prastuti-stamp .prastuti-hi {
+    font-size: calc(var(--u) * 1.4);
+  }
+  .prastuti-stamp > span:last-child {
+    font-size: calc(var(--u) * 0.72);
+  }
+  .prastuti-sent-hi {
+    font-size: calc(var(--u) * 1.14);
+  }
+  .prastuti-said-who {
+    letter-spacing: 0.16em;
+  }
+  /* the narrower photo: its caption a touch smaller, so it stays inside the frame */
+  .ev-moment[data-key='prastuti'] .ev-photo-cap {
+    left: calc(var(--u) * 0.55);
+    bottom: calc(var(--u) * 0.55);
+    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.6);
+    font-size: calc(var(--u) * 0.76);
+  }
+}
+
+/* ============================================================
+   A phone on its side. The deck is the hero, so the laptop takes
+   the right of the stage, as large as the height allows (its app
+   is drawn about 1.5× there). The photo gives way; her Hindi
+   words, with their English, stand on the left under the title,
+   and leave when the result headline arrives. Nothing on the
+   laptop's screen is under 9 px (--pdt is that floor before the
+   enlargement; a slide's thumbnail in the filmstrip is a picture
+   of the slide, not text to read), nothing around it under 11 px.
+   ============================================================ */
+@media (max-height: 480px) {
+  .ev-moment[data-key='prastuti'] {
+    --prastuti-w: calc(var(--u) * 43.5);
+    --pdt: calc(var(--fl) * 6);
+  }
+  .ev-moment[data-key='prastuti'][data-device='laptop'] .ev-deviceMover {
+    --ev-dw: var(--prastuti-w);
+    --ev-dh: calc((var(--prastuti-w) - var(--u) * 4) * 0.64828 + var(--u) * 2.6);
+    /* its right edge, enlarged 1.12×, stands on the right edge of the field */
+    --ev-dx: calc(var(--hx) - var(--prastuti-w) * 0.56 - var(--u) * 0.4);
+  }
+
+  /* ----- her words, on the left ----- */
+  .ev-moment[data-key='prastuti'] .ev-photo-frame {
+    display: none;
+  }
+  .ev-moment[data-key='prastuti'] .ev-side {
+    left: calc(var(--hx) * -1);
+    top: calc(var(--u) * -0.6);
+    width: calc(var(--hx) * 2 - var(--prastuti-w) * 1.12 - var(--u) * 4.6);
+  }
+  .ev-moment[data-key='prastuti'] .ev-beside {
+    margin-top: 0;
+  }
+  /* the promise has just been read under the name: here the title stands alone */
+  .ev-moment[data-key='prastuti'] .ev-col--demo .ev-col-p {
+    display: none;
+  }
+  .ev-moment[data-key='prastuti'] .ev-col--result {
+    width: calc(var(--u) * 35);
+  }
+  .prastuti-said-who {
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+    letter-spacing: 0.14em;
+  }
+  .prastuti-said-wave {
+    height: calc(var(--u) * 1.4);
+  }
+  .prastuti-sent {
+    margin-top: calc(var(--u) * 0.3);
+  }
+  .prastuti-sent-hi {
+    font-size: max(calc(var(--u) * 1.75), calc(var(--fl) * 13));
+    line-height: 1.44;
+  }
+  .prastuti-sent-en {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+    line-height: 1.24;
+  }
+  .prastuti-file {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+  }
+  .prastuti-compare-old {
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+  .prastuti-compare-new > span:last-child {
+    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11));
+  }
+
+  /* ----- before: the editor at night (drawn 1.2× by the shared frame) ----- */
+  .prastuti-b-top span {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+  }
+  .prastuti-b-tool {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+  }
+  .prastuti-b-ph--title span {
+    font-size: max(calc(var(--u) * 1.1), var(--dt));
+  }
+
+  /* ----- Prastuti on the laptop ----- */
+  .prastuti-appname .prastuti-hi {
+    font-size: max(calc(var(--u) * 0.86), var(--pdt));
+  }
+  .prastuti-lang .prastuti-hi {
+    font-size: max(calc(var(--u) * 0.84), var(--pdt));
+  }
+  .prastuti-lang > span:last-child,
+  .prastuti-appwho {
+    font-size: max(calc(var(--u) * 0.8), var(--pdt));
+    letter-spacing: 0;
+  }
+  /* the filmstrip's numbers are too small to be numbers here: the tick that replaces each one stays */
+  .prastuti-thumb-n {
+    font-size: 0;
+  }
+  .prastuti-empty-k {
+    font-size: max(calc(var(--u) * 0.84), var(--pdt));
+    letter-spacing: 0.14em;
+  }
+  .prastuti-empty-p {
+    font-size: max(calc(var(--u) * 0.9), var(--pdt));
+  }
+  .prastuti-app .prastuti-head-en,
+  .prastuti-app .prastuti-p-en {
+    font-size: max(calc(var(--s) * 3.7), var(--pdt));
+    letter-spacing: 0.12em;
+  }
+  /* the cover rests a little smaller on top of the finished deck: its small print is set for that */
+  .prastuti-app .prastuti-t-en {
+    font-size: max(calc(var(--s) * 4.1), calc(var(--fl) * 6.8));
+    letter-spacing: 0.12em;
+  }
+  .prastuti-app .prastuti-t-sub {
+    font-size: max(calc(var(--s) * 4.2), calc(var(--fl) * 6.8));
+  }
+  .prastuti-app .prastuti-bar-l,
+  .prastuti-app .prastuti-trend-pill .prastuti-hi {
+    font-size: max(calc(var(--s) * 3.8), var(--pdt));
+  }
+  .prastuti-app .prastuti-p-text {
+    font-size: max(calc(var(--s) * 4.4), var(--pdt));
+  }
+  .prastuti-talk {
+    gap: calc(var(--u) * 0.6);
+  }
+  .prastuti-hint {
+    height: calc(var(--u) * 1.15);
+    font-size: max(calc(var(--u) * 0.84), var(--pdt));
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .prastuti-hint span {
+    line-height: calc(var(--u) * 1.15);
+  }
+  .prastuti-talk-body {
+    margin-top: 0;
+  }
+  .prastuti-talk-ph {
+    font-size: max(calc(var(--u) * 0.9), var(--pdt));
+  }
+  .prastuti-wave {
+    width: calc(var(--u) * 9.6);
+  }
+  .prastuti-attach {
+    width: calc(var(--u) * 11.2);
+  }
+  .prastuti-attach-chip {
+    gap: calc(var(--u) * 0.35);
+    padding: 0 calc(var(--u) * 0.5) 0 calc(var(--u) * 0.45);
+    font-size: max(calc(var(--u) * 0.82), var(--pdt));
+    letter-spacing: -0.01em;
+  }
+  /* the stamp, inside the laptop's corner: the laptop stands at the edge of the screen */
+  .prastuti-stamp {
+    right: calc(var(--u) * 0.9);
+    top: calc(var(--u) * 2.4);
+    padding: calc(var(--u) * 0.2) calc(var(--u) * 1) calc(var(--u) * 0.45);
+  }
+  .prastuti-stamp .prastuti-hi {
+    font-size: calc(var(--u) * 1.75);
+  }
+  .prastuti-stamp > span:last-child {
+    font-size: max(calc(var(--u) * 1.25), calc(var(--fl) * 9.9));
+    letter-spacing: 0.12em;
+    text-indent: 0.12em;
+  }
+
+  /* ----- the number's picture: the stopwatch keeps inside the stage ----- */
+  .prastuti-clock {
+    --d: calc(var(--ev-pitch) * 22.4);
+    top: calc(var(--ev-pitch) * -1);
+    left: calc(var(--ev-pitch) * 3.4);
+  }
+  .prastuti-clock-num {
+    font-size: 16px;
+  }
+  .prastuti-callout-in .prastuti-hi {
+    font-size: max(calc(var(--u) * 1.6), calc(var(--fl) * 12));
+  }
+  .prastuti-callout-in > span:last-child {
+    font-size: max(calc(var(--u) * 1.35), calc(var(--fl) * 11));
+  }
+}

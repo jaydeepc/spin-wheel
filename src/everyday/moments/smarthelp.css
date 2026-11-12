@@ -1,0 +1,1615 @@
+/* ============================================================
+   SmartHelp · the support desk that solves the ticket itself.
+   Everything here is SmartHelp's own; classes are prefixed
+   "smarthelp-". Sizes are in --u; colours come from the accent
+   variables.
+   ============================================================ */
+
+/* ---------- BEFORE: the ticket is with the backend team. A to-and-fro, and it is still open. ---------- */
+.smarthelp-b {
+  position: absolute;
+  inset: 0;
+}
+.smarthelp-b-ticket {
+  position: absolute;
+  left: calc(var(--u) * 0.2);
+  top: calc(var(--u) * 0.1);
+  width: calc(var(--u) * 19.4);
+  /* the shadow follows the ticket's cut edge */
+  filter: drop-shadow(0 calc(var(--u) * 0.9) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.17)) drop-shadow(0 0 1px rgba(7, 26, 80, 0.18));
+  will-change: transform, opacity;
+}
+.smarthelp-b-paper {
+  position: relative;
+  padding: calc(var(--u) * 0.8) calc(var(--u) * 1) calc(var(--u) * 0.9) calc(var(--u) * 4.5);
+  border-radius: calc(var(--u) * 1.1);
+  background: #ffffff;
+  /* two bites out of the paper where the stub tears off */
+  -webkit-mask:
+    radial-gradient(circle at calc(var(--u) * 3.5) 0, transparent calc(var(--u) * 0.62), #000 calc(var(--u) * 0.62 + 0.6px)) 0 0 / 100% 51% no-repeat,
+    radial-gradient(circle at calc(var(--u) * 3.5) 100%, transparent calc(var(--u) * 0.62), #000 calc(var(--u) * 0.62 + 0.6px)) 0 100% / 100% 51% no-repeat;
+  mask:
+    radial-gradient(circle at calc(var(--u) * 3.5) 0, transparent calc(var(--u) * 0.62), #000 calc(var(--u) * 0.62 + 0.6px)) 0 0 / 100% 51% no-repeat,
+    radial-gradient(circle at calc(var(--u) * 3.5) 100%, transparent calc(var(--u) * 0.62), #000 calc(var(--u) * 0.62 + 0.6px)) 0 100% / 100% 51% no-repeat;
+}
+.smarthelp-b-stub {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--u) * 3.5);
+  display: grid;
+  place-items: center;
+  background: var(--acc-soft);
+}
+.smarthelp-b-stub svg {
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 2);
+  stroke: var(--acc-ink);
+}
+.smarthelp-b-perf {
+  position: absolute;
+  left: calc(var(--u) * 3.5);
+  top: calc(var(--u) * 1.1);
+  bottom: calc(var(--u) * 1.1);
+  width: 0;
+  border-left: calc(var(--u) * 0.13) dashed #b7c9e2;
+}
+.smarthelp-b-eyebrow {
+  font-size: calc(var(--u) * 0.72);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.smarthelp-b-id {
+  overflow: hidden;
+  font-size: calc(var(--u) * 2.5);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--ev-navy);
+  font-variant-numeric: tabular-nums;
+}
+.smarthelp-b-id span {
+  display: block;
+}
+.smarthelp-b-status {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 2.05);
+  margin-top: calc(var(--u) * 0.4);
+  padding: 0 calc(var(--u) * 0.85) 0 calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 1.1);
+  background: var(--acc-soft);
+  border: 1px solid var(--acc-line);
+  font-size: calc(var(--u) * 0.98);
+  font-weight: 700;
+  color: var(--acc-text);
+  white-space: nowrap;
+}
+.smarthelp-b-dots {
+  display: inline-flex;
+  gap: calc(var(--u) * 0.2);
+}
+.smarthelp-b-dots i {
+  width: calc(var(--u) * 0.36);
+  height: calc(var(--u) * 0.36);
+  border-radius: 50%;
+  background: var(--acc);
+  animation: smarthelp-wait 1.3s ease-in-out infinite;
+}
+.smarthelp-b-dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.smarthelp-b-dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+@keyframes smarthelp-wait {
+  0%,
+  55%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  28% {
+    opacity: 1;
+    transform: translateY(-28%);
+  }
+}
+/* the to-and-fro: the team on the left, Priya on the right, message after message */
+.smarthelp-b-thread {
+  position: absolute;
+  left: calc(var(--u) * 2.4);
+  right: 0;
+  top: calc(var(--u) * 8.8);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 0.42);
+}
+.smarthelp-b-msg {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  will-change: transform, opacity;
+}
+.smarthelp-b-msg--team {
+  align-self: flex-start;
+}
+.smarthelp-b-msg--priya {
+  align-self: flex-end;
+}
+.smarthelp-b-msg span {
+  display: block;
+  height: calc(var(--u) * 2.4);
+  padding: 0 calc(var(--u) * 1);
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 600;
+  line-height: calc(var(--u) * 2.4);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.smarthelp-b-msg--team span {
+  border-radius: calc(var(--u) * 0.35) calc(var(--u) * 1.2) calc(var(--u) * 1.2) calc(var(--u) * 1.2);
+  background: #ffffff;
+  color: var(--ev-ink);
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.13),
+    0 0 0 1px rgba(7, 26, 80, 0.08);
+}
+.smarthelp-b-msg--priya span {
+  border-radius: calc(var(--u) * 1.2) calc(var(--u) * 1.2) calc(var(--u) * 0.35) calc(var(--u) * 1.2);
+  /* deep enough for white text at 4.5:1 across the whole gradient */
+  background: linear-gradient(160deg, #3472d2 0%, #2a63c8 100%);
+  color: #ffffff;
+  box-shadow: 0 calc(var(--u) * 0.45) calc(var(--u) * 1) rgba(45, 106, 209, 0.28);
+}
+.smarthelp-b-av {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 2.1);
+  border-radius: 50%;
+  background: #071a50;
+}
+.smarthelp-b-av svg {
+  width: 62%;
+  height: 62%;
+  stroke: #b9e2ff;
+}
+.smarthelp-b-still {
+  position: absolute;
+  left: calc(var(--u) * 0.3);
+  top: calc(var(--u) * 16.9);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 1.15) 0 calc(var(--u) * 0.45);
+  border-radius: calc(var(--u) * 1.5);
+  background: #071a50;
+  box-shadow: 0 calc(var(--u) * 0.7) calc(var(--u) * 1.6) rgba(7, 26, 80, 0.3);
+  font-size: calc(var(--u) * 1.08);
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-b-still i {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 2.1);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+}
+.smarthelp-b-still svg {
+  width: 62%;
+  height: 62%;
+  stroke: #b9e2ff;
+}
+
+/* ---------- The app on the phone: the support desk ---------- */
+.smarthelp-app {
+  position: absolute;
+  inset: 0;
+}
+.smarthelp-bar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  padding: calc(var(--u) * 0.55) calc(var(--u) * 0.8) calc(var(--u) * 0.55);
+  border-bottom: 1px solid #e9eef5;
+}
+.smarthelp-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.95);
+  height: calc(var(--u) * 1.95);
+  border-radius: calc(var(--u) * 0.56);
+  background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
+  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.7) rgba(45, 106, 209, 0.35);
+}
+.smarthelp-icon svg {
+  width: 62%;
+  height: 62%;
+}
+.smarthelp-title {
+  display: grid;
+  line-height: 1.15;
+  min-width: 0;
+  flex: 1;
+}
+.smarthelp-title b {
+  font-size: calc(var(--u) * 1.05);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.smarthelp-title span {
+  font-size: calc(var(--u) * 0.62);
+  font-weight: 600;
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+
+/* her ticket */
+.smarthelp-tkc {
+  position: absolute;
+  left: calc(var(--u) * 0.65);
+  right: calc(var(--u) * 0.65);
+  top: calc(var(--u) * 3.6);
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 0.75) calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 1);
+  background: #ffffff;
+  border: 1px solid var(--acc-line);
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.1);
+}
+.smarthelp-tkc-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: calc(var(--u) * 0.13) solid var(--acc);
+  box-shadow: 0 0 0 calc(var(--u) * 0.3) rgba(67, 132, 212, 0.16);
+  visibility: hidden;
+}
+.smarthelp-tkc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(var(--u) * 1.45);
+}
+.smarthelp-tkc-id {
+  display: inline-flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 0.3);
+  font-size: calc(var(--u) * 0.54);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+.smarthelp-tkc-id b {
+  font-size: calc(var(--u) * 0.96);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ev-navy);
+  font-variant-numeric: tabular-nums;
+}
+/* where the ticket is: New, With SmartHelp, Resolved */
+.smarthelp-pill {
+  position: relative;
+  flex: none;
+  width: 0;
+  height: calc(var(--u) * 1.45);
+}
+.smarthelp-pill > span {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.25);
+  height: calc(var(--u) * 1.45);
+  padding: 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.73);
+  font-size: calc(var(--u) * 0.58);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+.smarthelp-pill--new {
+  background: #eef2f7;
+  color: var(--ev-muted);
+}
+.smarthelp-pill--with {
+  background: var(--acc-soft);
+  box-shadow: inset 0 0 0 1px var(--acc-line);
+  color: var(--acc-text);
+  visibility: hidden;
+}
+.smarthelp-pill--done {
+  background: var(--acc-deep);
+  color: #ffffff;
+  visibility: hidden;
+}
+.smarthelp-pill--done svg {
+  width: calc(var(--u) * 0.66);
+  height: calc(var(--u) * 0.66);
+}
+.smarthelp-tkc-body {
+  position: relative;
+  height: calc(var(--u) * 2.4);
+  margin-top: calc(var(--u) * 0.35);
+  overflow: hidden;
+}
+.smarthelp-tkc-text {
+  /* the same words on the same lines, in flight and in the ticket */
+  width: calc(var(--u) * 11.5);
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 700;
+  line-height: 1.36;
+  letter-spacing: -0.005em;
+  color: var(--ev-navy);
+  visibility: hidden;
+}
+.smarthelp-tkc-skel {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 0.36);
+  width: 84%;
+  height: calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.25);
+  background: #e9eef5;
+}
+.smarthelp-tkc-skel + .smarthelp-tkc-skel {
+  top: calc(var(--u) * 1.53);
+  width: 62%;
+}
+.smarthelp-tkc-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(67, 132, 212, 0) 0%, rgba(67, 132, 212, 0.2) 50%, rgba(67, 132, 212, 0) 100%);
+}
+
+/* the one control: Raise ticket */
+.smarthelp-raisezone {
+  position: absolute;
+  left: calc(var(--u) * 0.65);
+  right: calc(var(--u) * 0.65);
+  top: calc(var(--u) * 9.85);
+}
+.smarthelp-raiseWrap {
+  position: relative;
+  height: calc(var(--u) * 3.2);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.ev-touch.smarthelp-raise {
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--u) * 1.6);
+}
+/* a wide button breathes outwards evenly, not twice as wide */
+.ev-touch.smarthelp-raise[data-live='1'] .ev-touch-ring {
+  animation-name: smarthelp-pulse;
+}
+@keyframes smarthelp-pulse {
+  0% {
+    transform: scale(1, 1);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.13, 1.62);
+    opacity: 0;
+  }
+}
+.ev-root[data-hold='1'] .ev-touch.smarthelp-raise[data-live='1'] .ev-touch-ring {
+  animation: none;
+  opacity: 0.5;
+  transform: scale(1.055, 1.26);
+}
+.ev-root[data-hold='1'] .ev-touch.smarthelp-raise[data-live='1'] .ev-touch-ring--2 {
+  opacity: 0.22;
+  transform: scale(1.11, 1.52);
+}
+.smarthelp-raise-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.5);
+  border-radius: inherit;
+  /* deep enough for white text at 4.5:1 across the whole gradient */
+  background: linear-gradient(160deg, #3472d2 0%, #2a63c8 100%);
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(45, 106, 209, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  font-size: calc(var(--u) * 1.08);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.smarthelp-raise-face svg {
+  width: calc(var(--u) * 1.45);
+  height: calc(var(--u) * 1.45);
+  stroke: #ffffff;
+}
+.smarthelp-hint {
+  margin-top: calc(var(--u) * 0.6);
+  font-size: calc(var(--u) * 0.66);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: calc(var(--u) * 0.9);
+  text-align: center;
+  color: var(--ev-muted);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.smarthelp-hero {
+  /* the desk's own line, quiet: nothing here looks like a second button */
+  margin-top: calc(var(--u) * 4.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-hero-mark {
+  display: block;
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 1.7);
+}
+.smarthelp-hero-mark svg {
+  width: 100%;
+  height: 100%;
+}
+.smarthelp-hero-mark svg path,
+.smarthelp-hero-mark svg circle {
+  fill: var(--acc);
+}
+.smarthelp-hero p {
+  max-width: calc(var(--u) * 10);
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--ev-ink);
+}
+
+/* SmartHelp works the ticket, in the same chat */
+.smarthelp-work {
+  position: absolute;
+  left: calc(var(--u) * 0.65);
+  right: calc(var(--u) * 0.65);
+  top: calc(var(--u) * 9.5);
+  visibility: hidden;
+}
+.smarthelp-from {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.35);
+  margin-bottom: calc(var(--u) * 0.32);
+  font-size: calc(var(--u) * 0.6);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--ev-navy);
+  line-height: 1;
+}
+.smarthelp-from i {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.1);
+  height: calc(var(--u) * 1.1);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
+}
+.smarthelp-from i svg {
+  width: 62%;
+  height: 62%;
+}
+.smarthelp-from span {
+  font-weight: 600;
+  color: var(--ev-muted);
+}
+.smarthelp-card {
+  padding: 0 calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 0.35) calc(var(--u) * 1.1) calc(var(--u) * 1.1) calc(var(--u) * 1.1);
+  background: #ffffff;
+  border: 1px solid var(--acc-line);
+  box-shadow: 0 calc(var(--u) * 0.5) calc(var(--u) * 1.3) rgba(45, 106, 209, 0.14);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-step {
+  position: relative;
+  padding: calc(var(--u) * 0.5) 0 calc(var(--u) * 0.5) calc(var(--u) * 1.75);
+}
+.smarthelp-step + .smarthelp-step {
+  border-top: 1px solid #e3eaf3;
+}
+/* the step's mark: waiting, working, done */
+.smarthelp-node {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 0.46);
+  width: calc(var(--u) * 1.16);
+  height: calc(var(--u) * 1.16);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.12) #b4c9e6;
+  background: #ffffff;
+  z-index: 1;
+}
+.smarthelp-node-spin {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: calc(var(--u) * 0.15) solid transparent;
+  border-top-color: var(--acc-deep);
+  border-right-color: var(--acc-deep);
+  animation: smarthelp-spin 0.7s linear infinite;
+  visibility: hidden;
+}
+@keyframes smarthelp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ev-root[data-hold='1'] .smarthelp-node-spin {
+  animation: none;
+  transform: rotate(40deg);
+}
+.smarthelp-node-on {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--acc-deep);
+  visibility: hidden;
+}
+.smarthelp-node-on svg {
+  width: 62%;
+  height: 62%;
+}
+.smarthelp-link {
+  /* one step leads to the next */
+  position: absolute;
+  left: calc(var(--u) * 0.52);
+  top: calc(var(--u) * 1.8);
+  bottom: calc(var(--u) * -0.6);
+  width: calc(var(--u) * 0.12);
+  border-radius: calc(var(--u) * 0.06);
+  background: #dbe6f4;
+}
+.smarthelp-link i {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--acc);
+}
+.smarthelp-step-k {
+  position: relative;
+  width: max-content;
+  font-size: calc(var(--u) * 0.56);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: var(--ev-muted);
+}
+.smarthelp-step-k b {
+  /* the same word, done: it wipes in over the first */
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 800;
+  color: var(--acc-ink);
+  background: #ffffff;
+}
+.smarthelp-step-v {
+  min-height: calc(var(--u) * 2.06);
+  margin-top: calc(var(--u) * 0.1);
+  font-size: calc(var(--u) * 0.78);
+  font-weight: 700;
+  line-height: 1.32;
+  letter-spacing: -0.012em;
+  color: var(--ev-navy);
+}
+.smarthelp-step-skel i {
+  position: absolute;
+  left: calc(var(--u) * 1.75);
+  top: calc(var(--u) * 1.62);
+  width: 62%;
+  height: calc(var(--u) * 0.46);
+  border-radius: calc(var(--u) * 0.23);
+  background: #e9eef5;
+}
+.smarthelp-step-skel i + i {
+  top: calc(var(--u) * 2.66);
+  width: 40%;
+}
+.smarthelp-step:nth-child(2) .smarthelp-step-skel i {
+  width: 68%;
+}
+.smarthelp-step:nth-child(2) .smarthelp-step-skel i + i {
+  width: 30%;
+}
+.smarthelp-step-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(67, 132, 212, 0) 0%, rgba(67, 132, 212, 0.18) 50%, rgba(67, 132, 212, 0) 100%);
+  pointer-events: none;
+}
+
+/* the hero: it runs a command itself */
+.smarthelp-step--fix .smarthelp-step-skel i {
+  left: 0;
+  top: calc(var(--u) * 2.2);
+  width: 100%;
+  height: calc(var(--u) * 2.9);
+  border-radius: calc(var(--u) * 0.7);
+  background: #f1f5fa;
+}
+.smarthelp-step--fix .smarthelp-step-skel i + i {
+  display: none;
+}
+.smarthelp-cmd {
+  position: relative;
+  margin: calc(var(--u) * 0.55) 0 calc(var(--u) * 0.1) calc(var(--u) * -1.75);
+  padding: calc(var(--u) * 0.5) calc(var(--u) * 0.65) calc(var(--u) * 0.62);
+  border-radius: calc(var(--u) * 0.7);
+  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.3);
+  overflow: hidden;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-cmd-line {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.32);
+  height: calc(var(--u) * 0.9);
+}
+.smarthelp-cmd-line > svg {
+  flex: none;
+  width: calc(var(--u) * 0.9);
+  height: calc(var(--u) * 0.9);
+  stroke: #65a9f5;
+}
+.smarthelp-cmd-code {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.26);
+}
+.smarthelp-cmd-code i {
+  /* the command, typed by nobody */
+  height: calc(var(--u) * 0.34);
+  width: calc(var(--u) * 1.7);
+  border-radius: calc(var(--u) * 0.17);
+  background: #b9e2ff;
+}
+.smarthelp-cmd-code i:nth-child(2) {
+  width: calc(var(--u) * 2.5);
+  background: #65a9f5;
+}
+.smarthelp-cmd-code i:nth-child(3) {
+  width: calc(var(--u) * 1.2);
+  background: #8fc3fb;
+}
+.smarthelp-cmd-caret {
+  width: calc(var(--u) * 0.28);
+  height: calc(var(--u) * 0.72);
+  border-radius: 1px;
+  background: #ffffff;
+  animation: smarthelp-caret 0.7s steps(1) infinite;
+}
+@keyframes smarthelp-caret {
+  50% {
+    opacity: 0;
+  }
+}
+.ev-root[data-hold='1'] .smarthelp-cmd-caret {
+  animation: none;
+}
+.smarthelp-cmd-shield {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.05);
+  height: calc(var(--u) * 1.05);
+}
+.smarthelp-cmd-shield svg {
+  width: 100%;
+  height: 100%;
+  stroke: #8fc3fb;
+  stroke-width: 2.2;
+}
+.smarthelp-cmd-out {
+  width: max-content;
+  margin-top: calc(var(--u) * 0.36);
+  padding-right: 0.2em;
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.smarthelp-cmd-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u) * 0.18);
+  background: rgba(255, 255, 255, 0.12);
+}
+.smarthelp-cmd-bar i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #4384d4 0%, #65a9f5 100%);
+}
+.smarthelp-cmd-flash {
+  position: absolute;
+  inset: 0;
+  background: #b9e2ff;
+  pointer-events: none;
+}
+
+/* Resolved, in the same chat */
+.smarthelp-done {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.36);
+  height: calc(var(--u) * 2.2);
+  position: relative;
+  margin: 0 calc(var(--u) * -0.7);
+  padding: 0 calc(var(--u) * 0.7);
+  border-top: 1px solid #e3eaf3;
+}
+.smarthelp-done-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--acc-soft);
+  visibility: hidden;
+}
+.smarthelp-done i,
+.smarthelp-done-txt {
+  position: relative;
+}
+.smarthelp-done i {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 0.96);
+  height: calc(var(--u) * 0.96);
+  border-radius: 50%;
+  background: var(--acc-deep);
+}
+.smarthelp-done i svg {
+  width: 62%;
+  height: 62%;
+}
+.smarthelp-done-txt {
+  padding-right: 0.1em;
+  font-size: calc(var(--u) * 0.68);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.smarthelp-done-txt b {
+  font-weight: 800;
+  color: var(--acc-text);
+}
+
+/* ---------- On the phone's edge: the tag on the fix ---------- */
+.smarthelp-safe {
+  position: absolute;
+  left: calc(100% - var(--u) * 1.3);
+  top: calc(var(--u) * 22.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.7);
+  height: calc(var(--u) * 3.3);
+  padding: 0 calc(var(--u) * 1.3) 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 1.65);
+  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
+  box-shadow:
+    0 calc(var(--u) * 0.8) calc(var(--u) * 1.9) rgba(7, 26, 80, 0.32),
+    0 0 0 calc(var(--u) * 0.16) #ffffff;
+  font-size: calc(var(--u) * 1.04);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  color: #ffffff;
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-safe-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.3);
+  height: calc(var(--u) * 2.3);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
+}
+.smarthelp-safe-ico svg {
+  width: 64%;
+  height: 64%;
+  stroke: #ffffff;
+  stroke-width: 2.2;
+}
+.smarthelp-safe-ring {
+  position: absolute;
+  inset: calc(var(--u) * -0.16);
+  border-radius: calc(var(--u) * 1.85);
+  border: calc(var(--u) * 0.16) solid var(--acc);
+  pointer-events: none;
+}
+
+/* ---------- Ticket closed. No human needed. ---------- */
+.smarthelp-stamp {
+  position: absolute;
+  left: calc(100% - var(--u) * 0.5);
+  bottom: calc(var(--u) * -0.1);
+  padding: calc(var(--u) * 0.5) calc(var(--u) * 1.05) calc(var(--u) * 0.55);
+  border-radius: calc(var(--u) * 0.8);
+  border: calc(var(--u) * 0.2) solid var(--acc-ink);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--acc-ink);
+  text-align: center;
+  line-height: 1.1;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.16) #ffffff,
+    inset 0 0 0 calc(var(--u) * 0.24) rgba(45, 106, 209, 0.55),
+    0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(45, 106, 209, 0.2);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-stamp b {
+  display: block;
+  font-size: calc(var(--u) * 1.3);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  text-transform: uppercase;
+}
+.smarthelp-stamp span {
+  display: block;
+  margin-top: calc(var(--u) * 0.12);
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 800;
+}
+.smarthelp-stamp-burst {
+  position: absolute;
+  inset: calc(var(--u) * -0.2);
+  border-radius: calc(var(--u) * 0.9);
+  border: calc(var(--u) * 0.16) solid var(--acc);
+  pointer-events: none;
+}
+
+/* ---------- Beside the phone: the two ways it resolves a ticket ---------- */
+.smarthelp-ways {
+  padding-top: calc(var(--u) * 0.4);
+}
+.smarthelp-ways-who {
+  margin-bottom: calc(var(--u) * 0.8);
+  font-size: calc(var(--u) * 0.82);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--acc-text);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.smarthelp-way-slot {
+  position: relative;
+  height: calc(var(--u) * 8.2);
+  margin-bottom: calc(var(--u) * 0.7);
+}
+.smarthelp-way {
+  position: absolute;
+  inset: 0;
+  padding: calc(var(--u) * 0.85) calc(var(--u) * 0.95) 0;
+  border-radius: calc(var(--u) * 1.3);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--acc-line);
+  box-shadow: 0 calc(var(--u) * 0.7) calc(var(--u) * 1.8) rgba(45, 106, 209, 0.13);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-way-head {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.7);
+}
+.smarthelp-way-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.3);
+  height: calc(var(--u) * 2.3);
+  border-radius: calc(var(--u) * 0.7);
+  background: var(--acc-soft);
+  border: 1px solid var(--acc-line);
+}
+.smarthelp-way-ico svg {
+  width: 60%;
+  height: 60%;
+  stroke: var(--acc-ink);
+}
+.smarthelp-way-head b {
+  font-size: calc(var(--u) * 1.3);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.smarthelp-way-text {
+  margin-top: calc(var(--u) * 0.5);
+  font-size: calc(var(--u) * 0.98);
+  font-weight: 500;
+  line-height: 1.38;
+  color: var(--ev-body);
+}
+.smarthelp-way-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: calc(var(--u) * 0.16) solid var(--acc);
+  box-shadow: 0 0 0 calc(var(--u) * 0.4) rgba(67, 132, 212, 0.18);
+  visibility: hidden;
+}
+.smarthelp-way-tag {
+  position: absolute;
+  right: calc(var(--u) * 0.85);
+  top: calc(var(--u) * 1.22);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.3);
+  height: calc(var(--u) * 1.56);
+  padding: 0 calc(var(--u) * 0.65) 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.78);
+  background: var(--acc-deep);
+  font-size: calc(var(--u) * 0.7);
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.smarthelp-way-tag svg {
+  width: calc(var(--u) * 0.72);
+  height: calc(var(--u) * 0.72);
+}
+
+/* ---------- The left column: the two promises, ticked off by the demo ---------- */
+.ev-moment[data-key='smarthelp'] .ev-col-p {
+  text-wrap: balance;
+}
+.smarthelp-claims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 0.6);
+}
+.smarthelp-claim {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 2.4);
+  padding: 0 calc(var(--u) * 1.05) 0 calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 0.75);
+  border: 1px solid var(--acc-line);
+  background: rgba(255, 255, 255, 0.82);
+  font-size: calc(var(--u) * 1.04);
+  font-weight: 700;
+  color: var(--ev-ink);
+  white-space: nowrap;
+}
+.smarthelp-claim-ring {
+  flex: none;
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.2);
+  border-radius: 50%;
+  border: calc(var(--u) * 0.13) solid #b4c9e6;
+}
+.smarthelp-claim-on {
+  /* the same chip, kept: it wipes in over the first */
+  position: absolute;
+  inset: -1px;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  padding: 0 calc(var(--u) * 1.05) 0 calc(var(--u) * 0.6 + 1px);
+  border-radius: inherit;
+  background: var(--ev-navy);
+  color: #ffffff;
+}
+.smarthelp-claim-on i {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.2);
+  border-radius: 50%;
+  background: var(--acc);
+}
+.smarthelp-claim-on i svg {
+  width: 62%;
+  height: 62%;
+}
+
+/* ---------- Under the result headline: With the backend team → No human needed. ---------- */
+.smarthelp-compare {
+  /* the headline runs to four lines: sit a little closer to it, clear of Priya's line below */
+  margin-top: calc(var(--u) * -0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.smarthelp-compare-old {
+  position: relative;
+  font-size: calc(var(--u) * 1.38);
+  font-weight: 600;
+  color: var(--ev-muted);
+}
+.smarthelp-compare-old b {
+  margin-right: 0.45em;
+  font-weight: 800;
+}
+.smarthelp-compare-old i {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  top: 52%;
+  height: calc(var(--u) * 0.16);
+  border-radius: 1px;
+  background: var(--acc-ink);
+  transform-origin: 0 50%;
+}
+.smarthelp-compare svg {
+  flex: none;
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 1);
+  stroke: var(--acc-ink);
+}
+.smarthelp-compare-new {
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 800;
+  color: var(--acc-ink);
+}
+@media (max-aspect-ratio: 3/2) {
+  /* a squarer screen: the line keeps inside the headline's column, clear of the phone beside it */
+  .smarthelp-compare {
+    gap: calc(var(--u) * 0.6);
+  }
+  .smarthelp-compare-old {
+    font-size: calc(var(--u) * 1.2);
+  }
+  .smarthelp-compare-new {
+    font-size: calc(var(--u) * 1.32);
+  }
+  .smarthelp-compare svg {
+    width: calc(var(--u) * 1.6);
+  }
+}
+
+/* ---------- Out of "Smart": the two ways. They fly to their place beside the phone. ---------- */
+.smarthelp-part {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 1.25) 0 calc(var(--u) * 0.85);
+  border-radius: calc(var(--u) * 0.9);
+  background: #ffffff;
+  border: calc(var(--u) * 0.12) solid var(--acc);
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(45, 106, 209, 0.24);
+  font-size: calc(var(--u) * 1.12);
+  font-weight: 800;
+  color: var(--ev-navy);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-part svg {
+  width: calc(var(--u) * 1.4);
+  height: calc(var(--u) * 1.4);
+  stroke: var(--acc-ink);
+}
+
+/* ---------- Out of "Help": her ticket. It flies into the support desk, on the same lines it will stand on. ---------- */
+.smarthelp-ask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: calc(var(--u) * 0.65) calc(var(--u) * 1) calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 1.4);
+  background: #ffffff;
+  border: calc(var(--u) * 0.13) solid var(--acc);
+  box-shadow: 0 calc(var(--u) * 0.9) calc(var(--u) * 2.2) rgba(45, 106, 209, 0.26);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.smarthelp-ask-text {
+  /* the ticket's text, 1.6 times as large: it lands on it exactly */
+  width: calc(var(--u) * 11.5 * 1.6);
+  font-size: calc(var(--u) * 0.86 * 1.6);
+  font-weight: 700;
+  line-height: 1.36;
+  letter-spacing: -0.005em;
+  color: var(--ev-navy);
+}
+
+/* ---------- STAT: a hundred tickets, fifteen close themselves ---------- */
+/* "of support tickets resolved with no human": one line under the number on a wide screen, two even
+   lines on a squarer one, so it stays clear of Priya's line below */
+.ev-moment[data-key='smarthelp'] .ev-stat-label {
+  max-width: calc(var(--u) * 35);
+  text-wrap: balance;
+}
+@media (min-aspect-ratio: 3/2) {
+  .ev-moment[data-key='smarthelp'] .ev-stat-label {
+    max-width: none;
+    white-space: nowrap;
+  }
+}
+.smarthelp-wall {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(10, calc(var(--ev-pitch) * 3.2));
+  grid-auto-rows: calc(var(--ev-pitch) * 2);
+}
+.smarthelp-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  will-change: transform, opacity;
+}
+.smarthelp-tk {
+  position: relative;
+  display: block;
+  width: 84%;
+  height: 74%;
+  border-radius: calc(var(--ev-pitch) * 0.3);
+  /* a ticket: a perforation, two lines of writing, a bite out of each side */
+  background:
+    linear-gradient(#b4cdec, #b4cdec) 62.5% 34% / 36% calc(var(--ev-pitch) * 0.2) no-repeat,
+    linear-gradient(#c9dbf2, #c9dbf2) 52.6% 68% / 24% calc(var(--ev-pitch) * 0.2) no-repeat,
+    repeating-linear-gradient(180deg, #a9c4e8 0 calc(var(--ev-pitch) * 0.12), transparent calc(var(--ev-pitch) * 0.12) calc(var(--ev-pitch) * 0.24)) 27% 0 / max(1px, calc(var(--ev-pitch) * 0.07)) 100% no-repeat,
+    #e3eefb;
+  -webkit-mask:
+    radial-gradient(circle at 0 50%, transparent calc(var(--ev-pitch) * 0.24), #000 calc(var(--ev-pitch) * 0.24 + 0.6px)) 0 0 / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent calc(var(--ev-pitch) * 0.24), #000 calc(var(--ev-pitch) * 0.24 + 0.6px)) 100% 0 / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle at 0 50%, transparent calc(var(--ev-pitch) * 0.24), #000 calc(var(--ev-pitch) * 0.24 + 0.6px)) 0 0 / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent calc(var(--ev-pitch) * 0.24), #000 calc(var(--ev-pitch) * 0.24 + 0.6px)) 100% 0 / 51% 100% no-repeat;
+}
+.smarthelp-cell:nth-child(3n + 1) .smarthelp-tk {
+  background-color: #edf4fd;
+}
+.smarthelp-cell:nth-child(7n + 3) .smarthelp-tk {
+  background-color: #d8e7f9;
+}
+.smarthelp-tk-on {
+  /* closed, by itself */
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
+}
+.smarthelp-tk-on svg {
+  height: 62%;
+  width: auto;
+  aspect-ratio: 1;
+}
+.smarthelp-cell--ours {
+  z-index: 2;
+}
+.smarthelp-cell--ours .smarthelp-tk-on {
+  background: linear-gradient(145deg, #15244b 0%, #071a50 100%);
+}
+.smarthelp-ours-ring {
+  position: absolute;
+  inset: calc(var(--ev-pitch) * 0.02) calc(var(--ev-pitch) * 0.02);
+  border-radius: calc(var(--ev-pitch) * 0.5);
+  border: calc(var(--u) * 0.2) solid var(--acc);
+  pointer-events: none;
+}
+.smarthelp-land {
+  /* where the phone lands: the middle of her ticket */
+  position: absolute;
+  left: calc(var(--ev-pitch) * 3.2 * 5.5 - var(--u) * 0.7);
+  top: calc(var(--ev-pitch) * 2 * 4.5 - var(--u) * 0.7);
+  width: calc(var(--u) * 1.4);
+  height: calc(var(--u) * 1.4);
+  visibility: hidden;
+}
+.smarthelp-callout {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--ev-pitch) * 3.2 * 5.5);
+  top: calc(var(--ev-pitch) * 2 * 4);
+  width: 0;
+  height: 0;
+}
+.smarthelp-callout-in {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--u) * 0.8);
+  padding: calc(var(--u) * 0.55) calc(var(--u) * 1) calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 0.8);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2) rgba(7, 26, 80, 0.18),
+    0 0 0 1px rgba(7, 26, 80, 0.06);
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.2;
+}
+.smarthelp-callout-in::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * -0.4);
+  width: calc(var(--u) * 0.8);
+  height: calc(var(--u) * 0.8);
+  margin-left: calc(var(--u) * -0.4);
+  background: #ffffff;
+  transform: rotate(45deg);
+  border-radius: calc(var(--u) * 0.12);
+}
+.smarthelp-callout-in b {
+  display: block;
+  font-size: calc(var(--u) * 1.05);
+  font-weight: 800;
+  color: var(--ev-navy);
+  font-variant-numeric: tabular-nums;
+}
+.smarthelp-callout-in span {
+  display: block;
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 600;
+  color: var(--ev-muted);
+}
+
+/* ============================================================
+   A phone on its side. The phone in the film is enlarged 1.2×
+   and its screen is about 160 px across: the support desk is
+   set again in fewer, larger words. Nothing on the glass is
+   under 9 px (--dt is that floor before the enlargement),
+   nothing around it under 11 px.
+   ============================================================ */
+@media (max-height: 480px) {
+  .ev-moment[data-key='smarthelp'] {
+    /* the type of the desk: its small print, and what is read */
+    --sh-k: max(calc(var(--u) * 1.02), var(--dt));
+    --sh-v: max(calc(var(--u) * 1.1), var(--dt));
+  }
+
+  /* ----- before: the ticket and its to-and-fro (drawn 1.2× by the shared frame) ----- */
+  .smarthelp-b-eyebrow {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+    letter-spacing: 0.12em;
+  }
+  .smarthelp-b-status,
+  .smarthelp-b-msg span {
+    font-size: max(calc(var(--u) * 1.05), var(--dt));
+  }
+  .smarthelp-b-still {
+    font-size: max(calc(var(--u) * 1.12), var(--dt));
+  }
+
+  /* ----- the two ways, beside the phone: a wider column, words at reading size ----- */
+  .ev-moment[data-key='smarthelp'] .ev-side {
+    left: calc(var(--hx) - var(--u) * 23.5);
+    width: calc(var(--u) * 23.5);
+  }
+  .ev-moment[data-key='smarthelp'] .ev-deviceMover {
+    --ev-dx: calc(var(--u) * 7.4);
+  }
+  .smarthelp-ways {
+    padding-top: 0;
+  }
+  .smarthelp-ways-who {
+    margin-bottom: calc(var(--u) * 0.5);
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11.5));
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .smarthelp-way-slot {
+    height: calc(var(--u) * 9.7);
+    margin-bottom: calc(var(--u) * 0.7);
+  }
+  .smarthelp-way {
+    padding: calc(var(--u) * 0.75) calc(var(--u) * 0.9) 0;
+  }
+  .smarthelp-way-head b {
+    font-size: max(calc(var(--u) * 1.7), calc(var(--fl) * 12));
+  }
+  .smarthelp-way-text {
+    margin-top: calc(var(--u) * 0.4);
+    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  /* "This ticket" is pinned on the card's top edge, clear of its title */
+  .smarthelp-way-tag {
+    right: calc(var(--u) * 1);
+    top: calc(var(--u) * -1.15);
+    height: calc(var(--u) * 2.2);
+    border-radius: calc(var(--u) * 1.1);
+    box-shadow: 0 0 0 calc(var(--u) * 0.18) #ffffff;
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+  }
+  .smarthelp-way-tag svg {
+    width: calc(var(--u) * 1);
+    height: calc(var(--u) * 1);
+  }
+  .smarthelp-part {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+  }
+
+  /* ----- the support desk on the phone ----- */
+  .smarthelp-bar {
+    gap: calc(var(--u) * 0.45);
+    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.6) calc(var(--u) * 0.35);
+  }
+  .smarthelp-icon {
+    width: calc(var(--u) * 1.6);
+    height: calc(var(--u) * 1.6);
+  }
+  .smarthelp-title b {
+    font-size: max(calc(var(--u) * 1.25), var(--dt));
+  }
+  /* the desk's small print goes: "Support desk" says what it is */
+  .smarthelp-title span {
+    display: none;
+  }
+  .smarthelp-tkc {
+    left: calc(var(--u) * 0.4);
+    right: calc(var(--u) * 0.4);
+    top: calc(var(--u) * 2.65);
+    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.55) calc(var(--u) * 0.45);
+  }
+  .smarthelp-tkc-head {
+    height: calc(var(--u) * 1.5);
+  }
+  /* only the number: the word "ticket" is in the headline beside the phone */
+  .smarthelp-tkc-id {
+    font-size: 0;
+    gap: 0;
+  }
+  .smarthelp-tkc-id b {
+    font-size: max(calc(var(--u) * 1.25), var(--dt));
+  }
+  .smarthelp-pill,
+  .smarthelp-pill > span {
+    height: calc(var(--u) * 1.5);
+  }
+  .smarthelp-pill > span {
+    font-size: var(--sh-k);
+    border-radius: calc(var(--u) * 0.75);
+  }
+  .smarthelp-pill--done svg {
+    width: calc(var(--u) * 0.9);
+    height: calc(var(--u) * 0.9);
+  }
+  .smarthelp-tkc-body {
+    height: calc(var(--u) * 3.05);
+    margin-top: calc(var(--u) * 0.25);
+  }
+  /* the same words on the same lines, in the ticket and in flight (13.4 em wide, both) */
+  .smarthelp-tkc-text {
+    width: 13.4em;
+    font-size: var(--sh-v);
+    line-height: 1.3;
+  }
+  .smarthelp-ask-text {
+    width: 13.4em;
+    font-size: calc(var(--sh-v) * 1.6);
+    line-height: 1.3;
+  }
+  .smarthelp-tkc-skel {
+    top: calc(var(--u) * 0.45);
+    height: calc(var(--u) * 0.6);
+  }
+  .smarthelp-tkc-skel + .smarthelp-tkc-skel {
+    top: calc(var(--u) * 1.9);
+  }
+  .smarthelp-raisezone {
+    left: calc(var(--u) * 0.4);
+    right: calc(var(--u) * 0.4);
+    top: calc(var(--u) * 9.4);
+  }
+  .smarthelp-raiseWrap {
+    height: calc(var(--u) * 3.5);
+  }
+  .ev-touch.smarthelp-raise {
+    border-radius: calc(var(--u) * 1.75);
+  }
+  .smarthelp-raise-face {
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 9.4));
+  }
+  .smarthelp-hint {
+    margin-top: calc(var(--u) * 0.5);
+    font-size: var(--sh-k);
+    line-height: calc(var(--u) * 1.4);
+  }
+  .smarthelp-hero {
+    margin-top: calc(var(--u) * 2.4);
+  }
+  .smarthelp-hero p {
+    max-width: 12.5em;
+    font-size: var(--sh-v);
+    line-height: 1.3;
+  }
+  .smarthelp-work {
+    left: calc(var(--u) * 0.4);
+    right: calc(var(--u) * 0.4);
+    top: calc(var(--u) * 8.65);
+  }
+  .smarthelp-from {
+    margin-bottom: calc(var(--u) * 0.25);
+    font-size: var(--sh-k);
+  }
+  .smarthelp-from i {
+    width: calc(var(--u) * 1.2);
+    height: calc(var(--u) * 1.2);
+  }
+  .smarthelp-card {
+    padding: 0 calc(var(--u) * 0.55);
+  }
+  .smarthelp-step {
+    padding: calc(var(--u) * 0.3) 0 calc(var(--u) * 0.3) calc(var(--u) * 1.5);
+  }
+  .smarthelp-node {
+    top: calc(var(--u) * 0.36);
+    width: calc(var(--u) * 1.1);
+    height: calc(var(--u) * 1.1);
+  }
+  .smarthelp-link {
+    left: calc(var(--u) * 0.49);
+    top: calc(var(--u) * 1.6);
+    bottom: calc(var(--u) * -0.5);
+  }
+  .smarthelp-step-k {
+    font-size: var(--sh-k);
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+  }
+  .smarthelp-step-v {
+    min-height: 2.5em;
+    margin-top: 0;
+    font-size: var(--sh-v);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .smarthelp-step-skel i {
+    left: calc(var(--u) * 1.5);
+    top: calc(var(--u) * 1.9);
+    height: calc(var(--u) * 0.6);
+  }
+  .smarthelp-step-skel i + i {
+    top: calc(var(--u) * 3.25);
+  }
+  .smarthelp-step--fix .smarthelp-step-skel i {
+    top: calc(var(--u) * 1.95);
+    height: calc(var(--u) * 3.3);
+  }
+  .smarthelp-cmd {
+    margin: calc(var(--u) * 0.3) 0 calc(var(--u) * 0.05) calc(var(--u) * -1.5);
+    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.55) calc(var(--u) * 0.5);
+  }
+  .smarthelp-cmd-out {
+    margin-top: calc(var(--u) * 0.25);
+    font-size: var(--sh-v);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  /* "Resolved." and what to do next may take two lines */
+  .smarthelp-done {
+    height: auto;
+    min-height: calc(var(--u) * 1.9);
+    margin: 0 calc(var(--u) * -0.55);
+    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.55);
+    gap: calc(var(--u) * 0.4);
+  }
+  .smarthelp-done i {
+    width: calc(var(--u) * 1.1);
+    height: calc(var(--u) * 1.1);
+  }
+  .smarthelp-done-txt {
+    font-size: var(--sh-k);
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  /* ----- on the phone's edge ----- */
+  /* two lines, so it stays on the screen beside the phone */
+  .smarthelp-safe {
+    left: calc(100% - var(--u) * 1.6);
+    top: calc(var(--u) * 21.2);
+    width: max-content;
+    max-width: calc(var(--u) * 17);
+    height: auto;
+    min-height: calc(var(--u) * 3.4);
+    padding: calc(var(--u) * 0.5) calc(var(--u) * 1.2) calc(var(--u) * 0.55) calc(var(--u) * 0.5);
+    border-radius: calc(var(--u) * 2);
+    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.4));
+    line-height: 1.16;
+    white-space: normal;
+  }
+  .smarthelp-safe-ring {
+    border-radius: calc(var(--u) * 2.2);
+  }
+  /* the stamp keeps clear of the bar under it */
+  .smarthelp-stamp {
+    left: calc(100% - var(--u) * 1.4);
+    bottom: calc(var(--u) * 0.9);
+    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.8) calc(var(--u) * 0.45);
+  }
+  .smarthelp-stamp b {
+    font-size: max(calc(var(--u) * 1.25), calc(var(--fl) * 9.4));
+  }
+  .smarthelp-stamp span {
+    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 9.4));
+  }
+
+  /* ----- under the result headline: no room under four lines, so it sits beside the headline's last word ----- */
+  .smarthelp-compare {
+    position: relative;
+    left: calc(var(--u) * 10);
+    top: calc(var(--u) * -6);
+    margin-top: 0;
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    gap: calc(var(--u) * 0.1) calc(var(--u) * 0.7);
+  }
+  .smarthelp-compare-old {
+    grid-column: 1 / -1;
+    justify-self: start;
+    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
+  }
+  .smarthelp-compare-new {
+    font-size: max(calc(var(--u) * 1.55), calc(var(--fl) * 12));
+  }
+
+  /* ----- the number's picture ----- */
+  .smarthelp-callout-in b {
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+  .smarthelp-callout-in span {
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+  }
+}

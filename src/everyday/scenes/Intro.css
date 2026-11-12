@@ -1,0 +1,381 @@
+/* ============================================================
+   EVERYDAY AI · the opening screen: what Everyday AI is.
+   The screen that waits between visitors. The title and the
+   one sentence on the left, the three pillars on the right,
+   the start control under the sentence.
+   ============================================================ */
+
+.ev-scene--intro {
+  --op-top: calc(var(--u) * -17.5);
+  --op-h: calc(var(--u) * 32.6);
+  --op-title-max: calc(var(--u) * 10);
+  /* "Everyday AI" is 5.6 em wide: as large as its column allows (a narrow phone has less than 46u a side) */
+  --op-title: min(var(--op-title-max), calc((var(--hx) * 2 - var(--op-pw) - var(--op-gap)) / 5.62));
+  --op-hs: calc(var(--u) * 3.4); /* the sentence */
+  --op-pw: calc(var(--u) * 31); /* the pillars' column */
+  --op-gap: calc(var(--u) * 4);
+  --op-pt: calc(var(--u) * 2); /* a pillar's title */
+  --op-px: calc(var(--u) * 1.36); /* and its line */
+  --op-n: calc(var(--u) * 3.2); /* its number */
+}
+
+.op-area {
+  position: absolute;
+  left: calc(var(--hx) * -1);
+  top: var(--op-top);
+  width: calc(var(--hx) * 2);
+  height: var(--op-h);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--op-pw);
+  column-gap: var(--op-gap);
+  align-items: center;
+  pointer-events: none;
+}
+
+/* ---------- the title, and what it means ---------- */
+.op-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.3);
+  font-size: calc(var(--u) * 1.25);
+  font-weight: 800;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--ev-flame-text);
+  white-space: nowrap;
+}
+.op-rule {
+  flex: none;
+  width: calc(var(--u) * 7);
+  height: calc(var(--u) * 0.16);
+  border-radius: calc(var(--u) * 0.08);
+  background: linear-gradient(90deg, #f16443 0%, rgba(241, 100, 67, 0) 100%);
+}
+.op-title {
+  margin: calc(var(--op-title) * -0.07) 0 calc(var(--op-title) * -0.07) -0.05em;
+  font-size: var(--op-title);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.2;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.op-title .ev-mask {
+  width: max-content;
+  padding-right: 0.1em;
+}
+.op-word {
+  display: inline-block;
+}
+.op-ch {
+  will-change: transform;
+}
+.op-word--ai .op-ch {
+  background: linear-gradient(180deg, #f4714d 10%, #eb542c 52%, #d6411a 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.op-h {
+  /* wide enough for "to do our own job better.", too narrow for "…of us can": three even lines */
+  max-width: 12.15em;
+  font-size: var(--op-hs);
+  font-weight: 700;
+  line-height: 1.17;
+  letter-spacing: -0.03em;
+  color: var(--ev-navy);
+}
+/* each line rises through its own mask (SplitText): room for the descenders at this leading */
+.op-h > div {
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.op-keep {
+  white-space: nowrap;
+}
+.op-h em {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #f16443 6%, #eb542c 48%, #d6411a 96%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.op-h em svg {
+  position: absolute;
+  left: -1%;
+  bottom: -0.03em;
+  width: 102%;
+  height: 0.24em;
+  overflow: visible;
+}
+.op-h em path {
+  fill: none;
+  stroke: var(--ev-flame);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+/* ---------- the start control, and the teaser beside it ---------- */
+.op-startrow {
+  margin-top: calc(var(--u) * 1.9);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2.1);
+}
+.ev-start {
+  position: relative;
+  flex: none;
+  pointer-events: none;
+  visibility: hidden;
+}
+.ev-start[data-live='1'] {
+  pointer-events: auto;
+}
+.ev-start::after {
+  /* a generous touch target */
+  content: '';
+  position: absolute;
+  inset: calc(var(--u) * -1.2);
+  border-radius: calc(var(--u) * 4);
+}
+.ev-start[data-pressed='1'] .ev-start-in {
+  transform: scale(0.94);
+}
+.ev-start-in {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.4);
+  height: calc(var(--u) * 5.6);
+  padding: 0 calc(var(--u) * 0.8) 0 calc(var(--u) * 2.6);
+  border-radius: calc(var(--u) * 2.8);
+  background: var(--ev-navy);
+  color: #ffffff;
+  font-size: calc(var(--u) * 1.75);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  box-shadow:
+    0 calc(var(--u) * 1.1) calc(var(--u) * 2.6) rgba(7, 26, 80, 0.26),
+    0 calc(var(--u) * 0.2) calc(var(--u) * 0.5) rgba(7, 26, 80, 0.2);
+  transition: transform 0.18s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.ev-start:active .ev-start-in {
+  transform: scale(0.95);
+}
+.ev-start-arrow {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 4);
+  height: calc(var(--u) * 4);
+  border-radius: 50%;
+  background: linear-gradient(140deg, #f4714d 0%, #e8502a 100%);
+}
+.ev-start-arrow svg {
+  width: 46%;
+  height: 46%;
+  animation: ev-nudge 1.8s cubic-bezier(0.5, 0, 0.2, 1) infinite;
+}
+.ev-start-ping {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 2.8);
+  border: calc(var(--u) * 0.14) solid rgba(7, 26, 80, 0.5);
+  animation: ev-ping 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  pointer-events: none;
+}
+.ev-start-ping--2 {
+  animation-delay: 1.3s;
+}
+@keyframes ev-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(1.16, 1.5);
+    opacity: 0;
+  }
+}
+@keyframes ev-nudge {
+  0%,
+  100% {
+    transform: translateX(-8%);
+  }
+  50% {
+    transform: translateX(14%);
+  }
+}
+.op-teaser {
+  font-size: calc(var(--u) * 1.45);
+  font-weight: 600;
+  line-height: 1.36;
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+.op-teaser b {
+  display: block;
+  font-weight: 800;
+  color: var(--ev-ink);
+}
+
+/* ---------- the three pillars ---------- */
+.op-pillars {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  row-gap: calc(var(--u) * 1.15);
+}
+.op-pillar {
+  position: relative;
+  display: block;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.op-pillar-lift {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--op-n) minmax(0, 1fr);
+  column-gap: calc(var(--u) * 1.3);
+  align-items: start;
+  padding: calc(var(--u) * 1.35) calc(var(--u) * 1.7) calc(var(--u) * 1.5) calc(var(--u) * 1.45);
+}
+.op-pillar-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.6);
+  background: linear-gradient(115deg, #ffffff 42%, var(--acc-soft) 100%);
+  box-shadow:
+    0 calc(var(--u) * 1.2) calc(var(--u) * 2.8) rgba(7, 26, 80, 0.11),
+    0 calc(var(--u) * 0.15) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.06),
+    0 0 0 1px var(--acc-line);
+}
+.op-n {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--op-n);
+  height: var(--op-n);
+  margin-top: calc(var(--u) * 0.1);
+  border-radius: 50%;
+  background: linear-gradient(150deg, var(--acc-g2) 0%, var(--acc-g3) 100%);
+  color: #ffffff;
+  font-size: calc(var(--op-n) * 0.46);
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1) color-mix(in srgb, var(--acc-g3) 34%, transparent);
+}
+.op-pillar-in {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.op-pillar-h {
+  display: block;
+  font-size: var(--op-pt);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.28;
+  color: var(--ev-navy);
+}
+.op-pillar-t {
+  display: block;
+  margin-top: calc(var(--u) * 0.15);
+  font-size: var(--op-px);
+  font-weight: 500;
+  line-height: 1.42;
+  color: var(--ev-body);
+  text-wrap: pretty;
+  visibility: hidden;
+}
+
+/* ---------- while it waits: the three pillars take turns to lift ---------- */
+.ev-root[data-scene='intro'][data-step='idle'][data-resting='1'] .op-pillar-lift {
+  animation: op-turn 7.8s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+  animation-delay: calc(var(--i) * 0.75s + 1.2s);
+}
+@keyframes op-turn {
+  0%,
+  16%,
+  100% {
+    transform: none;
+  }
+  6% {
+    transform: translateX(calc(var(--u) * -0.7)) scale(1.015);
+  }
+}
+.ev-root[data-hold='1'] .op-pillar-lift,
+.ev-root[data-hold='1'] .ev-start-ping,
+.ev-root[data-hold='1'] .ev-start-arrow svg {
+  animation: none !important;
+}
+
+/* ---------- squarer screens (a tablet): narrower, but taller ---------- */
+@media (max-aspect-ratio: 3/2) {
+  .ev-scene--intro {
+    --op-top: calc(var(--u) * -21);
+    --op-h: calc(var(--u) * 37.6);
+    --op-title-max: calc(var(--u) * 8.5);
+    --op-hs: calc(var(--u) * 3.15);
+    --op-pw: calc(var(--u) * 27);
+    --op-gap: calc(var(--u) * 2.4);
+    --op-pt: calc(var(--u) * 1.72);
+    --op-px: calc(var(--u) * 1.26);
+    --op-n: calc(var(--u) * 2.8);
+  }
+  .op-pillar-lift {
+    column-gap: calc(var(--u) * 1.05);
+    padding: calc(var(--u) * 1.4) calc(var(--u) * 1.2) calc(var(--u) * 1.5) calc(var(--u) * 1.2);
+  }
+  .op-pillars {
+    row-gap: calc(var(--u) * 1.3);
+  }
+  .op-startrow {
+    margin-top: calc(var(--u) * 2.8);
+    gap: calc(var(--u) * 1.5);
+  }
+  .op-h {
+    margin-top: calc(var(--u) * 0.6);
+  }
+}
+
+/* ---------- a phone on its side: no header band, so the screen has the whole height above the bar ---------- */
+@media (max-height: 480px) {
+  .ev-scene--intro {
+    --op-top: calc(var(--u) * -16.4);
+    --op-h: calc(var(--u) * 36.6);
+    --op-title-max: calc(var(--u) * 10.4);
+    --op-hs: calc(var(--u) * 3.5);
+    --op-pw: calc(var(--u) * 32);
+    --op-px: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+  .op-eyebrow {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+    letter-spacing: 0.3em;
+  }
+  .op-startrow {
+    margin-top: calc(var(--u) * 2);
+  }
+  /* the start control: a full fingertip tall on the smallest phone */
+  .ev-start-in {
+    height: max(calc(var(--u) * 5.8), calc(var(--fl) * 44));
+  }
+  .op-teaser {
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+  .op-pillars {
+    row-gap: calc(var(--u) * 1.3);
+  }
+  .op-n {
+    font-size: max(calc(var(--op-n) * 0.46), calc(var(--fl) * 11.5));
+  }
+}

@@ -1,0 +1,783 @@
+/* ============================================================
+   BYOT · Build Your Own Tech. Everything here is BYOT's own;
+   classes are prefixed "byot-". Sizes are in --u; colours come
+   from the accent variables (--acc, --acc-ink, --acc-soft…).
+   ============================================================ */
+
+/* ---------- BEFORE: a notebook page at 11:40 pm, half remembered ---------- */
+.byot-b {
+  position: absolute;
+  inset: 0;
+}
+.byot-b-night {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(var(--u) * 14.5);
+  height: calc(var(--u) * 11);
+  border-radius: calc(var(--u) * 1.6);
+  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.28);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+.byot-b-night svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.byot-b-moon {
+  fill: #ffd9cd;
+}
+.byot-b-star {
+  fill: #b9e2ff;
+}
+.byot-b-time {
+  position: absolute;
+  left: calc(var(--u) * 1.4);
+  top: calc(var(--u) * 1.05);
+  font-size: calc(var(--u) * 1.9);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.byot-b-page {
+  position: absolute;
+  left: calc(var(--u) * 0.3);
+  bottom: calc(var(--u) * 0.3);
+  width: calc(var(--u) * 18);
+  padding: calc(var(--u) * 1.1) calc(var(--u) * 1.4) calc(var(--u) * 0.8) calc(var(--u) * 2.9);
+  border-radius: calc(var(--u) * 1);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 1.1) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.16),
+    0 0 0 1px rgba(7, 26, 80, 0.07);
+  will-change: transform, opacity;
+}
+.byot-b-holes {
+  /* the punched edge of a notebook page */
+  position: absolute;
+  left: calc(var(--u) * 0.95);
+  top: calc(var(--u) * 1.2);
+  bottom: calc(var(--u) * 1.2);
+  width: calc(var(--u) * 0.76);
+  background: radial-gradient(circle at 50% 50%, #d7e2ee 0, #d7e2ee 44%, transparent 48%) 0 0 / 100% calc(var(--u) * 1.52) repeat-y;
+}
+.byot-b-row {
+  display: block;
+  height: calc(var(--u) * 3.3);
+  padding-top: calc(var(--u) * 0.4);
+  border-bottom: 1px solid #e3eaf3;
+}
+.byot-b-row:last-child {
+  border-bottom-color: transparent;
+}
+.byot-b-k {
+  display: block;
+  font-size: calc(var(--u) * 0.72);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  line-height: 1.3;
+}
+.byot-b-v {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 1.8);
+}
+.byot-b-ink {
+  /* written by hand, late */
+  font-size: calc(var(--u) * 1.4);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  color: var(--ev-ink);
+  white-space: nowrap;
+  padding-right: 0.1em;
+}
+.byot-b-gap {
+  flex: 1;
+  min-width: calc(var(--u) * 2);
+  height: 0;
+  margin-top: calc(var(--u) * 0.5);
+  border-bottom: calc(var(--u) * 0.14) dashed #b7c9e2;
+}
+.byot-b-q {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.65);
+  height: calc(var(--u) * 1.65);
+  border-radius: 50%;
+  background: var(--acc-soft);
+  border: 1px solid var(--acc-line);
+  font-size: calc(var(--u) * 1.1);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--acc-ink);
+}
+
+/* ---------- The left column: the parts the team put together ---------- */
+.byot-kit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 0.55);
+  max-width: calc(var(--u) * 24);
+}
+.byot-kit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.45);
+  height: calc(var(--u) * 2.3);
+  padding: 0 calc(var(--u) * 0.95);
+  border-radius: calc(var(--u) * 0.7);
+  border: 1px solid var(--acc-line);
+  background: rgba(255, 255, 255, 0.82);
+  font-size: calc(var(--u) * 1);
+  font-weight: 700;
+  color: var(--ev-ink);
+  white-space: nowrap;
+}
+.byot-kit-chip::before {
+  content: '';
+  width: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.14);
+  background: var(--acc);
+}
+.byot-kit-chip--solid {
+  border-color: var(--ev-navy);
+  background: var(--ev-navy);
+  color: #ffffff;
+}
+.byot-kit-chip--solid::before {
+  display: none;
+}
+
+/* ---------- Under the result headline: 11:40 pm → Filed 10:42 am ---------- */
+.byot-compare {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.byot-compare-old {
+  position: relative;
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 600;
+  color: var(--ev-muted);
+}
+.byot-compare-old i {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 52%;
+  height: calc(var(--u) * 0.16);
+  border-radius: 1px;
+  background: var(--acc-ink);
+  transform-origin: 0 50%;
+}
+.byot-compare svg {
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 1);
+}
+.byot-compare-new {
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 800;
+  color: var(--acc-ink);
+}
+
+/* ---------- The app on the phone: Visit Notes ---------- */
+.byot-app {
+  position: absolute;
+  inset: 0;
+}
+.byot-appbar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  padding: calc(var(--u) * 0.55) calc(var(--u) * 0.8) calc(var(--u) * 0.6);
+}
+.byot-appicon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.95);
+  height: calc(var(--u) * 1.95);
+  border-radius: calc(var(--u) * 0.56);
+  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
+  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.7) rgba(235, 84, 44, 0.35);
+}
+.byot-appicon svg {
+  width: 58%;
+  height: 58%;
+}
+.byot-apptitle {
+  display: grid;
+  line-height: 1.15;
+  min-width: 0;
+  flex: 1;
+}
+.byot-apptitle b {
+  font-size: calc(var(--u) * 1);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--ev-navy);
+  white-space: nowrap;
+}
+.byot-apptitle span {
+  font-size: calc(var(--u) * 0.62);
+  font-weight: 600;
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+.byot-appbadge {
+  flex: none;
+  padding: calc(var(--u) * 0.2) calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.4);
+  background: var(--acc-soft);
+  border: 1px solid var(--acc-line);
+  font-size: calc(var(--u) * 0.58);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--acc-ink);
+  white-space: nowrap;
+}
+.byot-slot {
+  position: relative;
+}
+.byot-slot-outline {
+  /* the empty place a part will drop into */
+  position: absolute;
+  inset: calc(var(--u) * 0.1);
+  border-radius: calc(var(--u) * 0.7);
+  border: calc(var(--u) * 0.09) dashed #f0b9aa;
+  background: rgba(255, 241, 234, 0.5);
+}
+.byot-block {
+  position: relative;
+  will-change: transform, opacity;
+}
+.byot-slot--voice {
+  margin: 0 calc(var(--u) * 0.75);
+}
+.byot-voice {
+  padding: calc(var(--u) * 0.7) calc(var(--u) * 0.8) calc(var(--u) * 0.7);
+  border-radius: calc(var(--u) * 0.9);
+  background: #fff5f0;
+  border: 1px solid #f7d7cd;
+  height: calc(var(--u) * 6.9);
+  display: flex;
+  flex-direction: column;
+}
+.byot-voice-head {
+  position: relative;
+  font-size: calc(var(--u) * 0.56);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--acc-ink);
+  line-height: 1.3;
+}
+.byot-voice-state {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.byot-voice-body {
+  position: relative;
+  flex: 1;
+  margin-top: calc(var(--u) * 0.4);
+}
+.byot-voice-ph {
+  position: absolute;
+  inset: 0;
+  font-size: calc(var(--u) * 0.8);
+  line-height: 1.4;
+  font-weight: 500;
+  color: #5d6a85;
+}
+.byot-wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.2);
+  height: calc(var(--u) * 2.3);
+}
+.byot-wave i {
+  flex: 1;
+  height: 100%;
+  border-radius: calc(var(--u) * 0.2);
+  background: var(--acc);
+  transform: scaleY(0.12);
+  opacity: 0.85;
+  will-change: transform;
+}
+.byot-fields {
+  margin: calc(var(--u) * 0.55) calc(var(--u) * 0.75) 0;
+}
+.byot-fields .byot-block {
+  background: #ffffff;
+}
+.byot-field {
+  position: relative;
+  height: calc(var(--u) * 2.7);
+  padding: calc(var(--u) * 0.46) calc(var(--u) * 0.7) 0;
+  border-bottom: 1px solid #e3eaf3;
+  overflow: hidden;
+}
+.byot-slot:last-child .byot-field:last-child {
+  border-bottom-color: transparent;
+}
+.byot-field-k {
+  display: block;
+  font-size: calc(var(--u) * 0.55);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ev-muted);
+  line-height: 1.3;
+}
+.byot-field-v {
+  display: block;
+  width: max-content;
+  margin-top: calc(var(--u) * 0.12);
+  font-size: calc(var(--u) * 0.9);
+  font-weight: 700;
+  color: var(--ev-navy);
+  line-height: 1.3;
+  padding-bottom: 0.1em;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.byot-field-skel {
+  position: absolute;
+  left: calc(var(--u) * 0.7);
+  top: calc(var(--u) * 1.52);
+  width: 46%;
+  height: calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.25);
+  background: #e9eef5;
+}
+.byot-field:nth-child(2) .byot-field-skel {
+  width: 58%;
+}
+.byot-field-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(241, 100, 67, 0) 0%, rgba(241, 100, 67, 0.16) 50%, rgba(241, 100, 67, 0) 100%);
+}
+.byot-field-tick {
+  position: absolute;
+  right: calc(var(--u) * 0.55);
+  top: calc(var(--u) * 0.36);
+  width: calc(var(--u) * 0.86);
+  height: calc(var(--u) * 0.86);
+  border-radius: 50%;
+  background: var(--acc-soft);
+  display: grid;
+  place-items: center;
+}
+.byot-field-tick svg {
+  width: 60%;
+  height: 60%;
+}
+
+/* the one control: the mic */
+.byot-miczone {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u) * 6.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.45);
+}
+.byot-micWrap {
+  position: relative;
+  width: calc(var(--u) * 3.5);
+  height: calc(var(--u) * 3.5);
+}
+.byot-mic {
+  width: 100%;
+  height: 100%;
+}
+.byot-mic-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(235, 84, 44, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.byot-mic-face svg {
+  position: absolute;
+  left: 22%;
+  top: 22%;
+  width: 56%;
+  height: 56%;
+  overflow: visible;
+}
+.byot-mic-hint {
+  position: relative;
+  height: calc(var(--u) * 0.9);
+  width: 100%;
+  font-size: calc(var(--u) * 0.64);
+  font-weight: 700;
+  color: var(--ev-muted);
+  letter-spacing: 0.02em;
+}
+.byot-mic-hint span {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  line-height: calc(var(--u) * 0.9);
+  white-space: nowrap;
+}
+.byot-mic-hint span:nth-child(2),
+.byot-mic-hint span:nth-child(3) {
+  color: var(--acc-ink);
+}
+
+/* ---------- The four parts her team put together. They fly out of the letters and into the phone. ---------- */
+.byot-part {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 2.9);
+  padding: 0 calc(var(--u) * 1.2) 0 calc(var(--u) * 0.8);
+  border-radius: calc(var(--u) * 0.85);
+  background: #ffffff;
+  border: calc(var(--u) * 0.12) solid var(--acc);
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(235, 84, 44, 0.24);
+  font-size: calc(var(--u) * 1.08);
+  font-weight: 800;
+  color: var(--acc-ink);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.byot-part svg {
+  width: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 1);
+  fill: #f0a48f;
+}
+
+/* ---------- Her words, lifted off the line: each phrase flies into the field it fills ---------- */
+.byot-phrase {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: calc(var(--u) * 0.22) calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 0.55);
+  background: #ffffff;
+  border: calc(var(--u) * 0.1) solid var(--acc);
+  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) rgba(235, 84, 44, 0.28);
+  font-size: calc(var(--u) * 1.22);
+  font-weight: 700;
+  line-height: 1.42;
+  color: var(--acc-ink);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* ---------- Filed 10:42 am ---------- */
+.byot-stamp {
+  position: absolute;
+  right: calc(var(--u) * -4.6);
+  bottom: calc(var(--u) * 1.5);
+  padding: calc(var(--u) * 0.55) calc(var(--u) * 1.15) calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 0.8);
+  border: calc(var(--u) * 0.2) solid var(--acc-ink);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--acc-ink);
+  text-align: center;
+  line-height: 1.1;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.16) #ffffff,
+    inset 0 0 0 calc(var(--u) * 0.24) rgba(200, 67, 28, 0.55),
+    0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(200, 67, 28, 0.2);
+  white-space: nowrap;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.byot-stamp b {
+  display: block;
+  font-size: calc(var(--u) * 1.7);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-transform: uppercase;
+}
+.byot-stamp span {
+  display: block;
+  margin-top: calc(var(--u) * 0.1);
+  font-size: calc(var(--u) * 1.05);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.byot-stamp-burst {
+  position: absolute;
+  inset: calc(var(--u) * -0.2);
+  border-radius: calc(var(--u) * 0.9);
+  border: calc(var(--u) * 0.16) solid var(--acc);
+  pointer-events: none;
+}
+
+/* ---------- Under the photo: what she says ---------- */
+.byot-said {
+  padding-left: calc(var(--u) * 1.1);
+  border-left: calc(var(--u) * 0.2) solid var(--acc);
+}
+.byot-said-who {
+  font-size: calc(var(--u) * 0.82);
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--acc-ink);
+  line-height: 1.4;
+}
+.byot-said-text {
+  margin-top: calc(var(--u) * 0.3);
+  font-size: calc(var(--u) * 1.22);
+  font-weight: 600;
+  line-height: 1.42;
+  color: var(--ev-ink);
+}
+
+/* ---------- STAT: 634 tools, one of them hers ---------- */
+.byot-grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(32, var(--ev-pitch));
+  grid-auto-rows: var(--ev-pitch);
+}
+.byot-tile {
+  width: 70%;
+  height: 70%;
+  margin: auto;
+  border-radius: 26%;
+  background: #fbd6cd;
+  will-change: transform, opacity;
+}
+.byot-tile:nth-child(5n + 2) {
+  background: #f8b9a6;
+}
+.byot-tile:nth-child(7n + 4) {
+  background: #f16443;
+}
+.byot-tile:nth-child(9n + 1) {
+  background: #fde7e0;
+}
+.byot-tile:nth-child(13n + 6) {
+  background: #f48a6c;
+}
+.byot-tile.byot-tile--ours {
+  position: relative;
+  z-index: 2;
+  width: 118%;
+  height: 118%;
+  margin: -9%;
+  background: var(--ev-navy);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.22) #ffffff,
+    0 0 0 calc(var(--u) * 0.38) var(--acc),
+    0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) rgba(7, 26, 80, 0.3);
+}
+.byot-callout {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--ev-pitch) * 20.5);
+  top: calc(var(--ev-pitch) * 7.5);
+  width: 0;
+  height: 0;
+}
+.byot-callout-in {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--u) * 1.5);
+  padding: calc(var(--u) * 0.55) calc(var(--u) * 1) calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 0.8);
+  background: #ffffff;
+  box-shadow:
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2) rgba(7, 26, 80, 0.18),
+    0 0 0 1px rgba(7, 26, 80, 0.06);
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.2;
+}
+.byot-callout-in::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * -0.4);
+  width: calc(var(--u) * 0.8);
+  height: calc(var(--u) * 0.8);
+  margin-left: calc(var(--u) * -0.4);
+  background: #ffffff;
+  transform: rotate(45deg);
+  border-radius: calc(var(--u) * 0.12);
+}
+.byot-callout-in b {
+  display: block;
+  font-size: calc(var(--u) * 1.05);
+  font-weight: 800;
+  color: var(--ev-navy);
+}
+.byot-callout-in span {
+  display: block;
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 600;
+  color: var(--ev-muted);
+}
+
+/* ============================================================
+   A phone on its side. The phone in the film is enlarged 1.2×
+   and its screen is about 160 px across: fewer, larger words.
+   Nothing on the glass is under 9 px (--dt is that floor before
+   the enlargement), nothing around it under 11 px.
+   ============================================================ */
+@media (max-height: 480px) {
+  /* ----- before: the notebook page (drawn 1.2× by the shared frame) ----- */
+  .byot-b-time {
+    top: calc(var(--u) * 0.6);
+  }
+  .byot-b-page {
+    padding-top: calc(var(--u) * 0.8);
+    padding-bottom: calc(var(--u) * 0.5);
+  }
+  .byot-b-row {
+    height: calc(var(--u) * 3.55);
+    padding-top: calc(var(--u) * 0.3);
+  }
+  .byot-b-k {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+    letter-spacing: 0.12em;
+  }
+
+  /* ----- the app on the phone ----- */
+  .byot-appbar {
+    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.7) calc(var(--u) * 0.5);
+  }
+  .byot-apptitle b {
+    font-size: max(calc(var(--u) * 1.2), var(--dt));
+  }
+  .byot-apptitle span {
+    display: none;
+  }
+  .byot-appbadge {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+    letter-spacing: 0.02em;
+    padding: calc(var(--u) * 0.15) calc(var(--u) * 0.5);
+  }
+  .byot-slot--voice {
+    margin: 0 calc(var(--u) * 0.5);
+  }
+  .byot-voice {
+    height: calc(var(--u) * 6.6);
+    padding: calc(var(--u) * 0.5) calc(var(--u) * 0.7);
+  }
+  .byot-wave {
+    height: calc(var(--u) * 1.7);
+  }
+  .byot-voice-head {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+    letter-spacing: 0.1em;
+  }
+  .byot-voice-body {
+    margin-top: calc(var(--u) * 0.25);
+  }
+  .byot-voice-ph {
+    font-size: max(calc(var(--u) * 1.05), var(--dt));
+    line-height: 1.3;
+  }
+  .byot-fields {
+    margin: calc(var(--u) * 0.4) calc(var(--u) * 0.5) 0;
+  }
+  .byot-field {
+    height: calc(var(--u) * 3.15);
+    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.5) 0;
+  }
+  .byot-field-k {
+    font-size: max(calc(var(--u) * 1), var(--dt));
+    letter-spacing: 0.1em;
+    line-height: 1.25;
+  }
+  .byot-field-v {
+    margin-top: 0;
+    font-size: max(calc(var(--u) * 1.05), var(--dt));
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .byot-field-skel {
+    top: calc(var(--u) * 1.95);
+  }
+  .byot-field-tick {
+    right: calc(var(--u) * 0.4);
+    top: calc(var(--u) * 0.3);
+    width: calc(var(--u) * 1.1);
+    height: calc(var(--u) * 1.1);
+  }
+  .byot-miczone {
+    height: calc(var(--u) * 5.6);
+    gap: calc(var(--u) * 0.25);
+  }
+  .byot-mic-hint {
+    height: calc(var(--u) * 1.4);
+    font-size: max(calc(var(--u) * 1), var(--dt));
+  }
+  .byot-mic-hint span {
+    line-height: calc(var(--u) * 1.4);
+  }
+  .byot-stamp span {
+    font-size: max(calc(var(--u) * 1.1), var(--dt));
+  }
+
+  /* ----- around the phone ----- */
+  .byot-part {
+    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+  }
+  .byot-phrase {
+    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
+    line-height: 1.36;
+  }
+  .byot-said-who {
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+    letter-spacing: 0.16em;
+  }
+  .byot-said-text {
+    margin-top: calc(var(--u) * 0.2);
+    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
+    line-height: 1.36;
+  }
+  .byot-compare-old,
+  .byot-compare-new {
+    font-size: max(calc(var(--u) * 1.6), calc(var(--fl) * 11.5));
+  }
+  .byot-callout-in b {
+    font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));
+  }
+  .byot-callout-in span {
+    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11));
+  }
+}
