@@ -39,8 +39,8 @@ export const AGENTS: Agent[] = [
   // picture: the owner's ABCD logo (public/keynote/brand/, a path from the site's root), in place of the deck's robot render agent-abcd.jpg
   { key: "abcd", name: "ABCD", picture: "/keynote/brand/abcd-agent.png", px: [1024, 1024], fn: "CREDIT", does: "AI credit decisioning" },
   // name 28 t05 · function 29 t08 (the column that lists "Nivaaran") · does 41 t05
-  { key: "nivaaran", name: "Nivaaran", picture: null, px: null, fn: "COLLECTIONS", does: "AI-powered collections" },
+  { key: "nivaaran", name: "Nivaaran", picture: null, px: null, fn: "COLLECTIONS", does: "AI powered collection Agent" } /* owner, 18 Nov: his wording */,
 ]
 
 /** 28 t06 (an ellipsis character and a full stop, as the deck has it) */
-export const TAIL = "and many more…."
+export const TAIL = "and many more…" // owner, 18 Nov: grammar pass (the deck had "…." )

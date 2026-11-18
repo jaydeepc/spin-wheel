@@ -3,53 +3,59 @@
 /**
  * Slide 50 · "Martin trains new joiners in Tamil, because Prastuti builds his decks in their language."
  *
- * THE IDEA. It is the same room twice: what changes it is one sentence typed to Prastuti. So the
- * slide is played as that sentence and its answer.
+ * THE IDEA. One screen and one room. The screen is Martin's training deck; a light leaves it
+ * toward the room. In English the light fades before it reaches the people. He asks Prastuti in
+ * one sentence, the English slide dissolves line by line into the ACTUAL slide Prastuti made in
+ * Tamil, and now the light reaches the room.
  *
- *   challenge   the headline; Martin's card; step 1 and the room as it is today: lost
- *   turn        step 2: Martin's request types itself into its bubble, and Prastuti answers by
- *               building the deck in front of us: its Tamil title, then the three questions, tile
- *               by tile, under a light that passes over the page
- *   result      step 3: the SAME photograph arrives on the right, and a light wipes across it:
- *               the same room, the same people, now with their hands up
- *   scale       the banner: Martin is one of 2,469 colleagues, 25,289 decks; both numbers count
+ *   english    Martin (portrait, name, role, Micro LAP · Coimbatore) and his deck, in English
+ *   room       the deck turns to the room: two prints of real sessions arrive; the screen's light
+ *              stops short of them, the English lines go pale. The point is language, not people.
+ *   prastuti   alone with the deck again: his request types itself, and the English slide
+ *              dissolves, line by line, into the real Tamil slide
+ *   tamil      the real Tamil slide faces the room: two more prints, the light reaches them
+ *   scale      the banner: Martin is one of 2,469 colleagues, 25,289 decks; both numbers count
  *
- * The two classroom photographs are the deck's files, whole, at their own ratio and smaller than
- * their pixels. The deck's placeholders ("Martin's photo goes here", "Martin's quote goes here")
- * are not shown: the card carries an empty portrait frame with Martin's initial, tagged
- * "Photo to come", and no quote. Tamil is set whole (never split) in var(--kn-font-indic).
+ * REAL: the Tamil slide (a screenshot, whole, undistorted, in the kit's LaptopFrame) and the four
+ * classroom photographs (cropped only, smaller than their pixels, as prints with white borders).
+ * GENERATED: Martin's portrait, a stand-in until his own photograph arrives (GEN.md).
+ * DRAWN: the English slide: three phrases of the pack, everything else grey lines.
  */
 
 import gsap from 'gsap'
-import { anim, Card, Count, Headline, Pic, pic, Words, type SceneModule } from '../../kit'
-import { BANNER, DECK, FLAME, PERSON, PHOTO, PROMPT, STEPS } from './data'
+import { anim, Card, Count, gen, Headline, LaptopFrame, Pic, Words, type SceneModule } from '../../kit'
+import { BANNER, ENGLISH, FLAME, INTRO, MARK, PERSON, PROMPT, RESULT, ROOM, STEPS, TAMIL } from './data'
 import './scene.css'
 
-const Arrow = ({ className }: { className: string }) => (
-  <svg className={`s50-arrow ${className}`} viewBox="0 0 40 20" fill="none" aria-hidden="true">
-    <path d="M3 10h31" />
-    <path d="M27 3.5 34.5 10 27 16.5" />
-  </svg>
-)
+const PORTRAIT = gen(50, PERSON.photo)
 
-const StepHead = ({ i }: { i: number }) => {
+const Step = ({ i }: { i: number }) => {
   const s = STEPS[i]
   return (
-    <>
-      <div className="s50-step" data-step={s.key}>
-        <span className="s50-step-n">{s.n}</span>
-        <span className="s50-step-label">{s.label}</span>
-      </div>
+    <div className={`s50-top s50-top--${s.key}`} data-step={s.key}>
+      <span className="s50-step-n">{s.n}</span>
+      <span className="s50-step-label">{s.label}</span>
       <h2 className="s50-title">
         <Words text={s.title} />
       </h2>
-    </>
+    </div>
+  )
+}
+
+const Print = ({ which, className }: { which: keyof typeof ROOM; className: string }) => {
+  const p = ROOM[which]
+  return (
+    <figure className={`s50-print ${className}`}>
+      <div className="s50-print-in">
+        <Pic src={p.src} ratio={p.ratio} fit="contain" alt={p.alt} />
+      </div>
+    </figure>
   )
 }
 
 const scene: SceneModule = {
-  beats: ['challenge', 'turn', 'result', 'scale'],
-  preload: [pic(50, PHOTO.before), pic(50, PHOTO.after)],
+  beats: ['english', 'room', 'prastuti', 'tamil', 'scale'],
+  preload: [PORTRAIT, TAMIL.src, ROOM.back.src, ROOM.board.src, ROOM.screen.src, ROOM.group.src],
 
   Scene: ({ slide }) => (
     <div className="s50">
@@ -57,11 +63,9 @@ const scene: SceneModule = {
 
       {/* Martin */}
       <Card className="s50-person">
-        <div className="s50-portrait" aria-hidden="true">
-          <span className="s50-portrait-ring" />
-          <span className="s50-portrait-initial">{PERSON.name.charAt(0)}</span>
+        <div className="s50-portrait">
+          <img src={PORTRAIT} alt="" draggable={false} decoding="async" />
         </div>
-        <span className="s50-portrait-tag">{PERSON.photoTag}</span>
         <b className="s50-name">{PERSON.name}</b>
         <span className="s50-role">{PERSON.role}</span>
         <span className="s50-unit">{PERSON.unit}</span>
@@ -69,80 +73,88 @@ const scene: SceneModule = {
         <p className="s50-person-line">{PERSON.line}</p>
       </Card>
 
-      {/* 1 · the challenge */}
-      <section className="s50-col s50-col--1">
-        <StepHead i={0} />
-        <figure className="s50-photo s50-photo--before">
-          <Pic n={50} name={PHOTO.before} ratio={PHOTO.ratio} fit="contain" alt={PHOTO.beforeAlt} />
-        </figure>
-        <p className="s50-text">
-          <Words text={STEPS[0].text} bold={[...STEPS[0].bold]} />
-        </p>
-      </section>
+      {/* the line above the screen: what his training is, then the three steps in turn */}
+      <p className="s50-top s50-top--intro">
+        <Words text={INTRO.text} bold={[...INTRO.bold]} />
+      </p>
+      <Step i={0} />
+      <Step i={1} />
+      <Step i={2} />
 
-      <Arrow className="s50-arrow--1" />
+      {/* the light that leaves the screen for the room */}
+      <span className="s50-beam s50-beam--short" aria-hidden="true" />
+      <span className="s50-beam s50-beam--full" aria-hidden="true" />
+      <span className="s50-halo" aria-hidden="true" />
 
-      {/* 2 · the turn */}
-      <section className="s50-col s50-col--2">
-        <StepHead i={1} />
-        <div className="s50-bubble">
-          <span className="s50-bubble-tail" aria-hidden="true" />
-          <p className="s50-prompt" aria-label={PROMPT}>
-            {PROMPT.split(' ').map((word, w) => (
-              <span className="s50-pw" key={w} aria-hidden="true">
-                {Array.from(word).map((ch, c) => (
-                  <span className="s50-ch" key={c}>
-                    {ch}
-                  </span>
-                ))}
-              </span>
-            ))}
-          </p>
-        </div>
-        <div className="s50-deck">
-          <span className="s50-sheen" aria-hidden="true" />
-          <div className="s50-deck-head">
-            <span className="s50-deck-bar" aria-hidden="true" />
-            <span className="s50-deck-mask">
-              <span className="s50-deck-title" lang="ta">
-                {DECK.title}
-              </span>
-            </span>
-          </div>
-          <div className="s50-tiles">
-            {DECK.tiles.map((t) => (
-              <div className="s50-tile" data-tone={t.tone} key={t.label}>
-                <span className="s50-tile-ghost" aria-hidden="true" />
-                <span className="s50-tile-frame" aria-hidden="true" />
-                <span className="s50-tile-mask">
-                  <span className="s50-tile-word" lang="ta">
-                    {t.tamil}
-                  </span>
+      {/* his request */}
+      <div className="s50-bubble">
+        <span className="s50-bubble-tail" aria-hidden="true" />
+        <p className="s50-prompt" aria-label={PROMPT}>
+          {PROMPT.split(' ').map((word, w) => (
+            <span className="s50-pw" key={w} aria-hidden="true">
+              {Array.from(word).map((ch, c) => (
+                <span className="s50-ch" key={c}>
+                  {ch}
                 </span>
-                <span className="s50-tile-label">{t.label}</span>
-              </div>
-            ))}
-          </div>
-          <span className="s50-mark">{DECK.mark}</span>
-        </div>
-      </section>
-
-      <Arrow className="s50-arrow--2" />
-
-      {/* 3 · the result: the same room */}
-      <section className="s50-col s50-col--3">
-        <StepHead i={2} />
-        <figure className="s50-photo s50-photo--after">
-          <Pic className="s50-was" n={50} name={PHOTO.before} ratio={PHOTO.ratio} fit="contain" alt="" />
-          <Pic className="s50-now" n={50} name={PHOTO.after} ratio={PHOTO.ratio} fit="contain" alt={PHOTO.afterAlt} />
-          <span className="s50-edge" aria-hidden="true" />
-        </figure>
-        <p className="s50-text">
-          <Words text={STEPS[2].text} bold={[...STEPS[2].bold]} />
+              ))}
+            </span>
+          ))}
         </p>
-      </section>
+      </div>
 
-      {/* the banner */}
+      {/* the screen: the real Tamil slide, and over it the English slide it replaces */}
+      <div className="s50-desk">
+        <div className="s50-desk-in">
+          <LaptopFrame className="s50-laptop" src={TAMIL.src} alt={TAMIL.alt} ratio={TAMIL.ratio} width={43}>
+            <div className="s50-en" aria-hidden="true">
+              <div className="s50-band s50-band--head">
+                <span className="s50-band-bg" />
+                <div className="s50-band-in">
+                  <i className="s50-en-bar" />
+                  <i className="s50-en-line s50-en-line--title" />
+                  <i className="s50-en-line s50-en-line--sub" />
+                </div>
+              </div>
+              {ENGLISH.map((label, i) => (
+                <div className={`s50-band s50-band--row s50-band--r${i + 1}`} key={label}>
+                  <span className="s50-band-bg" />
+                  <div className="s50-band-in">
+                    <i className="s50-en-dot" />
+                    <b className="s50-en-word">{label}</b>
+                    <i className="s50-en-line s50-en-line--a" />
+                    <i className="s50-en-line s50-en-line--b" />
+                  </div>
+                </div>
+              ))}
+              <div className="s50-band s50-band--foot">
+                <span className="s50-band-bg" />
+                <div className="s50-band-in">
+                  <i className="s50-en-line s50-en-line--foot" />
+                </div>
+              </div>
+              <span className="s50-sheen" />
+            </div>
+          </LaptopFrame>
+          <span className="s50-mark">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M10 1.5l1.9 5.1 5.1 1.9-5.1 1.9L10 15.5l-1.9-5.1L3 8.5l5.1-1.9z" />
+              <path d="M16 13.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" />
+            </svg>
+            {MARK}
+          </span>
+        </div>
+      </div>
+
+      {/* the room: prints of real sessions */}
+      <Print which="back" className="s50-print--b1" />
+      <Print which="board" className="s50-print--b2" />
+      <Print which="screen" className="s50-print--a1" />
+      <Print which="group" className="s50-print--a2" />
+
+      {/* under the screen: the result's line, then the banner */}
+      <p className="s50-result">
+        <Words text={RESULT.text} bold={[...RESULT.bold]} />
+      </p>
       <div className="s50-banner">
         <p>
           {BANNER.a}
@@ -167,132 +179,122 @@ const scene: SceneModule = {
     const a = anim(ctx, tl)
     const fx = ctx.backdrop.fx
     const calm = ctx.reduced
-    const col = (i: number, sel: string) => ctx.$$(`.s50-col--${i} ${sel}`)
 
-    /**
-     * A step's head: its number pops, its label and its title follow. Steps 2 and 3 are on the
-     * page from the first rest, quiet (the road ahead); a step's own beat lights it.
-     */
-    const QUIET = 0.34
-    const head = (i: number, t: number) => {
-      const n = col(i, '.s50-step-n')
-      const label = col(i, '.s50-step-label')
-      if (i === 1) {
-        a.pop(n, t)
-        a.rise(label, t + 0.08, { y: 0, x: -1.2 })
-      } else {
-        tl.to(n, { autoAlpha: 1, scale: calm ? 1 : 1.22, duration: 0.2, ease: 'power2.out' }, t)
-        if (!calm) tl.to(n, { scale: 1, duration: 0.5, ease: ease.snap }, t + 0.2)
-        tl.to(label, { autoAlpha: 1, duration: 0.4 }, t + 0.05)
-      }
-      a.words(col(i, '.s50-title'), t + 0.18, { stagger: 0.035 })
+    /** The screen stands in the middle when Martin is alone with it, and steps left to face the room. */
+    const desk = ctx.$('.s50-desk')
+    const MID = calm ? 0 : U * 13.2
+    gsap.set(desk, { x: MID })
+    const travel = (x: number, at: number) => {
+      if (!calm) tl.to(desk, { x, duration: 1.0, ease: ease.inOut }, at)
     }
-    const ahead = [2, 3].flatMap((i) => [...col(i, '.s50-step-n'), ...col(i, '.s50-step-label')])
-    gsap.set(ahead, { autoAlpha: 0 })
 
-    /* ---------------------------------------------------------------- challenge */
+    /** One of the lines above the screen: its number lands, its label and its title follow. */
+    const top = (key: string, at: number) => {
+      const q = (s: string) => ctx.$$(`.s50-top--${key} ${s}`)
+      a.pop(q('.s50-step-n'), at)
+      a.rise(q('.s50-step-label'), at + 0.08, { y: 0, x: -1.2 })
+      a.words(q('.s50-title'), at + 0.16, { stagger: 0.035 })
+    }
+    const untop = (key: string, at: number) => a.leave(`.s50-top--${key}`, at, { y: 0.7 })
+
+    /* ------------------------------------------------------------------ english */
     a.words('.kn-h', 0.1)
     a.rise('.s50-person', 0.5, { y: 2.2, duration: 0.9 })
-    a.pop('.s50-portrait', 0.8, { from: 0.8 })
-    a.fade('.s50-portrait-tag', 1.2)
+    a.pop('.s50-portrait', 0.8, { from: 0.82 })
     a.rise('.s50-name, .s50-role, .s50-unit', 1.0, { y: 1, stagger: 0.09 })
     a.rule('.s50-person-rule', 1.35, { from: 'center', duration: 0.6 })
     a.rise('.s50-person-line', 1.45, { y: 1 })
-    head(1, 1.2)
-    a.rise('.s50-photo--before', 1.55, { y: 2, scale: 0.97, duration: 0.9 })
-    a.words(col(1, '.s50-text'), 2.0, { stagger: 0.025, duration: 0.55 })
-    tl.to(ahead, { autoAlpha: QUIET, duration: 0.6, stagger: 0.07, ease: 'power1.out' }, 1.9)
-    tl.to(fx, { glow: 0.3, focusX: -0.32, focusY: 0.15, warm: -0.15, duration: 1.6, ease: ease.inOut }, 0.6)
-    tl.addLabel('challenge')
+    a.rise('.s50-desk-in', 0.9, { y: 2.4, scale: 0.97, duration: 1.0 })
+    a.rise('.s50-band-in', 1.5, { y: 0.8, stagger: 0.1, duration: 0.6 })
+    a.words('.s50-top--intro', 1.9, { stagger: 0.03, duration: 0.6 })
+    tl.to(fx, { glow: 0.3, focusX: 0.2, focusY: 0.15, duration: 1.6, ease: ease.inOut }, 0.6)
+    tl.addLabel('english')
 
-    /* --------------------------------------------------------------------- turn */
+    /* --------------------------------------------------------------------- room */
     const t2 = tl.duration() + 0.05
-    a.draw('.s50-arrow--1 path', t2, { duration: 0.45, stagger: 0.12 })
-    head(2, t2 + 0.15)
-    tl.to(fx, { focusX: 0.22, focusY: 0.2, glow: 0.42, warm: 0.3, duration: 1.4, ease: ease.inOut }, t2)
+    untop('intro', t2)
+    travel(0, t2)
+    top('challenge', t2 + 0.3)
+    a.rise('.s50-print--b1', t2 + 0.7, { y: 2.2, scale: 0.96, duration: 0.9 })
+    a.rise('.s50-print--b2', t2 + 0.95, { y: 2.2, scale: 0.96, duration: 0.9 })
+    // the light leaves the screen and gives out before the room
+    const short = ctx.$('.s50-beam--short')
+    gsap.set(short, calm ? { autoAlpha: 0 } : { autoAlpha: 0, scaleX: 0.2, transformOrigin: '0% 50%' })
+    tl.to(short, { autoAlpha: 1, scaleX: 1, duration: 1.3, ease: ease.glide }, t2 + 1.3)
+    // and the English lines go pale
+    tl.to(ctx.$$('.s50-en-word'), { color: '#b3bccc', duration: 0.9, ease: 'power1.inOut' }, t2 + 1.5)
+    tl.to(ctx.$$('.s50-en-dot, .s50-en-bar'), { backgroundColor: '#ccd3df', duration: 0.9, ease: 'power1.inOut' }, t2 + 1.5)
+    tl.to(fx, { focusX: 0.3, glow: 0.18, warm: -0.3, duration: 1.6, ease: ease.inOut }, t2)
+    tl.addLabel('room')
 
-    // the request: its bubble opens from its tail, and the sentence types itself
+    /* ----------------------------------------------------------------- prastuti */
+    const t3 = tl.duration() + 0.05
+    untop('challenge', t3)
+    tl.to(short, { autoAlpha: 0, duration: 0.4, ease: 'power1.in' }, t3)
+    a.leave('.s50-print--b2', t3, { y: 1.2 })
+    a.leave('.s50-print--b1', t3 + 0.08, { y: 1.2 })
+    travel(MID, t3 + 0.15)
+    top('turn', t3 + 0.45)
+    tl.to(fx, { focusX: 0.2, glow: 0.4, warm: 0.3, duration: 1.4, ease: ease.inOut }, t3)
+
+    // the request: its bubble opens from Martin's side, and the sentence types itself
     const bubble = ctx.$('.s50-bubble')
     const chars = ctx.$$('.s50-ch')
-    gsap.set(bubble, calm ? { autoAlpha: 0 } : { autoAlpha: 0, scale: 0.86, y: U * 0.6, transformOrigin: '12% 100%' })
+    gsap.set(bubble, calm ? { autoAlpha: 0 } : { autoAlpha: 0, scale: 0.86, x: -U * 0.8, transformOrigin: '0% 50%' })
     gsap.set(chars, { autoAlpha: 0 })
-    tl.to(bubble, { autoAlpha: 1, scale: 1, y: 0, duration: 0.55, ease: calm ? 'power1.out' : ease.snap }, t2 + 0.55)
-    const typeAt = t2 + 0.95
+    tl.to(bubble, { autoAlpha: 1, scale: 1, x: 0, duration: 0.55, ease: calm ? 'power1.out' : ease.snap }, t3 + 1.05)
+    const typeAt = t3 + 1.45
     const perChar = calm ? 0 : 0.032
     tl.to(chars, { autoAlpha: 1, duration: calm ? 0.4 : 0.02, stagger: perChar, ease: 'none' }, typeAt)
-    const typed = typeAt + chars.length * perChar + 0.25
+    const typed = typeAt + chars.length * perChar + 0.3
 
-    // the answer: Prastuti builds the deck
-    const deck = ctx.$('.s50-deck')
+    // the answer: a light passes over the page and the English slide gives way, line by line,
+    // to the slide Prastuti really made
     const sheen = ctx.$('.s50-sheen')
-    const tiles = ctx.$$('.s50-tile')
-    gsap.set(deck, calm ? { autoAlpha: 0 } : { autoAlpha: 0, y: U * 2, scale: 0.97, transformOrigin: '50% 0%' })
-    tl.to(deck, { autoAlpha: 1, y: 0, scale: 1, duration: 0.8, ease: ease.out }, typed)
-    // first the page as it is being made: the three places are there, empty
-    const ghosts = ctx.$$('.s50-tile-ghost')
-    gsap.set(ghosts, { autoAlpha: 0 })
-    tl.to(ghosts, { autoAlpha: 1, duration: 0.4, stagger: 0.08 }, typed + 0.25)
-    if (!calm) {
-      gsap.set(sheen, { xPercent: -130, autoAlpha: 0 })
-      tl.to(sheen, { autoAlpha: 1, duration: 0.2 }, typed + 0.45)
-      tl.to(sheen, { xPercent: 330, duration: 1.9, ease: 'power1.inOut' }, typed + 0.45)
-      tl.to(sheen, { autoAlpha: 0, duration: 0.3 }, typed + 2.05)
-    } else {
-      gsap.set(sheen, { autoAlpha: 0 })
-    }
-    // the title, in Tamil, whole
-    a.rule('.s50-deck-bar', typed + 0.55, { from: 'top', duration: 0.45 })
-    const title = ctx.$('.s50-deck-title')
-    gsap.set(title, calm ? { autoAlpha: 0 } : { yPercent: 115 })
-    tl.to(title, calm ? { autoAlpha: 1, duration: 0.5 } : { yPercent: 0, duration: 0.75, ease: ease.out }, typed + 0.7)
-    // the three questions, one after another
-    tiles.forEach((tile, i) => {
-      const t = typed + 1.15 + i * 0.36
-      const q = (s: string) => Array.from(tile.querySelectorAll(s))
-      gsap.set(q('.s50-tile-frame'), calm ? { autoAlpha: 0 } : { autoAlpha: 0, scale: 0.9 })
-      tl.to(q('.s50-tile-frame'), { autoAlpha: 1, scale: 1, duration: 0.55, ease: calm ? 'power1.out' : ease.snap }, t)
-      tl.to(q('.s50-tile-ghost'), { autoAlpha: 0, duration: 0.3 }, t + 0.1)
-      gsap.set(q('.s50-tile-word'), calm ? { autoAlpha: 0 } : { yPercent: 115 })
-      tl.to(q('.s50-tile-word'), calm ? { autoAlpha: 1, duration: 0.5 } : { yPercent: 0, duration: 0.65, ease: ease.out }, t + 0.12)
-      gsap.set(q('.s50-tile-label'), { autoAlpha: 0, y: calm ? 0 : U * 0.5 })
-      tl.to(q('.s50-tile-label'), { autoAlpha: 1, y: 0, duration: 0.5 }, t + 0.3)
-    })
-    a.fade('.s50-mark', typed + 1.15 + tiles.length * 0.36 + 0.25)
-    tl.addLabel('turn')
-
-    /* ------------------------------------------------------------------- result */
-    const t3 = tl.duration() + 0.05
-    a.draw('.s50-arrow--2 path', t3, { duration: 0.45, stagger: 0.12 })
-    head(3, t3 + 0.15)
-    tl.to(fx, { focusX: 0.72, focusY: 0.12, glow: 0.5, warm: 0.5, duration: 1.6, ease: ease.inOut }, t3)
-    // the same room arrives as it was …
-    a.rise('.s50-photo--after', t3 + 0.5, { y: 2, scale: 0.97, duration: 0.8 })
-    // … and one pass of light turns it into the room it became
-    const now = ctx.$('.s50-now')
-    const edge = ctx.$('.s50-edge')
-    const frame = ctx.loc(ctx.$('.s50-photo--after'))
-    const wipeAt = t3 + 1.45
     if (calm) {
-      gsap.set(now, { autoAlpha: 0 })
-      gsap.set(edge, { autoAlpha: 0 })
-      tl.to(now, { autoAlpha: 1, duration: 0.9, ease: 'power1.inOut' }, wipeAt)
+      gsap.set(sheen, { autoAlpha: 0 })
     } else {
-      gsap.set(now, { clipPath: 'inset(0% 100% 0% 0%)' })
-      gsap.set(edge, { autoAlpha: 0, x: 0 })
-      tl.to(now, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'power2.inOut' }, wipeAt)
-      tl.to(edge, { x: frame.w, duration: 1.5, ease: 'power2.inOut' }, wipeAt)
-      tl.to(edge, { autoAlpha: 1, duration: 0.25 }, wipeAt)
-      tl.to(edge, { autoAlpha: 0, duration: 0.3 }, wipeAt + 1.2)
+      gsap.set(sheen, { yPercent: -120, autoAlpha: 0 })
+      tl.to(sheen, { autoAlpha: 1, duration: 0.2 }, typed)
+      tl.to(sheen, { yPercent: 420, duration: 2.3, ease: 'power1.inOut' }, typed)
+      tl.to(sheen, { autoAlpha: 0, duration: 0.3 }, typed + 2.0)
     }
-    a.words(col(3, '.s50-text'), wipeAt + 0.9, { stagger: 0.025, duration: 0.55 })
-    tl.addLabel('result')
+    ctx.$$('.s50-band').forEach((band, i) => {
+      const t = typed + 0.3 + i * 0.34
+      const inner = Array.from(band.querySelectorAll('.s50-band-in'))
+      const bg = Array.from(band.querySelectorAll('.s50-band-bg'))
+      tl.to(inner, { autoAlpha: 0, x: calm ? 0 : U * 0.7, duration: 0.4, ease: 'power2.in' }, t)
+      tl.to(bg, { autoAlpha: 0, duration: 0.6, ease: 'power1.inOut' }, t + 0.25)
+    })
+    a.pop('.s50-mark', typed + 0.3 + 5 * 0.34 + 0.55, { from: 0.7 })
+    tl.addLabel('prastuti')
+
+    /* -------------------------------------------------------------------- tamil */
+    const t4 = tl.duration() + 0.05
+    untop('turn', t4)
+    a.leave('.s50-bubble', t4, { y: 0.9 })
+    travel(0, t4 + 0.1)
+    top('result', t4 + 0.4)
+    a.rise('.s50-print--a1', t4 + 0.8, { y: 2.2, scale: 0.96, duration: 0.9 })
+    a.rise('.s50-print--a2', t4 + 1.05, { y: 2.2, scale: 0.96, duration: 0.9 })
+    // now the light crosses the whole way and the room is lit
+    const full = ctx.$('.s50-beam--full')
+    const halo = ctx.$('.s50-halo')
+    gsap.set(full, calm ? { autoAlpha: 0 } : { autoAlpha: 0, scaleX: 0.2, transformOrigin: '0% 50%' })
+    gsap.set(halo, { autoAlpha: 0 })
+    tl.to(full, { autoAlpha: 1, scaleX: 1, duration: 1.3, ease: ease.glide }, t4 + 1.3)
+    tl.to(halo, { autoAlpha: 1, duration: 1.2, ease: 'power1.out' }, t4 + 1.9)
+    a.words('.s50-result', t4 + 2.0, { stagger: 0.03, duration: 0.6 })
+    tl.to(fx, { focusX: 0.62, focusY: 0.1, glow: 0.5, warm: 0.55, duration: 1.8, ease: ease.inOut }, t4)
+    tl.addLabel('tamil')
 
     /* -------------------------------------------------------------------- scale */
-    const t4 = tl.duration() + 0.05
-    a.rise('.s50-banner', t4, { y: 1.8, duration: 0.8 })
-    a.count('.s50-n1', t4 + 0.25, { duration: 1.3 })
-    a.count('.s50-n2', t4 + 0.45, { duration: 1.6 })
-    tl.to(fx, { focusX: 0.25, focusY: 0.62, glow: 0.46, warm: 0.6, duration: 1.6, ease: ease.inOut }, t4)
+    const t5 = tl.duration() + 0.05
+    a.leave('.s50-result', t5, { y: 0.7 })
+    a.rise('.s50-banner', t5 + 0.25, { y: 1.8, duration: 0.8 })
+    a.count('.s50-n1', t5 + 0.5, { duration: 1.3 })
+    a.count('.s50-n2', t5 + 0.7, { duration: 1.6 })
+    tl.to(fx, { focusX: 0.25, focusY: 0.62, glow: 0.46, warm: 0.6, duration: 1.6, ease: ease.inOut }, t5)
     tl.addLabel('scale')
     return tl
   },

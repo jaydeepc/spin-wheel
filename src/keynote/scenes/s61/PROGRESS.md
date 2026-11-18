@@ -17,3 +17,9 @@ Decisions
 - Mesh places were relaxed once offline and frozen in people/data.ts (XYZ, LINKS).
 - On 62 and 63 the first card stands in the middle and slides to its column on the next beat (no half-empty rest).
 - 63 has two beats (patent, stage): the talk and the summit photographs arrive on one press.
+
+Owner's changes (MD round 10)
+- 62: the ICON card's last line is the date only, "20–23 Dec 2026" ("Gauhati University, Guwahati · " removed). The NeurIPS line is a venue, unchanged.
+- 64: two more AI teammates in the mesh, ABCD (the owner's logo, whole, on white) and Nivaaran (a copy of slide 28's emblem,
+  `_shared/people/emblem.tsx`). Five agents now come up left to right (TEAMMATES in people/data.ts). r2c4 and r3c1 stepped aside
+  by about one --u; slide 61 shows two more flame rings. No names on 64, as before.

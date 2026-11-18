@@ -4,8 +4,12 @@
  * t65, t69, t75) and the authors' note (t01) are NOT here and are never shown.
  *
  * `name` is the Bold navy run of a pill, `note` the grey Regular run after it, `star` the flame
- * star the deck prints in front of some agents (the deck gives it no legend).
+ * star the deck prints in front of some agents. The deck gives it no legend: LEGEND is the
+ * presenter's own, asked for after the build, and so is the star on EVERYDAY AI.
  */
+
+/** The words after the star in the legend (the presenter's, exactly). */
+export const LEGEND = 'marked cases will be covered in Tracks'
 
 export interface Agent {
   name: string
@@ -142,9 +146,10 @@ export const SUPPORT: SupportFn[] = [
 ]
 
 /** The peach box at the end of the bottom row: two small headings, each with its pills. */
-export const BASE: { label: string; rows: Agent[][] }[] = [
+export const BASE: { label: string; star?: boolean; rows: Agent[][] }[] = [
   {
     label: 'EVERYDAY AI', // t68
+    star: true, // the presenter's: Everyday AI is covered in Tracks too
     rows: [
       [{ name: 'ARYA' }, { name: 'Piramal Mind' }, { name: 'Prastuti' }, { name: 'BYOT' }], // t70 to t73
       [{ name: 'BYOA' }], // t74

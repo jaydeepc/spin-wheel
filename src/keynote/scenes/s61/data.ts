@@ -23,7 +23,7 @@ export const PAPERS: CardText[] = [
     tag: 'RESEARCH PAPER · ICON 2026', // t02
     title: 'Toxicity Detection in Romanized Indic Languages', // t03
     who: 'Annanya Agrawal · Parag Bajaj · Akshaay Kumar', // t04
-    where: 'Gauhati University, Guwahati · 20–23 Dec 2026', // t06
+    where: '20–23 Dec 2026', // t06, the date only (the owner: no university)
   },
   {
     id: 'neurips',

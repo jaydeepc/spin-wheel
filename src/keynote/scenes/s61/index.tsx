@@ -17,7 +17,8 @@
  *   64  mesh       the cards let go of their pictures: the receipt and the two photographs
  *                  travel to their places, the papers and the group photographs come back in,
  *                  and thirty-three people stream in from every side. The links draw.
- *       agents     the three AI teammates come up at the hubs, flame-ringed; their links light
+ *       agents     the five AI teammates (the deck's three, ABCD and Nivaaran) come up one after
+ *                  another across the mesh, flame-ringed; their links light
  *                  and light begins to run along every link.
  *       ourteam    one ring of light goes out through the whole mesh: Our people + Our AI
  *                  teammates = Our Team.
@@ -30,7 +31,7 @@
 import gsap from 'gsap'
 import type { ReactNode } from 'react'
 import { anim, Count, createSceneCanvas, Headline, slide as slideOf, spanBeats, type SceneCanvas, type SceneModule } from '../../kit'
-import { AGENTS, PEOPLE, PRINTS } from '../_shared/people/data'
+import { PEOPLE, PRINTS, TEAMMATES } from '../_shared/people/data'
 import { createMesh, meshGL } from '../_shared/people/mesh'
 import { MeshNodes, PEOPLE_PRELOAD, Slot } from '../_shared/people/nodes'
 import '../_shared/people/people.css'
@@ -244,10 +245,10 @@ const scene: SceneModule = {
     tl.to(fx, { glow: 0.22, focusX: 0, focusY: 0, energy: 0.25, duration: 2.4 }, t)
     tl.addLabel('mesh')
 
-    /* ---- 64 · agents: the AI teammates come up at the hubs ---- */
+    /* ---- 64 · agents: the AI teammates come up, from the left to the right ---- */
     t = now()
-    AGENTS.forEach((d, i) => {
-      const at = t + 0.1 + i * 0.38
+    TEAMMATES.forEach((d, i) => {
+      const at = t + 0.1 + i * 0.26
       const s = N[d.id].s
       tl.to(s, { a: 1, duration: 0.3, ease: 'power1.out' }, at)
       tl.to(s, { k: 1, duration: calm ? 0.01 : 1.0, ease: ctx.ease.out }, at)

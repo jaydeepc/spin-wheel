@@ -308,6 +308,35 @@
   letter-spacing: 0.24em;
   visibility: hidden;
 }
+/* a heading with the star: the star sits on the line of the letters */
+.s29-base .s29-base-k {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.4);
+}
+.s29-base-k .s29-star {
+  margin-left: 0;
+}
+
+/* ---- what the star means: beside the headline, at the right edge of the safe area ---- */
+.s29-legend {
+  position: absolute;
+  right: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 8.55);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.4);
+  font-size: calc(var(--u) * 1);
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--kn-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s29-legend .s29-star {
+  margin-left: 0;
+}
 .s29-base .s29-pill {
   padding: 0 calc(var(--u) * 0.7);
 }

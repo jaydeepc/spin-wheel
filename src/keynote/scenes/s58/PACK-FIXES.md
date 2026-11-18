@@ -1,0 +1,3 @@
+# Slide 58 · pack fixes
+
+- **The pack for slide 58 is superseded by the owner's picture of 18 Nov.** The owner replaced the whole slide (headline, breadcrumb, content): the earlier content ("Our own GPU platform", "Inside our GPU platform" and its four steps) is gone. `pack/58/` (notes.md, text.json, data.json, vector/) and `public/keynote/pages/58.jpg` still show the OLD slide and must not be used for this scene; every word in `data.ts` and the row for 58 in `deck.ts` come from the picture. `check_deck.mjs` will report slide 58's headline and breadcrumb as different from the pack until the pack is rebuilt from the new deck: that difference is intended.

@@ -32,6 +32,12 @@ export interface NodeDef {
   paper?: boolean
   /** Not clipped to a circle (the PIA badge is a cut-out with its own ring). */
   whole?: boolean
+  /** The picture's path from the site's root, when it is not a file of public/keynote/src/NN/ (the owner's ABCD logo). */
+  src?: string
+  /** A logo: shown WHOLE inside the circle on a white ground, with a margin (never cropped, stretched or recoloured). */
+  logo?: boolean
+  /** No picture in the deck: a drawn emblem (emblem.tsx) fills the circle. */
+  emblem?: 'nivaaran'
 }
 
 const P = 4.9 // a face in the mesh, in --u
@@ -105,7 +111,21 @@ export const PRINTS: NodeDef[] = [
   { id: 'team3', kind: 'print', n: 64, file: 'photo-team-3.jpg', px: [970, 528], w: 13.5, mw: 13.5 },
 ]
 
-export const ALL: NodeDef[] = [...PEOPLE, ...AGENTS, ...PRINTS]
+/**
+ * Two more AI teammates, asked for by the owner: the ABCD agent (the owner's logo, public/keynote/brand/)
+ * and Nivaaran (no picture in the deck: the emblem slide 28 designed for it, see emblem.tsx). Same
+ * family as the three above. (They stand LAST in ALL, so every other node keeps its index and with
+ * it the way it flies in and idles.)
+ */
+export const AGENTS_MORE: NodeDef[] = [
+  { id: 'abcd', kind: 'ai', n: 64, file: '', src: '/keynote/brand/abcd-agent-512.png', px: [512, 512], w: 5.6, mw: 5.6, logo: true },
+  { id: 'nivaaran', kind: 'ai', n: 64, file: '', px: [200, 200], w: 5.6, mw: 5.6, emblem: 'nivaaran' },
+]
+const byId = (id: string) => [...AGENTS, ...AGENTS_MORE].find((d) => d.id === id)!
+/** The five AI teammates in the order they come up: across the mesh, from the left to the right. */
+export const TEAMMATES: NodeDef[] = ['nivaaran', 'ai1', 'pia', 'ai2', 'abcd'].map(byId)
+
+export const ALL: NodeDef[] = [...PEOPLE, ...AGENTS, ...PRINTS, ...AGENTS_MORE]
 
 /** The mesh's centre on the stage, in --u. */
 export const CENTRE: [number, number] = [50, 26.8]
@@ -113,7 +133,9 @@ export const CENTRE: [number, number] = [50, 26.8]
 /**
  * Where every node rests in the mesh: [u from the left, v from the top, depth], all in --u.
  * Laid out once by a relaxation (no two overlap, the three AI teammates are the hubs and sit
- * nearest the room, the prints sit behind) and frozen here.
+ * nearest the room, the prints sit behind) and frozen here. ABCD and Nivaaran were placed later, in
+ * the two open places that balance the three hubs (upper right, lower left); r2c4 and r3c1 stepped
+ * aside by about one --u to make room, nobody else moved.
  */
 export const XYZ: Record<string, [number, number, number]> = {
   r1c1: [45.07, 12.32, 2.2],
@@ -126,11 +148,11 @@ export const XYZ: Record<string, [number, number, number]> = {
   r2c1: [29.47, 14.54, -5.2],
   r2c2: [63.6, 38.32, -6.4],
   r2c3: [57.47, 18.39, -5.6],
-  r2c4: [86.93, 11.05, -2.7],
+  r2c4: [86.87, 9.89, -2.7],
   r2c5: [76.3, 20.14, -6.1],
   r2c6: [37.54, 13.08, -1.0],
   r2c7: [36.9, 33.96, 2.0],
-  r3c1: [24.88, 29.63, -3.9],
+  r3c1: [24.62, 29.1, -3.9],
   r3c2: [62.55, 25.1, -3.1],
   r3c4: [52.54, 11.05, 3.5],
   r3c5: [19.91, 23.89, -5.1],
@@ -152,6 +174,8 @@ export const XYZ: Record<string, [number, number, number]> = {
   ai1: [34.69, 20.43, 6.0],
   ai2: [67.31, 31.31, 6.0],
   pia: [47.64, 25.54, 6.0],
+  abcd: [84.34, 17.16, 6.0],
+  nivaaran: [29.73, 34.26, 6.0],
   authors: [18.11, 37.45, -8.3],
   paper1: [9.84, 29.2, -9.4],
   arpit: [80.31, 13.67, -5.0],
@@ -178,6 +202,9 @@ export const LINKS: [string, string][] = [
   ['r4c3', 'r4c7'], ['r4c3', 'team3'], ['r4c6', 'paper2'], ['r4c7', 'pia'], ['r4c8', 'ai1'], ['r5c1', 'authors'],
   ['r5c1', 'paper1'], ['r5c2', 'ai2'], ['r5c4', 'paper2'], ['r5c5', 'ai2'], ['r5c6', 'pia'], ['authors', 'paper1'],
   ['arpit', 'paper2'], ['paper2', 'team2'], ['delegates', 'team2'],
+  // ABCD and Nivaaran: each to the four people around it
+  ['r2c4', 'abcd'], ['r4c6', 'abcd'], ['r5c4', 'abcd'], ['r2c5', 'abcd'],
+  ['r3c1', 'nivaaran'], ['r4c2', 'nivaaran'], ['r2c7', 'nivaaran'], ['r1c4', 'nivaaran'],
 ]
 
 /**

@@ -1,6 +1,10 @@
 import type { CSSProperties } from 'react'
 import { pic } from '../../../kit'
 import { ALL, RECEIPT_MASK, type NodeDef } from './data'
+import { NivaaranEmblem } from './emblem'
+
+/** A node's picture: the deck's own file, or a path from the site's root. */
+const srcOf = (d: NodeDef) => d.src ?? pic(d.n, d.file)
 
 /** The CSS width of a node at its largest: its size in --u, never more than the picture's own pixels. */
 export function nodeWidth(d: NodeDef): string {
@@ -15,7 +19,21 @@ export function Slot({ id, className = '' }: { id: string; className?: string })
 }
 
 function Face({ d }: { d: NodeDef }) {
-  const src = pic(d.n, d.file)
+  if (d.emblem) {
+    return (
+      <span className="people-face people-face--emblem">
+        <NivaaranEmblem />
+      </span>
+    )
+  }
+  const src = srcOf(d)
+  if (d.logo) {
+    return (
+      <span className="people-face people-face--logo">
+        <img src={src} alt="" draggable={false} decoding="async" />
+      </span>
+    )
+  }
   if (d.circle) {
     // the face's own circle inside a larger cut-out: placed by its pixels, never resampled unevenly
     const [l, t, dia] = d.circle
@@ -52,7 +70,7 @@ function Node({ d }: { d: NodeDef }) {
           </>
         ) : null}
         <span className="people-print">
-          <img src={pic(d.n, d.file)} alt="" draggable={false} decoding="async" />
+          <img src={srcOf(d)} alt="" draggable={false} decoding="async" />
           {d.id === 'receipt' ? (
             <i
               className="people-mask"
@@ -87,4 +105,4 @@ export function MeshNodes() {
   )
 }
 
-export const PEOPLE_PRELOAD: string[] = ALL.map((d) => pic(d.n, d.file))
+export const PEOPLE_PRELOAD: string[] = ALL.filter((d) => !d.emblem).map(srcOf)

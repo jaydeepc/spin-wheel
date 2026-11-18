@@ -57,6 +57,50 @@
     0 0 0 calc(var(--u) * 0.38) var(--kn-flame);
   background: #fff;
 }
+/* a logo (ABCD): the whole mark on a white ground. The bubble's tail reaches 60% of the file's
+   width from its centre, so the file is drawn at 80% of the circle and nothing of it is cut. */
+.people-node--ai .people-face--logo {
+  background: #fff;
+}
+.people-face--logo img {
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+/* Nivaaran: the emblem of slide 28 (emblem.tsx), which brings its own cream ground */
+.people-face--emblem {
+  background: #fff8f3;
+}
+.people-emblem {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.people-em-n {
+  font-family: var(--kn-font);
+  font-size: 74px;
+  font-weight: 700;
+  fill: #fff;
+}
+.people-em-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: people-listen 2.6s ease-in-out infinite;
+}
+@keyframes people-listen {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.62);
+  }
+}
 .people-orbit {
   position: absolute;
   inset: calc(var(--u) * -0.95);

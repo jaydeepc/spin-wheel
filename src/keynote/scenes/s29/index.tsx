@@ -21,6 +21,9 @@
  *                the functions around lending rise underneath, the Everyday AI / AI
  *                infrastructure box last
  *
+ * The star's legend (LEGEND, the presenter's words) sits beside the headline at the right; it
+ * arrives with the first star and stays. EVERYDAY AI's heading carries the star too.
+ *
  * No canvas: this is pictures and type, moved with GSAP. The five scenes and the three round
  * thumbnails are the deck's own art, as they are (never stretched; the panel covers the lower
  * part of each picture exactly as the deck's does).
@@ -29,7 +32,7 @@
 import gsap from 'gsap'
 import type { CSSProperties } from 'react'
 import { anim, Headline, Kicker, Pic, pic, Words, type SceneModule } from '../../kit'
-import { BASE, LENDING, SUPPORT, type Agent } from './data'
+import { BASE, LEGEND, LENDING, SUPPORT, type Agent } from './data'
 import './scene.css'
 
 /* The row, in --u (the stylesheet has the same numbers). */
@@ -80,6 +83,12 @@ const scene: SceneModule = {
   Scene: ({ slide }) => (
     <div className="s29">
       <Headline text={slide.title} flame={['from Sales to Collections']} />
+
+      {/* what the star means (the presenter's words): beside the headline, at the right */}
+      <p className="s29-legend">
+        <Star />
+        <span>{LEGEND}</span>
+      </p>
 
       {/* the line "from Sales to Collections": five stops, a light that runs along it */}
       <div className="s29-track" aria-hidden="true">
@@ -140,6 +149,7 @@ const scene: SceneModule = {
           {BASE.map((b) => (
             <div className="s29-base-part" key={b.label}>
               <Kicker tone="flame" block className="s29-base-k">
+                {b.star ? <Star /> : null}
                 {b.label}
               </Kicker>
               <div className="s29-pills s29-pills--left">
@@ -263,6 +273,11 @@ const scene: SceneModule = {
       return t + 0.7 + pills.length * 0.055 + 0.42 + 0.7
     }
 
+    // what the star means: it arrives, quietly, with the first star, and stays
+    const firstStar = 2.5 + 0.7 + 0.42
+    a.fade('.s29-legend', firstStar, { duration: 0.6 })
+    tl.to(ctx.$('.s29-legend .s29-star'), { scale: 1, rotation: 0, duration: 0.55, ease: ease.snap }, firstStar)
+
     let t = 2.5
     LENDING.forEach((f, i) => {
       t = light(i, t)
@@ -287,6 +302,8 @@ const scene: SceneModule = {
     sups.forEach((s, i) => a.rise(Array.from(s.querySelectorAll('.s29-pill')), t + 1.05 + i * 0.12, { y: 0.8, stagger: 0.045, duration: 0.55 }))
     a.rise('.s29-base', t + 1.15, { y: 2.4 })
     a.rise('.s29-base-k, .s29-base .s29-pill', t + 1.5, { y: 0.7, stagger: 0.04, duration: 0.55 })
+    // Everyday AI takes its star as the agents did: a moment after its heading has arrived
+    tl.to(ctx.$$('.s29-base-k .s29-star'), { scale: 1, rotation: 0, duration: 0.55, ease: ease.snap }, t + 1.5 + 0.42)
     tl.addLabel('support', t + 2.4)
 
     return tl

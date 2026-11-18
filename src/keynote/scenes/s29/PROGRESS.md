@@ -16,9 +16,12 @@ cheap low ones too. Shots of this pass: scratchpad `keynote/s2/pai2/fix/`.
     the walking position with the first light (index.tsx: SHIFT).
   - waiting functions: a cool navy veil (.s29-veil) instead of opacity 0.46 (no milky pink).
   - the italic line and the pills start with the panel (t+0.55 / t+0.7): no blank white sheet.
-- Not changed: LIT stays 1.28 (the lit picture is 1.33x its pixels at 3840 only; fine at 1920);
-  no star legend (the deck has none: owner's call).
-- Flags: the star has no legend in the deck (none invented). Ten hidden blocks and the authors'
+- Not changed: LIT stays 1.28 (the lit picture is 1.33x its pixels at 3840 only; fine at 1920).
+- The presenter's change (after the build): a star legend, "marked cases will be covered in
+  Tracks" (data.ts: LEGEND), beside the headline at the right (.s29-legend, 1u type, right edge
+  95.8u, top 8.55u); it fades in with the first star (3.62 s, sales) and stays. EVERYDAY AI's
+  heading has the star too (data.ts: BASE[0].star), taken 0.42 s after the heading arrives.
+- Flags: the deck itself has no star legend (the words are the presenter's). Ten hidden blocks and the authors'
   note are not in data.ts. OPERATIONS has only three agents (as the deck).
 
 ## Slide 30 (scenes/s30) · done
