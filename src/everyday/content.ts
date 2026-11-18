@@ -238,11 +238,11 @@ export const PRODUCTS: Product[] = [
     time: '9:10 am',
     place: 'At the branch',
     track: 'day',
-    before: { headline: 'A support ticket, a queue, a back-and-forth.', detail: 'The ticket goes back and forth. The customer waits.' },
+    before: { headline: 'A support ticket, then a long wait.', detail: 'The customer waits.' },
     priya: {
       before: 'My customer did not get the eSign link. Earlier, I raised a ticket on our old support platform, and waited.',
       tool: 'Now I raise it on SmartHelp, our support desk.',
-      after: 'It gave me the eSign links right there. No back-and-forth.',
+      after: 'It gave me the eSign links right there. No waiting.',
     },
     after: 'The ticket is solved in the same chat. Nobody had to pick it up.',
     stat: { value: '~15%', label: 'of support tickets resolved with no human' },

@@ -2213,8 +2213,8 @@ html:has(.ev-root) body {
 
 /* ============================================================
    VERSION 2 (?v=2): a second layout, kept beside the first.
-   BEFORE: the old way gets a headline of its own, top left, and her bubble is narrower: so the
-   picture has more of the screen (core/buildMoment.ts lets it grow to 2.5×).
+   BEFORE: the old way gets a headline of its own and a detail line, top left: so the
+   empty top left is used; the picture and her bubble are as in version 1.
    RESULT: one thing to read. The name steps down to a label, the statement is the headline, and
    the supporting line and her bubble are quieter.
    ============================================================ */
@@ -2222,23 +2222,22 @@ html:has(.ev-root) body {
 .ev-before-d {
   display: none;
 }
-.ev-root[data-v='2'] {
-  --ev-bw: calc(var(--u) * 37);
-}
 .ev-root[data-v='2'] .ev-moment .ev-before-h {
   display: block;
   top: calc(var(--ev-top) + var(--u) * 3.4);
-  width: calc(var(--ev-bw) + var(--u) * 2);
-  font-size: calc(var(--u) * 4.5);
+  width: calc(var(--ev-bw) - var(--u) * 4);
+  font-size: calc(var(--u) * 4.2);
   line-height: 1.12;
   letter-spacing: -0.03em;
 }
 .ev-root[data-v='2'] .ev-before-d {
   display: block;
+  text-wrap: balance;
   position: absolute;
   left: calc(var(--hx) * -1);
-  top: calc(var(--ev-top) + var(--u) * 21.5);
-  width: var(--ev-bw);
+  /* its foot stands clear of her bubble (three lines and her name tag) */
+  bottom: calc((var(--ev-vy) - var(--u) * 12.6) * -1);
+  width: calc(var(--ev-bw) - var(--u) * 6);
   font-size: calc(var(--u) * 1.9);
   font-weight: 600;
   line-height: 1.35;
@@ -2253,7 +2252,7 @@ html:has(.ev-root) body {
 }
 /* the result: the statement is the one headline */
 .ev-root[data-v='2'] .ev-col {
-  top: calc(var(--u) * -7.6);
+  top: calc(var(--u) * -6.6);
 }
 .ev-root[data-v='2'] .ev-sentence {
   font-size: calc(var(--u) * 3.9);
@@ -2272,7 +2271,7 @@ html:has(.ev-root) body {
   color: var(--ev-body);
 }
 .ev-root[data-v='2'] .ev-dockcap {
-  top: calc(var(--u) * -7.4);
+  top: calc(var(--u) * -7);
 }
 .ev-root[data-v='2'][data-step='result'] .ev-voice-text {
   font-size: calc(var(--u) * 1.6);

@@ -94,10 +94,10 @@ export function buildMoment(
   const v2 = root.closest<HTMLElement>('.ev-root')?.dataset.v === '2'
   const tagRoom = 3 * U
   const b0 = stage.loc(beforePic)
-  const fitBefore = (a: typeof area) => Math.max(0.6, Math.min(v2 ? 2.5 : BEFORE_ZOOM, (a.w * 0.96) / Math.max(1, b0.w), (a.h - tagRoom) / Math.max(1, b0.h)))
+  const fitBefore = (a: typeof area) => Math.max(0.6, Math.min(BEFORE_ZOOM, (a.w * 0.96) / Math.max(1, b0.w), (a.h - tagRoom) / Math.max(1, b0.h)))
   const beside = stage.loc($('.ev-picarea--before'))
   const above = stage.loc($('.ev-picarea--above'))
-  const beforeArea = fitBefore(above) > fitBefore(beside) * 1.04 ? above : beside
+  const beforeArea = !v2 && fitBefore(above) > fitBefore(beside) * 1.04 ? above : beside
   const bz = fitBefore(beforeArea)
   const bHome = { x: beforeArea.cx - b0.cx, y: beforeArea.cy + tagRoom / 2 - b0.cy }
   gsap.set(beforePic, { x: bHome.x, y: bHome.y, scale: bz })
@@ -184,7 +184,7 @@ export function buildMoment(
 
   // ================================================================ DEMO: the name docks, the device arrives in the picture area
   // The docked name is as wide as the left column lets it be, and never taller than 7.4u (7.05u on a phone on its side).
-  const dock = name.dock(dockAt.x, dockAt.y, Math.max(20 * U, rc.w - 4 * U), (v2 ? 3.3 : stage.small ? 7.05 : 7.4) * U)
+  const dock = name.dock(dockAt.x, dockAt.y, Math.max(20 * U, rc.w - 4 * U), (v2 ? 5.4 : stage.small ? 7.05 : 7.4) * U)
   name.addLeaveCentre(t, tD)
   t.to(nameGroup, { ...dock, duration: 0.85, ease: E.inOut }, tD + 0.04)
     .to(flash, { autoAlpha: 0.5, duration: 0.85, ease: 'power1.inOut' }, tD)
