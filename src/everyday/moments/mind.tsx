@@ -374,21 +374,6 @@ function Screen({ product }: P) {
   )
 }
 
-// ====================================================================== AROUND THE CENTREPIECE
-/**
- * The one supporting line under the result headline: the other thing it does. A defect comes in,
- * and it is traced back to the change that caused it. The script's two halves (demo.defect.title,
- * demo.defect.text) are set as ONE sentence: the title, a comma, the text.
- */
-function Proof({ product }: P) {
-  const df = product.demo.defect
-  return (
-    <p className="mind-defect">
-      <b>{df.title},</b> {df.text.charAt(0).toLowerCase() + df.text.slice(1)}
-    </p>
-  )
-}
-
 // ====================================================================== STAT
 /** A hundred tiles of AI cost. Eighty fall away. */
 function Stat({ product }: P) {
@@ -669,7 +654,6 @@ const mind: MomentModule<MindProduct> = {
   Before,
   Screen,
   Stat,
-  Proof,
   animate,
 }
 

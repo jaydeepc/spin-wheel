@@ -440,7 +440,7 @@ export const PRODUCTS: Product[] = [
       tool: 'Now I just ask Piramal Mind.',
       after: 'It looked everywhere for me, and told me exactly what to change.',
     },
-    after: 'It remembers every codebase and every ticket, and it connects them.',
+    after: 'It remembers every codebase, every ticket and every piece of information, and it connects them.',
     stat: { value: '80%', label: 'lower AI cost' },
     demo: {
       ingests: ['Every codebase', 'Every Jira ticket', 'Every discussion'],
