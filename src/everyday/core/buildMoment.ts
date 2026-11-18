@@ -187,11 +187,12 @@ export function buildMoment(
   name.addLeaveCentre(t, tD)
   t.to(nameGroup, { ...dock, duration: 0.85, ease: E.inOut }, tD + 0.04)
     .to(flash, { autoAlpha: 0.5, duration: 0.85, ease: 'power1.inOut' }, tD)
-    .to(dockcap, { yPercent: 0, duration: 0.55 }, tD + 0.65)
+    .to(dockcap, { yPercent: 0, duration: 0.5 }, tD + 0.98)
     .to(mover, { autoAlpha: 1, duration: 0.01 }, tD + 0.05)
   // What the name stands for rests under the docked name for as long as the demo rest lasts: at
   // centre stage it was open for under a second. It rises in just ahead of the caption.
-  if (dockexp) t.to(dockexp, { yPercent: 0, duration: 0.5 }, tD + 0.52)
+  // (after the name has docked: while it is still travelling it would cross this line)
+  if (dockexp) t.to(dockexp, { yPercent: 0, duration: 0.45 }, tD + 0.86)
   t.to(mover, { y: home.y, rotation: 0, duration: 0.95 }, tD + 0.05).add(sec.demo.paused(false), tD)
   const tU = tD + Math.max(1.25, sec.demo.duration())
   t.addLabel('demo', tU)

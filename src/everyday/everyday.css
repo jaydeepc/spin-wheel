@@ -2261,8 +2261,18 @@ html:has(.ev-root) body {
   font-weight: 700;
   color: var(--ev-body);
 }
+/* the promise under the docked name: plain navy, large enough to read from the back of a room,
+   and clear of what stands above it (the name, or the line the name stands for) */
 .ev-root .ev-dockcap {
-  top: calc(var(--u) * -7);
+  top: calc(var(--u) * -6.6);
+  font-size: calc(var(--u) * 2);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ev-navy);
+}
+.ev-root .ev-moment[data-name='acronym'] .ev-dockcap,
+.ev-root .ev-moment[data-name='hindi'] .ev-dockcap {
+  top: calc(var(--u) * -5.5);
 }
 .ev-root[data-step='result'] .ev-voice-text {
   font-size: calc(var(--u) * 1.6);

@@ -9,8 +9,7 @@
  * recording of it, cropped to the glass, the app's own title bar cut off):
  *
  * Before   a notebook page at 9:40 pm: the app's four fields, half of them forgotten
- * Demo     the four parts her team put together fly out of B·Y·O·T into the phone, and the app
- *          is there: its ready screen (shots.ask). The one control lies on the app's own
+ * Demo     the app is there on the phone: its ready screen (shots.ask). The one control lies on the app's own
  *          "Start voice disposition" button.
  * Run      the real app at work (demo.clip, driven by the timeline: its currentTime is tweened,
  *          so every frame can be held): it listens, analyses, and the fields are filled. Under
@@ -122,23 +121,6 @@ function OnDevice({ product }: P) {
   )
 }
 
-// ====================================================================== THE THINGS THAT FLY
-/** Things that fly: the four parts her team put together (letters → phone). */
-function Extras({ product }: P) {
-  return (
-    <>
-      {product.demo.blocks.map((b) => (
-        <div className="byot-part" key={b} aria-hidden="true">
-          <svg viewBox="0 0 6 10">
-            {[1.2, 5, 8.8].flatMap((y) => [1.2, 4.8].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.2" />))}
-          </svg>
-          {b}
-        </div>
-      ))}
-    </>
-  )
-}
-
 // ====================================================================== STAT
 /** 634 tools built by employees. One of them is hers. */
 function Stat({ product }: P) {
@@ -159,7 +141,7 @@ function Stat({ product }: P) {
 
 // ====================================================================== MOTION
 function animate(env: MomentEnv<ByotProduct>) {
-  const { $, $$, U, ease: E, loc, letters, product, before, demo, run, stat } = env
+  const { $, $$, U, ease: E, loc, product, before, demo, run, stat } = env
   const clipShut = 'inset(0% 100% 0% 0%)'
   const clipOpen = 'inset(0% 0% 0% 0%)'
 
@@ -193,8 +175,7 @@ function animate(env: MomentEnv<ByotProduct>) {
     .to(gaps, { scaleX: 1, duration: 0.2, stagger: 0.05, ease: 'power2.out' }, 0.46)
     .to(qs, { scale: 1, autoAlpha: 1, duration: 0.22, stagger: 0.05, ease: 'back.out(3.5)' }, 0.5)
 
-  // ---------------------------------------------------------------- demo: four parts leave the letters and become the app
-  const parts = $$('.byot-part') // Voice disposition · Interaction result · Reason · Remarks
+  // ---------------------------------------------------------------- demo: the team's app, on the phone
   const app = $('.byot-app')
   const startWrap = $('.byot-startWrap')
   const face = $('.byot-start-face')
@@ -209,12 +190,6 @@ function animate(env: MomentEnv<ByotProduct>) {
   /** how much the frame has enlarged the phone: a length on the glass is this many times its own */
   const zoom = dev.w / (env.shared.device.offsetWidth || 1)
   const glass = loc(app)
-  const startBox = loc(startWrap)
-  // where each part lands: the voice part on the app's start button, the three fields on the form above it
-  const landAt = [
-    { x: startBox.cx, y: startBox.cy },
-    ...[0.1, 0.24, 0.38].map((f) => ({ x: glass.cx, y: glass.y + glass.h * f })),
-  ]
   // the stamp stands low on the filled form, clear of the note the app wrote, a little off the phone's right edge
   // (lower on a phone on its side: the wider glass shows the form from its top, larger)
   const stampBox = loc(stamp)
@@ -222,26 +197,8 @@ function animate(env: MomentEnv<ByotProduct>) {
 
   gsap.set(app, { autoAlpha: 0 })
   gsap.set(startWrap, { autoAlpha: 0 })
-  gsap.set(parts, { x: (i) => letters[i].cx, y: (i) => letters[i].cy, xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0 })
-  parts.forEach((p, i) => {
-    const from = { x: letters[i].cx, y: letters[i].cy }
-    const to = landAt[i]
-    // a thrown arc: up and over, each part on its own curve, then down into the phone
-    const over = { x: from.x + (to.x - from.x) * 0.55, y: Math.min(from.y, to.y) - (3.5 + (3 - i) * 1.3) * U }
-    const born = 0.02 + i * 0.045
-    const fly = 0.18 + i * 0.065
-    const dur = 0.54
-    const land = fly + dur
-    demo
-      .to(p, { scale: 1, autoAlpha: 1, duration: 0.3, ease: 'back.out(2.2)' }, born)
-      .to(p, { motionPath: { path: [over, to], curviness: 1.25 }, duration: dur, ease: 'power2.inOut' }, fly)
-      .to(p, { rotation: to.x > from.x ? 9 : -9, duration: dur * 0.45, ease: 'sine.out' }, fly)
-      .to(p, { rotation: 0, duration: dur * 0.55, ease: 'sine.inOut' }, fly + dur * 0.45)
-      .to(p, { scale: 1.25, autoAlpha: 0, duration: 0.2, ease: 'power2.out' }, land - 0.05)
-    env.bump(demo, land - 0.06)
-  })
-  // the parts have landed: the app is there, and its own start button is the one control
-  demo.to(app, { autoAlpha: 1, duration: 0.3, ease: 'power1.inOut' }, 0.66).to(startWrap, { autoAlpha: 1, duration: 0.25 }, 0.95)
+  // the app is simply there on the phone as it arrives, and its own start button is the one control
+  demo.to(app, { autoAlpha: 1, duration: 0.35, ease: 'power1.inOut' }, 0.3).to(startWrap, { autoAlpha: 1, duration: 0.25 }, 0.7)
 
   // ---------------------------------------------------------------- run: she speaks, the app fills the form, the note is filed
   gsap.set(listen, { autoAlpha: 0 })
@@ -301,7 +258,6 @@ const byot: MomentModule<ByotProduct> = {
   Before,
   Screen,
   Stat,
-  Extras,
   OnDevice,
   animate,
 }
