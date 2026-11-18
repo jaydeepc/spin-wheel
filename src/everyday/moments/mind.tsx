@@ -62,6 +62,7 @@ const GRAPH = {
     [89, 14.3],
     [12.6, 53.6],
     [59.3, 83.8],
+    [32.9, 86.4],
   ],
 } as const
 
@@ -224,23 +225,45 @@ function Screen({ product }: P) {
             {/* THE ANSWER: the engineer's question and what Piramal Mind says to it, as a conversation.
                 It comes up over the whole card (the graph and the request under it) as the run ends. */}
             <div className="mind-g-talk">
-              <p className="mind-a-k mind-a-row">You</p>
-              <p className="mind-a-q mind-a-row">{d.prompt}</p>
-              <p className="mind-a-k mind-a-k--mind mind-a-row">
-                <i className="mind-a-badge">
-                  <MindGlyph />
-                </i>
-                {product.name}
-              </p>
-              <p className="mind-a-now mind-a-row">{d.answer.now}</p>
-              <p className="mind-a-line mind-a-row">{d.answer.where}</p>
-              <div className="mind-a-refs mind-a-row">
-                <span>{d.answer.decided}</span>
-                {d.answer.refs.map((r) => (
-                  <b key={r}>{r}</b>
-                ))}
+              {/* his question */}
+              <div className="mind-a-you mind-a-row">
+                <p className="mind-a-q">{d.prompt}</p>
+                <i className="mind-a-who">{d.developer[0]}</i>
               </div>
-              <p className="mind-a-next mind-a-row">{d.answer.next}</p>
+              {/* the answer: who says it, the two figures, then where it is set, where it was decided, what to change */}
+              <div className="mind-a-card">
+                <p className="mind-a-head mind-a-row">
+                  <i className="mind-a-badge">
+                    <MindGlyph />
+                  </i>
+                  <b>{product.name}</b>
+                  <span>{d.answer.lead}</span>
+                </p>
+                <div className="mind-a-limits mind-a-row">
+                  {d.answer.limits.map((l) => (
+                    <p className="mind-a-limit" key={l.label}>
+                      <b>{l.value}</b>
+                      <span>{l.label}</span>
+                    </p>
+                  ))}
+                </div>
+                <p className="mind-a-fact mind-a-row">
+                  <span className="mind-a-k">{d.answer.where.k}</span>
+                  <span className="mind-a-v">{d.answer.where.v}</span>
+                </p>
+                <div className="mind-a-fact mind-a-row">
+                  <span className="mind-a-k">{d.answer.decided.k}</span>
+                  <span className="mind-a-refs">
+                    {d.answer.decided.refs.map((r) => (
+                      <b key={r}>{r}</b>
+                    ))}
+                  </span>
+                </div>
+                <p className="mind-a-fact mind-a-fact--next mind-a-row">
+                  <span className="mind-a-k">{d.answer.next.k}</span>
+                  <span className="mind-a-v">{d.answer.next.v}</span>
+                </p>
+              </div>
             </div>
             <div className="mind-talk-head">
               <i className="mind-badge">

@@ -184,7 +184,14 @@ export interface MindProduct extends ProductBase {
      * What it answers to `prompt`, along the lines of a real answer (illustrative wording): what
      * the value is now, where it lives, where that was decided (`refs`: one chip each), and what to change.
      */
-    answer: { now: string; where: string; decided: string; refs: string[]; next: string }
+    answer: {
+      lead: string
+      /** The two figures, shown large. */
+      limits: { value: string; label: string }[]
+      where: { k: string; v: string }
+      decided: { k: string; refs: string[] }
+      next: { k: string; v: string }
+    }
     /** What the clusters of the graph are, named on it: where its context comes from. */
     sources: string[]
     /** The change the sales team asked for. */
@@ -218,7 +225,7 @@ export type Product = SmartHelpProduct | ByotProduct | ByoaProduct | PrastutiPro
 export const SPEAKERS = {
   priya: { name: 'Priya', role: 'Home-loan sales, Lucknow', portrait: '/everyday/priya.jpg' },
   rohan: { name: 'Rohan', role: 'Collections officer, Lucknow', portrait: '/people/arjun-menon.jpg' },
-  arjun: { name: 'Arjun', role: 'Engineer, journey apps', portrait: '/people/rohan-deshmukh.jpg' },
+  atul: { name: 'Atul', role: 'Software Engineer, Journey App Team', portrait: '/people/rohan-deshmukh.jpg' },
 } satisfies Record<string, Speaker>
 
 export const PRODUCTS: Product[] = [
@@ -420,7 +427,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     key: 'mind',
-    speaker: SPEAKERS.arjun,
+    speaker: SPEAKERS.atul,
     name: 'Piramal Mind',
     promise: 'The memory and the intelligence of our engineering.',
     accent: 'navy',
@@ -431,14 +438,14 @@ export const PRODUCTS: Product[] = [
     priya: {
       before: 'Someone asks to raise the personal-loan limit. Earlier, I had to hunt for where it is set, and who decided it.',
       tool: 'Now I just ask Piramal Mind.',
-      after: 'It told me where the limit is set, who decided it, and what to change.',
+      after: 'Where it is set, who decided it, what to change: one answer.',
     },
     after: 'It remembers every codebase and every ticket, and it connects them.',
     stat: { value: '80%', label: 'lower AI cost' },
     demo: {
       ingests: ['Every codebase', 'Every Jira ticket', 'Every discussion'],
       ingested: 'Auto-ingested',
-      sources: ['Confluence', 'Jira', 'Outlook', 'Codebase'],
+      sources: ['Confluence', 'Jira', 'Outlook', 'Codebase', 'DB'],
       shots: {
         graph: {
           src: '/everyday/shots/mind-graph.jpg',
@@ -447,14 +454,17 @@ export const PRODUCTS: Product[] = [
         },
       },
       request: { id: 'SC-2291', from: 'From the Lucknow sales team', text: 'Raise the personal-loan limit.' },
-      developer: 'Arjun, engineer, journey apps',
+      developer: 'Atul, Software Engineer, Journey App Team',
       prompt: 'How can I increase the max loan amount and max tenure for a personal loan?',
       answer: {
-        now: 'Today the limit for a personal loan is ₹10 L and 5 years.',
-        where: 'It is set in the DB config, not in the code.',
-        decided: 'It was discussed and decided here:',
-        refs: ['Meeting', 'Mail', 'Jira', 'Confluence'],
-        next: 'To raise it, change the value in the DB config.',
+        lead: 'For a personal loan, today',
+        limits: [
+          { value: '₹10 L', label: 'Max loan amount' },
+          { value: '5 years', label: 'Max tenure' },
+        ],
+        where: { k: 'Where it is set', v: 'In the DB config, not in the code' },
+        decided: { k: 'Decided in', refs: ['Meeting', 'Mail', 'Jira', 'Confluence'] },
+        next: { k: 'To change it', v: 'Update the value in the DB config' },
       },
       talksBack: {
         lead: 'Before we work on this',
