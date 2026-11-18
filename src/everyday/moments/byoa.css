@@ -1,677 +1,289 @@
 /* ============================================================
-   BYOA · Build Your Own Agents · 12:30 pm, over chai.
+   BYOA · Build Your Own Agents.
    Everything here is BYOA's own; classes are prefixed "byoa-".
-   Sizes are in --u; colours come from the accent variables
-   (--acc, --acc-ink, --acc-soft…). Azure is "ready"; the brand's
-   flame marks the leads that still need documents.
+   Sizes are in --u; colours come from the accent variables.
 
-   THE BUDGET: outside the phone BYOA draws nothing at rest. What
-   it has to say is on the glass: the agent's name and who built
-   it, the three things she told it, five leads waiting. At the
-   result: two lists, and ONE tag.
+   The agent is REAL (Saathi, the collections team's invoice
+   assistant) and its screens are REAL SCREENSHOTS
+   (content.ts → demo.shots).
+
+   THE BUDGET (moments/README.md). What BYOA shows at rest:
+     before   ONE picture: a mail to the central team, and
+              "Awaiting reply" stamped on it
+     demo     a desktop window: Saathi with the question asked,
+              and the one control: Ask Saathi
+     result   the same chat, answered, under its stamp
+     number   701 small agents, one of them Saathi
    ============================================================ */
 
-.byoa-said {
-  flex: none;
-  width: calc(var(--u) * 0.95);
-  height: calc(var(--u) * 0.86);
-  fill: var(--acc);
-}
-
-/* ---------- BEFORE: a pile of lead forms, ticked off by hand (laid out for 25u × 20u) ---------- */
+/* ---------- BEFORE: a mail to the central team, and no reply yet ----------
+   Laid out for the frame's 25u × 20u box, which is then enlarged whole (1.6× on a large screen). */
 .byoa-b {
   position: absolute;
   inset: 0;
 }
-.byoa-b-sheet {
-  /* the pile steps down and to the left: the further back, the higher */
+.byoa-b-mail {
   position: absolute;
-  left: calc(var(--u) * (5.9 - 1.35 * var(--j)));
-  top: calc(var(--u) * 1.9 * var(--j));
-  width: calc(var(--u) * 17.4);
-  height: calc(var(--u) * 10);
+  inset: calc(var(--u) * 2.4) calc(var(--u) * 0.6) calc(var(--u) * 1.6);
   border-radius: calc(var(--u) * 0.9);
   background: #ffffff;
+  overflow: hidden;
   box-shadow:
-    0 calc(var(--u) * 0.5) calc(var(--u) * 1.3) rgba(7, 26, 80, 0.12),
-    0 0 0 1px rgba(7, 26, 80, 0.08);
+    0 0 0 1px rgba(7, 26, 80, 0.1),
+    0 calc(var(--u) * 1.1) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.16);
   visibility: hidden;
   will-change: transform, opacity;
 }
-.byoa-b-strip {
+.byoa-b-bar {
   display: flex;
   align-items: center;
-  height: calc(var(--u) * 1.9);
+  height: calc(var(--u) * 2.4);
   padding: 0 calc(var(--u) * 1.1);
-  white-space: nowrap;
+  background: #eef1f6;
+  border-bottom: 1px solid #e0e6ef;
 }
-.byoa-b-strip b {
-  font-size: calc(var(--u) * 1.08);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ev-muted);
-}
-.byoa-b-front {
-  height: calc(var(--u) * 12.2);
-  padding: calc(var(--u) * 0.7) calc(var(--u) * 1.4) 0;
-  box-shadow:
-    0 calc(var(--u) * 1.1) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.17),
-    0 0 0 1px rgba(7, 26, 80, 0.08);
-}
-.byoa-b-head {
-  display: flex;
-  align-items: center;
-  height: calc(var(--u) * 3.1);
-  border-bottom: 1px solid #e3eaf3;
-  white-space: nowrap;
-}
-.byoa-b-head b {
-  font-size: calc(var(--u) * 1.9);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--ev-navy);
-}
-.byoa-b-check {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: calc(var(--u) * 2.7);
-  border-bottom: 1px solid #e3eaf3;
-  font-size: calc(var(--u) * 1.42);
-  font-weight: 600;
-  color: var(--ev-ink);
-  white-space: nowrap;
-}
-.byoa-b-check:nth-of-type(4) {
-  border-bottom-color: transparent;
-}
-.byoa-b-box {
-  position: relative;
-  flex: none;
+.byoa-b-bar i {
+  display: grid;
+  place-items: center;
   width: calc(var(--u) * 1.5);
   height: calc(var(--u) * 1.5);
-  border-radius: calc(var(--u) * 0.34);
-  border: calc(var(--u) * 0.14) solid #a9bcd8;
-  background: #ffffff;
 }
-.byoa-b-box svg {
-  /* a tick made by hand: it leaves the box */
-  position: absolute;
-  left: -14%;
-  top: -42%;
-  width: 150%;
-  height: 150%;
-  overflow: visible;
+.byoa-b-bar svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--ev-muted);
 }
-.byoa-b-pencil {
-  /* its tip rests on the second box */
-  position: absolute;
-  left: calc(var(--u) * 15.3);
-  top: calc(var(--u) * 7.85);
-  width: 0;
-  height: 0;
-  visibility: hidden;
-  will-change: transform, opacity;
+.ev-root .byoa-b-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.8);
+  height: calc(var(--u) * 3);
+  margin: 0 calc(var(--u) * 1.3);
+  border-bottom: 1px solid #e3eaf3;
+  white-space: nowrap;
 }
-.byoa-b-pencil svg {
-  position: absolute;
-  left: 0;
-  top: calc(var(--u) * -0.55);
-  width: calc(var(--u) * 6.6);
-  height: calc(var(--u) * 1.1);
-  transform-origin: 0 50%;
-  transform: rotate(-32deg);
-  overflow: visible;
+.byoa-b-row span {
+  flex: none;
+  width: calc(var(--u) * 3.9);
+  font-size: calc(var(--u) * 0.92);
+  font-weight: 700;
+  color: var(--ev-muted);
 }
-.byoa-b-count {
+.byoa-b-row b {
+  font-size: calc(var(--u) * 1.12);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--ev-navy);
+}
+.byoa-b-row b.byoa-b-chip {
+  padding: calc(var(--u) * 0.3) calc(var(--u) * 0.75);
+  border-radius: calc(var(--u) * 0.9);
+  background: var(--acc-soft);
+  box-shadow: 0 0 0 1px var(--acc-line);
+  color: var(--acc-ink);
+}
+/* the body of the mail: three lines of writing */
+.byoa-b-body {
+  display: grid;
+  gap: calc(var(--u) * 0.75);
+  padding: calc(var(--u) * 1.4) calc(var(--u) * 1.3) 0;
+}
+.byoa-b-body i {
+  height: calc(var(--u) * 0.6);
+  border-radius: calc(var(--u) * 0.3);
+  background: #e3eaf3;
+}
+.byoa-b-body i:nth-child(1) {
+  width: 82%;
+}
+.byoa-b-body i:nth-child(2) {
+  width: 64%;
+}
+.byoa-b-body i:nth-child(3) {
+  width: 38%;
+}
+/* "Awaiting reply": stamped on the mail's lower corner */
+.byoa-b-still {
   position: absolute;
-  right: 0;
-  bottom: calc(var(--u) * 0.2);
-  padding: calc(var(--u) * 0.75) calc(var(--u) * 1.25) calc(var(--u) * 0.8);
-  border-radius: calc(var(--u) * 1.3);
-  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
-  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.28);
+  right: calc(var(--u) * -0.3);
+  bottom: calc(var(--u) * 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 3.1);
+  padding: 0 calc(var(--u) * 1.25) 0 calc(var(--u) * 0.5);
+  border-radius: calc(var(--u) * 1.55);
+  background: #071a50;
+  box-shadow: 0 calc(var(--u) * 0.7) calc(var(--u) * 1.6) rgba(7, 26, 80, 0.3);
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 800;
   color: #ffffff;
-  line-height: 1.1;
   white-space: nowrap;
   visibility: hidden;
   will-change: transform, opacity;
 }
-.byoa-b-count span {
-  display: block;
-  font-size: calc(var(--u) * 0.8);
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #b9e2ff;
+.byoa-b-still i {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 2.15);
+  height: calc(var(--u) * 2.15);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
 }
-.byoa-b-count b {
-  display: block;
-  margin-top: calc(var(--u) * 0.15);
-  font-size: calc(var(--u) * 3);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-}
-.byoa-b-count small {
-  font-size: calc(var(--u) * 1.3);
-  font-weight: 600;
-  letter-spacing: 0;
-  color: #dbe7fb;
+.byoa-b-still svg {
+  width: 62%;
+  height: 62%;
+  stroke: #b9e2ff;
 }
 
-/* ---------- The agent on the phone: Lead Screener (the glass is 14.4u × 28.35u) ---------- */
+/* ---------- The agent: Saathi, in a desktop window ----------
+   The two screenshots are 1310 × 1192 (1.099:1): the chat panel alone. The window is that shape
+   under its title bar (1.9u), as large as the picture area allows, so nothing of them is cut. */
+.ev-moment[data-key='byoa'][data-device='none'] .ev-deviceMover {
+  --ev-dw: min(var(--ev-pw), calc((var(--ev-ph) - var(--u) * 1.9) * 1.099));
+  --ev-dh: calc(var(--ev-dw) / 1.099 + var(--u) * 1.9);
+}
+.ev-moment[data-key='byoa'] .ev-device-shadow {
+  display: none;
+}
 .byoa-app {
   position: absolute;
   inset: 0;
 }
-.byoa-slot {
-  position: relative;
-}
-.byoa-slot-outline {
-  /* the empty place a part will drop into */
-  position: absolute;
-  inset: calc(var(--u) * 0.06);
-  border-radius: calc(var(--u) * 0.6);
-  border: calc(var(--u) * 0.09) dashed #a9cbf2;
-  background: rgba(255, 255, 255, 0.6);
-}
-.byoa-block {
-  position: relative;
-  will-change: transform, opacity;
-}
-
-/* its name, and who built it: the one place that says so */
-.byoa-slot--id {
-  position: absolute;
-  left: calc(var(--u) * 0.55);
-  right: calc(var(--u) * 0.55);
-  top: calc(var(--u) * 0.15);
-  height: calc(var(--u) * 3.3);
-}
-.byoa-id {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.55);
-  height: 100%;
-  padding: 0 calc(var(--u) * 0.2);
-}
-.byoa-avatar {
-  position: relative;
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 2.5);
-  height: calc(var(--u) * 2.5);
-  border-radius: calc(var(--u) * 0.72);
-  background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
-  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.7) rgba(45, 106, 209, 0.38);
-}
-.byoa-avatar svg {
-  position: relative;
-  width: 70%;
-  height: 70%;
-  overflow: visible;
-}
-.byoa-avatar-ring {
+/* the real screen, edge to edge (it carries its own header): two pictures, one over the other */
+.byoa-view {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  border: calc(var(--u) * 0.14) solid var(--acc);
-  pointer-events: none;
-  visibility: hidden;
+  overflow: hidden;
 }
-.byoa-apptitle {
-  display: grid;
-  line-height: 1.18;
-  min-width: 0;
-  flex: 1;
-}
-.byoa-apptitle b {
-  font-size: calc(var(--u) * 1.3);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--ev-navy);
-  white-space: nowrap;
+/* both pictures; it is enlarged about the answer card's lower left corner, so the view ends on
+   the card alone: from "Final Answer" down to the first row of Payment Information */
+.byoa-zoom {
+  position: absolute;
+  inset: 0;
+  transform-origin: 5.7% 100%;
   will-change: transform;
 }
-.byoa-appby {
-  margin-top: calc(var(--u) * 0.1);
-  font-size: calc(var(--u) * 0.8);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  color: var(--acc-text);
-  white-space: nowrap;
+.byoa-shot--done {
+  visibility: hidden;
+  will-change: opacity, clip-path;
 }
-
-/* what she told it, in plain words: the agent's whole brain. Three lines, each with its light. */
-.byoa-brain {
-  position: absolute;
-  left: calc(var(--u) * 0.5);
-  right: calc(var(--u) * 0.5);
-  top: calc(var(--u) * 3.75);
-  height: calc(var(--u) * 10.5);
-}
-.byoa-brain-bg {
+/* Saathi looks it up: one sweep across the chat */
+.byoa-scan {
   position: absolute;
   inset: 0;
-  border-radius: calc(var(--u) * 1);
-  background: var(--acc-soft);
-  border: 1px solid var(--acc-line);
-  transform-origin: 50% 0;
+  background: linear-gradient(90deg, rgba(67, 132, 212, 0) 0%, rgba(67, 132, 212, 0.22) 50%, rgba(67, 132, 212, 0) 100%);
+  pointer-events: none;
 }
-/* the same brain, folded: one row, and the three lights in it */
-.byoa-fold {
+
+/* the one control: Ask Saathi */
+.byoa-askWrap {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: calc(var(--u) * 2.3);
-  border-radius: calc(var(--u) * 1.15);
-  background: var(--acc-soft);
-  border: 1px solid var(--acc-line);
-  visibility: hidden;
-}
-.byoa-fold::before {
-  /* the line the three checks stand on */
-  content: '';
-  position: absolute;
-  left: 22%;
-  right: 22%;
-  top: 50%;
-  height: calc(var(--u) * 0.14);
-  margin-top: calc(var(--u) * -0.07);
-  border-radius: calc(var(--u) * 0.07);
-  background: var(--acc-line);
-}
-.byoa-slot--step {
-  position: absolute;
-  left: calc(var(--u) * 0.4);
-  right: calc(var(--u) * 0.4);
-  top: calc(var(--u) * (0.5 + 3.25 * var(--i)));
-  height: calc(var(--u) * 3);
-}
-.byoa-step {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 calc(var(--u) * 0.25) 0 calc(var(--u) * 2.2);
-  border-radius: calc(var(--u) * 0.7);
-  background: #ffffff;
-  box-shadow: 0 calc(var(--u) * 0.12) calc(var(--u) * 0.35) rgba(45, 106, 209, 0.12);
-}
-.byoa-step-t {
-  font-size: calc(var(--u) * 0.97);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  color: var(--ev-navy);
-  white-space: nowrap;
-}
-/* a line's light: its number. Lit, it is filled. It travels to the folded row when the agent runs. */
-.byoa-light {
-  position: absolute;
-  left: calc(var(--u) * 0.45);
-  top: 50%;
-  width: calc(var(--u) * 1.5);
-  height: calc(var(--u) * 1.5);
-  margin-top: calc(var(--u) * -0.75);
-  border-radius: 50%;
-  background: var(--acc-soft);
-  box-shadow: 0 0 0 1px var(--acc-line);
+  right: calc(var(--u) * 1.6);
+  bottom: calc(var(--u) * 1.5);
+  width: calc(var(--u) * 12.5);
+  height: calc(var(--u) * 3.8);
   visibility: hidden;
   will-change: transform, opacity;
 }
-.byoa-light b {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  font-size: calc(var(--u) * 0.86);
-  font-weight: 800;
-  line-height: 1;
-  color: var(--acc-ink);
-}
-.byoa-light b.byoa-light-on {
-  background: var(--acc-deep);
-  color: #ffffff;
-  visibility: hidden;
-}
-.byoa-light-glow {
-  position: absolute;
-  inset: calc(var(--u) * -0.1);
-  border-radius: 50%;
-  background: rgba(67, 132, 212, 0.5);
-  visibility: hidden;
-}
-.byoa-light-glow--warm {
-  background: rgba(241, 100, 67, 0.55);
-}
-
-/* the five new leads, waiting, and the one control */
-.byoa-queue {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(var(--u) * 14.6);
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: calc(var(--u) * 0.9);
-  padding-bottom: calc(var(--u) * 0.4);
-}
-.byoa-pile {
-  position: relative;
-  width: calc(var(--u) * 10.4);
-  height: calc(var(--u) * 3.3);
-}
-.byoa-card {
-  /* a lead, not yet looked at: a face and two lines */
-  position: absolute;
-  left: calc(var(--u) * 1.45 * var(--k));
-  top: 0;
-  width: calc(var(--u) * 4.6);
-  height: calc(var(--u) * 3.3);
-  border-radius: calc(var(--u) * 0.6);
-  background:
-    radial-gradient(circle at calc(var(--u) * 1.15) 50%, #c7ddf5 0, #c7ddf5 calc(var(--u) * 0.62), transparent calc(var(--u) * 0.66)),
-    linear-gradient(#dbe7f5, #dbe7f5) calc(var(--u) * 2.2) calc(var(--u) * 1.05) / calc(var(--u) * 1.8) calc(var(--u) * 0.4) no-repeat,
-    linear-gradient(#e9eef5, #e9eef5) calc(var(--u) * 2.2) calc(var(--u) * 1.85) / calc(var(--u) * 1.2) calc(var(--u) * 0.4) no-repeat,
-    #ffffff;
-  box-shadow:
-    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.14),
-    0 0 0 1px rgba(7, 26, 80, 0.08);
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.byoa-runWrap {
-  position: relative;
-  flex: none;
-  width: calc(var(--u) * 3.7);
-  height: calc(var(--u) * 3.7);
-  visibility: hidden;
-}
-.ev-touch.byoa-run {
+.ev-touch.byoa-ask {
   width: 100%;
   height: 100%;
+  border-radius: calc(var(--u) * 1.9);
 }
-.byoa-run-face {
+/* a wide button breathes outwards evenly, not twice as wide */
+.ev-touch.byoa-ask[data-live='1'] .ev-touch-ring {
+  animation-name: byoa-pulse;
+}
+@keyframes byoa-pulse {
+  0% {
+    transform: scale(1, 1);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.1, 1.5);
+    opacity: 0;
+  }
+}
+.ev-root[data-hold='1'] .ev-touch.byoa-ask[data-live='1'] .ev-touch-ring {
+  animation: none;
+  opacity: 0.5;
+  transform: scale(1.055, 1.26);
+}
+.ev-root[data-hold='1'] .ev-touch.byoa-ask[data-live='1'] .ev-touch-ring--2 {
+  opacity: 0.22;
+  transform: scale(1.11, 1.52);
+}
+.byoa-ask-face {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #5b9ff0 0%, #2d6ad1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.55);
+  border-radius: inherit;
+  /* deep enough for white text at 4.5:1 across the whole gradient */
+  background: linear-gradient(160deg, #3472d2 0%, #2a63c8 100%);
   box-shadow:
     0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(45, 106, 209, 0.42),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-.byoa-run-face svg {
-  position: absolute;
-  left: 22%;
-  top: 22%;
-  width: 56%;
-  height: 56%;
-  overflow: visible;
-}
-.byoa-run-hint {
-  font-size: calc(var(--u) * 0.95);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: var(--acc-text);
-  white-space: nowrap;
-  visibility: hidden;
-}
-
-/* what comes out: two lists, in the room the build has left */
-.byoa-bins {
-  position: absolute;
-  left: calc(var(--u) * 0.5);
-  right: calc(var(--u) * 0.5);
-  top: calc(var(--u) * 6.5);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: calc(var(--u) * 0.5);
-}
-.byoa-bin {
-  padding: calc(var(--u) * 0.35) calc(var(--u) * 0.4) calc(var(--u) * 0.45);
-  border-radius: calc(var(--u) * 1);
-  background: #f4f9ff;
-  border: 1px solid var(--acc-line);
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.byoa-bin--needs {
-  background: #fff7f3;
-  border-color: #f7d7cd;
-}
-.byoa-bin-head {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.45);
-  height: calc(var(--u) * 1.9);
-  padding: 0 calc(var(--u) * 0.15);
-  font-size: calc(var(--u) * 0.78);
+  font-size: calc(var(--u) * 1.28);
   font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--acc-text);
-  white-space: nowrap;
-}
-/* (the tag lands on this head and takes its place: it is a little taller) */
-.byoa-bin--ready .byoa-bin-head {
-  height: calc(var(--u) * 2.9);
-}
-.byoa-bin--needs .byoa-bin-head {
-  color: var(--ev-flame-text);
-}
-.byoa-bin-icon {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 1.25);
-  height: calc(var(--u) * 1.25);
-  border-radius: calc(var(--u) * 0.36);
-  background: var(--acc);
-}
-.byoa-bin--needs .byoa-bin-icon {
-  background: var(--ev-flame);
-}
-.byoa-bin-icon svg {
-  width: 64%;
-  height: 64%;
-}
-.byoa-bin-count {
-  margin-left: auto;
-  display: grid;
-  place-items: center;
-  min-width: calc(var(--u) * 1.3);
-  height: calc(var(--u) * 1.3);
-  border-radius: 50%;
-  background: var(--acc-ink);
-  font-size: calc(var(--u) * 0.82);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 1;
+  letter-spacing: -0.005em;
   color: #ffffff;
-  font-variant-numeric: tabular-nums;
-}
-.byoa-bin--needs .byoa-bin-count {
-  background: var(--ev-flame-ink);
-}
-.byoa-bin-rows {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: calc(var(--u) * 0.25);
-}
-.byoa-place {
-  position: relative;
-}
-.byoa-place-ghost {
-  /* the empty place a sorted lead will take */
-  position: absolute;
-  inset: 0;
-  border-radius: calc(var(--u) * 0.6);
-  border: calc(var(--u) * 0.08) dashed #b9d3f3;
-}
-.byoa-bin--needs .byoa-place-ghost {
-  border-color: #f2c6b8;
-}
-.byoa-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.55);
-  height: calc(var(--u) * 2.25);
-  padding: 0 calc(var(--u) * 0.6) 0 calc(var(--u) * 0.5);
-  border-radius: calc(var(--u) * 0.6);
-  background: #ffffff;
-  box-shadow: 0 calc(var(--u) * 0.12) calc(var(--u) * 0.35) rgba(7, 26, 80, 0.08);
   white-space: nowrap;
-  visibility: hidden;
-  will-change: transform, opacity;
 }
-.byoa-row-mark {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 1.1);
-  height: calc(var(--u) * 1.1);
-  border-radius: 50%;
-  background: var(--acc);
-}
-.byoa-row-mark svg {
-  width: 62%;
-  height: 62%;
-}
-.byoa-row-name {
-  font-size: calc(var(--u) * 1.1);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.25;
-  color: var(--ev-navy);
-}
-/* a lead that needs documents: the name, and under it the one thing to ask */
-.byoa-row--needs {
-  display: block;
-  height: auto;
-  min-height: calc(var(--u) * 3.3);
-  padding: calc(var(--u) * 0.4) calc(var(--u) * 0.42) calc(var(--u) * 0.42);
-  white-space: normal;
-}
-.byoa-row--needs .byoa-row-name {
-  display: block;
-}
-.byoa-row-ask {
-  /* a block that is only as wide as its words: it is wiped open, left to right */
-  display: block;
-  width: max-content;
-  max-width: 100%;
-  margin-top: calc(var(--u) * 0.08);
-  font-size: calc(var(--u) * 0.75);
-  line-height: 1.25;
-  letter-spacing: -0.025em;
-  font-weight: 700;
-  color: var(--ev-flame-text);
+.byoa-ask-face svg {
+  width: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 1.5);
+  stroke: #ffffff;
 }
 
-/* ---------- Her three instructions and the agent. They fly out of the letters and into the phone. ---------- */
-.byoa-part {
+/* ---------- The ONE thing on the window at the result rest: Answered. No central team. ----------
+   Stamped low on the right of the answer: beside its values, over nothing that is read. */
+.byoa-stamp {
   position: absolute;
-  left: 0;
-  top: 0;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.6);
-  height: calc(var(--u) * 2.9);
-  padding: 0 calc(var(--u) * 1.2) 0 calc(var(--u) * 0.9);
-  border-radius: calc(var(--u) * 0.85);
-  background: #ffffff;
-  border: calc(var(--u) * 0.12) solid var(--acc);
-  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.8) rgba(45, 106, 209, 0.24);
-  font-size: calc(var(--u) * 1.08);
-  font-weight: 800;
+  right: calc(var(--u) * 1.2);
+  bottom: calc(var(--u) * 2.2);
+  padding: calc(var(--u) * 0.48) calc(var(--u) * 0.95) calc(var(--u) * 0.52);
+  border-radius: calc(var(--u) * 0.75);
+  border: calc(var(--u) * 0.18) solid var(--acc-ink);
+  background: rgba(255, 255, 255, 0.96);
   color: var(--acc-ink);
-  white-space: nowrap;
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.byoa-part--agent {
-  padding-left: calc(var(--u) * 0.5);
-  border-color: var(--ev-navy);
-  background: var(--ev-navy);
-  color: #ffffff;
-}
-.byoa-part-bot {
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 1.9);
-  height: calc(var(--u) * 1.9);
-  border-radius: calc(var(--u) * 0.56);
-  background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
-}
-.byoa-part-bot svg {
-  width: 70%;
-  height: 70%;
-  overflow: visible;
-}
-
-/* ---------- 3 Ready to call: the ONE thing on the phone at the result. It lands on the head
-   of that list (animate() moves it there) and stands a little off the phone's right edge. ---------- */
-.byoa-tag {
-  position: absolute;
-  left: 4%;
-  top: 30%;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.5);
-  height: calc(var(--u) * 3);
-  padding: 0 calc(var(--u) * 1.2) 0 calc(var(--u) * 0.5);
-  border-radius: calc(var(--u) * 1.55);
-  background: linear-gradient(145deg, #2d6ad1 0%, #1f4fa8 100%);
+  text-align: center;
+  line-height: 1.1;
   box-shadow:
-    0 calc(var(--u) * 0.9) calc(var(--u) * 2) rgba(36, 89, 184, 0.36),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  color: #ffffff;
+    inset 0 0 0 calc(var(--u) * 0.14) #ffffff,
+    inset 0 0 0 calc(var(--u) * 0.21) rgba(45, 106, 209, 0.55),
+    0 calc(var(--u) * 0.7) calc(var(--u) * 1.6) rgba(45, 106, 209, 0.22);
   white-space: nowrap;
   visibility: hidden;
   will-change: transform, opacity;
 }
-.byoa-tag-icon {
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 2.1);
-  height: calc(var(--u) * 2.1);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-}
-.byoa-tag-icon svg {
-  width: 54%;
-  height: 54%;
-}
-.byoa-tag b {
-  font-size: calc(var(--u) * 2.1);
+.byoa-stamp b {
+  display: block;
+  font-size: calc(var(--u) * 1.06);
   font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+  text-indent: 0.12em;
+  text-transform: uppercase;
 }
-.byoa-tag-t {
-  font-size: calc(var(--u) * 1.3);
+.byoa-stamp span {
+  display: block;
+  margin-top: calc(var(--u) * 0.14);
+  font-size: calc(var(--u) * 0.9);
   font-weight: 800;
-  letter-spacing: 0;
 }
-.byoa-tag-burst {
+.byoa-stamp-burst {
   position: absolute;
   inset: calc(var(--u) * -0.2);
-  border-radius: calc(var(--u) * 1.75);
+  border-radius: calc(var(--u) * 0.9);
   border: calc(var(--u) * 0.16) solid var(--acc);
   pointer-events: none;
-  visibility: hidden;
 }
 
-/* ---------- STAT: 623 agents, one of them hers ---------- */
+/* ---------- STAT: 701 agents, one of them Saathi ---------- */
 .byoa-field {
   position: absolute;
   inset: 0;
@@ -769,150 +381,27 @@
 }
 
 /* ============================================================
-   A phone on its side. The phone in the film is drawn wider
-   (the glass is 17.4u × 28.35u) and enlarged 1.2×: every row a
-   size up. Nothing on the glass is under 9 px (--dt is that
-   floor before the enlargement), nothing around it under 11 px.
+   A phone on its side: the same screens, with their type held
+   to its floors.
    ============================================================ */
 @media (max-height: 480px) {
-  /* ----- before: the pile of leads. It is a picture, not a device: its words are read, so
-     they are held at 11 px on the screen, which is 9.2 px before the enlargement (1.38× at
-     the least). ----- */
-  .byoa-b-strip b {
-    font-size: max(calc(var(--u) * 1.08), calc(var(--fl) * 9.2));
+  .byoa-b-row span {
+    font-size: max(calc(var(--u) * 0.92), calc(var(--fl) * 7.6));
   }
-  .byoa-b-count span {
-    font-size: max(calc(var(--u) * 1), calc(var(--fl) * 9.2));
-    letter-spacing: 0.06em;
+  .byoa-b-row b {
+    font-size: max(calc(var(--u) * 1.12), calc(var(--fl) * 8.2));
   }
-  .byoa-b-count small {
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 9.2));
+  .byoa-b-still {
+    font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 8.2));
   }
-
-  /* ----- the agent on the phone ----- */
-  .byoa-slot--id {
-    left: calc(var(--u) * 0.5);
-    right: calc(var(--u) * 0.5);
-    top: 0;
-    height: calc(var(--u) * 3);
+  .byoa-ask-face {
+    font-size: max(calc(var(--u) * 1.28), calc(var(--fl) * 9.4));
   }
-  .byoa-avatar {
-    width: calc(var(--u) * 2.2);
-    height: calc(var(--u) * 2.2);
+  .byoa-stamp b {
+    font-size: max(calc(var(--u) * 1.15), calc(var(--fl) * 8.2));
   }
-  .byoa-apptitle b {
-    font-size: max(calc(var(--u) * 1.35), var(--dt));
-  }
-  .byoa-appby {
-    margin-top: 0;
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    letter-spacing: -0.02em;
-  }
-  .byoa-brain {
-    left: calc(var(--u) * 0.5);
-    right: calc(var(--u) * 0.5);
-    top: calc(var(--u) * 3.2);
-    height: calc(var(--u) * 10.3);
-  }
-  .byoa-fold {
-    height: calc(var(--u) * 2.2);
-  }
-  .byoa-slot--step {
-    left: calc(var(--u) * 0.4);
-    right: calc(var(--u) * 0.4);
-    top: calc(var(--u) * (0.4 + 3.2 * var(--i)));
-    height: calc(var(--u) * 3.1);
-  }
-  .byoa-step {
-    padding: 0 calc(var(--u) * 0.3) 0 calc(var(--u) * 2.5);
-  }
-  .byoa-step-t {
-    font-size: max(calc(var(--u) * 1.2), var(--dt));
-    letter-spacing: -0.025em;
-  }
-  .byoa-light {
-    left: calc(var(--u) * 0.5);
-    width: calc(var(--u) * 1.6);
-    height: calc(var(--u) * 1.6);
-    margin-top: calc(var(--u) * -0.8);
-  }
-  .byoa-light b {
-    font-size: max(calc(var(--u) * 1), var(--dt));
-  }
-  .byoa-queue {
-    top: calc(var(--u) * 13.8);
-    gap: calc(var(--u) * 0.8);
-    padding-bottom: calc(var(--u) * 0.3);
-  }
-  .byoa-pile {
-    height: calc(var(--u) * 3);
-  }
-  .byoa-card {
-    height: calc(var(--u) * 3);
-  }
-  .byoa-runWrap {
-    width: calc(var(--u) * 3.6);
-    height: calc(var(--u) * 3.6);
-  }
-  .byoa-run-hint {
-    font-size: max(calc(var(--u) * 1.1), var(--dt));
-  }
-  .byoa-bins {
-    left: calc(var(--u) * 0.5);
-    right: calc(var(--u) * 0.5);
-    top: calc(var(--u) * 5.8);
-    gap: calc(var(--u) * 0.4);
-  }
-  .byoa-bin {
-    padding: calc(var(--u) * 0.3) calc(var(--u) * 0.4) calc(var(--u) * 0.4);
-  }
-  .byoa-bin-head {
-    height: calc(var(--u) * 1.8);
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    letter-spacing: 0.06em;
-  }
-  .byoa-bin--ready .byoa-bin-head {
-    height: calc(var(--u) * 2.9);
-  }
-  .byoa-bin-count {
-    min-width: calc(var(--u) * 1.4);
-    height: calc(var(--u) * 1.4);
-    font-size: max(calc(var(--u) * 1), var(--dt));
-  }
-  .byoa-bin-rows {
-    gap: calc(var(--u) * 0.2);
-  }
-  .byoa-row {
-    height: calc(var(--u) * 2.1);
-    gap: calc(var(--u) * 0.45);
-    padding: 0 calc(var(--u) * 0.5) 0 calc(var(--u) * 0.4);
-  }
-  .byoa-row-name {
-    font-size: max(calc(var(--u) * 1.25), var(--dt));
-  }
-  /* what to ask may take a second line on the smallest phones: the row grows with it */
-  .byoa-row--needs {
-    height: auto;
-    min-height: calc(var(--u) * 3);
-    padding: calc(var(--u) * 0.2) calc(var(--u) * 0.5) calc(var(--u) * 0.3);
-  }
-  .byoa-row-ask {
-    margin-top: 0;
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    line-height: 1.2;
-    letter-spacing: -0.03em;
-    white-space: normal;
-  }
-  .byoa-tag {
-    height: calc(var(--u) * 3);
-  }
-  .byoa-tag-t {
-    font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 9.4));
-  }
-
-  /* ----- the things that fly, and the picture of the number ----- */
-  .byoa-part {
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
+  .byoa-stamp span {
+    font-size: max(calc(var(--u) * 1.02), calc(var(--fl) * 7.8));
   }
   .byoa-callout-in b {
     font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));

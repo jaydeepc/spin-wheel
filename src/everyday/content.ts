@@ -17,7 +17,7 @@
  * kept for the record only, its comment says so.
  *
  * WHO TELLS IT. Priya's Tuesday is the thread, but a moment is told by the person whose work it
- * is (`speaker`): BYOT by a collections officer, Piramal Mind by an engineer. The bubble carries
+ * is (`speaker`): BYOT and BYOA by a collections officer, Piramal Mind by an engineer. The bubble carries
  * a small name tag, so a visitor always knows who is talking.
  *
  * REAL SCREENS. Where a real screenshot is to come (`shots`), the film draws a labelled
@@ -140,13 +140,20 @@ export interface ByotProduct extends ProductBase {
 export interface ByoaProduct extends ProductBase {
   key: 'byoa'
   demo: {
+    /** The agent's name: Saathi, the collections team's invoice assistant (a real agent on BYOA). */
     agent: string
+    /** Who built it: the line under its name in the picture of the number. */
     builtBy: string
-    /** What she told the agent to do, in plain words. That is the whole build. */
-    recipe: string[]
-    leads: { name: string; amount: string; ready: boolean; ask?: string }[]
-    readyLabel: string
-    needsLabel: string
+    /** The window's title. */
+    title: string
+    /** The one control: sends the question that is typed into the chat. */
+    ask: string
+    /** The stamp on the answered chat: "<first sentence>. <second sentence>". */
+    answered: string
+    /** The old way: a mail to the central team, and the wait for its reply. */
+    old: { to: string; subject: string; still: string }
+    /** The real screens: Saathi with the question asked; the same chat, answered. */
+    shots: { ask: ShotSpec; done: ShotSpec }
   }
 }
 export interface PrastutiSlide {
@@ -360,7 +367,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     key: 'byoa',
-    speaker: SPEAKERS.priya,
+    speaker: SPEAKERS.rohan,
     name: 'BYOA',
     expansion: ['Build', 'Your', 'Own', 'Agents'],
     promise: 'AI agents built by the person with the problem.',
@@ -368,28 +375,36 @@ export const PRODUCTS: Product[] = [
     time: '12:30 pm',
     place: 'Over chai',
     photo: '/everyday/moment-team.jpg',
-    before: { headline: 'Every new lead, screened by hand.', detail: 'The ready ones wait behind the rest.' },
+    before: { headline: 'Every vendor payment question went to the central team.', detail: '' },
     priya: {
-      before: 'Every new lead, I used to screen by hand.',
-      tool: 'So I built my own agent, on BYOA. I told it what to check, in plain words.',
-      after: 'It checks eligibility and documents, and tells me what to ask. I call only the ones who are ready.',
+      before: 'A vendor asks me if their invoice is paid. Earlier, I mailed the central team and waited.',
+      tool: 'So my team built our own agent, on BYOA. We call it Saathi.',
+      after: 'I ask Saathi, and it tells me the payment status right there.',
     },
-    after: 'Her own agent pre-screens every lead before she picks up the phone.',
+    after: 'Their own agent answers every invoice question, without the central team.',
     stat: { value: '701', label: 'agents built by the business' },
     track: 'day',
+    // Saathi is a real agent on BYOA: the collections team's invoice assistant. The two screens
+    // are its real chat; the supplier number and PAN are covered in the pictures.
     demo: {
-      agent: 'Lead Screener',
-      builtBy: 'An agent built by Shilpa, on BYOA',
-      recipe: ['Check eligibility', 'Check the documents', 'Tell me what to ask'],
-      leads: [
-        { name: 'A. Khan', amount: '₹32 L', ready: true },
-        { name: 'S. Mishra', amount: '₹18 L', ready: true },
-        { name: 'P. Gupta', amount: '₹45 L', ready: false, ask: 'Last 3 months’ bank statements' },
-        { name: 'R. Yadav', amount: '₹24 L', ready: true },
-        { name: 'N. Singh', amount: '₹27 L', ready: false, ask: 'Income proof' },
-      ],
-      readyLabel: 'Ready to call',
-      needsLabel: 'Needs documents',
+      agent: 'Saathi',
+      builtBy: 'An agent built by the collections team',
+      title: 'Saathi · Invoice assistant',
+      ask: 'Ask Saathi',
+      answered: 'Answered. No central team.',
+      old: { to: 'Central team', subject: 'Is this invoice paid?', still: 'Awaiting reply' },
+      shots: {
+        ask: {
+          src: '/everyday/shots/byoa-ask.jpg',
+          label: 'Saathi: a question about a vendor’s payment, typed in',
+          want: 'The Saathi chat with one question asked ("Give me payment information for …") and no answer yet.',
+        },
+        done: {
+          src: '/everyday/shots/byoa-done.jpg',
+          label: 'Saathi: the invoice, supplier and payment details, answered in the chat',
+          want: 'The same chat, answered: invoice information, supplier information (number and PAN covered) and the start of payment information.',
+        },
+      },
     },
   },
   {

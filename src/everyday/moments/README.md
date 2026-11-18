@@ -21,7 +21,7 @@ quiet, every screen keeps to a budget, and Priya's voice has a place of its own.
 ## Who tells it, and real screens (`content.ts`)
 
 - **A moment is told by the person whose work it is** (`product.speaker`, from `SPEAKERS`):
-  Priya for SmartHelp, BYOA and Prastuti, a collections officer for BYOT, an engineer for Piramal
+  Priya for SmartHelp and Prastuti, a collections officer for BYOT and BYOA, an engineer for Piramal
   Mind. The voice block shows that person's face, and in a product moment the bubble carries a
   small name tag on its top edge (`.ev-voice-who`: name and role). Where this file says "Priya's
   bubble", read "the speaker's bubble". Names, roles and portraits are illustrative until confirmed.
@@ -345,7 +345,7 @@ Run it on `?scene=<yours>&at=<before|demo|result|stat>` at 1600 × 900, 1024 × 
 | --- | --- | --- |
 | SmartHelp | `moments/smarthelp.tsx`, `moments/smarthelp.css` | phone |
 | BYOT | `moments/byot.tsx`, `moments/byot.css` | phone |
-| BYOA | `moments/byoa.tsx`, `moments/byoa.css` | phone |
+| BYOA | `moments/byoa.tsx`, `moments/byoa.css` | `device: 'none'` (a desktop window: Saathi's real chat) |
 | Prastuti | `moments/prastuti.tsx`, `moments/prastuti.css` | `device: 'laptop'` |
 | Piramal Mind | `moments/mind.tsx`, `moments/mind.css` | `device: 'none'` (its own centrepiece) |
 
