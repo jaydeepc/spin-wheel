@@ -240,7 +240,7 @@ export const PRODUCTS: Product[] = [
     track: 'day',
     before: { headline: 'A support ticket, a queue, a back-and-forth.', detail: 'The ticket goes back and forth. The customer waits.' },
     priya: {
-      before: 'My customer did not get the eSign link. Earlier, I raised a ticket on iHelp and waited for the backend team.',
+      before: 'My customer did not get the eSign link. Earlier, I raised a ticket on our old support platform, and waited.',
       tool: 'Now I raise it on SmartHelp, our support desk.',
       after: 'It gave me the eSign links right there. No back-and-forth.',
     },
@@ -251,7 +251,7 @@ export const PRODUCTS: Product[] = [
       app: 'Sales Central',
       ticket: { id: '#4821', text: 'Customer did not receive the eSign link.' },
       old: {
-        desk: 'iHelp',
+        desk: 'Legacy support platform',
         status: 'With the backend team',
         thread: [
           { from: 'team', text: 'Please share a screenshot.' },
@@ -264,8 +264,8 @@ export const PRODUCTS: Product[] = [
       shots: {
         before: {
           src: '',
-          label: 'iHelp: the old ticket',
-          want: 'One ticket open in iHelp, a few replies back and forth, status still "Pending with backend team".',
+          label: 'Legacy support platform: the old ticket',
+          want: 'One ticket open in the old support platform, a few replies back and forth, status still "Pending with backend team".',
         },
         ask: {
           src: '/everyday/shots/smarthelp-ask.jpg',
