@@ -1161,7 +1161,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  padding: calc(var(--a) * 0.15) calc(var(--a) * 0.85) calc(var(--a) * 0.45);
+  padding: calc(var(--a) * 0.5) calc(var(--a) * 1) calc(var(--a) * 0.55);
   border-radius: calc(var(--a) * 0.7);
   border: calc(var(--a) * 0.17) solid var(--acc-ink);
   background: rgba(255, 255, 255, 0.97);
@@ -1183,7 +1183,7 @@
 }
 .prastuti-stamp > span:last-child {
   display: block;
-  font-size: calc(var(--a) * 0.7);
+  font-size: calc(var(--a) * 1.05);
   font-weight: 800;
   letter-spacing: 0.2em;
   text-indent: 0.2em;

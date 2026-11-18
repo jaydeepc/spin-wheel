@@ -244,7 +244,7 @@ export const SPEAKERS = {
   priya: { name: 'Shilpa', role: 'Branch Sales Manager, Bangalore', portrait: '/people/shilpa-t.jpg' },
   rohan: { name: 'Rohan', role: 'Field Collections Officer, Lucknow', portrait: '/people/arjun-menon.jpg' },
   /** BYOA's speaker. PLACEHOLDER name and photo: to be replaced by the real person. */
-  vikram: { name: 'Vikram', role: 'Area Collections Manager, Lucknow', portrait: '/people/rohan-deshmukh.jpg' },
+  vikram: { name: 'Vikram', role: 'Area Collections Manager, Pune', portrait: '/people/rohan-deshmukh.jpg' },
   atul: { name: 'Atul', role: 'Software Engineer, Journey App Team', portrait: '/people/atul.jpg' },
 } satisfies Record<string, Speaker>
 

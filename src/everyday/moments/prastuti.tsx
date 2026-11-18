@@ -467,7 +467,7 @@ function OnDevice({ product }: P) {
   return (
     <div className="prastuti-stamp">
       <i className="prastuti-stamp-burst" />
-      <Hi>{product.demo.ready}</Hi>
+      {/* in English only: the Hindi is on the deck itself, the stamp is not a translation */}
       <span>{product.demo.readyEn}</span>
     </div>
   )
