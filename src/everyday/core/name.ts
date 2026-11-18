@@ -7,7 +7,7 @@
  * then docks top-left, in the name slot, and stays for the rest of the moment.
  *
  *   acronym  BYOT, BYOA       four giant initials open into "Build Your Own Tech" and close
- *   hindi    Prastuti         the word turns into प्रस्तुति with its meaning, and turns back
+ *   hindi    Prastuti         प्रस्तुति lands first, with its meaning, and turns into the English name
  *   plain    SmartHelp, Piramal Mind   the wordmark lands, is underlined, and the underline
  *                                     runs out under the whole word and back
  *
@@ -213,18 +213,19 @@ export function prepareName(root: HTMLElement, stage: Stage, E: Eases): NameRig 
     addTo(tl, at) {
       return scored(tl, at, (t) => {
         const tN = 0
-        t.to(chars, { yPercent: 0, duration: 0.8, stagger: 0.035 }, tN + 0.1)
         if (kind === 'hindi' && deva && meaning) {
-          const tO = tN + 0.8 // turns into the Hindi word
-          const tC = tO + 1.05 // and back
-          t.to(chars, { yPercent: -112, duration: 0.4, ease: 'power3.in', stagger: 0.018 }, tO)
-            .to(deva, { yPercent: 0, duration: 0.6 }, tO + 0.22)
-            .to(meaning, { autoAlpha: 1, y: openUnderY, duration: 0.45 }, tO + 0.45)
+          // The Hindi word lands FIRST, with its meaning, and holds; then it turns into the name in
+          // English, once. (Not English, Hindi, English again: the name is read one way, then the other.)
+          const tC = tN + 1.85 // turns into the English name
+          t.to(deva, { yPercent: 0, duration: 0.8 }, tN + 0.1)
+            .to(meaning, { autoAlpha: 1, y: openUnderY, duration: 0.45 }, tN + 0.55)
             .to(deva, { yPercent: -102, duration: 0.32, ease: 'power3.in' }, tC)
             .to(meaning, { y: underY, duration: 0.6, ease: E.inOut }, tC + 0.2)
-            .set(chars, { yPercent: 112 }, tC + 0.24)
             .to(chars, { yPercent: 0, duration: 0.6, stagger: 0.02 }, tC + 0.25)
-        } else if (rule) {
+        } else {
+          t.to(chars, { yPercent: 0, duration: 0.8, stagger: 0.035 }, tN + 0.1)
+        }
+        if (kind !== 'hindi' && rule) {
           // A plain name has nothing to open into, so its second beat is its own: the underline runs
           // out to the full width of the word while the letters lift over it from the middle, and
           // settles back. It takes as long as BYOT's opening, so every name holds the stage equally.
