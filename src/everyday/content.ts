@@ -178,6 +178,10 @@ export interface MindProduct extends ProductBase {
     ingests: string[]
     /** The small tag that says the memory fills by itself, all the time. */
     ingested: string
+    /** The real screens: its knowledge graph; and the conversation, where it reads and talks back before anything is built. */
+    shots: { graph: ShotSpec; talk: ShotSpec }
+    /** What the clusters of the graph are, named on it: where its context comes from. */
+    sources: string[]
     /** The change the sales team asked for. */
     request: { id: string; from: string; text: string }
     developer: string
@@ -421,25 +425,38 @@ export const PRODUCTS: Product[] = [
     before: { headline: 'What was decided, and why, was scattered.', detail: 'It lived in old tickets, old code and people’s heads.' },
     priya: {
       before: 'A change request comes in for Sales Central. Earlier, I just picked up the ticket and built what it said.',
-      tool: 'Now I build with Piramal Mind beside me.',
-      after: 'It remembered what we had already decided. The change came out right.',
+      tool: 'Now I ask Piramal Mind before I build.',
+      after: 'It read Confluence, Jira and the code, and asked me the right question first.',
     },
     after: 'It remembers every codebase and every ticket, and it connects them.',
     stat: { value: '80%', label: 'lower AI cost' },
     demo: {
       ingests: ['Every codebase', 'Every Jira ticket', 'Every discussion'],
       ingested: 'Auto-ingested',
-      request: { id: 'SC-2291', from: 'From the Lucknow sales team', text: 'Add a co-applicant step to the home-loan journey.' },
-      developer: 'Arjun, engineer, journey apps',
-      prompt: 'Add the co-applicant step. Use the blue header theme.',
-      talksBack: {
-        lead: 'Before I build this',
-        text: 'The blue theme was replaced after a later discussion.',
-        source: { id: 'SC-2104', title: 'Journey apps move to the new theme', when: 'Decided three weeks ago' },
-        ask: 'Shall I use the new theme?',
+      sources: ['Confluence', 'Jira', 'Outlook', 'Codebase'],
+      shots: {
+        graph: {
+          src: '/everyday/shots/mind-graph.jpg',
+          label: 'Piramal Mind: the knowledge graph',
+          want: 'The graph of everything it has read: documents, tickets, emails and code, joined up.',
+        },
+        talk: {
+          src: '/everyday/shots/mind-talk.jpg',
+          label: 'Piramal Mind: it talks back',
+          want: 'The engineer\'s request, what Piramal Mind read, and its question before anything is built.',
+        },
       },
-      accept: 'Use the new theme',
-      built: 'Built in the new theme',
+      request: { id: 'SC-2291', from: 'From the Lucknow sales team', text: 'Add AI steps to the Parameters page.' },
+      developer: 'Arjun, engineer, journey apps',
+      prompt: 'Add AI steps in the Parameters page.',
+      talksBack: {
+        lead: 'Before we work on this',
+        text: 'AI steps were planned for the Events tab.',
+        source: { id: 'SC-2104', title: 'AI steps go on the Events tab', when: 'Planned in a recent discussion' },
+        ask: 'Shall we cross-check this?',
+      },
+      accept: 'Ask Piramal Mind',
+      built: 'Built on the Events tab',
       connects: ['The request', 'The discussion', 'The code'],
       defect: { title: 'And when a defect comes in', text: 'It traces the ticket back to the change that caused it.' },
       line: 'It remembers. And it connects.',

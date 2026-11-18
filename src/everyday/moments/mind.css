@@ -1188,6 +1188,115 @@
    0.91u); what is read on it is held to a floor in real pixels:
    9 px at the least (8 px at 874 × 296, where --fl shrinks).
    ============================================================ */
+/* ---------- THE REAL SCREEN at the demo rest (content.ts → demo.shots.talk) ----------
+   The card is the real conversation (3:2), with the question and the one control under it. The
+   drawn prompt, head and text say the same thing, so they are not drawn. */
+.mind-real {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  margin-bottom: calc(var(--m) * 1);
+  border-radius: calc(var(--m) * 1.1);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(7, 26, 80, 0.14);
+}
+.mind-real .ev-shot {
+  --su: var(--m);
+}
+.mind-board .mind-prompt,
+.mind-board .mind-talk-head,
+.mind-board .mind-talk-text {
+  display: none;
+}
+.mind-board .mind-talk-in {
+  padding: calc(var(--m) * 1.1) calc(var(--m) * 1.1) calc(var(--m) * 1.1);
+}
+.mind-board .mind-ask {
+  padding: 0 calc(var(--m) * 0.6);
+}
+
+/* the drawn board (the opened Mind and its memory strip) gives way to the real screens */
+.mind-board .mind-panel,
+.mind-board .mind-mem {
+  display: none;
+}
+.mind-real {
+  background: #07070f;
+}
+.mind-g-talk {
+  visibility: hidden;
+  will-change: opacity;
+}
+/* the graph's clusters, named on it; and the context that flows from them */
+.mind-g {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.mind-g-src {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.mind-g-at,
+.mind-g-pulse,
+.mind-g-core {
+  position: absolute;
+  border-radius: 50%;
+}
+.mind-g-at {
+  left: calc(var(--m) * -0.55);
+  top: calc(var(--m) * -0.55);
+  width: calc(var(--m) * 1.1);
+  height: calc(var(--m) * 1.1);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 calc(var(--m) * 0.22) rgba(125, 211, 252, 0.55),
+    0 0 calc(var(--m) * 1.4) rgba(125, 211, 252, 0.9);
+}
+.mind-g-pulse {
+  left: calc(var(--m) * -0.45);
+  top: calc(var(--m) * -0.45);
+  width: calc(var(--m) * 0.9);
+  height: calc(var(--m) * 0.9);
+  background: #e0f4ff;
+  box-shadow: 0 0 calc(var(--m) * 1.2) calc(var(--m) * 0.3) rgba(125, 211, 252, 0.95);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+.mind-g-core {
+  width: calc(var(--m) * 3.4);
+  height: calc(var(--m) * 3.4);
+  margin: calc(var(--m) * -1.7) 0 0 calc(var(--m) * -1.7);
+  border: calc(var(--m) * 0.22) solid #e0f4ff;
+  box-shadow: 0 0 calc(var(--m) * 1.6) rgba(125, 211, 252, 0.9);
+  visibility: hidden;
+}
+.mind-g-tag {
+  position: absolute;
+  left: calc(var(--m) * 1.2);
+  top: calc(var(--m) * -1.15);
+  display: flex;
+  align-items: center;
+  height: calc(var(--m) * 2.3);
+  padding: 0 calc(var(--m) * 0.95);
+  border-radius: calc(var(--m) * 1.15);
+  background: #ffffff;
+  box-shadow: 0 calc(var(--m) * 0.4) calc(var(--m) * 1.2) rgba(0, 0, 0, 0.45);
+  font-size: calc(var(--m) * 1.2);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ev-navy);
+  white-space: nowrap;
+  transform-origin: 0 50%;
+  visibility: hidden;
+}
+.mind-g-src[data-side='left'] .mind-g-tag {
+  left: auto;
+  right: calc(var(--m) * 1.2);
+  transform-origin: 100% 50%;
+}
+
 @media (max-height: 480px) {
   .ev-moment[data-key='mind'] {
     --mind-k: calc(var(--fl) * 9.2); /* the board's smallest print */

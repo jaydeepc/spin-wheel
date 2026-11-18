@@ -32,7 +32,7 @@
 
 import gsap from 'gsap'
 import type { MindProduct } from '../content'
-import { TouchControl } from './parts'
+import { Shot, TouchControl } from './parts'
 import type { MomentEnv, MomentModule, PartProps } from './types'
 import './mind.css'
 
@@ -49,6 +49,21 @@ const lines = (text: string): string[] => {
   const out = found ? found.map((s) => s.trim()).filter(Boolean) : []
   return out.length ? out : [text]
 }
+
+/**
+ * The real graph (demo.shots.graph), and where things stand on it, in percent of the picture:
+ * the hub of each cluster that is named (demo.sources, in this order), and the node the context
+ * flows into. If the screenshot is replaced, these go with it.
+ */
+const GRAPH = {
+  core: [66.7, 64.9],
+  hubs: [
+    [25.5, 9.7],
+    [89, 14.3],
+    [12.6, 53.6],
+    [59.3, 83.8],
+  ],
+} as const
 
 // ====================================================================== GLYPHS
 type GlyphKind = 'code' | 'ticket' | 'talk'
@@ -139,7 +154,7 @@ function Before({ product }: P) {
           Old code
         </p>
         <p className="mind-b-code">
-          theme=<b>&quot;blue&quot;</b>
+          tab=<b>&quot;parameters&quot;</b>
         </p>
         <i className="mind-b-skel" />
       </div>
@@ -189,6 +204,24 @@ function Screen({ product }: P) {
 
         <div className="mind-talk">
           <div className="mind-talk-in">
+            {/* THE REAL SCREENS, in the card (the drawn prompt, head and text are not drawn: the
+                stylesheet hides them). First the knowledge graph, its clusters named: where the
+                context comes from. Then, as the run ends, the conversation: what it read, and its
+                question before anything is built. */}
+            <div className="mind-real">
+              <Shot shot={d.shots.graph} className="mind-g-shot" />
+              <div className="mind-g" aria-hidden="true">
+                <i className="mind-g-core" style={{ left: `${GRAPH.core[0]}%`, top: `${GRAPH.core[1]}%` }} />
+                {d.sources.slice(0, GRAPH.hubs.length).map((name, k) => (
+                  <span className="mind-g-src" data-side={GRAPH.hubs[k][0] > 70 ? 'left' : 'right'} style={{ left: `${GRAPH.hubs[k][0]}%`, top: `${GRAPH.hubs[k][1]}%` }} key={name}>
+                    <i className="mind-g-at" />
+                    <i className="mind-g-pulse" />
+                    <b className="mind-g-tag">{name}</b>
+                  </span>
+                ))}
+              </div>
+              <Shot shot={d.shots.talk} className="mind-g-talk" />
+            </div>
             <div className="mind-talk-head">
               <i className="mind-badge">
                 <MindGlyph />
@@ -198,7 +231,7 @@ function Screen({ product }: P) {
             </div>
             <p className="mind-talk-text">{tb.text}</p>
             <div className="mind-ask">
-              <p className="mind-ask-q">{tb.ask}</p>
+              <p className="mind-ask-q">{d.prompt}</p>
               <div className="mind-acceptWrap">
                 <TouchControl label={d.accept} className="mind-accept">
                   <span className="mind-accept-face">
@@ -463,7 +496,6 @@ function animate(env: MomentEnv<MindProduct>) {
     // Piramal Mind opens over the conversation, from the button itself…
     .to(panel, { autoAlpha: 1, duration: 0.01, ease: 'none' }, open)
     .to(panel, { clipPath: circle(reach), duration: 0.62, ease: 'power2.inOut' }, open)
-    .to(chat, { autoAlpha: 0, duration: 0.01, ease: 'none' }, open + 0.62)
     // …and at the head of it, its memory: what flows into it by itself, all the time
     .to(memIn, { autoAlpha: 1, duration: 0.12, ease: 'none' }, remember)
     .to(memIn, { y: 0, duration: 0.4, ease: E.snap }, remember)
@@ -493,6 +525,45 @@ function animate(env: MomentEnv<MindProduct>) {
     .to(stampBurst, { autoAlpha: 0.8, duration: 0.01, ease: 'none' }, hit)
     .to(stampBurst, { scale: 1.5, autoAlpha: 0, duration: 0.44, ease: 'power2.out' }, hit + 0.01)
   env.bump(run, hit, 2.4)
+
+  // ---------------------------------------------------------------- THE REAL SCREENS: the graph gives its context, then the conversation
+  // (The drawn board above is not shown any more: the stylesheet keeps it out. What plays is this.)
+  const real = $('.mind-real')
+  const tags = $$('.mind-g-tag')
+  const ats = $$('.mind-g-at')
+  const pulses = $$('.mind-g-pulse')
+  const gCore = $('.mind-g-core')
+  const talkShot = $('.mind-g-talk')
+  const rw = real.offsetWidth
+  const rh = real.offsetHeight
+  gsap.set(tags, { autoAlpha: 0, scale: 0.6 })
+  gsap.set(ats, { scale: 0 })
+  gsap.set(pulses, { autoAlpha: 0 })
+  gsap.set(gCore, { autoAlpha: 0, scale: 0.4 })
+  gsap.set(talkShot, { autoAlpha: 0 })
+  // the clusters are named as the card lands
+  demo.to(ats, { scale: 1, duration: 0.24, ease: 'back.out(3)', stagger: 0.07 }, 0.8).to(tags, { autoAlpha: 1, scale: 1, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.07 }, 0.84)
+  // he asks: the control leaves, and context flows in from every cluster, twice…
+  run.to(acceptWrap, { autoAlpha: 0, scale: 0.86, duration: 0.2, ease: 'power2.in' }, 0.16)
+  ;[0.22, 0.98].forEach((wave) => {
+    pulses.forEach((pulse, k) => {
+      const hub = GRAPH.hubs[k] ?? GRAPH.hubs[0]
+      const to = { x: ((GRAPH.core[0] - hub[0]) / 100) * rw, y: ((GRAPH.core[1] - hub[1]) / 100) * rh }
+      const at = wave + k * 0.1
+      run
+        .set(pulse, { x: 0, y: 0 }, at)
+        .to(pulse, { autoAlpha: 1, duration: 0.06, ease: 'none' }, at)
+        .to(pulse, { x: to.x, y: to.y, duration: 0.5, ease: 'power2.in' }, at)
+        .to(pulse, { autoAlpha: 0, duration: 0.06, ease: 'none' }, at + 0.5)
+    })
+    // …into the one place that answers
+    run
+      .to(gCore, { autoAlpha: 0.9, scale: 1, duration: 0.12, ease: 'power2.out' }, wave + 0.6)
+      .to(gCore, { autoAlpha: 0, scale: 2.4, duration: 0.4, ease: 'power2.out' }, wave + 0.74)
+  })
+  // …and the conversation comes up: what it read, and its question before anything is built
+  env.leave(run, tags, 1.9, { stagger: 0.03, dy: 0.3 })
+  run.to(talkShot, { autoAlpha: 1, duration: 0.4, ease: 'power1.inOut' }, 1.95)
 
   // ---------------------------------------------------------------- result: it connects them. One pulse runs the thread, as the headline says so
   result
