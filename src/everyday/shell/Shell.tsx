@@ -63,7 +63,7 @@ export function Header() {
   const chapter: Product | undefined = ENG[0]
   const minutes = eng ? 19 * 60 : product ? minutesOf(product.time) : scene === 'finale' ? 18 * 60 + 30 : 8 * 60 + 30
   const time = eng ? (product ?? chapter)?.time : product ? product.time : 'Tuesday'
-  const place = eng ? (product ?? chapter)?.place : product ? product.place : 'Lucknow'
+  const place = eng ? (product ?? chapter)?.place : product ? product.place : 'Bangalore'
   return (
     <header className="ev-header">
       {/* eslint-disable-next-line @next/next/no-img-element */}
