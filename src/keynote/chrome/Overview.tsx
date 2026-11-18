@@ -7,20 +7,16 @@
  */
 
 import { useEffect, useRef } from 'react'
-import { SECTIONS, SLIDES, pad, type Slide } from '../deck'
+import { pad } from '../deck'
+import { useDeck } from '../core/active'
 import { director } from '../core/director'
 import { useKeynote } from '../core/store'
-
-const GROUPS: { letter: string; name: string; slides: Slide[] }[] = [
-  { letter: '', name: 'Opening', slides: SLIDES.filter((s) => s.section === 'open') },
-  ...SECTIONS.map((sec) => ({ letter: sec.letter, name: sec.name, slides: SLIDES.filter((s) => s.section === sec.key) })),
-  { letter: '', name: 'Close', slides: SLIDES.filter((s) => s.section === 'close') },
-]
 
 export default function Overview() {
   const open = useKeynote((s) => s.overview)
   const n = useKeynote((s) => s.n)
   const ref = useRef<HTMLDivElement>(null)
+  const GROUPS = useDeck().groups
 
   useEffect(() => {
     if (!open) return

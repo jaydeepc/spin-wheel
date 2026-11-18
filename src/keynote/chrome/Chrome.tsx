@@ -15,7 +15,8 @@
  * `?chrome=0` hides all of it without moving anything.
  */
 
-import { COUNT, SECTIONS, pad, slide as slideOf } from '../deck'
+import { pad } from '../deck'
+import { slideIn, useDeck, type DeckDef } from '../core/active'
 import { director } from '../core/director'
 import { useKeynote } from '../core/store'
 import { BRAND } from '../kit/brand'
@@ -23,10 +24,13 @@ import { BRAND } from '../kit/brand'
 function Rail() {
   const n = useKeynote((s) => s.n)
   const show = useKeynote((s) => s.chrome.rail)
-  const cur = slideOf(n).section
+  const deck = useDeck()
+  // a deck without sections has no rail (and its breadcrumb then begins the bar)
+  if (!deck.sections.length) return null
+  const cur = slideIn(deck, n).section
   return (
     <nav className="kn-rail" data-show={show ? 1 : 0} aria-label="Sections">
-      {SECTIONS.map((sec, i) => {
+      {deck.sections.map((sec, i) => {
         const state = sec.key === cur ? 'on' : n > sec.last ? 'done' : 'ahead'
         return (
           <span key={sec.key} style={{ display: 'contents' }}>
@@ -62,9 +66,9 @@ const plain = (t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, '')
  * the section's own name ("AI – UNDER THE HOOD / OPEN ARCHITECTURE" in section F), and the rail
  * beside it already says that: the repeat is dropped, the rest is shown.
  */
-export function crumbParts(n: number): { text: string; sep: string | null; last: boolean }[] {
-  const s = slideOf(n)
-  const sec = SECTIONS.find((x) => x.key === s.section)
+export function crumbParts(deck: DeckDef, n: number): { text: string; sep: string | null; last: boolean }[] {
+  const s = slideIn(deck, n)
+  const sec = deck.sections.find((x) => x.key === s.section)
   const parts = s.crumb.map((text, i) => ({ text, sep: i > 0 ? (s.crumbSep?.[i - 1] ?? '/') : null, last: i === s.crumb.length - 1 && i > 0 }))
   if (sec && parts.length > 1) {
     const a = plain(parts[0].text)
@@ -80,10 +84,11 @@ export function crumbParts(n: number): { text: string; sep: string | null; last:
 function Crumb() {
   const n = useKeynote((s) => s.n)
   const show = useKeynote((s) => s.chrome.crumb)
-  const parts = crumbParts(n)
+  const deck = useDeck()
+  const parts = crumbParts(deck, n)
   if (!parts.length) return <div className="kn-crumb" data-show="0" style={{ border: 0 }} />
   return (
-    <div className="kn-crumb" data-show={show ? 1 : 0} data-crumb={slideOf(n).crumb.join(' / ')}>
+    <div className="kn-crumb" data-show={show ? 1 : 0} data-alone={deck.sections.length ? undefined : 1} data-crumb={slideIn(deck, n).crumb.join(' / ')}>
       {parts.map((part, i) => [
         part.sep && (
           <span key={`sep-${i}-${part.text}`} className="kn-crumb-sep" aria-hidden="true">
@@ -111,6 +116,7 @@ function Nav() {
   const beatIndex = useKeynote((s) => s.beatIndex)
   const beatCount = useKeynote((s) => s.beatCount)
   const counter = useKeynote((s) => s.chrome.counter)
+  const COUNT = useDeck().slides.length
   const atStart = n === 1 && beatIndex === 0
   const atEnd = n === COUNT && beatIndex >= beatCount - 1 && resting
   const press = (fn: () => void) => (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -120,7 +126,7 @@ function Nav() {
   return (
     <div className="kn-nav" data-state={resting ? 'ready' : 'moving'}>
       <span className="kn-count" data-show={counter ? 1 : 0} aria-label={`Slide ${n} of ${COUNT}`}>
-        {pad(n)} / {COUNT}
+        {pad(n)} / {pad(COUNT)}
       </span>
       <button
         type="button"
@@ -152,6 +158,7 @@ export function Progress() {
   const n = useKeynote((s) => s.n)
   const beatIndex = useKeynote((s) => s.beatIndex)
   const beatCount = useKeynote((s) => s.beatCount)
+  const COUNT = useDeck().slides.length
   const p = (n - 1 + (beatIndex + 1) / Math.max(1, beatCount)) / COUNT
   return (
     <div className="kn-progress" aria-hidden="true">

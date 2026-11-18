@@ -1,4 +1,4 @@
-import { COUNT } from '../deck'
+import { count } from './active'
 
 /**
  * Hold URLs: for checking a frame, and later for recording.
@@ -37,7 +37,7 @@ export function readHold(): Hold {
   const dt = p.has('dt') ? Number(p.get('dt')) : NaN
   return {
     asked,
-    s: asked ? Math.min(COUNT, Math.max(1, Math.round(raw))) : 1,
+    s: asked ? Math.min(count(), Math.max(1, Math.round(raw))) : 1,
     at: p.get('at') || null,
     dt: Number.isFinite(dt) ? dt : null,
     chrome: !(p.get('chrome') === '0' || p.get('chrome') === 'false'),

@@ -1,0 +1,312 @@
+/* /ir slide 04 · "…driven by improving operating leverage". Everything is prefixed ir04-. */
+
+.ir04 {
+  position: absolute;
+  inset: 0;
+  --ir04-nim: #0d1f57;
+  --ir04-nim-early: #8e9cc6;
+  --ir04-opex: #f16443;
+  --ir04-opex-early: #f7b29d;
+  --ir04-credit: #7f8cab;
+  --ir04-credit-early: #c3cbdc;
+  --ir04-roaum: #2d6ad1;
+  --ir04-roaum-early: #9cc3f3;
+  --ir04-up: #1c9a56;
+  --ir04-up-ink: #128046;
+  --ir04-ghost: #dfe7f5;
+}
+
+/* ---- the words above the path ---- */
+.ir04-sub,
+.ir04-excl,
+.ir04-note {
+  position: absolute;
+  left: var(--kn-x0);
+  margin: 0;
+  visibility: hidden;
+  white-space: nowrap;
+}
+.ir04-sub {
+  top: calc(var(--u) * 12.15);
+  font-size: calc(var(--u) * 1.75);
+  line-height: 1.1;
+  color: var(--kn-fg);
+}
+.ir04-sub b {
+  font-weight: 700;
+}
+.ir04-sub span {
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 400;
+  color: var(--kn-fg-soft);
+}
+.ir04-excl {
+  top: calc(var(--u) * 14.55);
+  font-size: calc(var(--u) * 1.02);
+  color: var(--kn-azure-ink);
+}
+.ir04-excl sup {
+  font-size: 0.85em;
+  line-height: 0;
+}
+.ir04-note {
+  top: calc(var(--u) * 48.75);
+  font-size: calc(var(--u) * 0.85);
+  line-height: 1.2;
+  color: var(--kn-fg-soft);
+}
+.ir04-note b {
+  margin-right: calc(var(--u) * 0.9);
+  font-weight: 700;
+  color: var(--kn-fg);
+}
+
+/* ---- the one drawing ---- */
+.ir04-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ir04-svg text {
+  font-family: var(--kn-font);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the path */
+.ir04-band--tint {
+  fill: #dcebfb;
+  opacity: 0.75;
+}
+.ir04-band-label {
+  font-weight: 700;
+  fill: var(--kn-azure-ink);
+}
+.ir04-ticktext,
+.ir04-q {
+  fill: var(--kn-fg-soft);
+}
+.ir04-path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+.ir04-tick {
+  opacity: 1;
+  stroke-opacity: 0.13;
+}
+.ir04-fig,
+.ir04-tag {
+  font-weight: 700;
+}
+/* figures stand clear of the rules they cross */
+.ir04-fig,
+.ir04-tag,
+.ir04-target-line,
+.ir04-target-fig {
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 3.4;
+  stroke-linejoin: round;
+}
+.ir04-dot {
+  stroke: #fff;
+  stroke-width: 1.6;
+}
+.ir04-series--grey .ir04-path {
+  stroke: #a3acbf;
+}
+.ir04-series--grey .ir04-dot {
+  fill: #a3acbf;
+}
+.ir04-series--grey .ir04-fig,
+.ir04-series--grey .ir04-tag {
+  fill: #77819a;
+}
+.ir04-series--navy .ir04-path {
+  stroke: var(--kn-navy);
+}
+.ir04-series--navy .ir04-dot {
+  fill: var(--kn-navy);
+}
+.ir04-series--navy .ir04-fig,
+.ir04-series--navy .ir04-tag {
+  fill: var(--kn-navy);
+}
+.ir04-series--azure .ir04-path {
+  stroke: var(--ir04-roaum);
+  stroke-width: 4.6;
+}
+.ir04-series--azure .ir04-dot {
+  fill: var(--ir04-roaum);
+}
+.ir04-series--azure .ir04-fig,
+.ir04-series--azure .ir04-tag {
+  fill: var(--ir04-roaum);
+}
+
+/* the target */
+.ir04-target-line {
+  fill: var(--kn-fg-soft);
+}
+.ir04-target-arrow {
+  fill: none;
+  stroke: var(--kn-fg-soft);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ir04-ring {
+  fill: rgba(45, 106, 209, 0.1);
+  stroke: var(--ir04-roaum);
+  stroke-width: 1.5;
+  stroke-dasharray: 3.2 2.6;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: ir04-ring 9s linear infinite;
+}
+.ir04-core {
+  fill: var(--ir04-roaum);
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: ir04-core 2.6s ease-in-out infinite;
+}
+.ir04-target-fig {
+  font-weight: 700;
+  fill: var(--ir04-roaum);
+}
+@keyframes ir04-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ir04-core {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.22);
+  }
+}
+
+/* the waterfall */
+.ir04-result {
+  fill: rgba(255, 255, 255, 0.62);
+  stroke: rgba(45, 106, 209, 0.32);
+  stroke-width: 1.1;
+  visibility: hidden;
+}
+.ir04-term {
+  font-weight: 700;
+  fill: var(--kn-fg);
+  visibility: hidden;
+}
+.ir04-op {
+  visibility: hidden;
+}
+.ir04-op path {
+  fill: none;
+  stroke: var(--kn-flame-ink);
+  stroke-width: 2.3;
+  stroke-linecap: round;
+}
+.ir04-split {
+  stroke: var(--kn-fg);
+  stroke-width: 0.9;
+  stroke-dasharray: 3 3.4;
+  stroke-opacity: 0.3;
+  visibility: hidden;
+}
+.ir04-ghost {
+  fill: var(--ir04-ghost);
+  opacity: 0.8;
+}
+.ir04-bar--nim.ir04-bar--early {
+  fill: var(--ir04-nim-early);
+}
+.ir04-bar--nim.ir04-bar--late {
+  fill: var(--ir04-nim);
+}
+.ir04-bar--opex.ir04-bar--early {
+  fill: var(--ir04-opex-early);
+}
+.ir04-bar--opex.ir04-bar--late {
+  fill: var(--ir04-opex);
+}
+.ir04-bar--credit.ir04-bar--early {
+  fill: var(--ir04-credit-early);
+}
+.ir04-bar--credit.ir04-bar--late {
+  fill: var(--ir04-credit);
+}
+.ir04-bar--roaum.ir04-bar--early {
+  fill: var(--ir04-roaum-early);
+}
+.ir04-bar--roaum.ir04-bar--late {
+  fill: var(--ir04-roaum);
+}
+.ir04-cap {
+  fill: var(--ir04-up);
+}
+.ir04-val {
+  font-weight: 700;
+  fill: var(--kn-fg);
+  visibility: hidden;
+}
+.ir04-cat {
+  fill: var(--kn-fg-soft);
+  visibility: hidden;
+}
+.ir04-bar--roaum {
+  visibility: hidden;
+}
+.ir04-val--result {
+  fill: var(--kn-navy);
+}
+.ir04-pbase {
+  stroke-opacity: 0.55;
+}
+.ir04-saved {
+  visibility: hidden;
+}
+.ir04-saved-box {
+  fill: rgba(241, 100, 67, 0.1);
+  stroke: var(--ir04-opex);
+  stroke-width: 1.2;
+  stroke-dasharray: 3.2 2.6;
+}
+.ir04-saved-tick {
+  stroke: var(--ir04-opex);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.ir04-lift-level {
+  stroke: var(--ir04-up);
+  stroke-width: 1.3;
+  stroke-dasharray: 2.6 2.4;
+  visibility: hidden;
+}
+.ir04-lift-arrow {
+  visibility: hidden;
+}
+.ir04-lift-stem,
+.ir04-lift-head {
+  fill: none;
+  stroke: var(--ir04-up);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ir04-lift-in {
+  visibility: hidden;
+}
+.ir04-lift-tri {
+  fill: var(--ir04-up);
+}
+.ir04-lift-fig {
+  font-weight: 700;
+  fill: var(--ir04-up-ink);
+}

@@ -25,9 +25,10 @@
  */
 
 import gsap from 'gsap'
-import { COUNT, slide as slideOf, type Slide } from '../deck'
+import type { Slide } from '../deck'
 import { baseLook, ZERO_LOOK, type Backdrop } from '../three/backdrop'
 import { NoWebGL } from '../three/sceneCanvas'
+import { count, slideOf } from './active'
 import { readHold, writeSlide, type Hold } from './hold'
 import { motion, T } from './motion'
 import { loadScene, preload, warm } from './registry'
@@ -134,7 +135,7 @@ class Director {
     if (this.index < m.rests.length - 1) this.playTo(this.index + 1)
     else {
       const last = m.slideAt[m.slideAt.length - 1]
-      if (last < COUNT) void this.go(last + 1, { kind: 'first' })
+      if (last < count()) void this.go(last + 1, { kind: 'first' })
     }
   }
 
@@ -165,7 +166,7 @@ class Director {
   }
 
   private async go(n: number, arrive: Arrive, first = false) {
-    n = Math.min(COUNT, Math.max(1, Math.round(n)))
+    n = Math.min(count(), Math.max(1, Math.round(n)))
     const token = ++this.token
     const s = slideOf(n)
     this.phase = 'loading'
@@ -610,7 +611,7 @@ class Director {
     if (k === 'Enter' && st.typed) {
       const n = Number(st.typed)
       set({ typed: '' })
-      if (n >= 1 && n <= COUNT) this.jump(n)
+      if (n >= 1 && n <= count()) this.jump(n)
       return true
     }
     if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') {
@@ -626,7 +627,7 @@ class Director {
       return true
     }
     if (k === 'End') {
-      this.jump(COUNT)
+      this.jump(count())
       return true
     }
     return false

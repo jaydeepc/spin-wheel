@@ -14,13 +14,14 @@ import { Component, useEffect, useLayoutEffect, useRef, type ReactNode } from 'r
 import { brandFontsReady } from '@/brand/font'
 import Chrome, { Progress } from './chrome/Chrome'
 import Overview from './chrome/Overview'
+import { DeckContext, setDeck, slideIn, useDeck, type DeckDef } from './core/active'
 import { director } from './core/director'
 import { readHold } from './core/hold'
 import { motion } from './core/motion'
 import { startPump } from './core/pump'
 import { useKeynote, type Layer } from './core/store'
-import { pad, slide as slideOf } from './deck'
-import { stub } from './scenes/_shared/stub'
+import { pad } from './deck'
+import { KEYNOTE_DECK } from './keynoteDeck'
 import { Backdrop } from './three/backdrop'
 import { hasWebGL } from './three/sceneCanvas'
 import './keynote.css'
@@ -45,7 +46,7 @@ function SceneLayer({ layer }: { layer: Layer }) {
   const layerRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const tick = useKeynote((s) => s.layoutTick)
-  const s = slideOf(layer.n)
+  const s = slideIn(useDeck(), layer.n)
   // build before the first paint, so the scene's starting states are never seen undone
   useLayoutEffect(() => {
     if (!layerRef.current || !rootRef.current) return
@@ -64,7 +65,10 @@ function SceneLayer({ layer }: { layer: Layer }) {
   )
 }
 
-export default function Keynote() {
+/** `deck`: the deck to play (core/active.tsx). The keynote's own, unless a route gives another (/ir). */
+export default function Keynote({ deck = KEYNOTE_DECK }: { deck?: DeckDef }) {
+  // the director and its helpers read the deck from here; they only ever run in the browser
+  if (typeof window !== 'undefined') setDeck(deck)
   const rootRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -74,7 +78,7 @@ export default function Keynote() {
   const ready = useKeynote((s) => s.ready)
   const layers = useKeynote((s) => s.layers)
   const themeHold = useKeynote((s) => s.themeHold)
-  const cur = slideOf(n)
+  const cur = slideIn(deck, n)
 
   useEffect(() => {
     const root = rootRef.current
@@ -85,7 +89,8 @@ export default function Keynote() {
     motion()
     director.hold = readHold()
     director.stageEl = stage
-    director.fallback = stub
+    setDeck(deck)
+    director.fallback = deck.stub
     root.dataset.chrome = director.hold.chrome ? '1' : '0'
     // &still=1: nothing idles, so two shots of one frame are identical (the chrome's own transitions too)
     if (director.hold.still) root.dataset.still = '1'
@@ -157,9 +162,11 @@ export default function Keynote() {
       director.backdrop = null
       backdrop?.dispose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
+    <DeckContext.Provider value={deck}>
     <div
       ref={rootRef}
       className="kn-root"
@@ -180,5 +187,6 @@ export default function Keynote() {
       <Progress />
       <Overview />
     </div>
+    </DeckContext.Provider>
   )
 }

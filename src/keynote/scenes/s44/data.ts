@@ -19,7 +19,7 @@ export const STEPS: Step[] = [
   { key: 'link', lines: ['Shares Journey', 'link on WhatsApp'], flame: 'WhatsApp', body: ['Real time sharing', 'while on the call'] }, // t05, t06
   { key: 'human', lines: ['Drop-off:', 'Human assists'], flame: 'Human assists', body: ['An advisor helps to', 'continue the journey'] }, // t07, t08
   { key: 'customise', lines: ['Customise', 'every call'], flame: 'every call', body: ['Shaped by the customer’s', 'offer and profile.'] }, // t09, t10
-  { key: 'payout', lines: ['Stay through', 'payout'], flame: '', body: ['Voice support, all', 'the way to disbursal.'], label: '05 DISBURSE' }, // t12, t13, t11
+  { key: 'payout', lines: ['Stay through', 'payout'], flame: '', body: ['Voice support, all', 'the way to disbursal.'], label: 'DISBURSE' }, // t12, t13, t11
 ]
 
 /** Under the line, hanging between the steps (data.json → under). */

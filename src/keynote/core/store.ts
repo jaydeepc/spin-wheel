@@ -42,7 +42,7 @@ export interface KeynoteState {
   themeHold: 'light' | 'dark' | null
 }
 
-export const useKeynote = create<KeynoteState>(() => ({
+export const INITIAL: KeynoteState = {
   n: 1,
   beat: '',
   beatIndex: 0,
@@ -56,4 +56,6 @@ export const useKeynote = create<KeynoteState>(() => ({
   typed: '',
   layoutTick: 0,
   themeHold: null,
-}))
+}
+
+export const useKeynote = create<KeynoteState>(() => ({ ...INITIAL }))

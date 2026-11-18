@@ -1,0 +1,284 @@
+/* /ir slides 07 and 08 · the close: "Thank You!" and "Q&A" on one ground */
+.ir07 {
+  position: absolute;
+  inset: 0;
+  color: var(--kn-fg);
+}
+
+/* ---- the circuit: the SVG's viewBox is the stage; the lines run on beyond it ---- */
+.ir07-circuit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.ir07-line {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 0.15;
+  stroke-opacity: 0.86;
+  visibility: hidden;
+}
+.ir07-dot-base {
+  fill: var(--kn-flame);
+  visibility: hidden;
+}
+.ir07-lit {
+  opacity: 0;
+}
+.ir07-lit-core {
+  fill: #ffe6da;
+}
+/* a pulse: a dash whose length is set per trace (circuit.tsx), parked beyond the trace's end */
+.ir07-pulse,
+.ir07-run {
+  fill: none;
+  stroke-linecap: butt;
+}
+.ir07-pulse {
+  stroke-dasharray: 6 400;
+  stroke-dashoffset: -103;
+}
+.ir07-pulse--glow {
+  stroke: var(--kn-flame);
+  stroke-width: 0.85;
+  stroke-opacity: 0.3;
+}
+.ir07-pulse--core {
+  stroke: #ffe1d3;
+  stroke-width: 0.24;
+}
+.ir07-idle {
+  visibility: hidden;
+}
+.ir07-run {
+  stroke-dasharray: 4 400;
+  stroke-dashoffset: -103;
+  animation: ir07-run 14s linear infinite;
+}
+.ir07-run--glow {
+  stroke: var(--kn-flame);
+  stroke-width: 0.7;
+  stroke-opacity: 0.22;
+}
+.ir07-run--core {
+  stroke: #ffd3c0;
+  stroke-width: 0.2;
+  stroke-opacity: 0.9;
+}
+/* the idle pulse enters at the stage's edge (--ir07-a, per trace), crosses its trace in 40% of its
+   cycle, then is parked beyond the trace's end and the line rests */
+@keyframes ir07-run {
+  0% {
+    stroke-dashoffset: var(--ir07-a, 4);
+  }
+  40%,
+  100% {
+    stroke-dashoffset: -103;
+  }
+}
+/* a dot glints as the idle pulse passes it (its delay is set per dot, in circuit.tsx) */
+.ir07-glint {
+  opacity: 0;
+  animation: ir07-glint 14s linear infinite;
+}
+@keyframes ir07-glint {
+  0% {
+    opacity: 0;
+  }
+  3% {
+    opacity: 0.85;
+  }
+  13%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---- the light behind the words: the clear blue, fading to nothing ---- */
+.ir07-glow {
+  position: absolute;
+  left: calc(var(--u) * 18);
+  top: calc(var(--u) * 7.1);
+  width: calc(var(--u) * 64);
+  height: calc(var(--u) * 42);
+  visibility: hidden;
+  pointer-events: none;
+}
+.ir07-glow i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(67, 132, 212, 0.34), rgba(67, 132, 212, 0.13) 52%, rgba(67, 132, 212, 0) 100%);
+  animation: ir07-breathe 11s ease-in-out infinite alternate;
+}
+@keyframes ir07-breathe {
+  from {
+    opacity: 0.78;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* ---- slide 7 ---- */
+.ir07-hero {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 21.4);
+}
+.ir07-thanks {
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 10);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  white-space: nowrap;
+  color: var(--kn-fg);
+}
+/* first light: a hairline under the words, bright in the middle, gone at its ends */
+.ir07-dawn {
+  position: absolute;
+  left: calc(var(--u) * 32);
+  top: calc(var(--u) * 12.6);
+  width: calc(var(--u) * 36);
+  height: max(1px, calc(var(--u) * 0.12));
+  background: linear-gradient(90deg, rgba(241, 100, 67, 0), rgba(255, 190, 164, 0.95) 50%, rgba(241, 100, 67, 0));
+}
+.ir07-contact {
+  position: absolute;
+  inset: 0;
+}
+.ir07-for,
+.ir07-mail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  visibility: hidden;
+}
+.ir07-for {
+  top: calc(var(--u) * 24.2);
+  font-size: calc(var(--u) * 1.6);
+  line-height: 1.2;
+  color: var(--kn-fg-soft);
+}
+.ir07-mail {
+  top: calc(var(--u) * 26.6);
+  font-size: calc(var(--u) * 3.1);
+  line-height: 1.2;
+  font-weight: 300;
+  letter-spacing: 0.005em;
+  color: var(--kn-fg);
+}
+.ir07-sep {
+  position: absolute;
+  left: calc(var(--u) * 50);
+  top: calc(var(--u) * 35.4);
+  width: max(1px, calc(var(--u) * 0.08));
+  height: calc(var(--u) * 5.4);
+  background: var(--kn-hair);
+}
+.ir07-person {
+  position: absolute;
+  top: calc(var(--u) * 35.6);
+  width: calc(var(--u) * 30);
+  visibility: hidden;
+}
+.ir07-person--0 {
+  left: calc(var(--u) * 17.4);
+  text-align: right;
+}
+.ir07-person--1 {
+  left: calc(var(--u) * 52.6);
+  text-align: left;
+}
+.ir07-person b {
+  display: block;
+  font-size: calc(var(--u) * 2.2);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-fg);
+}
+.ir07-person span {
+  display: block;
+  margin-top: calc(var(--u) * 0.5);
+  font-size: calc(var(--u) * 1.4);
+  line-height: 1.2;
+  color: var(--kn-fg-soft);
+}
+
+/* ---- slide 8 ---- */
+.ir07-qa {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ir07-qa-word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 17.2);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 19);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--kn-fg);
+}
+/* each letter rises through its own mask (room for the Q's tail inside it) */
+.ir07-qa-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.04em 0.03em 0.2em;
+  margin: -0.04em -0.03em -0.2em;
+}
+.ir07-qa-l {
+  display: inline-block;
+  will-change: transform;
+}
+.ir07-qa-l--amp {
+  color: var(--kn-flame);
+  font-weight: 300;
+  padding: 0 0.06em;
+}
+.ir07-qa-rule {
+  position: absolute;
+  left: calc(var(--u) * 34);
+  top: calc(var(--u) * 39.4);
+  width: calc(var(--u) * 32);
+  height: max(1px, calc(var(--u) * 0.12));
+  background: linear-gradient(90deg, rgba(241, 100, 67, 0), rgba(255, 190, 164, 0.95) 50%, rgba(241, 100, 67, 0));
+}
+
+/* going Back, the timeline runs fast in reverse: its pulses and flares are not shown then */
+.ir07--back .ir07-pulse,
+.ir07--back .ir07-lit {
+  visibility: hidden;
+}
+
+/* ---- held frames and less motion: nothing idles ---- */
+.ir07--still .ir07-idle {
+  display: none;
+}
+.ir07--still .ir07-glow i {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ir07-idle {
+    display: none;
+  }
+  .ir07-glow i {
+    animation: none;
+  }
+}

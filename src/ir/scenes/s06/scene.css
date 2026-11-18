@@ -1,0 +1,362 @@
+/* /ir slide 06 · growth on the left, return on the right, the peers under both, the driver last */
+.ir06 {
+  position: absolute;
+  inset: 0;
+}
+.ir06 .kn-chart text {
+  font-family: var(--kn-font);
+}
+.ir06-col {
+  position: absolute;
+  top: calc(var(--u) * 16.3);
+}
+.ir06-col--growth {
+  left: var(--kn-x0);
+  width: calc(var(--u) * 42.8);
+}
+.ir06-col--roe {
+  left: calc(var(--u) * 52);
+  width: calc(var(--u) * 43.8);
+}
+.ir06-title {
+  margin: 0;
+  font-size: calc(var(--u) * 1.6);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.ir06-divide {
+  position: absolute;
+  left: calc(var(--u) * 49.4);
+  top: calc(var(--u) * 16.6);
+  width: calc(var(--u) * 0.08);
+  height: calc(var(--u) * 19.4);
+  background: var(--kn-hair);
+}
+
+/* ---------------------------------------------------------------- the growth chart */
+.ir06-chart {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 3.1);
+}
+.ir06-bar {
+  fill: var(--kn-azure);
+}
+.ir06-bar--now {
+  fill: var(--kn-navy);
+}
+.ir06 .ir06-val {
+  fill: #fff;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ir06-line {
+  stroke: var(--kn-flame);
+  stroke-width: 2.6;
+}
+.ir06-dot {
+  fill: #fff;
+  stroke: var(--kn-flame);
+  stroke-width: 2.2;
+  visibility: hidden;
+}
+.ir06 .ir06-pct {
+  fill: var(--kn-flame-ink);
+  font-weight: 700;
+  visibility: hidden;
+}
+.ir06-legend {
+  visibility: hidden;
+}
+.ir06 .ir06-legend text {
+  fill: var(--kn-fg-soft);
+}
+.ir06-legend-bar {
+  fill: var(--kn-azure);
+}
+.ir06-legend-line {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+.ir06-legend-dot {
+  fill: #fff;
+  stroke: var(--kn-flame);
+  stroke-width: 1.8;
+}
+.ir06-group path {
+  fill: none;
+  stroke: var(--kn-fg);
+  stroke-width: 1;
+  opacity: 0.4;
+}
+.ir06 .ir06-group text {
+  fill: var(--kn-fg-soft);
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- the formula */
+.ir06-formula {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 4.6);
+  width: 100%;
+  height: calc(var(--u) * 13);
+}
+.ir06-term {
+  position: absolute;
+  top: 0;
+  width: calc(var(--u) * 11.6);
+}
+.ir06-term[data-i='0'] {
+  left: 0;
+}
+.ir06-term[data-i='1'] {
+  left: calc(var(--u) * 16.1);
+}
+.ir06-term[data-i='2'] {
+  left: calc(var(--u) * 32.2);
+}
+.ir06-tile {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: calc(var(--u) * 0.35);
+  height: calc(var(--u) * 9.8);
+  border-radius: calc(var(--u) * 1.3);
+  background: #fff;
+  box-shadow: var(--kn-shadow);
+  visibility: hidden;
+}
+.ir06-term[data-i='2'] .ir06-tile {
+  background: linear-gradient(155deg, #f47a55 0%, #eb542c 78%);
+  box-shadow:
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2.2) rgba(235, 84, 44, 0.32),
+    var(--kn-shadow);
+}
+.ir06-fig {
+  font-size: calc(var(--u) * 4.5);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--kn-ink);
+}
+.ir06-word {
+  font-size: calc(var(--u) * 1.65);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--kn-azure-ink);
+}
+.ir06-term[data-i='2'] .ir06-fig,
+.ir06-term[data-i='2'] .ir06-word {
+  color: #fff;
+}
+.ir06-reading {
+  margin: calc(var(--u) * 0.85) 0 0;
+  font-size: calc(var(--u) * 1.05);
+  line-height: 1.2;
+  font-style: italic;
+  font-weight: 700;
+  text-align: center;
+  color: var(--kn-muted);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.ir06-op {
+  position: absolute;
+  top: calc(var(--u) * 3.2);
+  width: calc(var(--u) * 3.4);
+  height: calc(var(--u) * 3.4);
+  fill: none;
+  stroke: var(--kn-navy);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+.ir06-op--times {
+  left: calc(var(--u) * 12.15);
+}
+.ir06-op--equals {
+  left: calc(var(--u) * 28.25);
+}
+
+/* ---------------------------------------------------------------- the peers */
+.ir06-floor {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 37.6);
+  width: calc(var(--u) * 91.6);
+  height: calc(var(--u) * 0.08);
+  background: var(--kn-hair);
+}
+.ir06-peers-title {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 38.7);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-size: calc(var(--u) * 1.15);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-fg-soft);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.ir06-key {
+  display: inline-block;
+  margin-right: calc(var(--u) * 0.6);
+}
+.ir06-key--peer {
+  width: calc(var(--u) * 0.24);
+  height: calc(var(--u) * 1.3);
+  border-radius: 999px;
+  background: var(--kn-navy);
+}
+.ir06-key--us {
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 0.6);
+  margin-left: calc(var(--u) * 2.4);
+  border-radius: 999px;
+  background: var(--kn-flame);
+}
+.ir06-peers-us {
+  color: var(--kn-flame-ink);
+}
+.ir06-bench {
+  position: absolute;
+  top: calc(var(--u) * 40.5);
+  height: calc(var(--u) * 6.4);
+}
+.ir06-bench[data-k='0'] {
+  left: var(--kn-x0);
+}
+.ir06-bench[data-k='1'] {
+  left: calc(var(--u) * 52);
+}
+.ir06-bench-label {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 2.35);
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.ir06-track {
+  position: absolute;
+  left: calc(var(--u) * 9.6);
+  top: 0;
+}
+.ir06-rail {
+  fill: var(--kn-navy);
+  fill-opacity: 0.12;
+}
+.ir06-ours {
+  visibility: hidden;
+}
+.ir06-ours-head {
+  fill: #f16443;
+  fill-opacity: 0.35;
+}
+.ir06 .ir06-ours-text {
+  fill: var(--kn-flame-ink);
+  font-weight: 700;
+  visibility: hidden;
+}
+.ir06-peer {
+  visibility: hidden;
+}
+.ir06-peer path {
+  fill: none;
+  stroke: var(--kn-navy);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.ir06-peer circle {
+  fill: #fff;
+  stroke: var(--kn-navy);
+  stroke-width: 2.6;
+}
+.ir06 .ir06-peer-text {
+  fill: var(--kn-ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- the way to the return (on the RoE track) */
+.ir06-track {
+  overflow: visible;
+}
+.ir06-way-a,
+.ir06-way-b {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 4;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+.ir06-way-b {
+  stroke-width: 3;
+  stroke-dasharray: 1 7;
+  stroke-opacity: 0.75;
+}
+.ir06-way-now {
+  fill: #fff;
+  stroke: var(--kn-flame);
+  stroke-width: 2.8;
+  visibility: hidden;
+}
+.ir06-way-next {
+  fill: var(--kn-flame);
+  stroke: #fff;
+  stroke-width: 2.4;
+  visibility: hidden;
+}
+.ir06 .ir06-way-now-text,
+.ir06 .ir06-way-next-text,
+.ir06 .ir06-way-caption {
+  font-weight: 700;
+  visibility: hidden;
+}
+.ir06 .ir06-way-now-text {
+  fill: var(--kn-fg-soft);
+}
+.ir06 .ir06-way-next-text {
+  fill: var(--kn-flame-ink);
+}
+.ir06 .ir06-way-caption {
+  fill: #b03a16;
+}
+
+/* ---------------------------------------------------------------- the driver: the closing statement, where the chart stood */
+.ir06-ai {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 20.3);
+  width: calc(var(--u) * 42);
+  margin: 0;
+  padding-left: calc(var(--u) * 2);
+  font-size: calc(var(--u) * 3.3);
+  line-height: 1.16;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+.ir06 .ir06-ai .kn-flame {
+  color: var(--kn-flame-deep);
+}
+.ir06-ai-rule {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 0.5);
+  bottom: calc(var(--u) * 0.5);
+  width: calc(var(--u) * 0.32);
+  border-radius: 999px;
+  background: var(--kn-flame);
+}

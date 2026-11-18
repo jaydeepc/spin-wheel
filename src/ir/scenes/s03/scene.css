@@ -1,0 +1,371 @@
+/* /ir slide 03 · three tracks toward their FY27 targets, and the ROE banner */
+.ir03 {
+  position: absolute;
+  inset: 0;
+  /* the deck's green tick: the slide's own signal colour */
+  --ir03-good: #17a05a;
+  --ir03-x26: calc(var(--u) * 73.6);
+  --ir03-x27: calc(var(--u) * 82.4);
+}
+
+/* ---- the deck's two columns ---- */
+.ir03-head {
+  position: absolute;
+  top: calc(var(--u) * 13.6);
+  width: calc(var(--u) * 8);
+  text-align: center;
+  font-size: calc(var(--u) * 1.15);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.ir03-head--26 {
+  left: var(--ir03-x26);
+  color: var(--kn-fg-soft);
+}
+.ir03-head--27 {
+  left: var(--ir03-x27);
+  color: var(--kn-flame-ink);
+}
+
+/* ---- a measure ---- */
+.ir03-row {
+  position: absolute;
+  left: var(--kn-x0);
+  width: calc(var(--u) * 91.6);
+  height: calc(var(--u) * 9);
+}
+.ir03-row + .ir03-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * -0.25);
+  height: max(1px, calc(var(--u) * 0.05));
+  background: var(--kn-hair);
+}
+.ir03-no {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 2.9);
+  width: calc(var(--u) * 3.2);
+  height: calc(var(--u) * 3.2);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(140deg, #f58a6a, var(--kn-flame-deep));
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.2) #fff,
+    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(232, 80, 42, 0.28);
+  visibility: hidden;
+}
+.ir03-name {
+  position: absolute;
+  left: calc(var(--u) * 4.6);
+  top: 0;
+  width: calc(var(--u) * 20);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.ir03-name > b {
+  font-size: calc(var(--u) * 1.75);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--kn-fg);
+}
+/* "RoAUM, Annualized": the deck sets the name in Bold and the rest in Regular */
+.ir03-row:nth-of-type(3) .ir03-name > b {
+  font-weight: 400;
+}
+.ir03-name small {
+  margin-top: calc(var(--u) * 0.3);
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 700;
+  color: var(--kn-fg-soft);
+  visibility: hidden;
+}
+
+/* ---- the track: two lanes on one scale ---- */
+.ir03-track {
+  position: absolute;
+  left: calc(var(--u) * 27.4);
+  top: 0;
+  width: calc(var(--u) * 40);
+  height: 100%;
+  --ir03-y26: calc(var(--u) * 3.3);
+  --ir03-y27: calc(var(--u) * 5.9);
+}
+.ir03-track > *,
+.ir03-roe-track > * {
+  position: absolute;
+}
+.ir03-lane {
+  left: 0;
+  width: 100%;
+  height: max(1px, calc(var(--u) * 0.08));
+  margin-top: calc(var(--u) * -0.04);
+  background: rgba(7, 26, 80, 0.16);
+}
+.ir03-lane--26 {
+  top: var(--ir03-y26);
+}
+.ir03-lane--27 {
+  top: var(--ir03-y27);
+}
+/* each lane is named once, at its left end, in its column head's colour */
+.ir03-tag {
+  right: 100%;
+  margin-right: calc(var(--u) * 0.8);
+  font-size: calc(var(--u) * 0.95);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  visibility: hidden;
+}
+.ir03-tag--26 {
+  top: var(--ir03-y26);
+  color: var(--kn-fg-soft);
+}
+.ir03-tag--27 {
+  top: var(--ir03-y27);
+  color: var(--kn-flame-ink);
+}
+/* last year: quiet slate */
+.ir03-run26 {
+  top: var(--ir03-y26);
+  height: calc(var(--u) * 0.24);
+  margin-top: calc(var(--u) * -0.12);
+  border-radius: calc(var(--u) * 0.12);
+  background: linear-gradient(90deg, #aab4cb, #5b6885);
+}
+.ir03-q26,
+.ir03-end26 {
+  top: var(--ir03-y26);
+  border-radius: 50%;
+  visibility: hidden;
+}
+.ir03-q26 {
+  width: calc(var(--u) * 0.7);
+  height: calc(var(--u) * 0.7);
+  margin: calc(var(--u) * -0.35) 0 0 calc(var(--u) * -0.35);
+  background: #fff;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.16) #8591ad;
+}
+.ir03-end26 {
+  width: calc(var(--u) * 1);
+  height: calc(var(--u) * 1);
+  margin: calc(var(--u) * -0.5) 0 0 calc(var(--u) * -0.5);
+  background: #5b6885;
+  box-shadow: 0 0 0 calc(var(--u) * 0.16) #fff;
+}
+/* this year: the clear blue, and the flame gate of the target */
+.ir03-run27 {
+  top: var(--ir03-y27);
+  /* the way the marker came: a thin tail that starts from nothing, not a bar from a baseline */
+  height: calc(var(--u) * 0.2);
+  margin-top: calc(var(--u) * -0.1);
+  border-radius: calc(var(--u) * 0.1);
+  background: linear-gradient(90deg, rgba(45, 106, 209, 0) 0%, rgba(45, 106, 209, 0.08) 35%, var(--kn-azure-ink) 100%);
+}
+.ir03-togo {
+  top: var(--ir03-y27);
+  height: calc(var(--u) * 0.16);
+  margin-top: calc(var(--u) * -0.08);
+  background: repeating-linear-gradient(90deg, var(--kn-flame) 0 calc(var(--u) * 0.45), transparent calc(var(--u) * 0.45) calc(var(--u) * 0.8));
+  visibility: hidden;
+}
+.ir03-gate,
+.ir03-ping {
+  top: var(--ir03-y27);
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 1.7);
+  margin: calc(var(--u) * -0.85) 0 0 calc(var(--u) * -0.85);
+  border-radius: 50%;
+  visibility: hidden;
+}
+.ir03-gate {
+  background: #fff;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.22) var(--kn-flame),
+    0 0 0 calc(var(--u) * 0.3) rgba(241, 100, 67, 0.16);
+}
+/* a gate that has been passed: filled */
+.ir03-gate-on {
+  top: var(--ir03-y27);
+  width: calc(var(--u) * 1.9);
+  height: calc(var(--u) * 1.9);
+  margin: calc(var(--u) * -0.95) 0 0 calc(var(--u) * -0.95);
+  border-radius: 50%;
+  background: var(--kn-flame);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.16) #fff,
+    0 0 0 calc(var(--u) * 0.46) rgba(241, 100, 67, 0.18);
+  visibility: hidden;
+}
+.ir03-gate-on svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ir03-ping {
+  box-shadow: 0 0 0 calc(var(--u) * 0.1) var(--kn-flame);
+}
+.ir03-mark {
+  top: var(--ir03-y27);
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.2);
+  margin: calc(var(--u) * -0.6) 0 0 calc(var(--u) * -0.6);
+  border-radius: 50%;
+  background: var(--kn-azure-ink);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.18) #fff,
+    0 0 calc(var(--u) * 1.1) calc(var(--u) * 0.25) rgba(45, 106, 209, 0.45);
+  visibility: hidden;
+}
+.ir03-cap {
+  width: 0;
+  display: flex;
+  justify-content: center;
+}
+.ir03-cap--26 {
+  top: calc(var(--u) * 1.15);
+}
+.ir03-cap--27 {
+  top: calc(var(--u) * 7.05);
+}
+.ir03-cap-in {
+  flex: none;
+  white-space: nowrap;
+  font-size: calc(var(--u) * 1);
+  line-height: 1;
+  font-style: italic;
+  font-weight: 700;
+  visibility: hidden;
+}
+.ir03-cap--26 .ir03-cap-in {
+  color: var(--kn-fg-soft);
+}
+.ir03-cap--27 .ir03-cap-in {
+  font-size: calc(var(--u) * 1.12);
+  color: var(--kn-azure-ink);
+}
+
+/* ---- the two figures of the deck's columns, and its tick ---- */
+.ir03-fig {
+  position: absolute;
+  top: calc(var(--u) * 2.75);
+  width: calc(var(--u) * 8);
+  text-align: center;
+  font-size: calc(var(--u) * 3.1);
+  line-height: 1.12;
+  font-weight: 700;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.ir03-fig--26 {
+  left: calc(var(--u) * 69.4);
+  color: #5b6885;
+}
+.ir03-fig--27 {
+  left: calc(var(--u) * 78.2);
+  color: var(--kn-flame-deep);
+}
+.ir03-tick {
+  position: absolute;
+  left: calc(var(--u) * 87.8);
+  top: calc(var(--u) * 2.75);
+  width: calc(var(--u) * 3.5);
+  height: calc(var(--u) * 3.5);
+  color: var(--ir03-good);
+  visibility: hidden;
+}
+.ir03-tick svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ir03-tick-ring {
+  position: absolute;
+  inset: calc(var(--u) * 0.3);
+  border-radius: 50%;
+  box-shadow: 0 0 0 calc(var(--u) * 0.1) var(--ir03-good);
+  visibility: hidden;
+}
+
+/* ---- the conclusion: the ROE banner, on navy ---- */
+.ir03-roe {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 45.1);
+  width: calc(var(--u) * 91.6);
+  height: calc(var(--u) * 5.3);
+  border-radius: calc(var(--u) * 2.65);
+  background: linear-gradient(100deg, #071a50 0%, #10297a 100%);
+  box-shadow:
+    inset 0 calc(var(--u) * 0.1) 0 rgba(255, 255, 255, 0.14),
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2) rgba(7, 26, 80, 0.24);
+  visibility: hidden;
+}
+.ir03-roe-text {
+  position: absolute;
+  left: calc(var(--u) * 3);
+  top: 0;
+  margin: 0;
+  line-height: calc(var(--u) * 5.3);
+  font-size: calc(var(--u) * 1.75);
+  color: rgba(255, 255, 255, 0.86);
+  white-space: nowrap;
+}
+.ir03-roe-text .kn-wi b {
+  color: #ffb39e;
+}
+.ir03-roe-track {
+  position: absolute;
+  left: calc(var(--u) * 41);
+  top: 0;
+  width: calc(var(--u) * 34);
+  height: 100%;
+  --ir03-y27: calc(var(--u) * 3.2);
+}
+.ir03-roe-lane {
+  top: var(--ir03-y27);
+  background: rgba(255, 255, 255, 0.28);
+}
+.ir03-roe-run {
+  background: linear-gradient(90deg, rgba(101, 169, 245, 0) 0%, rgba(101, 169, 245, 0.1) 35%, var(--kn-sky) 100%);
+}
+.ir03-roe-mark {
+  background: var(--kn-sky);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.18) #fff,
+    0 0 calc(var(--u) * 1.2) calc(var(--u) * 0.3) rgba(101, 169, 245, 0.7);
+}
+.ir03-roe-gate {
+  background: #10297a;
+}
+.ir03-roe-cap {
+  top: calc(var(--u) * 0.85);
+}
+.ir03-roe-cap .ir03-cap-in {
+  font-size: calc(var(--u) * 1.12);
+  color: #a9cdfa;
+}
+.ir03-roe-goal {
+  top: calc(var(--u) * 3.2);
+  margin-top: calc(var(--u) * -1.25);
+  font-size: calc(var(--u) * 2.3);
+  line-height: 1.1;
+  color: #ffb39e;
+  white-space: nowrap;
+  visibility: hidden;
+}

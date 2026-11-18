@@ -18,8 +18,15 @@
   letter-spacing: 0.005em;
   color: #fff;
 }
+.s65-said,
+.s65-lives {
+  display: block;
+}
+.s65-lives {
+  margin-top: calc(var(--u) * 0.35);
+}
 
-/* ---- 3 · the name ---- */
+/* ---- 2 · the name ---- */
 .s65-name {
   position: absolute;
   left: 0;
@@ -37,10 +44,11 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(var(--u) * 14.6);
+  top: calc(var(--u) * 14.7);
   margin: 0;
   text-align: center;
-  font-size: calc(var(--u) * 2.5);
+  font-size: calc(var(--u) * 2.2);
+  white-space: nowrap;
   font-weight: 300;
   line-height: 1.2;
   color: rgba(255, 255, 255, 0.92);
@@ -62,6 +70,7 @@
   stroke-width: 0.12;
   stroke-linecap: round;
 }
+/* from the mind to an AI */
 .s65-flow--out {
   stroke: rgba(255, 170, 140, 0.45);
 }
@@ -75,8 +84,49 @@
   visibility: hidden;
   animation: s65-run 2.7s linear infinite;
 }
-.s65-run--out {
-  stroke: #ff9a78;
+/* a pulse from the mind to one AI: the first on the timeline (.s65-shot), then the idle */
+.s65-shot path {
+  fill: none;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+.s65-shot-halo {
+  stroke: rgba(255, 140, 100, 0.4);
+  stroke-width: 0.85;
+}
+.s65-shot-core {
+  stroke: #fff1e8;
+  stroke-width: 0.3;
+}
+.s65-gives {
+  visibility: hidden;
+}
+.s65-run--give {
+  stroke: #ffd9c8;
+  stroke-width: 0.34;
+  stroke-dasharray: 11 300;
+  stroke-dashoffset: 13;
+  opacity: 0;
+  visibility: inherit;
+  animation: s65-give 6.5s linear infinite;
+}
+@keyframes s65-give {
+  0% {
+    stroke-dashoffset: 13;
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  13% {
+    stroke-dashoffset: -92;
+    opacity: 1;
+  }
+  14.5%,
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
 }
 @keyframes s65-run {
   from {
@@ -144,15 +194,6 @@
   font-weight: 700;
   white-space: nowrap;
 }
-.s65-row--out {
-  left: calc(var(--u) * 70);
-  width: calc(var(--u) * 25.4);
-}
-.s65-row--out span:last-child {
-  font-size: calc(var(--u) * 1.5);
-  line-height: 1.22;
-  color: rgba(255, 255, 255, 0.94);
-}
 .s65-ico {
   flex: none;
   display: grid;
@@ -163,11 +204,6 @@
   color: #bcd6ff;
   background: linear-gradient(160deg, rgba(120, 165, 255, 0.22), rgba(60, 100, 220, 0.08));
   box-shadow: inset 0 0 0 calc(var(--u) * 0.07) rgba(150, 190, 255, 0.38);
-}
-.s65-row--out .s65-ico {
-  color: #ffc3ae;
-  background: linear-gradient(160deg, rgba(241, 100, 67, 0.24), rgba(241, 100, 67, 0.07));
-  box-shadow: inset 0 0 0 calc(var(--u) * 0.07) rgba(255, 150, 120, 0.42);
 }
 .s65-ico svg {
   width: calc(var(--u) * 2.1);
@@ -194,7 +230,84 @@
   font-weight: 700;
 }
 
-/* ---- 4 · the last rest ---- */
+/* ---- the AIs of the morning: small rings, each with its name ---- */
+.s65-ai {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  height: calc(var(--u) * 3);
+  margin: calc(var(--u) * -1.5) 0 0 calc(var(--u) * -1.3);
+  transform-origin: calc(var(--u) * 1.3) 50%;
+  visibility: hidden;
+}
+.s65-ai-dot {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 2.6);
+  height: calc(var(--u) * 2.6);
+  border-radius: 50%;
+  background: rgba(241, 100, 67, 0.1);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.09) rgba(255, 170, 140, 0.5);
+}
+.s65-ai-dot::after {
+  content: '';
+  position: absolute;
+  inset: calc(var(--u) * 0.95);
+  border-radius: 50%;
+  background: rgba(255, 200, 180, 0.55);
+}
+/* lit: the pulse has arrived */
+.s65-ai-lit {
+  position: absolute;
+  inset: calc(var(--u) * -1.2);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 0, #fff 13%, #ffb497 22%, rgba(241, 100, 67, 0.75) 36%, rgba(241, 100, 67, 0.3) 55%, rgba(241, 100, 67, 0) 100%);
+  visibility: hidden;
+}
+.s65-ai-live {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+.s65-ai-idle {
+  position: absolute;
+  inset: calc(var(--u) * -2.2);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95) 0, rgba(255, 190, 160, 0.8) 22%, rgba(241, 100, 67, 0.35) 55%, rgba(241, 100, 67, 0) 100%);
+  opacity: 0;
+  animation: s65-ai-flash 6.5s linear infinite;
+}
+@keyframes s65-ai-flash {
+  0%,
+  11.5% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  42%,
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+.s65-ai b {
+  font-size: calc(var(--u) * 1.9);
+  font-weight: 700;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .s65-run,
+  .s65-ai-idle {
+    animation: none;
+  }
+}
+
+/* ---- 3 · the last rest ---- */
 .s65-end {
   position: absolute;
   left: calc(var(--u) * 7.6);

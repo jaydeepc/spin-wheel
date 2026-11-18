@@ -1,0 +1,76 @@
+/* /ir slide 01 · the title */
+.ir01 {
+  position: absolute;
+  inset: 0;
+}
+/* THE DECK'S DAWN PICTURE, whole, in its own proportions (16:9): 112u x 63u, centred on the stage.
+   Its edges are feathered, so it has no border where the screen is wider or taller than the stage. */
+.ir01-hero {
+  position: absolute;
+  left: calc(var(--u) * -6);
+  top: calc(var(--u) * -3.375);
+  width: calc(var(--u) * 112);
+  height: calc(var(--u) * 63);
+  visibility: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 78%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 78%, transparent 100%);
+  pointer-events: none;
+}
+.ir01-hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* the live backdrop (its points, its particles) shows through the picture */
+  opacity: 0.8;
+  animation: ir01-breathe 26s ease-in-out infinite alternate;
+}
+@keyframes ir01-breathe {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.045) translate3d(-0.8%, 0.6%, 0);
+  }
+}
+/* a low warm light behind the words: flame fading to nothing (never into blue) */
+.ir01-glow {
+  position: absolute;
+  left: calc(var(--u) * 20);
+  top: calc(var(--u) * 21);
+  width: calc(var(--u) * 60);
+  height: calc(var(--u) * 20);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(241, 100, 67, 0.2), rgba(241, 100, 67, 0.07) 55%, rgba(241, 100, 67, 0) 100%);
+  visibility: hidden;
+  pointer-events: none;
+}
+.ir01-lock {
+  position: absolute;
+  inset: 0;
+}
+/* the deck's line spans 81u of the slide in a wide serif; Calibri Bold at 6.6u spans about 70u */
+.ir01-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 22.6);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 6.6);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.ir01-title .kn-flame {
+  color: var(--kn-flame);
+}
+/* first light: a hairline under the title, bright in the middle, gone at its ends */
+.ir01-dawn {
+  position: absolute;
+  left: calc(var(--u) * 30);
+  top: calc(var(--u) * 32.4);
+  width: calc(var(--u) * 40);
+  height: max(1px, calc(var(--u) * 0.1));
+  background: linear-gradient(90deg, rgba(241, 100, 67, 0), rgba(255, 196, 170, 0.95) 50%, rgba(241, 100, 67, 0));
+}

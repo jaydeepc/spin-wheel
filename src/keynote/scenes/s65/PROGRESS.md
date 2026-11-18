@@ -1,17 +1,20 @@
 # s65 · the ending: Piramal Mind
 
-Status: DONE and checked (beats and strips at 1920 x 1080, beats at 1366 x 768, press 64, walk 64 to 65 clean, console clean, no tsc error in this folder).
+Status: DONE and checked on 19 Nov (beats at 1920 x 1080 and 1366 x 768, strip of `mind` at 0.3 s, walk 64 to 65 clean, console clean, no tsc error in this folder).
 
 ## Idea
-Everything the morning spoke about comes back as cards, is joined by threads of light, and when
-the camera pulls back the cloud has a shape: a mind. It is named (Piramal Mind, "Engineered to
-hold all of this."), explained in the Everyday AI film's own words, and then settles for questions.
+Everything the morning spoke about lives inside one mind, and every AI draws on it: it gives them
+intelligence even when it is not asked, as a mind does (the owner's crux, 19 Nov).
 
-## Beats
-1. `recall`: 18 stills of the keynote's own scenes fly in from depth to a curved wall, each with a label; "Everything we spoke about this morning".
-2. `connect`: 26 threads draw between related cards; cards shrink to nodes; camera pulls back; 16,600 points gather into the mind; links and pulses.
-3. `mind`: "Piramal Mind", "Engineered to hold all of this."; flows in (Every codebase, Every Jira ticket, Every discussion; Auto-ingested) → the mind (One connected memory; "It remembers. And it connects.") → gives back (three lines); a light runs along the flows (CSS idle).
-4. `questions`: the mind moves right and calms; logo, "Thank you", "Questions?"; under the mind "Piramal Mind / The memory and the intelligence of our engineering."
+## Beats (three; `connect` and `mind` were merged on 19 Nov: one press, 7.4 s)
+1. `recall` (rest 3.5 s): 18 stills fly in to a curved wall, each with a label; "Everything we spoke about this morning…".
+2. `mind` (rest 10.9 s, 7.4 s of movement): threads, cards shrink to nodes, the camera pulls back, the points gather (as before, a little tighter); "…lives inside one mind." is written under the first line at +0.7 s; the sentence leaves at +2.8 s; the mind steps down from +2.6 s; "Piramal Mind" from +3.05 s; "It gives intelligence to every AI, even when it is not asked. As a mind does." from +3.6 s; flows in from +4.1 s; "One connected memory" +4.8 s; "Every AI draws on it" and the five AIs (dim rings with names) from +5.0 s; from +5.5 s a pulse leaves the mind for each AI in turn (0.25 s apart) and each lights as it arrives. After +6.1 s only the lights are still to come. At rest the same pulses go on as a CSS idle (one every 1.3 s, in turn; off with `&still=1` and for reduced motion).
+3. `questions` (rest 14.5 s): the mind moves right and calms; logo, "Thank you", "Questions?"; under the mind "Piramal Mind / The mind behind every AI at Piramal."
+
+The AIs are rings with names, not portraits: PIA's and Arya's marks carry lettering that is mush at 2.6u, and Nivaaran and Prastuti have none.
+
+## The start of the move out of `recall` (kept from the old `connect`)
+The first 1.8 s of `connect` used to look like the `recall` rest (thin threads behind bright cards), so a presenter pressed again and the mind popped in. Now: on the press every card flashes and lifts, then dims and steps back (`ping`, 0.7 s), the labels go, and the threads start at once, drawn above the cards as a thick additive core with a soft halo and a bright travelling head. Shrink starts at +0.45 s, pull back at +0.3 s, the points gather from +0.9 s. Not watched in real time.
 
 ## Files
 - `index.tsx` DOM and timeline; `mind.ts` all three.js (one state object tweened by the timeline, one draw); `data.ts` cards, threads, wording; `scene.css`.
@@ -19,7 +22,7 @@ hold all of this."), explained in the Everyday AI film's own words, and then set
 
 ## Decisions and flags
 - Chrome: logo, rail, crumb, counter off on this slide; the scene shows its own logo on the last rest.
-- Wording is from `src/everyday/content.ts` (product `mind`). Two lines are lightly adapted: "It remembers what had already been decided." (film: "It remembered…") and "It talks back before anything is built." (from the film's code note). "One connected memory", "Flows in", "Gives back", "Everything we spoke about this morning", "Questions?" are ours / the brief's. The film's "80% lower AI cost" stat is NOT shown.
+- Wording: the sentence, the line under the name, "Every AI draws on it" and the last small line are the lead's wording of the owner's thought (19 Nov). "It remembers. And it connects." is the Everyday AI film's. The old "Gives back" column and its three sentences are gone.
 - The stills contain the scenes as they are, including real photographs (12, 64) and the masked statement (37), shown small. If any scene changes, re-shoot its still.
 - Card labels are ours (two to four words from each slide's headline).
 - No-WebGL fallback: a flat grid of the stills and a soft orb (built, not visually checked).

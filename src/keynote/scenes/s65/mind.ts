@@ -8,7 +8,10 @@
  * frame is reachable by seeking, and Back retraces Next exactly.
  *
  *   arrive  the morning's cards fly in from the depth of the room to a curved wall around the viewer
- *   thread  threads of light draw between the cards that belong together
+ *   ping    the answer to the press: the whole wall flashes, lifts, then dims and steps back, so the
+ *           threads have a dark stage to cross (it only shows while the cards are still cards)
+ *   thread  threads of light draw between the cards that belong together: a glowing core with a
+ *           soft halo and a bright head that travels; the extra glow fades as the mind takes over
  *   morph   each card shrinks to a bright node and sinks onto the surface of the volume behind the wall
  *   pull    the camera pulls back (the zoom out)
  *   cloud   thousands of points gather into that volume: the mind
@@ -22,6 +25,7 @@ import { MEMORIES, THREADS, still } from './data'
 export interface MindState {
   arrive: number
   labels: number
+  ping: number
   thread: number
   morph: number
   pull: number
@@ -174,7 +178,7 @@ const THREAD_VERT = /* glsl */ `
   void main() {
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = min(aSize * uPx / -mv.z, 64.0);
+    gl_PointSize = min(aSize * uPx / -mv.z, 220.0);
     vColor = aColor;
     vA = aAlpha;
   }
@@ -199,7 +203,7 @@ export function createMind(ctx: SceneCtx): Mind {
   const still0 = ctx.held || ctx.reduced
   const fly = !ctx.reduced
 
-  const state: MindState = { arrive: 0, labels: 0, thread: 0, morph: 0, pull: 0, cloud: 0, spin: 0, mx: 0, my: 0, ms: 1, calm: 0 }
+  const state: MindState = { arrive: 0, labels: 0, ping: 0, thread: 0, morph: 0, pull: 0, cloud: 0, spin: 0, mx: 0, my: 0, ms: 1, calm: 0 }
   const rand = rng(65)
   const tmp: number[] = [0, 0, 0, 0]
 
@@ -398,6 +402,9 @@ export function createMind(ctx: SceneCtx): Mind {
     group: THREE.Group
     card: THREE.MeshBasicMaterial
     halo: THREE.MeshBasicMaterial
+    haloMesh: THREE.Mesh
+    /** when the flash of the press reaches it (it runs out from the middle of the wall) */
+    wave: number
     label: THREE.MeshBasicMaterial
     node: THREE.Sprite
     wall: THREE.Vector3
@@ -468,13 +475,21 @@ export function createMind(ctx: SceneCtx): Mind {
     node.renderOrder = 3
     scene.add(node)
 
-    return { n: m.n, group, card, halo, label, node, wall, start, local, yaw: -x / 190, delay: rand(), ph: rand() * Math.PI * 2, now: new THREE.Vector3() }
+    return { n: m.n, group, card, halo, haloMesh, wave: 0.1 * Math.min(1, Math.hypot(x / 37.5, (y - 1.6) / 12)), label, node, wall, start, local, yaw: -x / 190, delay: rand(), ph: rand() * Math.PI * 2, now: new THREE.Vector3() }
   })
   const byN = new Map(rigs.map((r) => [r.n, r]))
 
   /* ------------------------------------------------------------ the threads */
   const threads = THREADS.map(([a, b]) => ({ a: byN.get(a)!, b: byN.get(b)!, delay: rand(), ph: rand(), hot: rand() < 0.3 }))
-  const per = THREAD_PTS + 1 // the last point of each is its travelling light
+  // per thread: the core, the same string again as a soft halo, the travelling light of the idle,
+  // and the bright head that leads the thread while it draws (with a halo of its own)
+  // The core has a point between every two of the last rest's (the odd ones): they close the
+  // long threads into a solid line while the threads are the picture, and go out with the boost.
+  const CORE = THREAD_PTS * 2 - 1
+  const HALO0 = CORE
+  const LIGHT = CORE + THREAD_PTS
+  const HEAD = LIGHT + 1
+  const per = LIGHT + 3
   const tPos = new Float32Array(threads.length * per * 3)
   const tAlpha = new Float32Array(threads.length * per)
   const tSize = new Float32Array(threads.length * per)
@@ -482,10 +497,11 @@ export function createMind(ctx: SceneCtx): Mind {
   threads.forEach((t, j) => {
     for (let k = 0; k < per; k++) {
       const i = (j * per + k) * 3
-      const light = k === THREAD_PTS
-      tCol[i] = light ? 1.0 : t.hot ? 1.0 : 0.62
-      tCol[i + 1] = light ? 0.9 : t.hot ? 0.56 : 0.8
-      tCol[i + 2] = light ? 0.82 : t.hot ? 0.4 : 1.0
+      const light = k >= LIGHT
+      const soft = k >= HALO0 && k < LIGHT
+      tCol[i] = light ? 1.0 : t.hot ? 1.0 : soft ? 0.3 : 0.62
+      tCol[i + 1] = light ? 0.9 : t.hot ? (soft ? 0.42 : 0.56) : soft ? 0.55 : 0.8
+      tCol[i + 2] = light ? 0.82 : t.hot ? (soft ? 0.24 : 0.4) : 1.0
     }
   })
   const threadGeo = new THREE.BufferGeometry()
@@ -496,7 +512,8 @@ export function createMind(ctx: SceneCtx): Mind {
   const threadMat = new THREE.ShaderMaterial({ vertexShader: THREAD_VERT, fragmentShader: DISC_FRAG, uniforms: { uPx: { value: uPx } }, ...additive })
   const threadPts = new THREE.Points(threadGeo, threadMat)
   threadPts.frustumCulled = false
-  threadPts.renderOrder = 2
+  // above the cards while there are cards (everything else here is additive, so the order is free)
+  threadPts.renderOrder = 7
   scene.add(threadPts)
 
   /* ------------------------------------------------------------ the draw */
@@ -504,6 +521,7 @@ export function createMind(ctx: SceneCtx): Mind {
   const mid = new THREE.Vector3()
   const ctl = new THREE.Vector3()
   const centre = new THREE.Vector3()
+  const CARD_TINT = new THREE.Color(0xeef2ff)
 
   const draw = (clock: number) => {
     const time = still0 ? 0 : clock
@@ -537,6 +555,10 @@ export function createMind(ctx: SceneCtx): Mind {
     const nodeIn = smooth(0.12, 0.6, s.morph)
     const cardScale = 1 - 0.93 * smooth(0, 0.7, s.morph)
     for (const r of rigs) {
+      // the press: a flash that lifts the card, then the card dims and steps back
+      const q = s.ping - r.wave
+      const flash = smooth(0, 0.14, q) * (1 - smooth(0.24, 0.8, q))
+      const dim = smooth(0.04, 0.5, q)
       const a = outCubic(clamp01(s.arrive * 1.55 - r.delay * 0.55))
       const alpha = smooth(0, 0.35, a)
       const fl = (1 - em) * (still0 ? 0 : 1)
@@ -547,10 +569,13 @@ export function createMind(ctx: SceneCtx): Mind {
       r.now.lerpVectors(v, r.now, em)
       r.group.position.copy(r.now)
       r.group.rotation.y = r.yaw * (1 - em)
-      r.group.scale.setScalar(cardScale)
+      r.group.scale.setScalar(cardScale * (1 + 0.07 * flash - 0.1 * dim))
       r.group.visible = alpha * (1 - gone) > 0.002
       r.card.opacity = alpha * (1 - gone)
-      r.halo.opacity = 0.5 * alpha * (1 - gone)
+      r.card.color.copy(CARD_TINT).multiplyScalar(1 - 0.7 * dim)
+      r.halo.opacity = Math.min(1, (0.5 + 0.5 * flash + 0.2 * dim) * alpha * (1 - gone))
+      r.halo.color.setScalar(1 + 0.6 * flash)
+      r.haloMesh.scale.setScalar(1 + 0.12 * flash)
       r.label.opacity = alpha * s.labels
       const ns = (5.2 + 1.5 * s.pull) * s.ms * nodeIn * (1 + 0.12 * Math.sin(time * 1.1 + r.ph))
       r.node.position.copy(r.now)
@@ -561,6 +586,9 @@ export function createMind(ctx: SceneCtx): Mind {
 
     // the threads: a string of light from one to the other, bowed toward the room, then round the mind
     const tsz = (0.36 + 0.5 * s.pull) * (0.6 + 0.4 * s.ms)
+    // while the cards are still a wall the threads are the picture: thicker, brighter, haloed.
+    // The extra fades as the points take their places, and the last rest is the plain thread.
+    const boost = 1 - smooth(0.5, 1, s.morph)
     threads.forEach((t, j) => {
       const p = clamp01(s.thread * 1.5 - t.delay * 0.5)
       const a = t.a.now
@@ -573,17 +601,38 @@ export function createMind(ctx: SceneCtx): Mind {
       ctl.z += 5 * (1 - em)
       ctl.add(mid)
       const lightAt = (time * 0.16 + t.ph) % 1
+      // the head leads the thread while it draws, and goes out as it lands
+      const head = smooth(0, 0.05, p) * (1 - smooth(0.86, 1, p))
       for (let k = 0; k < per; k++) {
-        const light = k === THREAD_PTS
-        const u = light ? lightAt : k / (THREAD_PTS - 1)
+        const soft = k >= HALO0 && k < LIGHT
+        const u = k === LIGHT ? lightAt : k === HEAD || k === HEAD + 1 ? p : soft ? (k - HALO0) / (THREAD_PTS - 1) : k / (CORE - 1)
         const w = 1 - u
         const i = (j * per + k) * 3
         tPos[i] = w * w * a.x + 2 * w * u * ctl.x + u * u * b.x
         tPos[i + 1] = w * w * a.y + 2 * w * u * ctl.y + u * u * b.y
         tPos[i + 2] = w * w * a.z + 2 * w * u * ctl.z + u * u * b.z
         const on = u <= p ? 1 : 0
-        tAlpha[j * per + k] = light ? on * 0.95 * Math.sin(Math.PI * u) * smooth(0.9, 1, p) : on * (0.5 - 0.14 * em)
-        tSize[j * per + k] = light ? tsz * 3.4 : tsz
+        const n = j * per + k
+        if (k === LIGHT) {
+          tAlpha[n] = on * 0.95 * Math.sin(Math.PI * u) * smooth(0.9, 1, p)
+          tSize[n] = tsz * 3.4
+        } else if (k === HEAD) {
+          tAlpha[n] = head
+          tSize[n] = tsz * 6.5
+        } else if (k === HEAD + 1) {
+          tAlpha[n] = 0.42 * head
+          tSize[n] = tsz * 22
+        } else {
+          // the stretch just behind the head burns brighter: a comet
+          const tail = on * smooth(p - 0.22, p, u) * head
+          if (soft) {
+            tAlpha[n] = on * boost * (0.085 + 0.1 * tail)
+            tSize[n] = tsz * 9
+          } else {
+            tAlpha[n] = Math.min(1, on * (0.5 - 0.14 * em) * (1 + boost * (0.7 + tail))) * (k % 2 ? boost : 1)
+            tSize[n] = tsz * (1 + boost * (1.15 + 0.9 * tail))
+          }
+        }
       }
     })
     threadGeo.attributes.position.needsUpdate = true

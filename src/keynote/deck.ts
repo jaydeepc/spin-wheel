@@ -136,7 +136,7 @@ const ROWS: Row[] = [
   /* 38 */ ['The banking score ranks customers by risk, and the agent explains every score in plain words.', [PAI, 'UNDERWRITE BETTER'], { crumbSep: ['|'] }],
   /* 39 */ ['The banking score ranks customers by risk, and the agent explains every score in plain words.', [PAI, 'UNDERWRITE BETTER'], { crumbSep: ['|'] }],
   /* 40 */ [
-    'Today, every collection visit starts fresh, records one fixed outcome and follows a fixed calendar.',
+    'Traditionally, every collection visit starts fresh, records one fixed outcome and follows a fixed calendar.',
     [PAI, 'UNDERWRITE BETTER. + ENHANCE PRODUCTIVITY.'],
     { crumbSep: ['|'] },
   ],

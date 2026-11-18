@@ -69,29 +69,34 @@ export const THREADS: [number, number][] = [
   [37, 57],
 ]
 
-/** The line over the morning (ours; the deck has no words for this slide but "Thank You"). */
-export const RECALL = 'Everything we spoke about this morning'
+/**
+ * THE CRUX (the owner, 19 Nov): everything the morning spoke about lives inside Piramal Mind, and
+ * every AI borrows from it: it gives them intelligence even when it is not asked, as a mind does.
+ * One sentence in two parts: the first stands over the thumbnails, the second is written in under
+ * it as the mind forms. The wording is the lead's, of the owner's thought; set exactly.
+ */
+export const RECALL = 'Everything we spoke about this morning\u2026'
+export const LIVES = '\u2026lives inside one mind.'
+
+export const MIND = {
+  name: 'Piramal Mind',
+  line: 'It gives intelligence to every AI, even when it is not asked. As a mind does.',
+  lineFlame: 'even when it is not asked',
+  promise: 'The mind behind every AI at Piramal.',
+  motto: 'It remembers. And it connects.', // the Everyday AI film's line (src/everyday/content.ts, product 'mind')
+  inKicker: 'Flows in',
+  inTag: 'Organizational knowledge', // owner, 18 Nov: no tool names
+  ins: ['Every document', 'Every decision', 'Every conversation'], // owner, 18 Nov: organizational knowledge
+  outKicker: 'Every AI draws on it',
+  memory: 'One connected memory',
+}
 
 /**
- * WHAT PIRAMAL MIND IS: the Everyday AI film's own wording (src/everyday/content.ts → products,
- * key 'mind'). Nothing here is new: no claim and no number of our own.
+ * THE AIs OF THE MORNING, as names (slide 28's agents, and Prastuti). Small rings, not portraits:
+ * the deck's marks for PIA and Arya carry lettering that is mush at this size, and Nivaaran and
+ * Prastuti have none, so all five are drawn alike.
  */
-export const MIND = {
-  name: 'Piramal Mind', // name
-  line: 'Engineered to hold all of this.', // the owner's brief
-  promise: 'The memory and the intelligence of our organization.', // owner, 18 Nov: organizational knowledge, not engineering tools
-  motto: 'It remembers. And it connects.', // demo.line
-  inKicker: 'Flows in',
-  inTag: 'Organizational knowledge', // owner, 18 Nov: no tool names (was 'Auto-ingested')
-  ins: ['Every document', 'Every decision', 'Every conversation'], // owner, 18 Nov: organizational knowledge (was codebase / Jira ticket / discussion)
-  outKicker: 'Gives back',
-  outs: [
-    'It remembers what had already been decided.', // priya.after ("It remembered what had already been decided.")
-    'It talks back before anything is built.', // demo.talksBack (its note: "Piramal Mind talks back before anything is built")
-    'It connects every answer back to its source.', // owner, 18 Nov: no ticket wording
-  ],
-  memory: 'One connected memory', // the lead's brief
-}
+export const AIS = ['PIA', 'Arya', 'ABCD', 'Nivaaran', 'Prastuti']
 
 export const CLOSE = {
   thanks: 'Thank you', // the deck's page 65: "Thank You"
