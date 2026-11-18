@@ -11,34 +11,37 @@
  *       neurips    it moves aside for the second paper, which arrives the same way.
  *   63  patent     the papers lift away; the patent receipt comes down like a filed document.
  *       stage      the patent moves aside: the talk at MLDS and the delegation at World Summit AI.
+ *       judges     the three lift away; the page of the 2026 Global Large Enterprises Judges comes
+ *                  down as a sheet (the owner's own screenshot, never wider than its pixels), with
+ *                  Jaydeep Chakrabarty's portrait in a circle beside it and the page's own words.
  *
  * (On 62 and 63 the first card stands in the middle of the stage and slides to its column when
  * the next ones arrive, so that no rest is half empty.)
- *   64  mesh       the cards let go of their pictures: the receipt and the two photographs
- *                  travel to their places, the papers and the group photographs come back in,
- *                  and thirty-three people stream in from every side. The links draw.
- *       agents     the five AI teammates (the deck's three, ABCD and Nivaaran) come up one after
- *                  another across the mesh, flame-ringed; their links light
+ *   64  mesh       the card and its page lift away; the owner's portrait leaves the card for its
+ *                  place in the mesh, and fifty-two people stream in from every side (the owner's
+ *                  new set of portraits: circles only, no prints, no group photographs). The links draw.
+ *       agents     the five AI teammates (Nivaaran, the avatar, the two PIA badges, ABCD) come up one
+ *                  after another across the mesh, flame-ringed; their links light
  *                  and light begins to run along every link.
  *       ourteam    one ring of light goes out through the whole mesh: Our people + Our AI
  *                  teammates = Our Team.
  *
- * Every photograph and document is the deck's own file at its own proportions, never larger
- * than its pixels (scenes/_shared/people). Links, running light and the rings of slide 61 are
+ * Every photograph and document is the deck's or the owner's own file at its own proportions, never
+ * larger than its pixels (scenes/_shared/people). Links, running light and the rings of slide 61 are
  * three.js; without WebGL the same story is told without them.
  */
 
 import gsap from 'gsap'
 import type { ReactNode } from 'react'
 import { anim, Count, createSceneCanvas, Headline, slide as slideOf, spanBeats, type SceneCanvas, type SceneModule } from '../../kit'
-import { PEOPLE, PRINTS, TEAMMATES } from '../_shared/people/data'
+import { OWNER, PEOPLE, PRINTS, TEAMMATES } from '../_shared/people/data'
 import { createMesh, meshGL } from '../_shared/people/mesh'
 import { MeshNodes, PEOPLE_PRELOAD, Slot } from '../_shared/people/nodes'
 import '../_shared/people/people.css'
 import * as D from './data'
 import './scene.css'
 
-const SLIDES = { 61: ['team'], 62: ['icon', 'neurips'], 63: ['patent', 'stage'], 64: ['mesh', 'agents', 'ourteam'] }
+const SLIDES = { 61: ['team'], 62: ['icon', 'neurips'], 63: ['patent', 'stage', 'judges'], 64: ['mesh', 'agents', 'ourteam'] }
 
 function CardShell({ c, children }: { c: D.CardText; children: ReactNode }) {
   return (
@@ -95,6 +98,22 @@ const scene: SceneModule = {
         </CardShell>
         <CardShell c={D.SHARED[1]}>{D.SPEAKER_TEXT}</CardShell>
         <CardShell c={D.SHARED[2]}>{D.DELEGATES_TEXT}</CardShell>
+      </div>
+
+      <div className="s61-row s61-row--judge">
+        <section className="s61-card s61-card--judges">
+          <div className="s61-panel" />
+          <div className="s61-jpage">
+            <Slot id="judges" />
+          </div>
+          <div className="s61-jside">
+            <Slot id={OWNER.id} className="s61-jface" />
+            <h3 className="s61-txt s61-ct">{D.JUDGES.title}</h3>
+            <div className="s61-txt s61-who">{D.JUDGES.who}</div>
+            <div className="s61-txt s61-where">{D.JUDGES.role}</div>
+            <div className="s61-txt s61-where s61-jorg">{D.JUDGES.org}</div>
+          </div>
+        </section>
       </div>
 
       <MeshNodes />
@@ -229,19 +248,28 @@ const scene: SceneModule = {
     tl.to(fx, { focusX: 0.5, duration: 1.6, ease: ctx.ease.inOut }, t)
     tl.addLabel('stage')
 
-    /* ---- 64 · mesh: everything lifts, and the team gathers ---- */
+    /* ---- 63 · judges: the three lift away, the judges' page comes down, the owner beside it ---- */
+    t = now()
+    for (const id of ['receipt', 'speaker', 'delegates']) tl.to(N[id].s, { a: 0, dy: calm ? 0 : -2.4, duration: 0.4, ease: 'power2.in' }, t)
+    a.leave('.s61-row--63 .s61-panel, .s61-row--63 .s61-txt', t, { stagger: 0, y: 2.4 })
+    a.rise('.s61-card--judges .s61-panel', t + 0.15, { y: 2.2, duration: 0.9 })
+    arrive('judges', t + 0.45)
+    arrive(OWNER.id, t + 0.85)
+    a.rise('.s61-card--judges .s61-txt', t + 1.1, { y: 1.1, stagger: 0.1 })
+    tl.to(fx, { focusX: 0, duration: 1.4, ease: ctx.ease.inOut }, t)
+    tl.addLabel('judges')
+
+    /* ---- 64 · mesh: the card lifts, the owner goes to his place, and the team gathers ---- */
     t = now()
     a.leave('.s61-h--63', t)
-    a.leave('.s61-row--63 .s61-panel, .s61-row--63 .s61-txt', t, { stagger: 0, y: 0.6 })
-    // the papers come back in from outside (they left with slide 62), with the group photographs
-    for (const id of ['authors', 'paper1', 'arpit', 'paper2']) tl.set(N[id].s, { j: 1, dy: 0, r: 0 }, t + 0.05)
-    ;['receipt', 'speaker', 'delegates'].forEach((id, i) => fly(id, t + 0.2 + i * 0.12, { duration: 1.6, ease: ctx.ease.inOut, shown: true }))
-    ;['team3', 'authors', 'team1', 'paper2', 'team2', 'paper1', 'arpit'].forEach((id, i) => fly(id, t + 0.5 + i * 0.11, { duration: 1.7 }))
+    tl.to(N.judges.s, { a: 0, dy: calm ? 0 : -2.4, duration: 0.4, ease: 'power2.in' }, t)
+    a.leave('.s61-card--judges .s61-panel, .s61-card--judges .s61-txt', t, { stagger: 0, y: 0.6 })
+    fly(OWNER.id, t + 0.2, { duration: 1.6, ease: ctx.ease.inOut, shown: true })
     // the people: from every side, in an order that is the same every time
-    const order = PEOPLE.map((p, i) => ({ id: p.id, r: Math.abs(Math.sin(i * 91.7 + 3.1) * 1000) % 1 })).sort((x, y) => x.r - y.r)
-    order.forEach((p, i) => fly(p.id, t + 0.75 + i * 0.05))
-    tl.to(G, { link: 1, duration: 1.6, ease: 'power1.inOut' }, t + 1.7)
-    a.rise('.s61-l--people', t + 2.2)
+    const order = PEOPLE.filter((p) => p !== OWNER).map((p, i) => ({ id: p.id, r: Math.abs(Math.sin(i * 91.7 + 3.1) * 1000) % 1 })).sort((x, y) => x.r - y.r)
+    order.forEach((p, i) => fly(p.id, t + 0.15 + i * 0.036))
+    tl.to(G, { link: 1, duration: 1.6, ease: 'power1.inOut' }, t + 1.5)
+    a.rise('.s61-l--people', t + 2.0)
     tl.to(fx, { glow: 0.22, focusX: 0, focusY: 0, energy: 0.25, duration: 2.4 }, t)
     tl.addLabel('mesh')
 

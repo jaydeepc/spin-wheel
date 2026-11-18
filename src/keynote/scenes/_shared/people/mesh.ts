@@ -1,7 +1,8 @@
 'use client'
 
 /**
- * THE MESH of slides 61 to 64: people, AI teammates and the team's achievements as ONE net.
+ * THE MESH of slides 61 to 64: people and AI teammates as ONE net (the achievements' prints are
+ * placed by the same function, on their cards only).
  *
  * Every node is a DOM element (a real photograph must stay sharp and undistorted); the links
  * between them, the light that runs along the links and the empty rings of slide 61 are three.js,
@@ -83,8 +84,10 @@ interface MeshGL {
 const TAIL = 4
 /** The frozen layout is fitted to the stage here: a little left and down, and taller. */
 const FIT = { dx: -1.9, dy: 1.3, sy: 1.085 }
+/** A print has no place in the mesh: it stays on its card (the mesh's centre stands in, never shown). */
+const inMesh = (id: string) => id in XYZ
 const place = (id: string): [number, number, number] => {
-  const [x, y, z] = XYZ[id]
+  const [x, y, z] = XYZ[id] ?? [CENTRE[0] - FIT.dx, CENTRE[1] - FIT.dy, 0]
   return [x + FIT.dx, CENTRE[1] + (y - CENTRE[1]) * FIT.sy + FIT.dy, z]
 }
 
@@ -261,7 +264,7 @@ export function createMesh(ctx: SceneCtx): Mesh {
       sx[i] = su * U
       sy[i] = sv * U
       const fromTitle = Math.hypot((su - 50) / 25, (sv - 27) / 9.5)
-      sa[i] = G.seed * smooth(0.95, 1.5, fromTitle)
+      sa[i] = inMesh(n.def.id) ? G.seed * smooth(0.95, 1.5, fromTitle) : 0
 
       const start = n.card ? { x: n.card.x + (n.off.x - n.card.x) * s.j, y: n.card.y + (n.off.y - n.card.y) * s.j } : n.off
       const k = s.k
@@ -286,6 +289,8 @@ export function createMesh(ctx: SceneCtx): Mesh {
         el.style.visibility = 'visible'
         el.style.opacity = String(Math.min(1, s.a))
         el.style.zIndex = String(Math.round((n.card && k < 0.5 ? 40 : 20) + Z))
+        // a face that came from a card is drawn larger than its neighbours and scaled down: its ring keeps their weight
+        if (n.card && n.def.kind !== 'print') el.style.setProperty('--people-ring', (1 / Math.max(0.2, scale)).toFixed(3))
         el.style.transform = `translate3d(${(n.x - n.w / 2).toFixed(2)}px,${(n.y - n.h / 2).toFixed(2)}px,0) rotate(${s.r.toFixed(3)}deg) scale(${scale.toFixed(4)})`
       }
     }

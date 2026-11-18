@@ -26,8 +26,8 @@
   overflow: hidden;
   background: #e8edf6;
   box-shadow:
-    0 0 0 calc(var(--u) * 0.13) #fff,
-    0 0 0 calc(var(--u) * 0.27) var(--kn-navy),
+    0 0 0 calc(var(--u) * 0.13 * var(--people-ring, 1)) #fff,
+    0 0 0 calc(var(--u) * 0.27 * var(--people-ring, 1)) var(--kn-navy),
     0 calc(var(--u) * 0.45) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.22);
 }
 .people-face img {

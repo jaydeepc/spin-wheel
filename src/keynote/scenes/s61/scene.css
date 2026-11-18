@@ -112,6 +112,50 @@
   color: var(--kn-muted);
 }
 
+/* ---- 63, last beat: the judges' page and the owner beside it (one card, in the middle) ---- */
+.s61-row--judge {
+  left: calc(var(--u) * 19.5);
+  top: calc(var(--u) * 13.4);
+}
+.s61-row--judge .s61-card {
+  width: calc(var(--u) * 61);
+  min-height: calc(var(--u) * 33.4);
+  padding: calc(var(--u) * 2.4) calc(var(--u) * 3) calc(var(--u) * 2.4);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 3.4);
+}
+.s61-jpage {
+  position: relative;
+  flex: none;
+}
+.s61-jside {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.s61-jface {
+  margin-bottom: calc(var(--u) * 2.1);
+}
+.s61-row--judge .s61-ct {
+  margin-top: 0;
+  font-size: calc(var(--u) * 2.5);
+}
+.s61-row--judge .s61-who {
+  margin-top: calc(var(--u) * 1);
+  font-size: calc(var(--u) * 1.9);
+}
+.s61-row--judge .s61-where {
+  margin-top: calc(var(--u) * 0.45);
+  font-size: calc(var(--u) * 1.42);
+  line-height: 1.3;
+  color: var(--kn-body);
+}
+.s61-row--judge .s61-jorg {
+  margin-top: calc(var(--u) * 0.2);
+  color: var(--kn-muted);
+}
+
 /* ---- 64: the line under the mesh ---- */
 .s61-line {
   position: absolute;

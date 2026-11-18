@@ -83,5 +83,16 @@ export const SPEAKER_TEXT = 'Build, Monitor, Govern: three pillars for running A
 /** 63 t18 */
 export const DELEGATES_TEXT = "The world's leading AI summit. Theme: “Back to the Future: It's About Time”."
 
+/**
+ * 63, the judges' page (the owner's own document, public/keynote/owner/team/judges-panel.png): the
+ * caption uses ONLY words printed on that page. The page does not name the award or its body: none is added.
+ */
+export const JUDGES = {
+  title: '2026 Global Large Enterprises Judges',
+  who: 'Jaydeep Chakrabarty',
+  role: 'Senior Vice President - Head of AI',
+  org: 'Piramal Finance',
+}
+
 /** 64 t04, t05: the legend. The closing word is slide 64's own title (deck.ts). */
 export const LEGEND = { people: 'Our people', ai: 'Our AI teammates' }
