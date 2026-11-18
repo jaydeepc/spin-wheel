@@ -178,8 +178,13 @@ export interface MindProduct extends ProductBase {
     ingests: string[]
     /** The small tag that says the memory fills by itself, all the time. */
     ingested: string
-    /** The real screens: its knowledge graph; and the conversation, where it reads and talks back before anything is built. */
-    shots: { graph: ShotSpec; talk: ShotSpec }
+    /** The real screen: its knowledge graph. */
+    shots: { graph: ShotSpec }
+    /**
+     * What it answers to `prompt`, along the lines of a real answer (illustrative wording): what
+     * the value is now, where it lives, where that was decided (`refs`: one chip each), and what to change.
+     */
+    answer: { now: string; where: string; decided: string; refs: string[]; next: string }
     /** What the clusters of the graph are, named on it: where its context comes from. */
     sources: string[]
     /** The change the sales team asked for. */
@@ -424,9 +429,9 @@ export const PRODUCTS: Product[] = [
     track: 'engineering',
     before: { headline: 'What was decided, and why, was scattered.', detail: 'It lived in old tickets, old code and people’s heads.' },
     priya: {
-      before: 'A change request comes in for Sales Central. Earlier, I just picked up the ticket and built what it said.',
-      tool: 'Now I ask Piramal Mind before I build.',
-      after: 'It read Confluence, Jira and the code, and asked me the right question first.',
+      before: 'Someone asks to raise the personal-loan limit. Earlier, I had to hunt for where it is set, and who decided it.',
+      tool: 'Now I just ask Piramal Mind.',
+      after: 'It told me where the limit is set, who decided it, and what to change.',
     },
     after: 'It remembers every codebase and every ticket, and it connects them.',
     stat: { value: '80%', label: 'lower AI cost' },
@@ -440,15 +445,17 @@ export const PRODUCTS: Product[] = [
           label: 'Piramal Mind: the knowledge graph',
           want: 'The graph of everything it has read: documents, tickets, emails and code, joined up.',
         },
-        talk: {
-          src: '/everyday/shots/mind-talk.jpg',
-          label: 'Piramal Mind: it talks back',
-          want: 'The engineer\'s request, what Piramal Mind read, and its question before anything is built.',
-        },
       },
-      request: { id: 'SC-2291', from: 'From the Lucknow sales team', text: 'Add AI steps to the Parameters page.' },
+      request: { id: 'SC-2291', from: 'From the Lucknow sales team', text: 'Raise the personal-loan limit.' },
       developer: 'Arjun, engineer, journey apps',
-      prompt: 'Add AI steps in the Parameters page.',
+      prompt: 'How can I increase the max loan amount and max tenure for a personal loan?',
+      answer: {
+        now: 'Today the limit for a personal loan is ₹10 L and 5 years.',
+        where: 'It is set in the DB config, not in the code.',
+        decided: 'It was discussed and decided here:',
+        refs: ['Meeting', 'Mail', 'Jira', 'Confluence'],
+        next: 'To raise it, change the value in the DB config.',
+      },
       talksBack: {
         lead: 'Before we work on this',
         text: 'AI steps were planned for the Events tab.',

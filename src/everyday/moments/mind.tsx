@@ -154,7 +154,7 @@ function Before({ product }: P) {
           Old code
         </p>
         <p className="mind-b-code">
-          tab=<b>&quot;parameters&quot;</b>
+          max_loan=<b>&quot;10L&quot;</b>
         </p>
         <i className="mind-b-skel" />
       </div>
@@ -220,7 +220,27 @@ function Screen({ product }: P) {
                   </span>
                 ))}
               </div>
-              <Shot shot={d.shots.talk} className="mind-g-talk" />
+            </div>
+            {/* THE ANSWER: the engineer's question and what Piramal Mind says to it, as a conversation.
+                It comes up over the whole card (the graph and the request under it) as the run ends. */}
+            <div className="mind-g-talk">
+              <p className="mind-a-k mind-a-row">You</p>
+              <p className="mind-a-q mind-a-row">{d.prompt}</p>
+              <p className="mind-a-k mind-a-k--mind mind-a-row">
+                <i className="mind-a-badge">
+                  <MindGlyph />
+                </i>
+                {product.name}
+              </p>
+              <p className="mind-a-now mind-a-row">{d.answer.now}</p>
+              <p className="mind-a-line mind-a-row">{d.answer.where}</p>
+              <div className="mind-a-refs mind-a-row">
+                <span>{d.answer.decided}</span>
+                {d.answer.refs.map((r) => (
+                  <b key={r}>{r}</b>
+                ))}
+              </div>
+              <p className="mind-a-next mind-a-row">{d.answer.next}</p>
             </div>
             <div className="mind-talk-head">
               <i className="mind-badge">
@@ -540,7 +560,9 @@ function animate(env: MomentEnv<MindProduct>) {
   gsap.set(ats, { scale: 0 })
   gsap.set(pulses, { autoAlpha: 0 })
   gsap.set(gCore, { autoAlpha: 0, scale: 0.4 })
+  const answerRows = $$('.mind-a-row')
   gsap.set(talkShot, { autoAlpha: 0 })
+  gsap.set(answerRows, { autoAlpha: 0, y: 0.8 * U })
   // the clusters are named as the card lands
   demo.to(ats, { scale: 1, duration: 0.24, ease: 'back.out(3)', stagger: 0.07 }, 0.8).to(tags, { autoAlpha: 1, scale: 1, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.07 }, 0.84)
   // he asks: the control leaves, and context flows in from every cluster, twice…
@@ -563,7 +585,8 @@ function animate(env: MomentEnv<MindProduct>) {
   })
   // …and the conversation comes up: what it read, and its question before anything is built
   env.leave(run, tags, 1.9, { stagger: 0.03, dy: 0.3 })
-  run.to(talkShot, { autoAlpha: 1, duration: 0.4, ease: 'power1.inOut' }, 1.95)
+  run.to(ask, { autoAlpha: 0, duration: 0.2, ease: 'none' }, 1.9)
+  run.to(talkShot, { autoAlpha: 1, duration: 0.3, ease: 'power1.inOut' }, 1.95).to(answerRows, { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.07 }, 2.05)
 
   // ---------------------------------------------------------------- result: it connects them. One pulse runs the thread, as the headline says so
   result
