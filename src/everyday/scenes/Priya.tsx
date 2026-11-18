@@ -122,7 +122,7 @@ export default function Priya() {
         <div className="pr-hero-float">
           <div className="pr-hero-zoom">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="pr-hero-img" src={PRIYA.photo} alt="Priya, standing in her branch" draggable={false} />
+            <img className="pr-hero-img" src={PRIYA.photo} alt={PRIYA.title.replace(/^Meet\s+|\.$/g, "")} draggable={false} />
           </div>
         </div>
       </div>

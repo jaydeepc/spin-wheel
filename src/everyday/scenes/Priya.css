@@ -18,7 +18,7 @@
   --pr-bw: calc(var(--u) * 25.5); /* her bubble's width: her words stand on two lines */
   --pr-bin: calc(var(--u) * 3.6); /* how far the bubble reaches into the photo */
   --pr-bup: calc(var(--u) * 2.6); /* its foot, above the photo's foot */
-  --pr-title: calc(var(--u) * 10.4);
+  --pr-title: calc(var(--u) * 7.7); /* fits "Meet Akanksha." beside the photo */
   --pr-top: calc(var(--u) * -14.6);
 }
 
@@ -174,7 +174,7 @@
     --pr-pw: calc(var(--u) * 28.5);
     --pr-ptop: calc(var(--ev-top) + var(--u) * 2);
     --pr-bw: calc(var(--u) * 25.5);
-    --pr-title: calc(var(--u) * 8.4);
+    --pr-title: calc(var(--u) * 6.2);
     --pr-top: calc(var(--u) * -15.6);
   }
   .pr-say .pr-line {

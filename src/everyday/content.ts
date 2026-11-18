@@ -223,7 +223,7 @@ export type Product = SmartHelpProduct | ByotProduct | ByoaProduct | PrastutiPro
  * is theirs. Names, roles and portraits are ILLUSTRATIVE until the real ones are confirmed.
  */
 export const SPEAKERS = {
-  priya: { name: 'Priya', role: 'Home-loan sales, Lucknow', portrait: '/everyday/priya.jpg' },
+  priya: { name: 'Akanksha', role: 'Home Loans team', portrait: '/people/akanksha-sudhanshu.jpg' },
   rohan: { name: 'Rohan', role: 'Collections officer, Lucknow', portrait: '/people/arjun-menon.jpg' },
   atul: { name: 'Atul', role: 'Software Engineer, Journey App Team', portrait: '/people/atul.jpg' },
 } satisfies Record<string, Speaker>
@@ -349,7 +349,7 @@ export const PRODUCTS: Product[] = [
     track: 'day',
     demo: {
       agent: 'Lead Screener',
-      builtBy: 'An agent built by Priya, on BYOA',
+      builtBy: 'An agent built by Akanksha, on BYOA',
       recipe: ['Check eligibility', 'Check the documents', 'Tell me what to ask'],
       leads: [
         { name: 'A. Khan', amount: '₹32 L', ready: true },
@@ -498,20 +498,20 @@ export const OPENING = {
 
 /** 2 · Then Priya comes in, and her Tuesday explains it. */
 export const PRIYA = {
-  title: 'Meet Priya.',
-  role: 'Home-loan sales officer, Piramal Finance, Lucknow',
+  title: 'Meet Akanksha.',
+  role: 'Home Loans team, Piramal Finance',
   /** "AI learned her job" is the phrase to emphasise. */
   line: { lead: 'She never learned AI. ', em: 'AI learned her job.', tail: ' This is her Tuesday.' },
   /** Her own words on this screen (in her speech bubble, by her photo). */
   said: 'I am not from Tech. Nobody on my team is.',
-  portrait: '/everyday/priya.jpg', // 360 x 360, head and shoulders
-  photo: '/everyday/priya-full.jpg', // 716 x 880, standing in the branch
+  portrait: '/people/akanksha-sudhanshu.jpg', // 480 x 480, head and shoulders
+  photo: '/people/akanksha-sudhanshu.jpg', // the same photo (no standing one yet)
 } as const
 
 /** 4 · The chapter card between her day and Piramal Mind. */
 export const ENGINEERING = {
   eyebrow: 'Behind her Tuesday',
-  headline: { lead: 'Someone builds the apps Priya works in. ', em: 'Our engineers', tail: ' have an Everyday AI of their own.' },
+  headline: { lead: 'Someone builds the apps Akanksha works in. ', em: 'Our engineers', tail: ' have an Everyday AI of their own.' },
   /** Her own words on this screen (in her speech bubble). */
   said: 'Big apps like Sales Central are built by our engineering team.',
 } as const
