@@ -40,6 +40,11 @@ export interface WovenRing {
   /** How far ribbon A / ribbon B has drawn: 0 … END. */
   a: { value: number }
   b: { value: number }
+  /** A ribbon may also grow BACKWARD from its start (counter-clockwise): where that back stretch begins, BACK0 (none) … lower. */
+  backA: { value: number }
+  backB: { value: number }
+  /** The value at which a ribbon has no back stretch. */
+  BACK0: number
   /** The value at which a ribbon is whole and closed. */
   END: number
   /** 0 the ribbons as they are … 1 faded into the page. */
@@ -61,7 +66,7 @@ export interface Weave {
 const lin = (c: RGB) => new THREE.Color().setRGB(c[0] / 255, c[1] / 255, c[2] / 255, THREE.SRGBColorSpace)
 
 /** A standard material that can fade into the page, and (for a ribbon) fold away what is not yet drawn. */
-function satin(opts: { ribbon?: { uP: { value: number }; uLen: number; gPos: { value: THREE.Vector2 }; gPow: { value: THREE.Vector2 } }; fade: { value: number }; color?: THREE.Color; roughness?: number }) {
+function satin(opts: { ribbon?: { uP: { value: number }; uB: { value: number }; uLen: number; gPos: { value: THREE.Vector2 }; gPow: { value: THREE.Vector2 } }; fade: { value: number }; color?: THREE.Color; roughness?: number }) {
   const m = new THREE.MeshStandardMaterial({
     color: opts.color ?? 0xffffff,
     vertexColors: !!opts.ribbon,
@@ -89,9 +94,10 @@ function satin(opts: { ribbon?: { uP: { value: number }; uLen: number; gPos: { v
           ].join('\n'),
         )
       shader.uniforms.uP = opts.ribbon.uP
+      shader.uniforms.uB = opts.ribbon.uB
       shader.uniforms.uLen = { value: opts.ribbon.uLen }
       shader.vertexShader = shader.vertexShader
-        .replace('#include <common>', '#include <common>\nattribute float aU;\nattribute vec3 aCentre;\nuniform float uP;\nuniform float uLen;\nvarying float vU;')
+        .replace('#include <common>', '#include <common>\nattribute float aU;\nattribute vec3 aCentre;\nuniform float uP;\nuniform float uB;\nuniform float uLen;\nvarying float vU;')
         .replace(
           '#include <begin_vertex>',
           [
@@ -102,8 +108,12 @@ function satin(opts: { ribbon?: { uP: { value: number }; uLen: number; gPos: { v
             'float head = sqrt(1.0 - (1.0 - kd) * (1.0 - kd));',
             // the tail: rounded too, until the head comes round and the ring closes
             'float k0 = clamp(aU / uLen, 0.0, 1.0);',
-            'float tail = mix(sqrt(1.0 - (1.0 - k0) * (1.0 - k0)), 1.0, smoothstep(1.0 - uLen, 1.0 + uLen, uP));',
-            'transformed = aCentre + (transformed - aCentre) * head * tail;',
+            // … or until a stretch grows backward from the start (uB falls below 1): that one has a rounded tip of its own
+            'float joined = max(smoothstep(1.0 - uLen, 1.0 + uLen, uP), 1.0 - smoothstep(1.0 - uLen, 1.0 + uLen, uB));',
+            'float tail = mix(sqrt(1.0 - (1.0 - k0) * (1.0 - k0)), 1.0, joined);',
+            'float kb = clamp((aU - uB) / uLen, 0.0, 1.0);',
+            'float back = sqrt(1.0 - (1.0 - kb) * (1.0 - kb));',
+            'transformed = aCentre + (transformed - aCentre) * max(head * tail, back);',
           ].join('\n'),
         )
     }
@@ -258,13 +268,15 @@ function makeRing(gl: SceneCanvas, spec: RingSpec): { ring: WovenRing; sway: THR
   const fade = { value: 0 }
   const a = { value: 0 }
   const b = { value: 0 }
+  const backA = { value: 2 }
+  const backB = { value: 2 }
   const gPos = { value: new THREE.Vector2(0, 0) }
   const gPow = { value: new THREE.Vector2(0, 0) }
   let uLen = 0.01
   for (const sign of [1, -1] as const) {
     const { geometry, length } = ribbonGeometry(spec, sign, lift, thick)
     uLen = (spec.w * 0.62) / length
-    const mesh = new THREE.Mesh(geometry, satin({ ribbon: { uP: sign > 0 ? a : b, uLen, gPos, gPow }, fade }))
+    const mesh = new THREE.Mesh(geometry, satin({ ribbon: { uP: sign > 0 ? a : b, uB: sign > 0 ? backA : backB, uLen, gPos, gPow }, fade }))
     mesh.frustumCulled = false
     sway.add(mesh)
   }
@@ -274,18 +286,19 @@ function makeRing(gl: SceneCanvas, spec: RingSpec): { ring: WovenRing; sway: THR
   const shadow = new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
-    uniforms: { uMap: { value: shadowTexture(spec, half) }, uP: { value: 0 }, uStart: { value: (spec.start * Math.PI) / 180 }, uFade: fade },
+    uniforms: { uMap: { value: shadowTexture(spec, half) }, uP: { value: 0 }, uB: { value: 2 }, uStart: { value: (spec.start * Math.PI) / 180 }, uFade: fade },
     vertexShader: 'varying vec2 vUv;\nvoid main() {\n  vUv = uv;\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}',
     fragmentShader: [
       'uniform sampler2D uMap;',
       'uniform float uP;',
+      'uniform float uB;',
       'uniform float uStart;',
       'uniform float uFade;',
       'varying vec2 vUv;',
       'void main() {',
       '  vec2 p = vUv - 0.5;',
       '  float u = mod(uStart - atan(p.y, p.x), 6.2831853) / 6.2831853;',
-      '  float drawn = uP >= 1.0 ? 1.0 : 1.0 - smoothstep(uP - 0.05, uP, u);',
+      '  float drawn = uP >= 1.0 ? 1.0 : max(1.0 - smoothstep(uP - 0.05, uP, u), smoothstep(uB, uB + 0.05, u));',
       '  float alpha = texture2D(uMap, vUv).a * drawn * 0.2 * (1.0 - uFade);',
       '  gl_FragColor = vec4(0.05, 0.1, 0.32, alpha);',
       '}',
@@ -313,7 +326,9 @@ function makeRing(gl: SceneCanvas, spec: RingSpec): { ring: WovenRing; sway: THR
     }
   }
 
-  return { ring: { spec, pose, a, b, END: 1 + 2 * uLen, fade, beads, gPos, gPow }, sway, shadow }
+  const BACK0 = 1 + 2 * uLen
+  backA.value = backB.value = BACK0
+  return { ring: { spec, pose, a, b, backA, backB, BACK0, END: 1 + 2 * uLen, fade, beads, gPos, gPow }, sway, shadow }
 }
 
 export function makeWeave(ctx: SceneCtx): Weave {
@@ -341,6 +356,7 @@ export function makeWeave(ctx: SceneCtx): Weave {
     h.sway.rotation.set((Math.sin(t0 * 0.38 + 2) - Math.sin(2)) * 0.085, (Math.cos(t0 * 0.3 + 1) - Math.cos(1)) * 0.1, 0)
     ;[w, h].forEach((r, i) => {
       r.shadow.uniforms.uP.value = Math.min(r.ring.a.value, r.ring.b.value)
+      r.shadow.uniforms.uB.value = Math.max(r.ring.backA.value, r.ring.backB.value)
       // the story's lap of light (beat 3), clockwise from the ring's start
       const mine = (glint.ring < 0.5 ? 0 : 1) === i
       r.ring.gPos.value.x = glint.lap

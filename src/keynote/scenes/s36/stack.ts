@@ -173,7 +173,7 @@ export function makeStacks(ctx: SceneCtx, slot: { left: number; top: number; wid
         const side = hash(k + n) - 0.5
         const off = k * STEP * (1 + s.fan * fan)
         // dealt from the camera's side (a little right and low, tilted), swept off to the left and low
-        pos.set(centre.x + off + far * (3.5 + side * 5) - o * 64, centre.y - off - far * 1.2 + o * (-1.5 + side * 3), -k * 0.03 + far * 9 + o * 6)
+        pos.set(centre.x + off + far * (3.5 + side * 5) - o * 64, centre.y - off - far * 1.2 + o * (-1.5 + side * 3), -k * 0.03 + far * 6 + o * 6)
         e.set(-far * 0.45, -o * 0.5, side * 0.012 + far * side * 0.6 + o * 0.3)
         q.setFromEuler(e)
         scl.set(1, 1, 1)

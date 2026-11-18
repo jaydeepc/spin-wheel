@@ -7,6 +7,7 @@ Idea: the engine is a real chip (three.js, engine.ts) that hangs apart in three 
 Beats: engine, ask (row 1), build (row 2), learn (row 3).
 Files: data.ts, icons.tsx (ALSO imported by s57 and s58), engine.ts, index.tsx, scene.css. No generated pictures. New logo via kit <Logo>.
 Second pass: the six connectors are now one family (data.ts LINKS: level run, one rounded turn onto a radius; meet the orbit at +35, -17, -45 degrees; the bottom pair leaves its card 2u above the middle so that it clears the pill). The last beat is 0.4 s shorter and has the lap of light (engine.ts state.lap).
+Third pass (the presenter, 18 Nov): Business sponsorship is the LAST of the six (bottom right, k = 5); the other five keep the deck's order and move up one place. Its line is now: Every business leader asks the question: “How can I solve this?” Beats are now engine, build (team · models), learn (platform · annotation), open (Open architecture alone: one sector of the orbit still cold), ask (Business sponsorship alone: the orbit closes, the lap of light, and the card takes the flame: .s56-seal and --s56-on).
 
 ## s57 Tokens and cost
 Idea: the scissor. Usage first, alone and centred: bars are columns of token blocks (tokens.ts, instanced, with depth) raining in, each column ending flat at its exact value; 20x counts from 1. Then the chart moves left, the cost chart arrives, its line draws with a dotted level at the starting $1.19; 46% counts. Then ~ ₹6 Cr and the footnote.

@@ -297,7 +297,7 @@ const scene: SceneModule = {
         tl.to(el, { autoAlpha: 0, duration: 0.4, ease: 'power1.in' }, at(t + 0.12))
       })
       // the chevron steps back while the lines cross it
-      tl.to('.s36-chev', { autoAlpha: 0.2, duration: 0.3 }, at(t0 + 0.3))
+      tl.to('.s36-chev', { autoAlpha: 0, duration: 0.3 }, at(t0 + 0.3))
 
       // the lines come out of the stack: an alert's one line late, after the quiet
       const first = c.alert ? t0 + dur - 0.35 : t0 + 0.55

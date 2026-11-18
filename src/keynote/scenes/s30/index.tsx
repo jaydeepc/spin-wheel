@@ -3,89 +3,51 @@
 /**
  * Slide 30 · "Our AI, Tech & data science capabilities have achieved massive scale"
  *
- * THE IDEA: scale is something that GATHERS. The slide opens on two charts built out of
- * hundreds of small lacquered blocks that come out of the depth of the room and settle into
- * rising columns (the people working on AI; the AI agents). Then, press by press, the charts
- * step back and up to make room and the nine numbers arrive under them, row by row, each one
- * counting up beside its numbered badge (the presenter can call them by number).
+ * THE IDEA: scale is a board that fills. Nine numbered capsules, three by three, have the whole
+ * stage. They arrive in number order, a row to a breath; each figure counts up to its value as
+ * its capsule comes in, its numbered disc drops onto it with a little weight (a ring goes out
+ * from where it lands), a sheen runs once along the capsule, and the backdrop's light steps
+ * from capsule to capsule, warm on the peach ones, cool on the blue.
  *
- *   progress   the headline; the two charts gather
- *   people     1 to 3: the space, the engineers, the scientists
+ *   people     the headline; 1 to 3: engineers, scientists, models and agents   (plays on arrival)
  *   models     4 to 6: features, dashboards, models
- *   platform   7 to 9: GenAI models, products, API hits
+ *   platform   7 to 9: API hits, products, the centre
  *
- * THE TWO CHARTS ARE PLACEHOLDERS. The deck leaves two empty boxes there and prints no figure
- * for either, so what is drawn is an illustrative shape only (data.ts → CHARTS), with nothing
- * printed on it, the blocks are pale (an unpainted model, not the brand's full colours), the
- * card is hatched and dashed like an empty plot, and each chart carries the tag "Placeholder
- * chart, to be replaced" (it keeps its size while the charts shrink). The deck's
- * own placeholder text ("<< Chart on … >>") and its yellow highlighter are never shown.
+ * The board is laid out in its final place. While only one or two rows are there it hangs lower,
+ * so every rest is centred on the stage, and it steps up as each next row comes in.
  *
- * The blocks are instanced meshes on a scene-owned canvas (blocks.ts) whose space is the
- * stage's, so they stand inside the DOM's cards and shrink with them. Without WebGL the cards
- * show plain columns instead (.s30-fb), and the scene tells the same thing.
+ * All of it is DOM on the one timeline: no canvas of its own (the two placeholder charts and
+ * their blocks are gone with the owner's updated slide).
  */
 
 import gsap from 'gsap'
 import { anim, Count, Headline, Words, type SceneModule } from '../../kit'
-import { makeCharts, type Charts } from './blocks'
-import { CHARTS, TAG, TILES } from './data'
+import { TILES } from './data'
 import './scene.css'
 
-/* The chart row at full size, in --u (the stylesheet has the same numbers). */
-const CARD = { w: 43.5, h: 21, gap: 4.6 }
-/** The row's top in the last rest; the grid's top. */
-const TOP = 11.7
-/**
- * The four rests: where the chart row's top is, how large it is, and how far the grid of
- * numbers hangs below its final place. The charts give way as the numbers come in, so every
- * rest fills the stage.
- */
-const RESTS = [
-  { top: 20, s: 1, grid: 10.85 },
-  { top: 16.35, s: 1, grid: 10.85 },
-  { top: 13.4, s: 0.9, grid: 5.6 },
-  { top: TOP, s: 0.724, grid: 0 },
-]
 const ROWS = ['people', 'models', 'platform']
+/** From one row to the next, in --u (the stylesheet's tile height + row gap). */
+const STEP = 12.3
+/** Where the backdrop's light sits across the three columns. */
+const FOCUS_X = [-0.6, 0, 0.6]
 
 /** A figure counts from the smallest number with as many digits, so its width never changes while it counts. */
 const startOf = (to: number) => 10 ** (String(to).length - 1)
 
 const scene: SceneModule = {
-  beats: ['progress', ...ROWS],
+  beats: ROWS,
 
   Scene: ({ slide }) => (
     <div className="s30">
       <Headline className="s30-h" text={slide.title} />
 
-      <div className="s30-charts">
-        {CHARTS.map((c) => (
-          <div className="s30-chart" data-chart={c.id} key={c.id}>
-            <span className="s30-hatch" aria-hidden="true" />
-            <p className="s30-chart-title">
-              <Words text={c.title} />
-            </p>
-            <span className="s30-tag">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" strokeDasharray="3.2 3.2" />
-                <path d="M12 7.5v5.2M12 16.2v.3" />
-              </svg>
-              {TAG}
-            </span>
-            {/* without WebGL: the same illustrative shape as plain columns */}
-            <span className="s30-fb" aria-hidden="true">
-              {c.shape.map((rows, i) => (
-                <span className="s30-fb-bar" key={i} style={{ height: `${(rows / Math.max(...c.shape)) * 100}%`, opacity: 0.45 + (0.55 * i) / (c.shape.length - 1) }} />
-              ))}
-            </span>
-          </div>
-        ))}
-      </div>
-
       <div className="s30-grid">
         {TILES.map((t) => (
           <div className="s30-tile" data-tone={t.tone} key={t.n}>
+            <span className="s30-shine" aria-hidden="true">
+              <span className="s30-sheen" />
+            </span>
+            <span className="s30-ring" aria-hidden="true" />
             <span className="s30-badge">{t.n}</span>
             <div className="s30-body">
               <b className="s30-num">
@@ -106,83 +68,76 @@ const scene: SceneModule = {
     </div>
   ),
 
-  three(ctx) {
-    const charts = makeCharts(ctx, CHARTS, CARD)
-    ctx.bag.charts = charts
-    ctx.root.dataset.gl = '1'
-    return () => {
-      delete ctx.root.dataset.gl
-      charts.gl.dispose()
-    }
-  },
-
   build(ctx) {
     const { U, ease, reduced } = ctx
     const tl = ctx.timeline()
     const a = anim(ctx, tl)
     const fx = ctx.backdrop.fx
-    const charts = ctx.bag.charts as Charts | undefined
-    const row = ctx.$('.s30-charts')
     const grid = ctx.$('.s30-grid')
     const tiles = ctx.$$('.s30-tile')
-    const tags = ctx.$$('.s30-tag')
+    const tileW = tiles.length ? ctx.loc(tiles[0]).w : 0 // measured before anything is hidden or moved
 
-    /** The chart row (the DOM's cards and the blocks standing in them) goes to rest k. */
-    const place = (k: number, t: number) => {
-      const r = RESTS[k]
-      tl.to(row, { y: (r.top - TOP) * U, scale: r.s, duration: 1.0, ease: ease.inOut }, t)
-      tl.to(grid, { y: r.grid * U, duration: 1.0, ease: ease.inOut }, t)
-      // the tag does not shrink with its chart: it says "placeholder" at the same size on every rest
-      tl.to(tags, { scale: 1 / r.s, duration: 1.0, ease: ease.inOut }, t)
-      if (charts) {
-        tl.to(charts.rig.position, { y: 28.125 - r.top, duration: 1.0, ease: ease.inOut }, t)
-        tl.to(charts.rig.scale, { x: r.s, y: r.s, z: r.s, duration: 1.0, ease: ease.inOut }, t)
-      }
-    }
+    /** How far the board hangs below its final place while only rows 0 … r are on it. */
+    const hang = (r: number) => (reduced ? 0 : ((2 - r) * STEP * U) / 2)
 
     /* ---- starting states ---- */
-    gsap.set(row, { transformOrigin: '50% 0%', y: (RESTS[0].top - TOP) * U, scale: 1 })
-    gsap.set(grid, { y: RESTS[1].grid * U })
-    gsap.set(tags, { transformOrigin: '0% 0%', scale: 1 })
-    if (charts) {
-      charts.rig.position.set(0, 28.125 - RESTS[0].top, 0)
-      charts.rig.scale.setScalar(1)
-      charts.state.p = 0
-      charts.state.sway = 0
-      charts.apply()
-    }
+    gsap.set(grid, { y: hang(0) })
 
-    /* --------------------------------------------------------------- progress */
     a.words('.kn-h', 0.1)
-    a.rise('.s30-chart', 0.45, { y: 2.6, stagger: 0.14, duration: 0.9 })
-    a.words('.s30-chart-title', 0.85, { stagger: 0.05 })
-    if (charts) {
-      // the blocks gather: out of the depth, column by column, from the ground up
-      tl.to(charts.state, { p: 1, duration: reduced ? 1.2 : 2.5, ease: 'none', onUpdate: charts.apply }, 0.75)
-      tl.to(charts.state, { sway: 1, duration: 1.0, ease: 'power1.inOut' }, 2.6)
-    } else {
-      a.rule('.s30-fb-bar', 0.9, { from: 'bottom', stagger: 0.07, duration: 0.8 })
-    }
-    a.rise('.s30-tag', charts ? 2.75 : 1.9, { y: 0.6, stagger: 0.12, duration: 0.6 })
-    tl.to(fx, { glow: 0.3, focusX: 0, focusY: 0.05, energy: 0.25, duration: 2 }, 0.3)
-    if (!reduced) tl.to(fx, { travel: 26, duration: 3, ease: 'power3.out' }, 0.2)
-    tl.addLabel('progress', 3.45)
+    if (!reduced) tl.to(fx, { travel: 18, duration: 2.6, ease: 'power3.out' }, 0.2)
 
-    /* ------------------------------------------------- the nine numbers, row by row */
-    let t = 3.45
+    let t = 0.55
     ROWS.forEach((name, r) => {
-      place(r + 1, t)
-      const mine = tiles.slice(r * 3, r * 3 + 3)
-      const q = (s: string) => mine.flatMap((el) => Array.from(el.querySelectorAll(s)))
-      // the row comes up once the charts have cleared its place
-      a.rise(mine, t + 0.72, { y: 2.4, stagger: 0.14, duration: 0.85 })
-      a.pop(q('.s30-badge'), t + 0.94, { stagger: 0.14, from: 0.3 })
-      mine.forEach((tile, i) => {
-        a.count(tile.querySelector('.kn-count-n'), t + 0.9 + i * 0.14, { duration: 1.3 })
-        a.words(tile.querySelector('.s30-label'), t + 1.2 + i * 0.14, { stagger: 0.035, duration: 0.6 })
+      // the board steps up to make room, then the row comes in
+      if (r > 0 && !reduced) tl.to(grid, { y: hang(r), duration: 0.95, ease: ease.inOut }, t)
+      const lead = r === 0 ? 0 : 0.4
+
+      tiles.slice(r * 3, r * 3 + 3).forEach((tile, i) => {
+        const s = t + lead + i * 0.22
+        const q = (sel: string) => tile.querySelector(sel)
+        const badge = q('.s30-badge')
+        const ring = q('.s30-ring')
+        const sheen = q('.s30-sheen')
+        const peach = tile.getAttribute('data-tone') === 'peach'
+
+        a.rise(tile, s, { y: 2.6, scale: 0.965, duration: 0.8 })
+        a.count(q('.kn-count-n'), s + 0.12, { duration: 1.35 })
+        a.rise(q('.s30-unit'), s + 0.5, { y: 0.5, duration: 0.5 })
+        a.words(q('.s30-label'), s + 0.45, { stagger: 0.035, duration: 0.6 })
+
+        if (reduced) {
+          a.fade(badge, s + 0.2)
+        } else {
+          // the disc drops onto its capsule, gives a little, and stands
+          gsap.set(badge, { autoAlpha: 0, y: -2.3 * U, scale: 1.22, transformOrigin: '50% 100%' })
+          tl.to(badge, { autoAlpha: 1, duration: 0.14, ease: 'none' }, s + 0.3)
+          tl.to(badge, { y: 0, scale: 1, duration: 0.3, ease: 'power2.in' }, s + 0.3)
+          tl.to(badge, { scaleX: 1.1, scaleY: 0.86, duration: 0.08, ease: 'power1.out' }, s + 0.6)
+          tl.to(badge, { scaleX: 1, scaleY: 1, duration: 0.5, ease: 'back.out(3.2)' }, s + 0.68)
+          // a ring goes out from where it landed
+          gsap.set(ring, { autoAlpha: 0, scale: 1 })
+          tl.to(
+            ring,
+            {
+              keyframes: [
+                { autoAlpha: 0.8, scale: 1.04, duration: 0.05, ease: 'none' },
+                { autoAlpha: 0, scale: 1.85, duration: 0.75, ease: 'power2.out' },
+              ],
+            },
+            s + 0.6,
+          )
+          // one sheen along the capsule; it begins and ends outside it
+          gsap.set(sheen, { x: -0.5 * tileW })
+          tl.to(sheen, { x: 1.15 * tileW, duration: 1.0, ease: 'power1.inOut' }, s + 0.4)
+        }
+
+        // the backdrop's light answers: it steps to this capsule, warm for peach, cool for blue
+        tl.to(fx, { glow: 0.36, focusX: FOCUS_X[i], focusY: 0.1 + r * 0.22, warm: peach ? 0.16 : -0.1, energy: 0.3, duration: 0.5, ease: ease.inOut }, s + 0.1)
       })
-      tl.to(fx, { focusY: 0.1 + r * 0.22, glow: 0.24, warm: r % 2 ? 0.14 : -0.08, duration: 1.4, ease: ease.inOut }, t)
-      t += 2.6
+
+      t += lead + 2.25
+      // … and settles behind the middle of the board for the rest
+      tl.to(fx, { glow: 0.22, focusX: 0, focusY: 0.1, warm: 0, energy: 0.15, duration: 0.7, ease: ease.inOut }, t - 0.75)
       tl.addLabel(name, t)
     })
 

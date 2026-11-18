@@ -7,8 +7,9 @@
  * business earned, what the company made of it, where this year stands, and what was guided.
  *
  *   bars       the headline; the card, its axis; Growth PBT rises out of the baseline year by
- *              year, FY23 to FY26, each figure counting on its bar
- *   pat        Company PAT lands as a pill over each bar, with the deck's two notes; the step
+ *              year, FY23 to FY26, each figure counting on its bar; the deck's note about the
+ *              ~₹250 Cr impact arrives beside the 780 it explains
+ *   pat        Company PAT lands as a pill over each bar, with the deck's note on 9,969; the step
  *              from 485 to 1,506 is drawn, and "210% YoY profit growth" is underlined
  *   h1         a dashed line sets FY27P apart; its bar rises to 990, its pill 1,006, the deck's
  *              tag beside it
@@ -129,7 +130,7 @@ const scene: SceneModule = {
       tl.to(pills[i], { autoAlpha: 1, duration: 0.25, ease: 'power1.out' }, t)
       tl.to(pills[i], { y: 0, scale: 1, duration: 0.6, ease: ease.snap }, t)
     }
-    /** A note comes in over its pill: the leader first, then the box. */
+    /** A note comes in at the figure it explains: the leader first, then the box. */
     const note = (k: number, t: number) => {
       const lead = Array.from(calls[k].querySelectorAll('.s07-lead'))
       const rest = Array.from(calls[k].querySelectorAll('rect, text'))
@@ -157,6 +158,8 @@ const scene: SceneModule = {
     a.fade('.s07-under', 1.5)
     // then the four years of the growth business
     for (let i = 0; i < LAST; i++) rise(i, 1.5 + i * 0.24)
+    // the note on FY25's 780 comes with its bar, once the bar has landed
+    note(1, 2.7)
     tl.to(fx, { glow: 0.3, focusX: -0.45, focusY: 0.35, warm: 0.3, duration: 1.0 }, 0.6)
     tl.to(fx, { focusX: 0.2, duration: 1.8, ease: ease.inOut }, 1.5)
     tl.addLabel('bars', 3.4)
@@ -166,7 +169,6 @@ const scene: SceneModule = {
     tl.to(legendPat, { autoAlpha: 1, duration: 0.5 }, P)
     for (let i = 0; i < LAST; i++) land(i, P + 0.2 + i * 0.2)
     note(0, P + 0.75)
-    note(1, P + 1.15)
     // last year's step: 485 to 1,506
     arc('.s07-arc--210', P + 1.5)
     if (marks[0].at) tl.to(marks[0].el, { scaleX: 1, duration: 0.8, ease: ease.glide }, P + 1.6)

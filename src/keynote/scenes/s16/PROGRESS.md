@@ -2,9 +2,10 @@
 
 Third pass (the repair after the review). All three are DONE and checked. Read this first if you continue.
 
-## s16 · the board of eight themes (rebuilt in the third pass)
-- Idea: a board of peg holes; the eight cards are thrown onto it from the room in depth (CSS perspective, z 44u to 0, own shadow element that closes in), pinned, swing once; each round picture settles as it is pinned (rotation about its own middle only; the grandmother photograph never moves).
-- Beats: `board`; `value` (FROM's words dim, TO lands, the eight answer in slide order with a flame ring and a nudge, card 17 lifts off the board).
+## s16 · the board of eight themes (rebuilt in the third pass; changed for the presenter, MD round 3)
+- Idea: a board of peg holes; the question in the middle comes together FIRST, alone and large (its parts close on the middle, FROM from above, TO from below; a short give as the last lands); then the eight cards are thrown onto the board from the room in depth (CSS perspective, z 44u to 0, own shadow element that closes in), pinned, swing once, going ROUND the middle clockwise from the top left (`data.ts → ROUND`); each round picture settles as it is pinned and its flame ring is drawn then.
+- Beats: `centre` (headline, board, the whole question: FROM dimmed, TO with "create value" underlined); `board` (the question shrinks from 1.34 to its own size, the eight cards go round, card 17 lifts off the board). The old `value` beat is gone: its parts are shared between the two.
+- Words changed by the presenter (NOT the deck's any more): card 18 line "ML meets GenAI · Physical AI · JEV" is now "ML meets GenAI"; card 21 line "$285 bn left software in 2 weeks" is now "Companies build what they used to buy" (from slide 21's headline; no figure).
 - No canvas, no generated pictures. PACK-FIXES.md notes the blue italic runs missing from the pack.
 
 ## s17 · 6 in 100

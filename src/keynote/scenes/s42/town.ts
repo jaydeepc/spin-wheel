@@ -215,11 +215,11 @@ export function markerAt(R: Routes, st: TownState) {
 /** The town on the stage: the middle of the map (in --u), its width in --u, how far it leans back. */
 export const TOWN = { cx: 50, cy: 28.6, width: 92, tilt: 0.66 }
 /** A pin: how high its numbered head stands over its stop (map units), and the head's radius. */
-export const PIN = { h: 7.8, r: 1.3 }
+export const PIN = { h: 8.8, r: 1.3 }
 /** The view that follows the marker: the most it turns (radians), pans (--u) and comes nearer (world units). */
 export const VIEW = { yaw: 0.05, pan: 1.3, push: 5.5 }
 /** How high the manager's photograph is carried over the puck on the road (map units). */
-export const CARRY = 2.7
+export const CARRY = 2.4
 
 const C_FLAME = '#f16443'
 const C_RED = '#d8452c'
@@ -521,7 +521,7 @@ export function makeTown3D(ctx: SceneCtx, R: Routes, mapUrl: string): Town3D {
     return new THREE.ShapeGeometry(w)
   }
   const flatMesh = (geo: THREE.BufferGeometry, color: string, z: number) => {
-    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, depthTest: false, depthWrite: false, toneMapped: false }))
+    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, depthTest: false, depthWrite: false, toneMapped: false }))
     m.position.z = z
     m.renderOrder = order++
     return m
@@ -536,7 +536,7 @@ export function makeTown3D(ctx: SceneCtx, R: Routes, mapUrl: string): Town3D {
   marker.add(ground, halo, spin, rim, core)
   town.add(marker)
   // the stem that carries the photograph
-  const carry = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, CARRY, 8), new THREE.MeshBasicMaterial({ color: '#ffffff', depthTest: false, toneMapped: false }))
+  const carry = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, CARRY, 8), new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, depthTest: false, depthWrite: false, toneMapped: false }))
   carry.rotation.x = Math.PI / 2
   carry.position.z = CARRY / 2
   carry.renderOrder = order++

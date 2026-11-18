@@ -26,7 +26,11 @@ export const TITLE_FLAME = ['Piramal.ai']
  * software …") is the reason AIDLC stands there. The stories then come in exactly the order of
  * the petals, left to right.
  *
- * ONE SWITCH: set SHOW_STORIES to false and the petals only light in turn, with no names.
+ * ONE SWITCH, AND IT IS OFF. The review ruled that these pairings are a claim about which product
+ * delivers which outcome, and that is the owner's to make, not a builder's: AIDLC has no support
+ * in the deck, Nivaaran and PIA each carry TWO outcomes in their breadcrumbs, and slide 33 (next)
+ * says CREDIT.AI, not ABCD. With false the petals only light in turn, with no names: exactly what
+ * the deck prints. Set it to true only with the owner's yes on each pairing.
  */
 export const SHOW_STORIES = false
 

@@ -27,8 +27,10 @@ export interface Blocks {
   gl: SceneCanvas
   /** Each bought box: 0 above the stack … 1 in its place. */
   box: { t: number }[]
-  /** Each tile of the grid: 0 inside the cube … 1 landed in its cell. */
-  tile: { p: number }[]
+  /** Each tile of the grid: `p` 0 inside the cube … 1 landed in its cell; `q` 0 in its cell … 1 gone into its place in the window (the example). */
+  tile: { p: number; q: number }[]
+  /** Where each tile goes in the example: a stage point in --u. build() sets these from the DOM. */
+  aim: { u: number; v: number }[]
   state: {
     /** The cube: 0 not there … 1 standing beside the stack. */
     cube: number
@@ -38,6 +40,8 @@ export interface Blocks {
     recede: number
     /** The tiles that keep coming over the arc: 0 none … 1 all. */
     stream: number
+    /** The example: the tiles that keep coming go to the window instead of the grid: 0 … 1. */
+    example: number
   }
 }
 
@@ -84,7 +88,7 @@ export function makeBlocks(ctx: SceneCtx): Blocks {
   const fill = new THREE.DirectionalLight(0xfff3ea, 0.5)
   fill.position.set(60, 10, 60)
   gl.scene.add(fill)
-  const state = { cube: 1, lid: 0, recede: 0, stream: 0 }
+  const state = { cube: 1, lid: 0, recede: 0, stream: 0, example: 0 }
 
   /* ---- the stack of bought software: 3, 3 and 2, seen a little from above and from the left ---- */
   const stack = new THREE.Group()
@@ -155,7 +159,11 @@ export function makeBlocks(ctx: SceneCtx): Blocks {
   if (tiles.instanceColor) tiles.instanceColor.needsUpdate = true
   gl.scene.add(tiles)
 
-  const tile = GRID.map(() => ({ p: 1 }))
+  const tile = GRID.map(() => ({ p: 1, q: 0 }))
+  const aim = GRID.map((_, i) => {
+    const c = cell(Math.floor(i / 4), i % 4)
+    return { u: c.u, v: c.v }
+  })
   const targets = GRID.map((_, i) => {
     const c = cell(Math.floor(i / 4), i % 4)
     return gl.at(c.u, c.v, 0.2)
@@ -169,6 +177,8 @@ export function makeBlocks(ctx: SceneCtx): Blocks {
     return [r(1) * 7, r(2) * 7, r(3) * 5 - 2.5]
   })
   const streamEnd = gl.at(PANEL.x - 0.6, PANEL.y + PANEL.size * 0.62, 0.4)
+  // in the example they go into the window's left edge instead
+  const windowEnd = gl.at(46.6, 31.2, 0.4)
 
   const dummy = new THREE.Object3D()
   const put = (i: number, x: number, y: number, z: number, rx: number, ry: number, rz: number, s: number) => {
@@ -207,6 +217,20 @@ export function makeBlocks(ctx: SceneCtx): Blocks {
     for (let i = 0; i < N; i++) {
       const p = tile[i].p
       const to = targets[i]
+      const q = tile[i].q
+      if (q > 0) {
+        // the example: it lifts off its cell, crosses toward the room and goes into its place in the window
+        const dx = aim[i].u - 50
+        const dy = 28.125 - aim[i].v
+        const h = 1 - q
+        const x = h * h * to.x + 2 * h * q * ((to.x + dx) / 2) + q * q * dx
+        const y = h * h * to.y + 2 * h * q * ((to.y + dy) / 2 + 1.4) + q * q * dy
+        const z = h * h * to.z + 2 * h * q * 6 + q * q * 0.2
+        const size = 1 - smooth((q - 0.6) / 0.4)
+        const lean = Math.sin(Math.PI * q) * 0.16
+        put(i, x, y, z, spin[i][0] * lean, spin[i][1] * lean, spin[i][2] * lean, size < 0.1 ? 0 : size)
+        continue
+      }
       const row = Math.floor(i / 4)
       const f = p
       const g = 1 - f
@@ -224,13 +248,16 @@ export function makeBlocks(ctx: SceneCtx): Blocks {
       put(i, x, y, z + land * 0.9, spin[i][0] * turn, spin[i][1] * turn, spin[i][2] * turn, s)
     }
     // … and more keep coming, as long as the slide is up
-    const ex = (mouth.x + streamEnd.x) / 2 - 1.5
-    const ey = mouth.y + 12.5
+    const w = state.example
+    const endX = streamEnd.x + (windowEnd.x - streamEnd.x) * w
+    const endY = streamEnd.y + (windowEnd.y - streamEnd.y) * w
+    const ex = (mouth.x + endX) / 2 - 1.5 + 1.5 * w
+    const ey = mouth.y + 12.5 - 5.5 * w
     for (let i = 0; i < STREAM; i++) {
       const q = (i / STREAM + 0.07 + t * 0.085) % 1
       const g = 1 - q
-      const x = g * g * heart.x + 2 * g * q * ex + q * q * streamEnd.x
-      const y = g * g * heart.y + 2 * g * q * ey + q * q * streamEnd.y
+      const x = g * g * heart.x + 2 * g * q * ex + q * q * endX
+      const y = g * g * heart.y + 2 * g * q * ey + q * q * endY
       const z = 2 * g * q * 4 + q * q * streamEnd.z
       const env = state.stream * smooth((q - 0.11) / 0.14) * (1 - smooth((q - 0.8) / 0.16))
       const s = env < 0.12 ? 0 : env * 0.86 // never a speck: it is there or it is not
@@ -240,5 +267,5 @@ export function makeBlocks(ctx: SceneCtx): Blocks {
     tiles.instanceMatrix.needsUpdate = true
   })
 
-  return { gl, box: boxes.map((b) => b.s), tile, state }
+  return { gl, box: boxes.map((b) => b.s), tile, aim, state }
 }

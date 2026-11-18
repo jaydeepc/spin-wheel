@@ -16,8 +16,8 @@
  *   second   the bottom row comes forward, lands and is taped: Agentic Workflows, AI Reshapes
  *            SaaS, Sovereign and Indic AI.
  *
- * NO FALSE FIGURE IS EVER ON SCREEN. A rate, a price or a ratio ("2.3% → 0.57%", "$1.48 →
- * $0.64", "3x") never counts through values in between: the first value stands, the arrow
+ * NO FALSE FIGURE IS EVER ON SCREEN. A before and after, a price or a ratio ("80k → 800K+",
+ * "$1.48 → $0.64", "3x") never counts through values in between: the first value stands, the arrow
  * draws, the second rises whole through a mask. Only tallies (9,000+, 623, 277, 3.62 lakh)
  * count up, as a tally does.
  *

@@ -43,6 +43,14 @@
   color: var(--kn-ink);
   white-space: nowrap;
 }
+/* the question's parts arrive one by one (build() brings each in); the mask is moved whole, so nothing is cut */
+.s16-q .kn-w {
+  visibility: hidden;
+}
+/* its words do not move inside their masks here: no layer of their own, so that they are drawn sharp at every size */
+.s16-q .kn-wi {
+  will-change: auto;
+}
 .s16-q--to {
   margin-top: calc(var(--u) * 0.75);
 }

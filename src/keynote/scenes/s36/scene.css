@@ -349,7 +349,7 @@
 }
 .s36-row--37 .s36-chip,
 .s36-row--38 .s36-chip {
-  width: calc(var(--u) * 10.6);
+  width: calc(var(--u) * 9.8);
   padding-top: calc(var(--u) * 0.7);
   padding-bottom: calc(var(--u) * 0.78);
   font-size: calc(var(--u) * 1.3);

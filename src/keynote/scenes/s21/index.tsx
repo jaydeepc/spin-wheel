@@ -13,15 +13,18 @@
  *   bought   the headline; the locked boxes stack up; 32% is pinned up and counts; FROM draws
  *   build    the cube opens, sixteen tiles fly and land, the sparkle; TO draws; the example
  *   news     the clipping is pinned up; billing changes too
+ *   example  the presenter's use case: the rest of the slide steps away, one sentence is typed
+ *            into a prompt box, and the grid's tiles cross into a browser window and become a
+ *            vendor-management screen (an illustration: generic labels only)
  *
  * Without WebGL the deck's own flat picture stands in, from the first rest on.
  */
 
 import gsap from 'gsap'
 import { Fragment } from 'react'
-import { anim, Clipping, Count, Headline, Kicker, Pic, pic, place, Words, type SceneCtx, type SceneModule } from '../../kit'
+import { anim, BrowserFrame, Clipping, Count, Headline, Kicker, Pic, pic, place, Words, type SceneCtx, type SceneModule } from '../../kit'
 import { makeBlocks, type Blocks } from './blocks'
-import { BILLING, BLOCKS_PIC, BLOCKS_RECT, CLIP, FLAME, FROM, GRID, PANEL, QUOTE, SKIPPED, SOURCES, TO, cell, TILE } from './data'
+import { ASK, BILLING, BLOCKS_PIC, BLOCKS_RECT, CAPTION, CLIP, FLAME, FROM, GRID, PANEL, QUOTE, SKIPPED, SOURCES, TILE_ORDER, TO, UI, cell, TILE } from './data'
 import './scene.css'
 
 const u = (v: number) => `calc(var(--u) * ${+v.toFixed(3)})`
@@ -50,8 +53,111 @@ function Flow({ kind, label, steps }: { kind: 'from' | 'to'; label: string; step
   )
 }
 
+/** A part of the ring: an arc from `from` to `to` degrees, clockwise from the top. */
+function arc(from: number, to: number) {
+  const pt = (deg: number) => {
+    const r = ((deg - 90) * Math.PI) / 180
+    return `${(30 + 21 * Math.cos(r)).toFixed(2)} ${(30 + 21 * Math.sin(r)).toFixed(2)}`
+  }
+  return `M${pt(from)} A21 21 0 ${to - from > 180 ? 1 : 0} 1 ${pt(to)}`
+}
+
+const tileOf = (i: number) => (i >= 0 ? { 'data-tile': i } : {})
+
+/** The example's screen: what one sentence became. Generic labels only. */
+function VendorScreen() {
+  return (
+    <div className="s21-ui">
+      <div className="s21-ui-side">
+        <svg className="s21-ui-mark" viewBox="0 0 20 20" aria-hidden="true" {...tileOf(0)}>
+          <rect x="1" y="1" width="8" height="8" rx="2.2" fill="#f1663f" />
+          <rect x="11" y="1" width="8" height="8" rx="2.2" fill="#62a6f4" />
+          <rect x="1" y="11" width="8" height="8" rx="2.2" fill="#accffb" />
+          <rect x="11" y="11" width="8" height="8" rx="2.2" fill="#fba688" />
+        </svg>
+        {UI.nav.map((n, i) => (
+          <span key={n} className={`s21-ui-nav${i ? '' : ' s21-ui-nav--on'}`} {...tileOf(i ? -1 : 1)}>
+            <i aria-hidden="true" />
+            {n}
+          </span>
+        ))}
+      </div>
+      <div className="s21-ui-top">
+        <b className="s21-ui-title" {...tileOf(3)}>
+          {UI.nav[0]}
+        </b>
+        <span className="s21-ui-search" {...tileOf(6)}>
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <circle cx="8.6" cy="8.6" r="5.4" />
+            <path d="M12.8 12.8 L17.4 17.4" />
+          </svg>
+          {UI.search}
+        </span>
+        <span className="s21-ui-add" {...tileOf(4)}>
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M10 4 V16 M4 10 H16" />
+          </svg>
+          {UI.add}
+        </span>
+      </div>
+      <div className="s21-ui-card s21-ui-list">
+        <div className="s21-ui-head">
+          {UI.head.map((h) => (
+            <span key={h}>{h}</span>
+          ))}
+        </div>
+        {UI.rows.map((r) => (
+          <div key={r.name} className="s21-ui-row">
+            <span className="s21-ui-who">
+              <i className={`s21-ui-av s21-ui-av--${r.tone}`} {...tileOf(r.tile)}>
+                {r.name.slice(-1)}
+              </i>
+              <b className="s21-ui-name">{r.name}</b>
+            </span>
+            <span className="s21-ui-cell">
+              <span className={`s21-ui-chip s21-ui-chip--${r.status.toLowerCase()}`} {...tileOf(r.chipTile)}>
+                <i aria-hidden="true" />
+                {r.status}
+              </span>
+            </span>
+            <span className={`s21-ui-track s21-ui-track--${r.status.toLowerCase()}`} aria-hidden="true">
+              <i style={{ width: `${r.term}%` }} />
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="s21-ui-card s21-ui-pay">
+        <b className="s21-ui-ct">{UI.nav[2]}</b>
+        <div className="s21-ui-bars" aria-hidden="true">
+          {UI.bars.map((b, i) => (
+            <i key={i} className={`s21-ui-bar s21-ui-bar--${b.tone}`} style={{ height: `${b.h}%` }} {...tileOf(b.tile)} />
+          ))}
+        </div>
+      </div>
+      <div className="s21-ui-card s21-ui-con">
+        <b className="s21-ui-ct">{UI.nav[1]}</b>
+        <div className="s21-ui-con-row">
+          <svg className="s21-ui-ring" viewBox="0 0 60 60" aria-hidden="true" {...tileOf(12)}>
+            {UI.ring.map((p) => (
+              <path key={p.status} className={`s21-ui-arc s21-ui-arc--${p.status.toLowerCase()}`} d={arc(p.from, p.to)} />
+            ))}
+          </svg>
+          <ul className="s21-ui-legend">
+            {UI.ring.map((p) => (
+              <li key={p.status} className={`s21-ui-key s21-ui-key--${p.status.toLowerCase()}`}>
+                <i aria-hidden="true" />
+                {p.status}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const scene: SceneModule = {
-  beats: ['bought', 'build', 'news'],
+  beats: ['bought', 'build', 'news', 'example'],
   preload: [pic(21, BLOCKS_PIC)],
 
   Scene: ({ slide }) => (
@@ -110,6 +216,36 @@ const scene: SceneModule = {
       </div>
 
       <p className="s21-src">{SOURCES}</p>
+
+      {/* ---- the example: one sentence, written ---- */}
+      <div className="s21-ask">
+        <Kicker tone="flame" block className="s21-ask-k">
+          {TO.steps[1]}
+        </Kicker>
+        <div className="s21-ask-box">
+          <span className="s21-ask-ring" aria-hidden="true" />
+          <p className="s21-ask-text" aria-label={ASK}>
+            {Array.from(ASK).map((c, i) => (
+              <span key={i} className="s21-ask-c" aria-hidden="true">
+                {c}
+              </span>
+            ))}
+            <i className="s21-caret" aria-hidden="true" />
+          </p>
+          <span className="s21-send" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <path d="M10 15.5 V5 M5.4 9.4 L10 4.6 L14.6 9.4" />
+            </svg>
+          </span>
+        </div>
+      </div>
+      {/* ---- … and the software it becomes ---- */}
+      <BrowserFrame className="s21-win" ratio="510 / 296" width={51} address={UI.address}>
+        <VendorScreen />
+      </BrowserFrame>
+      <p className="s21-cap">
+        <Words text={CAPTION.text} flame={CAPTION.flame} bold={CAPTION.flame} />
+      </p>
     </div>
   ),
 
@@ -130,6 +266,25 @@ const scene: SceneModule = {
     const fx = ctx.backdrop.fx
     const b = ctx.bag.blocks as Blocks | undefined
     const calm = ctx.reduced
+
+    // measured before anything is hidden or moved: where every letter of the sentence ends, and
+    // where every piece of the example's screen sits (the tile that becomes it goes there)
+    const askText = ctx.$('.s21-ask-text')
+    const askAt = ctx.loc(askText)
+    const letters = ctx.$$('.s21-ask-c')
+    const letterEnd = letters.map((el) => {
+      const l = ctx.loc(el)
+      return l.x + l.w - askAt.x
+    })
+    const piece = new Map<number, Element>()
+    ctx.$$('.s21-win [data-tile]').forEach((el) => {
+      const i = Number(el.getAttribute('data-tile'))
+      piece.set(i, el)
+      if (b) {
+        const l = ctx.loc(el)
+        b.aim[i] = { u: l.cx / ctx.U, v: l.cy / ctx.U }
+      }
+    })
 
     /** One of the two flows draws: its label, then pill, arrow, pill … */
     const flow = (kind: 'from' | 'to', at: number, gap: number) => {
@@ -163,7 +318,11 @@ const scene: SceneModule = {
       b.state.recede = 0
       b.state.stream = 0
       if (!calm) tl.to(b.state, { cube: 1, duration: 0.9, ease: ease.out }, 1.35)
-      b.tile.forEach((s) => (s.p = 0))
+      b.tile.forEach((s) => {
+        s.p = 0
+        s.q = 0
+      })
+      b.state.example = 0
       a.rise('.s21-panel', 1.5, { y: 1.6, duration: 0.8 })
       a.pop('.s21-panel i', 1.55, { stagger: 0.025, from: 0.7, duration: 0.4 })
     } else {
@@ -221,6 +380,71 @@ const scene: SceneModule = {
     a.words('.s21-billing-line', N + 0.85, { stagger: 0.025 })
     tl.to(fx, { focusX: 0.62, focusY: 0.3, glow: 0.26, warm: 0.15, duration: 1.4, ease: ease.inOut }, N)
     tl.addLabel('news', N + 1.9)
+
+    /* -------------------------------------------------------------- example */
+    // the slide has made its point: its cards and its two flows step away, the blocks stay
+    const E = N + 1.9
+    a.leave(ctx.$$('.s21-card, .s21-clip, .s21-billing'), E, { y: 1.2, stagger: 0.06 })
+    tl.to(ctx.$$('.s21-flow, .s21-quote, .s21-src'), { autoAlpha: 0, duration: 0.35, ease: 'power2.in' }, E)
+
+    // a prompt box where the flows were, and the sentence is typed into it
+    a.rise('.s21-ask', E + 0.3, { y: 1.4, duration: 0.6 })
+    const caret = ctx.$('.s21-caret')
+    const ring = ctx.$('.s21-ask-ring')
+    const send = ctx.$('.s21-send')
+    gsap.set(ring, { autoAlpha: 0 })
+    let typed = E + 0.85
+    if (calm) {
+      gsap.set(caret, { autoAlpha: 0 })
+      a.fade(askText, typed, { duration: 0.6 })
+      typed += 0.6
+    } else {
+      gsap.set(letters, { autoAlpha: 0 })
+      letters.forEach((el, i) => {
+        tl.set(el, { autoAlpha: 1 }, typed)
+        tl.set(caret, { x: letterEnd[i] }, typed)
+        // a hand, not a machine: a breath after each word, a little unevenness between letters
+        typed += (el.textContent === ' ' ? 0.062 : 0.034) + 0.008 * Math.sin(i * 2.7)
+      })
+      tl.to(caret, { autoAlpha: 0, duration: 0.2 }, typed + 0.25)
+    }
+    // sent
+    const S = typed + 0.15
+    tl.to(send, { backgroundColor: '#f16443', color: '#ffffff', duration: 0.25 }, S)
+    if (!calm) tl.to(send, { scale: 0.86, duration: 0.12, ease: 'power2.in' }, S).to(send, { scale: 1, duration: 0.4, ease: ease.snap }, S + 0.12)
+    tl.to(ring, { autoAlpha: 1, duration: 0.4 }, S)
+
+    // the window comes up where the grid stood; the grid's own panel goes, its tiles stay in the air
+    const W = S + 0.2
+    a.rise('.s21-win', W, { y: 2.2, duration: 0.8 })
+    tl.to(ctx.$$('.s21-panel, .s21-spark-star, .s21-spark-dot'), { autoAlpha: 0, duration: 0.4 }, W + 0.1)
+    if (!b) tl.to(ctx.$('.s21-flat'), { clipPath: 'inset(0% 45% 0% 0%)', duration: 0.6, ease: ease.inOut }, W - 0.1)
+    a.wipe('.s21-ui-side', W + 0.3, { from: 'left', duration: 0.6 })
+    a.rise('.s21-ui-card', W + 0.4, { y: 1.2, stagger: 0.1, duration: 0.6 })
+    a.rise(ctx.$$('.s21-ui-nav').slice(1), W + 0.95, { y: 0, x: -0.8, stagger: 0.08, duration: 0.5 })
+
+    // tile after tile crosses into the window and becomes a piece of the screen
+    const land: number[] = []
+    TILE_ORDER.forEach((i, k) => {
+      const at = W + 0.55 + k * 0.07
+      land[i] = at + (calm ? 0.1 : 0.7)
+      if (b) tl.to(b.tile[i], { q: 1, duration: calm ? 0.01 : 0.95, ease: 'power2.inOut' }, at)
+      const el = piece.get(i)
+      if (el && !el.classList.contains('s21-ui-bar')) a.pop(el, land[i], { from: 0.5, duration: 0.5 })
+    })
+    if (b) tl.to(b.state, { example: 1, duration: 0.9, ease: ease.inOut }, W + 0.2)
+    ctx.$$('.s21-ui-row').forEach((row, r) => {
+      const t = land[UI.rows[r].tile]
+      a.fade(row.querySelector('.s21-ui-name'), t + 0.08, { duration: 0.4 })
+      if (UI.rows[r].chipTile < 0) a.pop(row.querySelector('.s21-ui-chip'), t + 0.22, { from: 0.6, duration: 0.45 })
+      a.rule(row.querySelector('.s21-ui-track i'), t + 0.3, { from: 'left', duration: 0.6 })
+    })
+    a.rule('.s21-ui-bar', land[11] - 0.12, { from: 'bottom', stagger: 0.07, duration: 0.5 })
+    a.rise('.s21-ui-key', land[12] + 0.05, { y: 0, x: -0.6, stagger: 0.08, duration: 0.45 })
+
+    a.words('.s21-cap', land[12] + 0.15, { stagger: 0.04 })
+    tl.to(fx, { focusX: 0.4, focusY: 0.05, glow: 0.32, warm: 0.3, duration: 1.6, ease: ease.inOut }, W)
+    tl.addLabel('example', land[12] + 1.25)
     return tl
   },
 }

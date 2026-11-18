@@ -39,10 +39,14 @@ export const GUIDANCE_RANGE = [2200, 2300] as const
  */
 export const H1_TAG = '<< H1 FY26A'
 
-/** data.json → charts[0].callouts (text.json t06, t14). The words are the deck's; they are broken into lines here for a box that sits over its pill. */
-export const CALLOUTS = [
-  { at: 0, text: 'Includes exceptional gain of ₹ 8,066 Cr from PPL demerger', lines: ['Includes exceptional', 'gain of ₹ 8,066 Cr from', 'PPL demerger'] },
-  { at: 2, text: '~₹250 Cr impact on profits due to retail fee amortization', lines: ['~₹250 Cr impact on', 'profits due to retail', 'fee amortization'] },
+/**
+ * data.json → charts[0].callouts (text.json t06, t14). The words are the deck's; they are broken into lines here.
+ * `on` says which figure of the year the note belongs to: 'pat' sits over the grey pill, 'pbt' stands beside the
+ * orange bar and points at its figure (the ~₹250 Cr note is about the 780 of Growth PBT: the owner's ruling).
+ */
+export const CALLOUTS: { at: number; on: 'pat' | 'pbt'; text: string; lines: string[] }[] = [
+  { at: 0, on: 'pat', text: 'Includes exceptional gain of ₹ 8,066 Cr from PPL demerger', lines: ['Includes exceptional', 'gain of ₹ 8,066 Cr from', 'PPL demerger'] },
+  { at: 2, on: 'pbt', text: '~₹250 Cr impact on profits due to retail fee amortization', lines: ['~₹250 Cr', 'impact on', 'profits due', 'to retail fee', 'amortization'] },
 ]
 
 /** data.json → charts[0].underChart (text.json t22) */

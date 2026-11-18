@@ -10,7 +10,7 @@ export interface Segment {
   file: string
   /** images.json → px */
   px: [number, number]
-  /** text.json t02 / t04 / t06 */
+  /** text.json t02 / t04 / t06 (the third reads "Poor, Rural" in the deck: the presenter asked for "Rural" alone) */
   name: string
   /** text.json t03 / t05 / t07 (the third is typed in mixed case with a hyphen: as the deck has it) */
   tag: string
@@ -25,7 +25,7 @@ export interface Segment {
 export const SEGMENTS: Segment[] = [
   { key: 'a', file: 'photo-affluent-urban.jpg', px: [708, 960], name: 'Affluent, Urban', tag: 'NOT OUR CUSTOMER', h: 26, near: 0.85, turn: 6 },
   { key: 'm', file: 'photo-middle-india.jpg', px: [769, 1022], name: 'Middle India', tag: 'OUR FOCUS', h: 27.5, near: 1.3, turn: 0 },
-  { key: 'r', file: 'photo-poor-rural.png', px: [349, 463], name: 'Poor, Rural', tag: 'NOT YET- Biz in early days', h: 24, near: 0.5, turn: -6 },
+  { key: 'r', file: 'photo-poor-rural.png', px: [349, 463], name: 'Rural', tag: 'NOT YET- Biz in early days', h: 24, near: 0.5, turn: -6 },
 ]
 
 /** text.json t01: the span "BHARAT" is the deck's flame. */

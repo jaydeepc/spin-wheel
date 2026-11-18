@@ -91,7 +91,7 @@ export const BEFORE_41 = {
   insights: [
     { badge: '₹', title: 'He pays his other lenders', line: 'His payments to them are regular.' }, // 41 t13, t14, t15
     { badge: '7', title: 'Salary arrives on the 7th', line: 'His bank statement shows the credit.' }, // 41 t16, t17, t18
-    { badge: '“', title: 'What he told us earlier', line: 'His salary was delayed, so he did not pay.' }, // 41 t19, t20, t21
+    { badge: '“', title: 'What he told us earlier', line: 'He told another agent he will pay.' }, // 41 t19, t20; t21 reworded by the presenter (round md5)
   ],
   footerBadge: '7', // 41 t22
   footer: 'Visit on the 7th', // 41 t23

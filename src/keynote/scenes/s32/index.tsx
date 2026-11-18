@@ -10,11 +10,11 @@
  *             badges land along the ring, the words rise
  *   stories   a light walks the ring from the first badge to the fifth, drawing the ring's line;
  *             as it reaches each petal the petal answers (its colour deepens, it lifts a little,
- *             a real light crosses it) and the name of its story appears in it: ABCD, Nivaaran,
- *             Arya, PIA, AIDLC, in the order the section tells them (see data.ts: these names
- *             are the deck's, but they are not printed on this slide)
- *   begin     the light goes back to the first petal: Underwrite Better comes forward, its tag
- *             fills, the other four stand back. The next slide is its story.
+ *             a real light crosses it), in the order the section takes them. (Story names in
+ *             the petals exist behind SHOW_STORIES in data.ts and are OFF: they are not printed
+ *             on this slide and the pairings are the owner's to decide.)
+ *   begin     a light crosses the first petal once more: Underwrite Better comes forward, the
+ *             other four stand back. The section's first stories are about underwriting.
  *
  * The diagram, its petals (three.js) and all its moves are shared with slide 8
  * (../_shared/outcomes/); only the order of the moves is this slide's own.

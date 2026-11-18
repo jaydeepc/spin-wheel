@@ -7,17 +7,19 @@ export interface Part {
   /** the deck's flame word in the title */
   flame: string
   text: string
+  /** the part of `text` that is the question itself (set off, kept on one line) */
+  quote?: string
   icon: 'handshake' | 'team' | 'layers' | 'compass' | 'brain' | 'tag'
 }
 
-/** data.json → left (t03/t04, t07/t08, t09/t10) */
+/**
+ * THE ORDER (the presenter's, 18 Nov): Business sponsorship is the LAST of the six. It was the
+ * deck's first (data.json → left t03/t04); the other five keep the deck's order and move up one
+ * place, so the pairs "Our own team · Our own models" and "Our own platform · Annotation &
+ * hindsighting" still face each other. Its line is the presenter's new one (it was "It starts
+ * when the business asks: How can AI solve this better?").
+ */
 export const LEFT: Part[] = [
-  {
-    title: 'Business sponsorship',
-    flame: 'sponsorship',
-    text: 'It starts when the business asks: How can AI solve this better?',
-    icon: 'handshake',
-  },
   {
     title: 'Our own team',
     flame: 'team',
@@ -30,15 +32,14 @@ export const LEFT: Part[] = [
     text: 'We own the source code. No black boxes.',
     icon: 'layers',
   },
-]
-/** data.json → right (t05/t06, t13/t14, t15/t16) */
-export const RIGHT: Part[] = [
   {
     title: 'Open architecture',
     flame: 'architecture',
     text: 'GPU & SLMs, kept swappable.',
     icon: 'compass',
   },
+]
+export const RIGHT: Part[] = [
   {
     title: 'Our own models',
     flame: 'models',
@@ -51,7 +52,16 @@ export const RIGHT: Part[] = [
     text: 'Our own platform to label data and learn from what happened.',
     icon: 'tag',
   },
+  {
+    title: 'Business sponsorship',
+    flame: 'sponsorship',
+    text: 'Every business leader asks the question: “How can I solve this?”',
+    quote: '“How can I solve this?”',
+    icon: 'handshake',
+  },
 ]
+/** the card that closes the slide (0 … 5: left rows 0 1 2, then right rows 0 1 2) */
+export const LAST = 5
 /** data.json → centre (t11, t12) */
 export const PILL = 'UNDER THE HOOD OF AI'
 export const LINE = 'The Engine that runs it all'

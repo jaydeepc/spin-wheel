@@ -16,7 +16,7 @@ Idea: one landscape, one track.
   OUR PEOPLE (navy, lands last and firmest; the dots turn navy). Every rest of 46 is the deck's
   frame or its mirror.
 - 47 (engines, skill): the train leaves, the band closes to a window where the workshop picture
-  stands and the picture opens out of it (push-in); 60+ and 70+ count; the three pills of a skill
+  stands and the picture opens out of it (push-in); 600+ and 70+ count; the three pills of a skill
   come off the bookshelf of the picture.
 - 48 (ticket, coach): the empty coach; then the arrow, the second card arrives with the SAME
   empty coach and cross-fades to the team (seats turn orange).

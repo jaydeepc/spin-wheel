@@ -11,7 +11,7 @@ export const FROM = { label: 'FROM', steps: ['User', 'Screen', 'Bought software'
 export const TO = { label: 'TO', steps: ['User', 'A goal, in plain words', 'AI agent', 'In-house hosted systems'] }
 
 /** text.json → t12 (data.json → quote): the first sentence bold, the rest regular; one space between them here */
-export const QUOTE = { said: '“Raise this vendor\'s invoice.”', rest: 'Done, with no screen to click through.' }
+export const QUOTE = { said: '“I want to manage all my vendors in one platform.”', rest: 'Done, with no screen to click through.' }
 
 /** data.json → stats[0] (text.json x01, x02, read by eye; checked against the page) */
 export const SKIPPED = {
@@ -64,3 +64,50 @@ export const GRID: ('navy' | 'flame' | 'peach' | 'azure' | 'pale')[] = [
   'flame', 'peach', 'pale', 'azure',
   'navy', 'azure', 'pale', 'flame',
 ]
+
+/* ---- the example (beat 'example'): NOT from the pack. The presenter asked for one written-out
+        use case; the sentence is his, the screen is an illustration of generated software with
+        generic labels only (no company, no person, no figure). ---- */
+
+/** The presenter's sentence, typed out letter by letter. */
+export const ASK = 'I want to manage all my vendors in one platform'
+
+/** One line under it, in the slide's own vocabulary. */
+export const CAPTION = { text: 'Described in a sentence. Built, not bought.', flame: ['Built, not bought.'] }
+
+export type Status = 'Active' | 'Pending' | 'Renewal'
+type Tone = 'navy' | 'flame' | 'azure' | 'peach' | 'pale'
+
+/** The vendor-management screen. `tile` is the grid tile (GRID index) that becomes that piece. */
+export const UI = {
+  address: 'vendors',
+  nav: ['Vendors', 'Contracts', 'Payments due', 'Onboarding'],
+  search: 'Search vendors',
+  add: 'Add vendor',
+  head: ['Vendor', 'Status', 'Contract'],
+  rows: [
+    { name: 'Vendor A', tone: 'navy', tile: 2, status: 'Active', chipTile: 13, term: 34 },
+    { name: 'Vendor B', tone: 'flame', tile: 8, status: 'Renewal', chipTile: -1, term: 92 },
+    { name: 'Vendor C', tone: 'azure', tile: 7, status: 'Active', chipTile: -1, term: 58 },
+    { name: 'Vendor D', tone: 'peach', tile: 5, status: 'Pending', chipTile: 9, term: 8 },
+    { name: 'Vendor E', tone: 'pale', tile: 10, status: 'Active', chipTile: -1, term: 71 },
+  ] as { name: string; tone: Tone; tile: number; status: Status; chipTile: number; term: number }[],
+  /** Payments due: bars only, no scale and no figure. Heights in % of the plot. */
+  bars: [
+    { h: 36, tone: 'pale', tile: -1 },
+    { h: 54, tone: 'azure', tile: 11 },
+    { h: 42, tone: 'pale', tile: 14 },
+    { h: 68, tone: 'azure', tile: -1 },
+    { h: 50, tone: 'pale', tile: -1 },
+    { h: 88, tone: 'flame', tile: 15 },
+  ] as { h: number; tone: Tone; tile: number }[],
+  /** Contracts: a ring in three parts (degrees, clockwise from the top), no figure. */
+  ring: [
+    { status: 'Active', from: 0, to: 206 },
+    { status: 'Renewal', from: 218, to: 286 },
+    { status: 'Pending', from: 298, to: 348 },
+  ] as { status: Status; from: number; to: number }[],
+}
+
+/** The order in which the grid's tiles leave for the window: top bar, list, panels. */
+export const TILE_ORDER = [0, 3, 1, 6, 4, 2, 13, 8, 7, 5, 9, 10, 11, 14, 15, 12]

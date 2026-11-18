@@ -1,4 +1,4 @@
-/* Slide 30 · scale: two charts that gather, nine numbers that count */
+/* Slide 30 · scale: a board of nine numbers that count */
 .s30 {
   position: absolute;
   inset: 0;
@@ -10,154 +10,81 @@
   white-space: nowrap;
 }
 
-/* ---- the two placeholder charts (laid out at full size; the row is scaled down as the numbers come in) ---- */
-.s30-charts {
-  position: absolute;
-  left: calc(var(--u) * 4.2);
-  top: calc(var(--u) * 11.7);
-  width: calc(var(--u) * 91.6);
-  height: calc(var(--u) * 21);
-  display: flex;
-  justify-content: space-between;
-}
-.s30-chart {
-  position: relative;
-  flex: none;
-  width: calc(var(--u) * 43.5);
-  height: 100%;
-  border-radius: calc(var(--u) * 1.7);
-  background: linear-gradient(180deg, #ffffff 0%, #ffffff 62%, #f6f9fe 100%);
-  box-shadow:
-    0 0 0 calc(var(--u) * 0.07) rgba(7, 26, 80, 0.07),
-    0 calc(var(--u) * 0.9) calc(var(--u) * 2.6) rgba(7, 26, 80, 0.13),
-    0 calc(var(--u) * 0.1) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.07);
-  visibility: hidden;
-}
-.s30-chart[data-chart='agents'] {
-  background: linear-gradient(180deg, #ffffff 0%, #ffffff 62%, #fff7f3 100%);
-}
-.s30-chart-title {
-  position: absolute;
-  left: calc(var(--u) * 2.1);
-  top: calc(var(--u) * 1.45);
-  margin: 0;
-  font-size: calc(var(--u) * 2.15);
-  line-height: 1.1;
-  font-weight: 400;
-  color: var(--kn-ink);
-  white-space: nowrap;
-}
-/* an empty plot: a dashed frame and a fine hatch. It says "nothing real is drawn here yet"
-   before a word is read */
-.s30-hatch {
-  position: absolute;
-  inset: calc(var(--u) * 0.75);
-  border-radius: calc(var(--u) * 1.05);
-  border: calc(var(--u) * 0.1) dashed rgba(71, 86, 122, 0.34);
-  background: repeating-linear-gradient(
-    -45deg,
-    rgba(7, 26, 80, 0.06) 0,
-    rgba(7, 26, 80, 0.06) calc(var(--u) * 0.1),
-    rgba(7, 26, 80, 0) calc(var(--u) * 0.1),
-    rgba(7, 26, 80, 0) calc(var(--u) * 0.9)
-  );
-}
-/* the tag: dashed, unmistakable */
-.s30-tag {
-  position: absolute;
-  left: calc(var(--u) * 2.0);
-  top: calc(var(--u) * 4.4);
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.5);
-  height: calc(var(--u) * 2.3);
-  padding: 0 calc(var(--u) * 1.0) 0 calc(var(--u) * 0.75);
-  border-radius: calc(var(--u) * 1.15);
-  border: calc(var(--u) * 0.13) dashed var(--kn-flame);
-  background: #fff;
-  color: #0c2154;
-  font-size: calc(var(--u) * 1.32);
-  font-weight: 700;
-  white-space: nowrap;
-  visibility: hidden;
-}
-.s30-tag svg {
-  flex: none;
-  color: var(--kn-flame-ink);
-  width: calc(var(--u) * 1.45);
-  height: calc(var(--u) * 1.45);
-}
-/* no WebGL: the same shape as plain columns */
-.s30-fb {
-  position: absolute;
-  left: calc(var(--u) * 4.4);
-  right: calc(var(--u) * 4.4);
-  bottom: calc(var(--u) * 2.6);
-  height: calc(var(--u) * 11.6);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  border-bottom: calc(var(--u) * 0.12) solid rgba(7, 26, 80, 0.16);
-}
-.s30-fb-bar {
-  flex: none;
-  width: calc(var(--u) * 3);
-  border-radius: calc(var(--u) * 0.5) calc(var(--u) * 0.5) 0 0;
-  background: var(--kn-azure-ink);
-}
-.s30-chart[data-chart='agents'] .s30-fb-bar {
-  background: var(--kn-flame-deep);
-}
-.kn-scene[data-gl='1'] .s30-fb {
-  display: none;
-}
-
-/* ---- the nine numbers ---- */
+/* ---- the nine numbers: three by three, the whole stage under the headline ---- */
 .s30-grid {
   position: absolute;
   left: calc(var(--u) * 4.2);
-  top: calc(var(--u) * 27.9);
+  top: calc(var(--u) * 13.5);
   width: calc(var(--u) * 91.6);
   display: grid;
   grid-template-columns: repeat(3, calc(var(--u) * 29.4));
   justify-content: space-between;
-  row-gap: calc(var(--u) * 0.85);
+  row-gap: calc(var(--u) * 1.9); /* tile 10.4 + gap 1.9 = STEP 12.3 in index.tsx */
 }
 .s30-tile {
   position: relative;
-  height: calc(var(--u) * 6.9);
-  border-radius: calc(var(--u) * 3.45);
+  height: calc(var(--u) * 10.4);
+  border-radius: calc(var(--u) * 5.2);
   display: flex;
   align-items: center;
-  padding: 0 calc(var(--u) * 2.4) 0 calc(var(--u) * 6.3);
+  padding: 0 calc(var(--u) * 2.2) 0 calc(var(--u) * 8.3);
   visibility: hidden;
 }
 .s30-tile[data-tone='blue'] {
-  background: linear-gradient(100deg, #d6e9fc 0%, #e3f0fd 100%);
-  box-shadow: inset 0 0 0 calc(var(--u) * 0.08) rgba(120, 170, 230, 0.35);
+  background: linear-gradient(100deg, #d3e7fc 0%, #e4f1fd 100%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.08) rgba(120, 170, 230, 0.38),
+    inset 0 calc(var(--u) * 0.12) 0 rgba(255, 255, 255, 0.7),
+    0 calc(var(--u) * 0.7) calc(var(--u) * 1.8) rgba(45, 106, 209, 0.1);
 }
 .s30-tile[data-tone='peach'] {
-  background: linear-gradient(100deg, #fde4da 0%, #fff0ea 100%);
-  box-shadow: inset 0 0 0 calc(var(--u) * 0.08) rgba(240, 160, 130, 0.35);
+  background: linear-gradient(100deg, #fde2d7 0%, #fff1eb 100%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.08) rgba(240, 160, 130, 0.38),
+    inset 0 calc(var(--u) * 0.12) 0 rgba(255, 255, 255, 0.7),
+    0 calc(var(--u) * 0.7) calc(var(--u) * 1.8) rgba(232, 80, 42, 0.09);
+}
+
+/* the sheen that runs once along a capsule as it arrives (clipped to the capsule; it rests outside it) */
+.s30-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.s30-sheen {
+  position: absolute;
+  left: 0;
+  top: -20%;
+  width: 34%;
+  height: 140%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: translateX(-160%);
+}
+
+/* the numbered disc, and the ring that goes out from where it lands */
+.s30-badge,
+.s30-ring {
+  position: absolute;
+  left: calc(var(--u) * 1.75);
+  top: 50%;
+  width: calc(var(--u) * 5.3);
+  height: calc(var(--u) * 5.3);
+  margin-top: calc(var(--u) * -2.65);
+  border-radius: 50%;
+  visibility: hidden;
 }
 .s30-badge {
-  position: absolute;
-  left: calc(var(--u) * 1.25);
-  top: 50%;
-  width: calc(var(--u) * 3.9);
-  height: calc(var(--u) * 3.9);
-  margin-top: calc(var(--u) * -1.95);
-  border-radius: 50%;
   display: grid;
   place-items: center;
   color: #fff;
-  font-size: calc(var(--u) * 2.2);
+  font-size: calc(var(--u) * 3);
   font-weight: 700;
   line-height: 1;
   box-shadow:
-    0 0 0 calc(var(--u) * 0.2) #fff,
-    0 calc(var(--u) * 0.35) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.28);
-  visibility: hidden;
+    0 0 0 calc(var(--u) * 0.26) #fff,
+    0 calc(var(--u) * 0.45) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.3);
 }
 .s30-tile[data-tone='blue'] .s30-badge {
   background: radial-gradient(circle at 35% 28%, #4f95ee 0%, #2d6ad1 78%);
@@ -165,37 +92,47 @@
 .s30-tile[data-tone='peach'] .s30-badge {
   background: radial-gradient(circle at 35% 28%, #f6805f 0%, #e8502a 78%);
 }
+.s30-ring {
+  border: calc(var(--u) * 0.2) solid var(--kn-azure);
+}
+.s30-tile[data-tone='peach'] .s30-ring {
+  border-color: var(--kn-flame);
+}
+
 .s30-body {
+  position: relative;
   flex: 1;
   min-width: 0;
   text-align: center;
 }
 .s30-num {
   display: block;
-  font-size: calc(var(--u) * 3.35);
-  line-height: 1;
+  font-size: calc(var(--u) * 5.1);
+  line-height: 0.95;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.012em;
   white-space: nowrap;
 }
 .s30-unit {
-  font-size: 0.56em;
+  display: inline-block;
+  font-size: 0.5em;
   font-weight: 700;
+  letter-spacing: 0;
 }
 .s30-unit--word {
-  margin-left: 0.32em;
+  margin-left: 0.36em;
 }
 .s30-label {
-  margin: calc(var(--u) * 0.12) 0 0;
-  font-size: calc(var(--u) * 1.17);
-  line-height: 1.12;
+  margin: calc(var(--u) * 0.3) 0 0;
+  font-size: calc(var(--u) * 1.56);
+  line-height: 1.1;
   font-weight: 700;
 }
 .s30-label-line {
   display: block;
   white-space: nowrap;
 }
-/* blue tile: navy figure, flame label. peach tile: flame figure, navy label (the deck's own alternation) */
+/* blue capsule: navy figure, flame label. peach capsule: flame figure, navy label (the slide's own alternation) */
 .s30-tile[data-tone='blue'] .s30-num {
   color: var(--kn-ink);
 }

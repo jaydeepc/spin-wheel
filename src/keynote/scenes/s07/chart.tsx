@@ -154,11 +154,29 @@ export function ProfitChart({ style }: { style?: CSSProperties }) {
       <path className="s07-arc s07-arc--210" d={arrow(p3.x + pillW(YEARS[2].patText) / 2 + 4, p3.y - 2, p4.x - 44, p3.y - 4, p4.x - pillW(YEARS[3].patText) / 2 - 5, p4.y + 6)} />
       <path className="s07-arc s07-arc--50" d={arrow(p4.x + pillW(YEARS[3].patText) / 2 + 4, p4.y - 4, p4.x + 40, FIGURE.y - 9, FIGURE.x - 9, FIGURE.y - 12)} />
 
-      {/* the two notes of the deck, each over the pill it explains */}
+      {/* the two notes of the deck: one over the pill it explains, one beside the bar it explains, its leader ending on the bar's figure */}
       {CALLOUTS.map((c, k) => {
-        const p = pillAt(c.at)
-        const w = k === 0 ? 108 : 98
         const h = c.lines.length * 11 + 9
+        if (c.on === 'pbt') {
+          // in the gap to the right of the bar, at the height of its figure
+          const w = 58
+          const x0 = G.xs[c.at] + G.barW / 2 + 5.5
+          const fy = topOf(YEARS[c.at].pbt) + 18.5
+          const y0 = fy - 24
+          return (
+            <g key={k} className="s07-call" data-k={k}>
+              <path className="s07-lead s07-lead--bar" d={`M${x0} ${fy} H${G.xs[c.at] + 19}`} />
+              <rect x={x0} y={y0} width={w} height={h} rx={3.5} />
+              {c.lines.map((line, n) => (
+                <text key={n} x={x0 + w / 2} y={y0 + 13.2 + n * 11} fontSize={9} textAnchor="middle">
+                  {line}
+                </text>
+              ))}
+            </g>
+          )
+        }
+        const p = pillAt(c.at)
+        const w = 108
         const y1 = p.y - 10.5 - 13
         return (
           <g key={k} className="s07-call" data-k={k}>

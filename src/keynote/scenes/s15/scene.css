@@ -1,0 +1,10 @@
+/* Slide 15: the shared divider with a globe behind its line (globe.ts) */
+.s15 {
+  position: absolute;
+  inset: 0;
+}
+/* the globe stands where the divider's very large outlined letter stands: with WebGL the globe
+   is there instead; without it there is no globe and the letter stays */
+.kn-scene[data-gl='1'] .s15 .kn-div-giant {
+  display: none;
+}

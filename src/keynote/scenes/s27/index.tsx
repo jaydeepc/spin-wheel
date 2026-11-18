@@ -34,6 +34,8 @@ import './scene.css'
 /** The deck's cards, in --u. */
 const CARD_W = 26.2
 const CARD_H = 9.6
+/** One card may be taller (data.ts): its own height. */
+const high = (t: Theme) => t.h ?? CARD_H
 /** The deck's page runs lower than the keynote's safe area: the whole board is lifted, as slide 16's is (its rows then sit where slide 16's sit). */
 const DY = -2.9
 /** Where the pin holds a card, from the card's top edge, in --u (slide 16's). */
@@ -51,7 +53,7 @@ const ROUND = [0, 1, 2, 4, 7, 6, 5, 3]
 /** A card's middle on the stage as it hangs: its box is turned by its tilt about its pin. */
 function hung(t: Theme) {
   const a = (t.tilt * Math.PI) / 180
-  const d = CARD_H / 2 - PIN
+  const d = high(t) / 2 - PIN
   const px = t.cx
   const py = t.cy + DY - d
   return { x: px - Math.sin(a) * d, y: py + Math.cos(a) * d, a }
@@ -67,7 +69,7 @@ function edge(from: Theme, tx: number, ty: number) {
   // the direction in the card's own (unturned) frame
   const lx = ux * Math.cos(-c.a) - uy * Math.sin(-c.a)
   const ly = ux * Math.sin(-c.a) + uy * Math.cos(-c.a)
-  const k = Math.min(lx ? CARD_W / 2 / Math.abs(lx) : Infinity, ly ? CARD_H / 2 / Math.abs(ly) : Infinity)
+  const k = Math.min(lx ? CARD_W / 2 / Math.abs(lx) : Infinity, ly ? high(from) / 2 / Math.abs(ly) : Infinity)
   return { x: c.x + ux * k, y: c.y + uy * k }
 }
 /** The thread, piece by piece: from one card's edge to the next card's edge, bowed a little away from the middle of the board. */
@@ -82,7 +84,7 @@ const TIES = ROUND.map((i, k) => {
   const upright = Math.abs(cb.y - ca.y) > Math.abs(cb.x - ca.x)
   const onPin = upright ? (cb.y > ca.y ? 'b' : 'a') : ''
   const toPin = (lower: Theme, other: { x: number; y: number }) => {
-    const pin = { x: lower.cx, y: lower.cy + DY - CARD_H / 2 + PIN }
+    const pin = { x: lower.cx, y: lower.cy + DY - high(lower) / 2 + PIN }
     const l = Math.hypot(other.x - pin.x, other.y - pin.y)
     return { x: pin.x + ((other.x - pin.x) / l) * 0.6, y: pin.y + ((other.y - pin.y) / l) * 0.6 }
   }
@@ -115,7 +117,8 @@ const FOOT: Record<string, number> = { jugalbandi: 2.57, workflow: 1.6 }
 
 const slotStyle = (t: Theme): CSSProperties => ({
   left: `calc(var(--u) * ${(t.cx - CARD_W / 2).toFixed(2)})`,
-  top: `calc(var(--u) * ${(t.cy + DY - CARD_H / 2).toFixed(2)})`,
+  top: `calc(var(--u) * ${(t.cy + DY - high(t) / 2).toFixed(2)})`,
+  ...(t.h ? { height: `calc(var(--u) * ${t.h})` } : null),
 })
 
 const scene: SceneModule = {
@@ -143,6 +146,7 @@ const scene: SceneModule = {
           className="s27-slot"
           key={t.key}
           data-key={t.key}
+          data-tall={t.h ? '' : undefined}
           style={
             {
               ...slotStyle(t),

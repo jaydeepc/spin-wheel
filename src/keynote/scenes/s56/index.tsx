@@ -11,16 +11,18 @@
  * the die burns a little brighter. By the last pair the whole orbit is alight and turning.
  *
  *   engine   headline; the chip assembles; the orbit; the new logo, the pill, the line
- *   ask      Business sponsorship · Open architecture
  *   build    Our own team · Our own models
- *   learn    Our own platform · Annotation & hindsighting; the engine runs
+ *   learn    Our own platform · Annotation & hindsighting
+ *   open     Open architecture, alone: five sectors of the orbit burn, one is still cold
+ *   ask      Business sponsorship, alone and last: the orbit closes, the engine runs, the card
+ *            that asked the question takes the flame
  *
  * Without WebGL the deck's flat chip disc stands in the centre and the orbit is a dotted ring.
  */
 
 import gsap from 'gsap'
 import { anim, Headline, Logo, Words, type SceneModule } from '../../kit'
-import { CX, CY, LEFT, LINE, LINKS, ORBIT, PILL, RIGHT, type Part } from './data'
+import { LAST, LEFT, LINE, LINKS, PILL, RIGHT, type Part } from './data'
 import { makeEngine, type Engine } from './engine'
 import { ICONS } from './icons'
 import './scene.css'
@@ -29,8 +31,10 @@ const PARTS: Part[] = [...LEFT, ...RIGHT]
 
 function PartCard({ part, k }: { part: Part; k: number }) {
   const i = part.title.indexOf(part.flame)
+  const q = part.quote ? part.text.indexOf(part.quote) : -1
   return (
-    <div className={`s56-card s56-card--${k < 3 ? 'l' : 'r'}`} data-k={k} data-row={k % 3}>
+    <div className={`s56-card s56-card--${k < 3 ? 'l' : 'r'}${k === LAST ? ' s56-card--last' : ''}`} data-k={k} data-row={k % 3}>
+      {k === LAST && <span className="s56-seal" aria-hidden="true" />}
       <span className="s56-ico">{ICONS[part.icon]}</span>
       <div className="s56-txt">
         <h3 className="s56-title">
@@ -38,14 +42,24 @@ function PartCard({ part, k }: { part: Part; k: number }) {
           <em>{part.flame}</em>
           {part.title.slice(i + part.flame.length)}
         </h3>
-        <p className="s56-body">{part.text}</p>
+        <p className="s56-body">
+          {q < 0 ? (
+            part.text
+          ) : (
+            <>
+              {part.text.slice(0, q)}
+              <q className="s56-quote">{part.quote}</q>
+              {part.text.slice(q + (part.quote ?? '').length)}
+            </>
+          )}
+        </p>
       </div>
     </div>
   )
 }
 
 const scene: SceneModule = {
-  beats: ['engine', 'ask', 'build', 'learn'],
+  beats: ['engine', 'build', 'learn', 'open', 'ask'],
 
   Scene: ({ slide }) => (
     <div className="s56">
@@ -143,17 +157,28 @@ const scene: SceneModule = {
     a.words('.s56-line', 3.0)
     tl.addLabel('engine', 3.9)
 
-    /* ------------------------------------------------- the pairs dock, row by row */
+    /* ------------- they dock: two pairs, then Open architecture, then the one that closes it */
+    const last = cards[LAST]
+    const seal = ctx.$('.s56-seal')
+    const pill = ctx.$('.s56-pill')
+    gsap.set(last, { '--s56-on': 0 })
+    gsap.set(seal, { autoAlpha: 0 })
+    const steps: { beat: string; ks: number[]; power: number }[] = [
+      { beat: 'build', ks: [0, 3], power: 0.44 },
+      { beat: 'learn', ks: [1, 4], power: 0.66 },
+      { beat: 'open', ks: [2], power: 0.8 },
+      { beat: 'ask', ks: [LAST], power: 1 },
+    ]
     let t = 3.9
-    ;['ask', 'build', 'learn'].forEach((beat, row) => {
-      const pair = [row, row + 3]
-      pair.forEach((k, j) => {
+    steps.forEach(({ beat, ks, power }) => {
+      const closing = beat === 'ask'
+      ks.forEach((k, j) => {
         const at = t + j * 0.32
         const side = k < 3 ? -1 : 1
         const card = cards[k]
         if (reduced) gsap.set(card, { autoAlpha: 0 })
-        else gsap.set(card, { autoAlpha: 0, x: side * 3.2 * U })
-        tl.to(card, { autoAlpha: 1, x: 0, duration: 0.85, ease: ease.out }, at)
+        else gsap.set(card, { autoAlpha: 0, x: side * (closing ? 4.4 : 3.2) * U })
+        tl.to(card, { autoAlpha: 1, x: 0, duration: closing ? 1.05 : 0.85, ease: ease.out }, at)
         a.pop(icos[k], at + 0.3)
         // it plugs in: the connector runs to the orbit …
         tl.to(plugs[k], { autoAlpha: 1, scale: 1, duration: 0.4, ease: ease.snap }, at + 0.55)
@@ -165,7 +190,6 @@ const scene: SceneModule = {
           tl.to(engine.state.lit, { [k]: 1, duration: 0.7, ease: 'power2.out' }, at + 1.45)
         }
       })
-      const power = [0.48, 0.74, 1][row]
       if (engine) tl.to(engine.state, { power, duration: 0.9, ease: 'power2.out' }, t + 1.6)
       tl.to(
         halo,
@@ -187,14 +211,21 @@ const scene: SceneModule = {
         },
         t + 1.2,
       )
-      if (row === 2) {
-        // all six are in: the engine runs. One bright stream goes once round the whole orbit, the halo opens, the pill answers
+      if (closing) {
+        // the sixth is in: the orbit closes and the engine runs. One bright stream goes once round the whole orbit, the halo
+        // opens, the pill answers; and the card that asked the question takes the flame: its rim, its icon, its question
         if (engine && !reduced) tl.to(engine.state, { lap: 1, duration: 1.0, ease: 'power1.inOut' }, t + 1.7)
         tl.to(halo, { autoAlpha: 1, scale: 1.14, duration: 0.9, ease: 'power2.out' }, t + 1.8)
-        tl.to(ctx.$('.s56-pill'), { scale: 1.07, duration: 0.3, ease: 'power2.out' }, t + 1.9)
-        tl.to(ctx.$('.s56-pill'), { scale: 1, duration: 0.55, ease: ease.snap }, t + 2.2)
-        t += 2.8
-      } else t += 2.6
+        tl.to(pill, { scale: 1.07, duration: 0.3, ease: 'power2.out' }, t + 1.9)
+        tl.to(pill, { scale: 1, duration: 0.55, ease: ease.snap }, t + 2.2)
+        tl.to(seal, { autoAlpha: 1, duration: 0.7, ease: 'power2.out' }, t + 2.5)
+        tl.to(last, { '--s56-on': 1, duration: 0.7, ease: 'power2.out' }, t + 2.5)
+        if (!reduced) {
+          tl.to(last, { scale: 1.03, duration: 0.35, ease: 'power2.out' }, t + 2.5)
+          tl.to(last, { scale: 1, duration: 0.6, ease: ease.snap }, t + 2.85)
+        }
+        t += 3.5
+      } else t += ks.length > 1 ? 2.6 : 2.3
       tl.addLabel(beat, t)
     })
     return tl

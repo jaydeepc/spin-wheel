@@ -4,8 +4,12 @@
  *
  * The pack read these cards BY EYE (the PDF holds them as outlines). Every value below was
  * checked once more against public/keynote/pages/25.jpg at full size, card by card:
- *   2.3% → 0.57% · ₹100 Cr+ · 9,000+ · 3x · Agent · 13% → 64% · $1.48 → $0.64 · 623 · 277 · 634 · 3.62 lakh · eight
+ *   9,000+ · 3x · Agent · 13% → 64% · $1.48 → $0.64 · 623 · 277 · 634 · 3.62 lakh · eight
  * all confirmed.
+ *
+ * The first card (Enough of Pilots) is NOT the pack's: the presenter replaced its figure and its
+ * words ("80k → 800K+", voice calls done by AI), letter for letter as given. The pack printed
+ * "2.3% → 0.57%" and the cost of acquiring a customer there.
  */
 
 export interface Stat {
@@ -42,10 +46,10 @@ export const CARDS: LinkCard[] = [
     tape: 'flame',
     tilt: -0.8,
     stats: [
-      { value: "2.3% → 0.57%", tone: 'flame' },
+      { value: "80k → 800K+", tone: 'flame' },
     ],
-    line: "cost to acquire a customer on AI-led cross-sell, at ₹100 Cr+ of loans a quarter.",
-    bold: "cost to acquire a customer",
+    line: "Of Voice calls across customer lifecycle from Sales to Service to Collection done by AI",
+    bold: "customer lifecycle from Sales to Service to Collection done by AI",
   },
   {
     key: 'composite',

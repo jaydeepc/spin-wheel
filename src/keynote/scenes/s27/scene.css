@@ -239,3 +239,7 @@
   color: var(--kn-muted);
   visibility: hidden;
 }
+/* the one taller card (three lines of name): its words start clear of the pin */
+.s27-slot[data-tall] .s27-text {
+  top: calc(var(--u) * 0.65);
+}

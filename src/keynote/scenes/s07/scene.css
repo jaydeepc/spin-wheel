@@ -93,6 +93,14 @@
   stroke-opacity: 0.45;
   stroke-width: 0.9;
 }
+/* the leader that runs onto a bar, to its figure: white on the orange */
+.s07-lead--bar {
+  fill: none;
+  stroke: #fff;
+  stroke-opacity: 0.95;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
 .s07-arc {
   fill: none;
   stroke: var(--kn-flame);

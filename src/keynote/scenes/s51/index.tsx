@@ -52,6 +52,7 @@ const scene: SceneModule = {
   beats: spanBeats(SLIDES),
   // the picture is the tool's own page: its own logo, its own title, no breadcrumb in the deck either
   chrome: { rail: false, crumb: false, logo: false },
+  // the stills of the rests; coast / touch / dock are only ever seen under a held frame and load by themselves
   preload: [STILL.wheel0, STILL.wheel1, STILL.loop0, STILL.landed, STILL.page],
 
   Scene: () => (
@@ -64,7 +65,10 @@ const scene: SceneModule = {
             <img className="s51-still" data-poster="wheel0" src={STILL.wheel0} alt="" draggable={false} />
             <img className="s51-still" data-poster="wheel1" src={STILL.wheel1} alt="" draggable={false} />
             <img className="s51-still" data-poster="loop0" src={STILL.loop0} alt="" draggable={false} />
+            <img className="s51-still" data-poster="coast" src={STILL.coast} alt="" draggable={false} />
+            <img className="s51-still" data-poster="touch" src={STILL.touch} alt="" draggable={false} />
             <img className="s51-still" data-poster="landed" src={STILL.landed} alt="" draggable={false} />
+            <img className="s51-still" data-poster="dock" src={STILL.dock} alt="" draggable={false} />
             <img className="s51-still" data-poster="page" src={STILL.page} alt="" draggable={false} />
             <video className="s51-clip" data-clip="wheel" src={CLIP.wheel.src} muted playsInline preload="auto" disablePictureInPicture tabIndex={-1} />
             <video className="s51-clip" data-clip="up" src={CLIP.up.src} muted playsInline preload="auto" disablePictureInPicture tabIndex={-1} />
@@ -132,29 +136,32 @@ const scene: SceneModule = {
     tl.addLabel('page', D1)
 
     const near = (a: number, b: number) => Math.abs(a - b) < 1e-4
+    // `exact`: the still is the very frame (the rests, and the first frame before the drift begins)
     const planOf = (t: number): Plan => {
-      if (t < A0) return { clip: 'wheel', time: 0, rate: 1, run: false, stopAt: CLIP.wheel.seconds, loop: false, poster: 'wheel0' }
+      if (t < A0) return { clip: 'wheel', time: 0, rate: 1, run: false, stopAt: CLIP.wheel.seconds, loop: false, poster: 'wheel0', exact: true }
       if (t < A1 && !near(t, A1)) {
         const d = drift(t - A0)
-        return { clip: 'wheel', time: d.time, rate: d.rate, run: true, stopAt: CLIP.wheel.seconds, loop: false, poster: d.time < 1.1 ? 'wheel0' : 'wheel1' }
+        return { clip: 'wheel', time: d.time, rate: d.rate, run: true, stopAt: CLIP.wheel.seconds, loop: false, poster: d.time < 1.1 ? 'wheel0' : 'wheel1', exact: false }
       }
-      if (near(t, A1)) return { clip: 'wheel', time: CLIP.wheel.seconds, rate: 1, run: true, stopAt: CLIP.wheel.seconds, loop: false, poster: 'wheel1' }
+      if (near(t, A1)) return { clip: 'wheel', time: CLIP.wheel.seconds, rate: 1, run: true, stopAt: CLIP.wheel.seconds, loop: false, poster: 'wheel1', exact: true }
       if (t < B1 && !near(t, B1)) {
         const time = t - A1
-        return { clip: 'up', time, rate: 1, run: true, stopAt: CLIP.up.seconds, loop: false, poster: time < 1 ? 'wheel1' : 'loop0' }
+        return { clip: 'up', time, rate: 1, run: true, stopAt: CLIP.up.seconds, loop: false, poster: time < 1 ? 'wheel1' : 'loop0', exact: false }
       }
-      if (near(t, B1)) return { clip: 'loop', time: 0, rate: 1, run: false, stopAt: 0, loop: true, poster: 'loop0' }
+      if (near(t, B1)) return { clip: 'loop', time: 0, rate: 1, run: false, stopAt: 0, loop: true, poster: 'loop0', exact: true }
       if (t < C1 || near(t, C1)) {
         const time = Math.min(STOP.landed, t - B1)
-        return { clip: 'stop', time, rate: 1, run: true, stopAt: STOP.landed, loop: false, poster: time < STOP.touchdown + 0.3 ? 'loop0' : 'landed' }
+        const poster = time < 1.2 ? 'loop0' : time < STOP.touchdown - 0.5 ? 'coast' : time < STOP.touchdown + 0.4 ? 'touch' : 'landed'
+        return { clip: 'stop', time, rate: 1, run: true, stopAt: STOP.landed, loop: false, poster, exact: near(t, C1) }
       }
       const time = Math.min(STOP.page, STOP.landed + (t - C1))
-      return { clip: 'stop', time, rate: 1, run: true, stopAt: CLIP.stop.seconds, loop: false, poster: time < STOP.landed + 1.2 ? 'landed' : 'page' }
+      const poster = time < STOP.landed + 0.5 ? 'landed' : time < STOP.landed + 2.4 ? 'dock' : 'page'
+      return { clip: 'stop', time, rate: 1, run: true, stopAt: CLIP.stop.seconds, loop: false, poster, exact: near(t, D1) }
     }
 
     const player = ctx.bag.player as Player | undefined
     if (player) {
-      player.attach(tl, planOf)
+      player.attach(tl, planOf, [A1, B1, C1, D1])
       ctx.onSeek(() => player.force())
     }
     return tl

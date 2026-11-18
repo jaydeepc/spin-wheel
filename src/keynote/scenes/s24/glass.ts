@@ -21,6 +21,7 @@
  */
 
 import { createSceneCanvas, THREE, type SceneCanvas, type SceneCtx } from '../../kit'
+import { makeSwarm, type Swarm } from './swarm'
 
 /** The dome: its radius at the foot and its height, in --u. */
 const R = 11
@@ -44,6 +45,8 @@ export interface Glass {
   sim: { clock: number; attack: number; hold: number; rise: number }
   /** The king, his board and his dome: scale and move THIS for the entrance. */
   rig: THREE.Group
+  /** The case under the photograph: 700 agents, on this same canvas (swarm.ts). */
+  swarm: Swarm
 }
 
 /** A small seeded generator: the same bolts on every visit. */
@@ -458,7 +461,7 @@ export function makeGlass(ctx: SceneCtx): Glass {
     // it starts hidden behind the chess photograph on the left (the orange side of the deck's board);
     // the later ones come down out of the open air above the king. Never from the news clippings:
     // they name real organisations, and a bolt leaving one would read as an attack from it
-    const from = left ? gl.at(23 + rnd() * 6.5, 17.5 + rnd() * 14.5, -3 + rnd() * 7) : gl.at(54 + rnd() * 8.5, 14.8 + rnd() * 2.5, -3 + rnd() * 7)
+    const from = left ? gl.at(16.5 + rnd() * 6, 17.5 + rnd() * 10.5, -3 + rnd() * 7) : gl.at(54 + rnd() * 8.5, 14.8 + rnd() * 2.5, -3 + rnd() * 7)
     // … and is aimed at the king himself, somewhere along his height
     const core = tipped.localToWorld(new THREE.Vector3((rnd() - 0.5) * 0.6, 2.4 + rnd() * 6.4, -1.2 - rnd() * 0.8))
     // where that line meets the dome: on the unit sphere, in the dome's own space
@@ -591,6 +594,9 @@ export function makeGlass(ctx: SceneCtx): Glass {
     king.rotation.x = Math.abs(rock) * 0.015
   })
 
+  // the agents of the case, on the same canvas (added before the programs are compiled)
+  const swarm = makeSwarm(ctx, gl)
+
   // THE PROGRAMS ARE COMPILED OFF THE MAIN THREAD. Compiled on the first draw they hold the page
   // still for a good part of a second the first time this slide is shown (the glass's shader
   // most of all), exactly while the director is cross-fading into it. So nothing is drawn until
@@ -602,5 +608,5 @@ export function makeGlass(ctx: SceneCtx): Glass {
   }
   gl.renderer.compileAsync(gl.scene, gl.camera).then(ready, ready)
 
-  return { gl, sim, rig }
+  return { gl, sim, rig, swarm }
 }

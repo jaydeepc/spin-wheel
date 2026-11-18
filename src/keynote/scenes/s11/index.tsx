@@ -7,9 +7,12 @@
  * (exports/ai-view/AI-View-woven-rings.jpg, generator exports/_rig/build_weave.py), built live.
  * Every word is the deck's (pack/11/text.json → data.ts); nothing is added, nothing changed.
  *
- *   what   the two ribbons of the WHAT ring draw themselves round, weaving over and under each
- *          other; as their heads pass a family its three dots land, its capabilities come up and
- *          its name arrives: PREDICTIVE, PERCEPTION, GENERATIVE, LANGUAGE. "WHAT" settles in the middle.
+ *   predictive, perception, language, generative
+ *          ONE FAMILY PER PRESS, in the presenter's order. The two ribbons of the WHAT ring draw
+ *          that family's quarter of the ring, weaving over and under each other; as they pass, its
+ *          three dots land, its capabilities come up and its name arrives. PREDICTIVE and PERCEPTION
+ *          are drawn clockwise from the top left; LANGUAGE grows back the other way from the same
+ *          start; GENERATIVE closes the ring between them. "WHAT" settles in the middle at once.
  *   how    the plus; the HOW ring weaves itself the same way; AGENTIC over the top, PRODUCTS &
  *          SYSTEMS along the bottom.
  *   more   the closing lines. Everything steps back for a moment and ONE dot of the twenty stays
@@ -92,25 +95,25 @@ function arc(ring: RingSpec, sign: 1 | -1, d0: number, d1: number): string {
 
 function FlatRing({ ring }: { ring: RingSpec }) {
   const STEP = 10
-  const pieces: { key: string; d: string; colour: string }[] = []
+  const pieces: { key: string; d: string; colour: string; q: number }[] = []
   for (const sign of [1, -1] as const) {
     for (let i = 0; i < 360 / STEP; i++) {
       const d0 = ring.start - i * STEP + 0.4
       const d1 = ring.start - (i + 1) * STEP - 0.4
       const c = angColour((d0 + d1) / 2, ring.stops)
-      pieces.push({ key: `${sign}-${i}`, d: arc(ring, sign, d0, d1), colour: css(sign > 0 ? c : tint(c, 0.34)) })
+      pieces.push({ key: `${sign}-${i}`, d: arc(ring, sign, d0, d1), colour: css(sign > 0 ? c : tint(c, 0.34)), q: Math.floor((i * STEP) / 90) })
     }
   }
   // ribbon A back over ribbon B at every other crossing
   const step = 360 / ring.lobes
   for (let k = 0; k < ring.lobes; k += 2) {
     const x = ring.phase + step / 2 + k * step
-    pieces.push({ key: `x-${k}`, d: arc(ring, 1, x + step * 0.34, x - step * 0.34), colour: css(angColour(x, ring.stops)) })
+    pieces.push({ key: `x-${k}`, d: arc(ring, 1, x + step * 0.34, x - step * 0.34), colour: css(angColour(x, ring.stops)), q: Math.floor(along(ring, x) * 4) % 4 })
   }
   return (
     <g className={`s11-fb-ring s11-fb-ring--${ring.key}`} fill="none" strokeWidth={ring.w}>
       {pieces.map((p) => (
-        <path key={p.key} className="s11-fb-arc" d={p.d} stroke={p.colour} />
+        <path key={p.key} className="s11-fb-arc" data-q={p.q} d={p.d} stroke={p.colour} />
       ))}
       {FAMILIES.filter((f) => f.ring === ring.key).flatMap((f) =>
         f.items.map((it) => {
@@ -124,8 +127,11 @@ function FlatRing({ ring }: { ring: RingSpec }) {
 
 /* ------------------------------------------------------------------ the scene */
 
+/** The WHAT ring's families, one per press, in the order the presenter asked for. */
+const WHAT_ORDER = ['predictive', 'perception', 'language', 'generative']
+
 const scene: SceneModule = {
-  beats: ['what', 'how', 'more'],
+  beats: [...WHAT_ORDER, 'how', 'more'],
 
   Scene: ({ slide }) => (
     <div className="s11">
@@ -196,6 +202,27 @@ const scene: SceneModule = {
     /** The time at which a ribbon's head (a sine.inOut run of `dur` from `t0`) has come `f` of the way round. */
     const headAt = (t0: number, dur: number, f: number) => t0 + (dur * Math.acos(1 - 2 * Math.min(1, Math.max(0, f)))) / Math.PI
 
+    /** A family lands: its name at `nameT`, each dot at `at(item)` and its capability just after. Returns the time it rests. */
+    const land = (f: Family, woven: WovenRing | undefined, nameT: number, at: (it: Item) => number): number => {
+      let rest = 0
+      const name = q(`.s11-fam[data-fam="${f.key}"] .s11-fam-t`)
+      a.rise(name, nameT, { y: 0.7, duration: 0.7 })
+      f.items.forEach((it) => {
+        const t = at(it)
+        const bead = woven?.beads.find((b) => b.item === it)
+        if (bead) {
+          gsap.set(bead.mesh.scale, { x: 0.0001, y: 0.0001, z: 0.0001 })
+          tl.to(bead.mesh.scale, { x: DOT_R, y: DOT_R, z: DOT_R, duration: reduced ? 0.01 : 0.55, ease: ease.snap }, t)
+        }
+        rest = Math.max(rest, t + 0.14 + 0.7)
+      })
+      if (!woven) a.pop(q(`.s11-fb-dot[data-fam="${f.key}"]`), Math.min(...f.items.map(at)), { stagger: 0.1 })
+      // its capabilities, each just after its dot
+      const labels = q(`.s11-lab[data-fam="${f.key}"] .s11-lab-t`)
+      labels.forEach((el, i) => a.rise(el, at(f.items[i]) + 0.14, { y: 0.8, duration: 0.7 }))
+      return rest
+    }
+
     /** One ring weaves itself from `t0`; its families land as the head passes them. Returns the time it rests. */
     const weaveRing = (ring: RingSpec, woven: WovenRing | undefined, t0: number, dur: number, size = 1): number => {
       const LAG = 0.22
@@ -227,21 +254,7 @@ const scene: SceneModule = {
         if (f.ring !== ring.key) continue
         const first = Math.min(...f.items.map((it) => along(ring, it.deg)))
         // its name, as the head enters its part of the ring
-        const name = q(`.s11-fam[data-fam="${f.key}"] .s11-fam-t`)
-        a.rise(name, headAt(t0, dur, first - 0.03) + 0.1, { y: 0.7, duration: 0.7 })
-        f.items.forEach((it) => {
-          const t = headAt(t0, dur, along(ring, it.deg)) + LAG * 0.6
-          const bead = woven?.beads.find((b) => b.item === it)
-          if (bead) {
-            gsap.set(bead.mesh.scale, { x: 0.0001, y: 0.0001, z: 0.0001 })
-            tl.to(bead.mesh.scale, { x: DOT_R, y: DOT_R, z: DOT_R, duration: reduced ? 0.01 : 0.55, ease: ease.snap }, t)
-          }
-          rest = Math.max(rest, t + 0.14 + 0.7)
-        })
-        if (!woven) a.pop(q(`.s11-fb-dot[data-fam="${f.key}"]`), headAt(t0, dur, first) + LAG * 0.6, { stagger: 0.1 })
-        // its capabilities, each just after its dot
-        const labels = q(`.s11-lab[data-fam="${f.key}"] .s11-lab-t`)
-        labels.forEach((el, i) => a.rise(el, headAt(t0, dur, along(ring, f.items[i].deg)) + LAG * 0.6 + 0.14, { y: 0.8, duration: 0.7 }))
+        rest = Math.max(rest, land(f, woven, headAt(t0, dur, first - 0.03) + 0.1, (it) => headAt(t0, dur, along(ring, it.deg)) + LAG * 0.6))
       }
       return rest
     }
@@ -255,11 +268,75 @@ const scene: SceneModule = {
     a.words('.kn-h', 0.1)
     // the light opens and the ribbons set off while the headline is still writing itself: the stage is never bare
     tl.to(fx, { glow: 0.34, focusX: reduced ? (WHAT_RING.cx - 50) / 50 : (WHAT_RING.cx - WHAT_SOLO_CX) / 50, focusY: reduced ? -0.05 : 0.08, warm: 0.12, duration: 2.0, ease: 'power2.out' }, 0.08)
+    const headEnd = tl.duration()
     const W0 = 0.22
-    const whatRest = weaveRing(WHAT_RING, weave?.what, W0, 2.2, SIZE)
+    const LAG = 0.22
+    const QUARTER = 1.15
+    const woven = weave?.what
+    const flatArcs = woven ? [] : q('.s11-fb-ring--what .s11-fb-arc')
+    if (woven) {
+      gsap.set([woven.a, woven.b], { value: 0 })
+      gsap.set([woven.backA, woven.backB], { value: woven.BACK0 })
+      if (reduced) {
+        // less motion: the ring is simply there, whole, and comes up out of the page; the families still come one per press
+        gsap.set(woven.fade, { value: 1 })
+        tl.set([woven.a, woven.b], { value: woven.END }, W0)
+        tl.to(woven.fade, { value: 0, duration: 0.8, ease: 'power1.out' }, W0)
+      } else {
+        // it arrives leaning back and settles flat
+        gsap.set(woven.pose.rotation, { x: -0.8 })
+        gsap.set(woven.pose.scale, { x: 0.9 * SIZE, y: 0.9 * SIZE, z: 0.9 * SIZE })
+        tl.to(woven.pose.rotation, { x: 0, duration: 1.58, ease: 'power3.out' }, W0)
+        tl.to(woven.pose.scale, { x: SIZE, y: SIZE, z: SIZE, duration: 1.58, ease: 'power3.out' }, W0)
+      }
+    } else {
+      gsap.set(flatArcs, { autoAlpha: 0 })
+    }
     a.rise('.s11-core--what .s11-core-t', 0.3, { y: 0, scale: 0.86, duration: 0.9 })
-    const L1 = Math.max(whatRest, 3.4)
-    tl.addLabel('what', L1)
+
+    // one family per press: the ribbons draw ITS quarter of the ring. The head runs clockwise from the start;
+    // a family that does not follow on from the head grows backward from the start instead; the last one closes the ring
+    let head = 0
+    let back = 1
+    let L1 = 0
+    WHAT_ORDER.forEach((key, n) => {
+      const f = FAMILIES.find((x) => x.key === key)
+      if (!f) throw new Error(`s11: no family "${key}"`)
+      const quarter = Math.floor(Math.min(...f.items.map((it) => along(WHAT_RING, it.deg))) * 4)
+      const u0 = quarter / 4
+      const u1 = u0 + 0.25
+      const backward = Math.abs(u0 - head) > 1e-6
+      const t0 = n === 0 ? W0 : L1 + 0.05
+      if (backward) back = u0
+      else head = u1
+      const closes = back - head < 1e-6
+      if (woven && !reduced) {
+        if (backward) {
+          tl.to(woven.backA, { value: u0, duration: QUARTER, ease: 'sine.inOut' }, t0)
+          tl.to(woven.backB, { value: u0, duration: QUARTER, ease: 'sine.inOut' }, t0 + LAG)
+        } else {
+          // closing, the heads run on under the tip they meet, so that no seam is left
+          const to = closes ? u1 + (woven.END - 1) : u1
+          tl.to(woven.a, { value: to, duration: QUARTER, ease: 'sine.inOut' }, t0)
+          tl.to(woven.b, { value: to, duration: QUARTER, ease: 'sine.inOut' }, t0 + LAG)
+        }
+        // … and the ring is whole (nothing is seen to change: every part of it is already drawn)
+        if (closes) tl.set([woven.a, woven.b], { value: woven.END }, t0 + QUARTER + LAG + 0.02)
+      } else if (!woven) {
+        const arcs = flatArcs.filter((el) => el.getAttribute('data-q') === String(quarter))
+        if (backward) arcs.reverse()
+        if (arcs.length) tl.to(arcs, { autoAlpha: 1, duration: 0.3, stagger: QUARTER / arcs.length, ease: 'none' }, t0)
+      }
+      // how far through this quarter's run the ribbon's tip passes an item
+      const part = (it: Item) => {
+        const u = along(WHAT_RING, it.deg)
+        return backward ? (u1 - u) / 0.25 : (u - u0) / 0.25
+      }
+      const rest = land(f, woven, t0 + 0.1, (it) => headAt(t0, QUARTER, part(it)) + LAG * 0.6)
+      // the first rest also waits for the headline and for the ring to have settled
+      L1 = Math.max(rest, t0 + QUARTER + LAG + 0.1, n === 0 ? Math.max(headEnd, 2.1) : 0)
+      tl.addLabel(key, L1)
+    })
 
     if (SHIFT) {
       const sides = q('.s11-side--what')

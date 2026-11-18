@@ -109,7 +109,10 @@ const scene: SceneModule = {
       </svg>
 
       <h2 className="s39-title s39-title--score">{SCORE_TITLE}</h2>
-      <BrowserFrame className="s39-win" src={pic(39, CHART.name)} ratio={`${CHART.px[0]} / ${CHART.px[1]}`} width={33} />
+      {/* the wrapper is what opens (a straight edge from the left); its padding keeps the window's shadow whole */}
+      <div className="s39-winwrap">
+        <BrowserFrame className="s39-win" src={pic(39, CHART.name)} ratio={`${CHART.px[0]} / ${CHART.px[1]}`} width={33} />
+      </div>
 
       <h2 className="s39-title s39-title--alerts">{ALERTS_TITLE}</h2>
       <ul className="s39-alerts">
@@ -196,11 +199,13 @@ const scene: SceneModule = {
     a.fade('.s39-chev', 'go2+=1.35')
     if (!calm) tl.to('.s39-chev', { x: 0, duration: 0.7, ease: ctx.ease.out }, '<')
     a.rise('.s39-title--score', 'go2+=1.5', { y: 0.8 })
-    // the window opens out of the agent, and the real chart with it: from the left, as its line
-    // falls from the first decile to the tenth. The frame is never seen empty.
-    gsap.set('.s39-win', { transformOrigin: '0% 50%' })
-    a.rise('.s39-win', 'go2+=1.55', { y: 0, x: -2.2, scale: 0.9, duration: 0.8 })
-    a.wipe('.s39-win .kn-shot', 'go2+=1.6', { from: 'left', duration: 1.4, ease: 'power1.inOut' })
+    // the window unrolls out of the agent WITH the real chart on it: one straight edge from the
+    // left, so its line falls from the first decile to the tenth and the frame is never empty
+    a.wipe('.s39-winwrap', 'go2+=1.5', { from: 'left', duration: 1.5, ease: 'power2.inOut' })
+    if (!calm) {
+      gsap.set('.s39-win', { x: -1.6 * U })
+      tl.to('.s39-win', { x: 0, duration: 1.5, ease: ctx.ease.out }, '<')
+    }
     tl.addLabel('score')
 
     // ---- 3. … with reasoning: the ALERTS come out of the model that reasons

@@ -14,6 +14,11 @@
  *               from the three photographs they belong to (those light, the others pale)
  *   serve       "Costlier to serve", from its three
  *   voice       "Voice-led", from the woman speaking into her phone: a voice line draws
+ *   thin        the presenter's one expansion: the "Thin document" card opens, from where it
+ *               sits, into a panel over the slide (which pales and steps back). Its photograph
+ *               rides up into it; then his examples arrive one after another: seven names, each
+ *               on an identity slip whose surname field stays empty, and three addresses, each
+ *               half a line on a form whose flat, street, landmark and PIN stay empty
  *
  * THE PHOTOGRAPHS ARE REAL: the deck's own files, cropped only as the deck crops them (the
  * top 1.8 : 1 of each), never larger than their pixels on a 1920 stage (data.ts). A veil of
@@ -23,7 +28,7 @@
 import gsap from 'gsap'
 import type { CSSProperties } from 'react'
 import { anim, Card, Count, Headline, Pic, pic, Words, type SceneModule } from '../../kit'
-import { BHARAT, CARD, FLAME, LIFE, LIFE_KICKER, PROBLEMS, PROBLEMS_KICKER, SHIFT } from './data'
+import { BHARAT, CARD, FLAME, FORM, LIFE, LIFE_KICKER, PROBLEMS, PROBLEMS_KICKER, SHIFT, THIN, THIN_CARD } from './data'
 import './scene.css'
 
 const u = (v: number) => `calc(var(--u) * ${v})`
@@ -48,7 +53,7 @@ const WAVE = [0.22, 0.42, 0.3, 0.62, 0.9, 0.55, 0.78, 1, 0.66, 0.4, 0.72, 0.5, 0
 const SPARKS = PROBLEMS.flatMap((p, k) => p.from.filter((src, j) => p.from.indexOf(src) === j).map((src) => ({ k, src, line: p.from.indexOf(src) })))
 
 const scene: SceneModule = {
-  beats: ['bharat', 'life', ...PROBLEMS.map((p) => p.key)],
+  beats: ['bharat', 'life', ...PROBLEMS.map((p) => p.key), 'thin'],
   preload: LIFE.map((l) => pic(13, l.file)),
 
   Scene: ({ slide }) => (
@@ -127,11 +132,67 @@ const scene: SceneModule = {
           <g className="s13-sp" key={i}>
             <path className="s13-spark-glow" d="M0 0" />
             <path className="s13-spark" d="M0 0" />
-            <circle className="s13-spark-halo" r={1.05} />
-            <circle className="s13-spark-head" r={0.36} />
+            <circle className="s13-spark-halo" cx={0} cy={0} r={1.05} />
+            <circle className="s13-spark-head" cx={0} cy={0} r={0.36} />
           </g>
         ))}
       </svg>
+
+      {/* the last beat: the slide pales behind a panel that opens out of the "Thin document" card */}
+      <i className="s13-scrim" aria-hidden="true" />
+      <div className="s13-thin">
+        <i className="s13-thin-bg" aria-hidden="true" />
+        <Pic className="s13-thin-shot" n={13} name={LIFE[THIN_CARD].file} fit="cover" focus="50% 0%" alt={LIFE[THIN_CARD].caption} />
+        <div className="s13-thin-head">
+          <i className="s13-thin-bar" aria-hidden="true" />
+          <b className="s13-thin-t">{LIFE[THIN_CARD].caption}</b>
+          <span className="s13-thin-l">
+            <span>{LIFE[THIN_CARD].lines[0]}</span>
+            <span>{LIFE[THIN_CARD].lines[1]}</span>
+          </span>
+        </div>
+
+        <div className="s13-names">
+          <b className="s13-group s13-group--names">{THIN.names.title}</b>
+          <div className="s13-slips">
+            {THIN.names.items.map((name) => (
+              <div className="s13-slip" key={name}>
+                <span className="s13-lab">{FORM.name}</span>
+                <b className="s13-slip-name">{name}</b>
+                <span className="s13-slip-row">
+                  <span className="s13-lab">{FORM.surname}</span>
+                  <i className="s13-empty" aria-hidden="true" />
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="s13-addrs">
+          <div className="s13-group s13-group--addrs">
+            <b>{THIN.addresses.title}</b>
+            <span className="s13-group-c">{THIN.addresses.caption}</span>
+          </div>
+          {THIN.addresses.items.map((address) => (
+            <div className="s13-addr" key={address}>
+              <span className="s13-lab s13-addr-lab">{FORM.address}</span>
+              <span className="s13-addr-line">
+                <span className="s13-addr-text">{address}</span>
+                <i className="s13-addr-end" aria-hidden="true" />
+                <i className="s13-addr-rest" aria-hidden="true" />
+              </span>
+              <span className="s13-addr-fields">
+                {FORM.missing.map((f) => (
+                  <span className={`s13-field s13-field--${f.toLowerCase()}`} key={f}>
+                    <span className="s13-lab">{f}</span>
+                    <i className="s13-empty" aria-hidden="true" />
+                  </span>
+                ))}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   ),
 
@@ -148,6 +209,10 @@ const scene: SceneModule = {
     const boxes = cards.map((c) => ctx.loc(c))
     const shots = cards.map((c) => ctx.loc(q(c, '.s13-shot')))
     const lines = probs.map((p) => Array.from(p.querySelectorAll('.s13-p-l')).map((l) => ({ el: l as HTMLElement, box: ctx.loc(l) })))
+    const thin = ctx.$('.s13-thin')
+    const thinShot = ctx.$('.s13-thin-shot')
+    const back13 = [life, ctx.$('.s13-prob'), ctx.$('.s13-bharat')]
+    const at13 = { panel: ctx.loc(thin), shot: ctx.loc(thinShot), back: back13.map((el) => ctx.loc(el)) }
 
     /* ----------------------------------------------------------- bharat */
     a.words('.kn-h', 0.1)
@@ -261,7 +326,11 @@ const scene: SceneModule = {
           gsap.set([path, glows[n]], { drawSVG: `${(tail * 100).toFixed(1)}% ${(head * 100).toFixed(1)}%`, autoAlpha: on })
           // the bright head of the comet: gone once it has arrived
           const pt = path.getPointAtLength(head * length)
-          gsap.set([heads[n], halos[n]], { attr: { cx: +pt.x.toFixed(3), cy: +pt.y.toFixed(3) }, autoAlpha: on && head < 1 ? 1 : 0 })
+          for (const dot of [heads[n], halos[n]]) {
+            dot.setAttribute('cx', pt.x.toFixed(3))
+            dot.setAttribute('cy', pt.y.toFixed(3))
+          }
+          gsap.set([heads[n], halos[n]], { autoAlpha: on && head < 1 ? 1 : 0 })
         }
         tl.to(state, { p: 1, duration: reduced ? 0.01 : 0.85, ease: 'power2.inOut', onUpdate: paint }, at)
         // the reason lands as the light reaches it (a photograph that gives two reasons gives them together)
@@ -298,6 +367,52 @@ const scene: SceneModule = {
       back,
     )
     tl.addLabel(PROBLEMS[2].key, back + 0.7)
+
+    /* ------------------------------------------------------------- thin */
+    // "Thin document" opens: the slide pales and steps back, the card's own plate grows from
+    // where it sits (its bottom left corner never moves) and its photograph rides up into it
+    const N = back + 0.7
+    const from = boxes[THIN_CARD]
+    const bg = ctx.$('.s13-thin-bg')
+    const scrim = ctx.$('.s13-scrim')
+    gsap.set([thin, scrim], { autoAlpha: 0 })
+    tl.to(scrim, { autoAlpha: 1, duration: 0.7, ease: 'power1.inOut' }, N)
+    back13.forEach((el, i) => {
+      const b = at13.back[i]
+      gsap.set(el, { transformOrigin: `${50 * U - b.x}px ${28.1 * U - b.y}px` })
+      if (!reduced) tl.to(el, { scale: 0.972, duration: 0.95, ease: ease.inOut }, N)
+    })
+    tl.to(fx, { focusX: -0.2, focusY: 0.3, glow: 0.34, duration: 1.2, ease: ease.inOut }, N)
+    tl.to(thin, { autoAlpha: 1, duration: reduced ? 0.5 : 0.18, ease: 'power1.out' }, N)
+    if (!reduced) {
+      gsap.set(bg, {
+        transformOrigin: '0% 100%',
+        x: from.x - at13.panel.x,
+        y: from.y + from.h - (at13.panel.y + at13.panel.h),
+        scaleX: from.w / at13.panel.w,
+        scaleY: from.h / at13.panel.h,
+      })
+      tl.to(bg, { x: 0, y: 0, scaleX: 1, scaleY: 1, duration: 0.95, ease: ease.inOut }, N)
+      gsap.set(thinShot, { x: shots[THIN_CARD].x - at13.shot.x, y: shots[THIN_CARD].y - at13.shot.y })
+      tl.to(thinShot, { x: 0, y: 0, duration: 0.95, ease: ease.inOut }, N)
+    }
+    a.rule('.s13-thin-bar', N + 0.6, { from: 'top', duration: 0.5 })
+    a.rise('.s13-thin-t', N + 0.62, { y: 0, x: -1 })
+    a.rise('.s13-thin-l > span', N + 0.74, { y: 0.7, stagger: 0.08, duration: 0.6 })
+    // his examples, one after another: the names, each on its slip …
+    a.rise('.s13-group--names', N + 0.85, { y: 0.8, duration: 0.6 })
+    a.rise('.s13-slip', N + 1.0, { y: 1.1, stagger: 0.11, duration: 0.6 })
+    // … then the addresses, each written on its line as far as it goes
+    const A = N + 1.95
+    a.rise('.s13-group--addrs', A, { y: 0.8, duration: 0.6 })
+    ctx.$$('.s13-addr').forEach((row, i) => {
+      const t0 = A + 0.2 + i * 0.3
+      a.rise(row, t0, { y: 1.1, duration: 0.6 })
+      a.wipe(q(row, '.s13-addr-text'), t0 + 0.2, { from: 'left', duration: 0.7 })
+      a.pop(q(row, '.s13-addr-end'), t0 + 0.8)
+      a.rule(q(row, '.s13-addr-rest'), t0 + 0.85, { duration: 0.55 })
+    })
+    tl.addLabel('thin', A + 0.2 + 2 * 0.3 + 0.85 + 0.55)
     return tl
   },
 }

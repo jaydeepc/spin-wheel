@@ -34,7 +34,7 @@ import type { ReactNode } from 'react'
 import { anim, Count, Headline, Person, pic, slide as slideOf, spanBeats, type SceneModule } from '../../kit'
 import * as D from './data'
 import { DEST, MAP_H, RED_A, RED_B, RED_C, RED_S1, RED_S2, BLUE, STOPS } from './routes'
-import { CARRY, makeRoutes, makeTown3D, markerAt, PIN, townState, type Routes, type Town3D } from './town'
+import { CARRY, makeRoutes, makeTown3D, markerAt, townState, type Routes, type Town3D } from './town'
 import './scene.css'
 
 const SLIDES = { 42: ['town', 'ask', 'recall', 'dig', 'stuck', 'missed'], 43: ['arya', 'guided', 'onward', 'rank'] }
@@ -237,7 +237,7 @@ const scene: SceneModule = {
       { el: ctx.$('.s42-trk--digs'), at: () => [top.x, top.y, 0] },
       { el: ctx.$('.s42-trk--wrong'), at: () => [dead.x, dead.y, 0] },
       { el: ctx.$('.s42-trk--tags'), at: () => [STOPS[4][0], STOPS[4][1], 0] },
-      { el: ctx.$('.s42-trk--rank'), at: () => [DEST[0], DEST[1], PIN.h * 0.72] },
+      { el: ctx.$('.s42-trk--rank'), at: () => [DEST[0], DEST[1], 5.6] },
       {
         el: ctx.$('.s42-trk--me'),
         at: () => {

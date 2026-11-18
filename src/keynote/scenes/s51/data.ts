@@ -46,8 +46,14 @@ export const STILL = {
   wheel1: at('wheel-last.png'),
   /** 03-spinning, frame 0 */
   loop0: at('loop-first.png'),
+  /** 04-stop, frame 150: the coast, the wheel slow and sharp (only for a held frame inside the move, before the clip has decoded) */
+  coast: at('coast.png'),
+  /** 04-stop, frame 282: the wheel has just stopped */
+  touch: at('touch.png'),
   /** 04-stop, frame 435 */
   landed: at('landed.png'),
+  /** 04-stop, frame 520: the wheel has docked, the page is building */
+  dock: at('dock.png'),
   /** 04-stop, frame 731 (the same picture from frame 705 on) */
   page: at('page.png'),
 }

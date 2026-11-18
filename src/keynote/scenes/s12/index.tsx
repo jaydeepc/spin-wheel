@@ -9,7 +9,7 @@
  *
  *   three      the three portraits arrive out of the depth, a light crossing each; their names
  *   affluent   the frame finds "Affluent, Urban": NOT OUR CUSTOMER. It steps back and pales.
- *   rural      the frame crosses the stage to "Poor, Rural": NOT YET- Biz in early days. It steps back.
+ *   rural      the frame crosses the stage to "Rural": NOT YET- Biz in early days. It steps back.
  *   middle     the frame comes home to "Middle India", turns flame and locks; the portrait
  *              comes forward, the light crosses it, OUR FOCUS lights.
  *

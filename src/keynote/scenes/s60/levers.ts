@@ -81,7 +81,7 @@ export function makeLevers(ctx: SceneCtx, count: number): Levers {
   scene.add(deck)
 
   /* ---- the deck, and the tab that plugs it into the panel ---- */
-  const deckMat = new THREE.MeshStandardMaterial({ color: '#04113a', roughness: 0.7, metalness: 0.2, envMapIntensity: 0.35 })
+  const deckMat = new THREE.MeshStandardMaterial({ color: '#06164a', roughness: 0.88, metalness: 0, envMapIntensity: 0.06 })
   const deckW = G.deckX1 - G.deckX0
   const deckH = G.deckBot - G.deckTop
   const slab = new THREE.Mesh(new RoundedBoxGeometry(deckW, deckH, 1.8, 5, 0.6), deckMat)
@@ -92,7 +92,7 @@ export function makeLevers(ctx: SceneCtx, count: number): Levers {
 
   /* ---- shared pieces ---- */
   const plateGeo = new RoundedBoxGeometry(11.2, 9.0, 0.3, 4, 0.55)
-  const plateMat = new THREE.MeshStandardMaterial({ color: '#071a52', roughness: 0.55, metalness: 0.3, envMapIntensity: 0.5 })
+  const plateMat = new THREE.MeshStandardMaterial({ color: '#0a2064', roughness: 0.8, metalness: 0, envMapIntensity: 0.1 })
   const rimGeo = new RoundedBoxGeometry(1.42, G.slotH + 0.28, 0.2, 4, 0.69)
   const steelMat = new THREE.MeshStandardMaterial({ color: '#e4e9f3', roughness: 0.22, metalness: 1 })
   const rimMat = new THREE.MeshStandardMaterial({ color: '#8793b4', roughness: 0.35, metalness: 0.9 })

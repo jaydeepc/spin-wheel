@@ -8,9 +8,16 @@
  * scene timeline's playhead and decides what the videos must be doing.
  *
  *   the playhead is advancing at about real time   the right clip plays, kept near the playhead
- *   the playhead jumped (Back, a finished move,    every clip is paused, the nearest STILL is shown
- *     a hold URL, a resize)                        at once, and when the playhead has come to
- *                                                  rest the clip is put on the exact frame
+ *   the playhead was put ON A REST (a finished     that rest's own STILL is shown at once (it is the
+ *     move, a hold URL, a resize)                  very frame), then the clip is put on that frame
+ *   Back                                           the rest it is going to is known from the first
+ *                                                  tick of the rewind: its still is shown at once,
+ *                                                  and if it is "spinning" the loop turns at once
+ *   the playhead was put INSIDE a move (a hold     the picture that is on screen STAYS until the clip
+ *     URL with dt, a resize during a move)         has decoded the exact frame: never a still of
+ *                                                  another state. (04-stop has one key frame in its
+ *                                                  first 11.7 s, so such a seek can take a moment;
+ *                                                  .s51-screen carries data-pending="1" meanwhile.)
  *   the playhead stands on "spinning"              the loop turns for as long as the presenter talks
  *
  * A clip is only ever shown once it has a frame to show: the stills lie under the videos, so
@@ -24,7 +31,7 @@
 import gsap from 'gsap'
 
 export type ClipId = 'wheel' | 'up' | 'loop' | 'stop'
-export type PosterId = 'wheel0' | 'wheel1' | 'loop0' | 'landed' | 'page'
+export type PosterId = 'wheel0' | 'wheel1' | 'loop0' | 'coast' | 'touch' | 'landed' | 'dock' | 'page'
 
 export interface Plan {
   clip: ClipId
@@ -40,10 +47,13 @@ export interface Plan {
   loop: boolean
   /** The still that is right (or nearest) for this moment. */
   poster: PosterId
+  /** The still IS this moment's frame (a rest): it may answer a jump at once. */
+  exact: boolean
 }
 
 export interface Player {
-  attach(tl: gsap.core.Timeline, planOf: (t: number) => Plan): void
+  /** `rests`: the times of the rests, in order (Back goes to the one before the playhead). */
+  attach(tl: gsap.core.Timeline, planOf: (t: number) => Plan, rests: number[]): void
   /** The director put the playhead somewhere: treat the next tick as a jump. */
   force(): void
   dispose(): void
@@ -51,7 +61,7 @@ export interface Player {
 
 const FPS = 60
 const CLIPS: ClipId[] = ['wheel', 'up', 'loop', 'stop']
-const POSTERS: PosterId[] = ['wheel0', 'wheel1', 'loop0', 'landed', 'page']
+const POSTERS: PosterId[] = ['wheel0', 'wheel1', 'loop0', 'coast', 'touch', 'landed', 'dock', 'page']
 /** The loop gives way to the stop clip over this long (their wheels are at different angles). */
 const BLEND = 0.14
 
@@ -73,9 +83,16 @@ export function createPlayer(root: HTMLElement, held: boolean): Player {
     if (!el) throw new Error(`[keynote s51] no still "${id}"`)
     still[id] = el
   }
+  const screen = root.querySelector<HTMLElement>('.s51-screen')
 
   let tl: gsap.core.Timeline | null = null
   let planOf: ((t: number) => Plan) | null = null
+  let rests: number[] = []
+  /** The rest a Back is on its way to (NaN: none). */
+  let dest = Number.NaN
+  /** Where the active clip is wanted while it is paused, in seconds of the clip. */
+  let want = 0
+  let flag = ''
   let lastT = Number.NaN
   let lastNow = 0
   let forced = true
@@ -110,18 +127,26 @@ export function createPlayer(root: HTMLElement, held: boolean): Player {
     }
   }
   const ready = (v: HTMLVideoElement) => v.readyState >= 2 && !v.seeking
+  /** The clip stands on the frame that holds `time`. */
+  const onFrame = (v: HTMLVideoElement, time: number) => {
+    const frames = Number.isFinite(v.duration) && v.duration > 0 ? Math.round(v.duration * FPS) : 100000
+    const f = Math.min(frames - 1, Math.max(0, Math.floor(time * FPS + 1e-4)))
+    return Math.abs(v.currentTime - (f + 0.5) / FPS) < 0.75 / FPS
+  }
 
   /** Every clip is paused; the active one is put on its frame, the others wait on their first. */
   const cue = (p: Plan) => {
     active = p.clip
-    shown = null
+    want = p.loop ? 0 : p.time
     startedAt = -1
     waited = 0
     for (const id of CLIPS) {
       const v = vid[id]
       pause(v)
       v.playbackRate = 1
-      seek(v, id === active ? p.time : 0)
+      if (id === active) seek(v, want)
+      // the clip still on screen keeps its frame until the active one has taken over
+      else if (id !== shown) seek(v, 0)
     }
   }
 
@@ -132,22 +157,23 @@ export function createPlayer(root: HTMLElement, held: boolean): Player {
       waited++
       const done = u.ended || u.paused || u.currentTime >= u.duration - 0.6 / FPS || waited > 45
       if (!done || !ready(vid.loop)) {
-        if (waited > 90) cue({ clip: 'loop', time: 0, rate: 1, run: false, stopAt: 0, loop: true, poster: 'loop0' })
+        if (waited > 90) cue({ clip: 'loop', time: 0, rate: 1, run: false, stopAt: 0, loop: true, poster: 'loop0', exact: true })
         return
       }
       active = 'loop'
       shown = 'loop'
       waited = 0
     } else if (active !== 'loop') {
-      cue({ clip: 'loop', time: 0, rate: 1, run: false, stopAt: 0, loop: true, poster: 'loop0' })
-      return
+      cue({ clip: 'loop', time: 0, rate: 1, run: false, stopAt: 0, loop: true, poster: 'loop0', exact: true })
     }
     const l = vid.loop
-    if (!held && shown === 'loop' && l.paused) play(l)
+    // it turns as soon as it has a frame: under the still for an instant, then on screen
+    if (!held && l.paused && ready(l)) play(l)
   }
 
   /** The playhead is moving: the clip moves with it. */
   const follow = (p: Plan) => {
+    want = p.time
     if (p.clip !== active) {
       // a hand-over: the clip before stays on screen until this one has a moving frame
       active = p.clip
@@ -192,7 +218,7 @@ export function createPlayer(root: HTMLElement, held: boolean): Player {
     }
     const a = vid[active]
     let blend = 1
-    // while a jump is waiting to be answered only the still is on screen
+    // while a jump waits for its answer nothing is swapped: the still, or the picture that was there, holds
     if (!pending && shown !== active && ready(a)) {
       const moving = !a.paused && startedAt >= 0
       if (shown === 'loop' && active === 'stop' && moving) {
@@ -202,9 +228,15 @@ export function createPlayer(root: HTMLElement, held: boolean): Player {
       } else if (moving && shown !== null) {
         waited++
         if (a.currentTime > startedAt + 0.2 / FPS || waited > 20) shown = active
-      } else {
+      } else if (moving || !a.paused || onFrame(a, want)) {
+        // a clip that waits is shown only once it stands on the very frame that is wanted
         shown = active
       }
+    }
+    const f = pending || shown !== active || (a.paused && a.seeking) ? '1' : '0'
+    if (screen && f !== flag) {
+      flag = f
+      screen.dataset.pending = f
     }
     for (const id of CLIPS) {
       const v = vid[id]
@@ -231,16 +263,31 @@ export function createPlayer(root: HTMLElement, held: boolean): Player {
     else if (Math.abs(dT) < 1e-6) kind = 'still'
     else if (dT > 0 && dT < 0.15 && dT < dN * 3 + 0.03) kind = 'play'
     else kind = 'jump'
+    const wasForced = forced
     forced = false
     lastT = t
     lastNow = now
-    const p = planOf(t)
+    let p = planOf(t)
+
+    // Back: the playhead is being rewound to the rest before it. That rest is known now.
+    let toRest = Number.NaN
+    if (kind === 'jump' && !wasForced && dT < 0) {
+      for (const r of rests) if (r <= t + 1e-4) toRest = r
+    }
+    if (!Number.isNaN(toRest)) {
+      p = planOf(toRest)
+      if (dest === toRest) kind = 'still'
+      else dest = toRest
+    } else {
+      dest = Number.NaN
+    }
 
     if (kind === 'jump') {
-      // nothing is decoded while the playhead is being thrown about: the still answers at once
       pending = true
-      shown = null
       for (const id of CLIPS) pause(vid[id])
+      // a rest has its own still, and it is the very frame: it answers at once.
+      // Anywhere else the picture on screen stays until the clip has the frame.
+      if (p.exact) shown = null
     } else {
       if (pending) {
         pending = false
@@ -256,9 +303,10 @@ export function createPlayer(root: HTMLElement, held: boolean): Player {
   gsap.ticker.add(tick)
 
   return {
-    attach(timeline, fn) {
+    attach(timeline, fn, restTimes) {
       tl = timeline
       planOf = fn
+      rests = restTimes
       forced = true
     },
     force() {

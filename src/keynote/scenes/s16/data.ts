@@ -2,6 +2,11 @@
  * Slide 16 · the words, pictures and rectangles of the deck, copied from
  * exports/_rig/keynote-src/pack/16/ (text.json, data.json, images.json). Nothing here is retyped.
  * The cards' words are outlines in the PDF (read by eye in the pack, checked against the page).
+ *
+ * Two lines are NOT the deck's any more, by the presenter's word (see PROGRESS.md):
+ *   card 18 "Composite AI": the deck's "ML meets GenAI · Physical AI · JEV" is now "ML meets GenAI";
+ *   card 21 "Ai Reshapes SAAS": the deck's "$285 bn left software in 2 weeks" is now a line with no
+ *   figure, made of the words of slide 21's own headline (pack/21/text.json → t02).
  */
 
 /** text.json → t02: the flame word of the headline. */
@@ -45,9 +50,9 @@ export const THEMES: Theme[] = [
   {
     slide: 18,
     name: 'Composite AI',
-    line: 'ML meets GenAI · Physical AI · JEV',
+    line: 'ML meets GenAI',
     bold: ['ML meets GenAI'],
-    blue: ['Physical AI', 'JEV'],
+    blue: [],
     picture: 'thumb-puzzle.jpg',
     rect: [0.369, 0.279, 0.262, 0.176],
     tilt: 1.5,
@@ -75,8 +80,8 @@ export const THEMES: Theme[] = [
   {
     slide: 21,
     name: 'Ai Reshapes SAAS',
-    line: '$285 bn left software in 2 weeks',
-    bold: ['$285 bn'],
+    line: 'Companies build what they used to buy',
+    bold: ['build'],
     blue: [],
     picture: 'thumb-building-blocks.jpg',
     rect: [0.071, 0.73, 0.262, 0.181],
@@ -113,6 +118,12 @@ export const THEMES: Theme[] = [
     tilt: -1.5,
   },
 ]
+
+/**
+ * The order the cards arrive in: round the middle, clockwise from the top left (the slides they
+ * open). The middle (the question) is there first.
+ */
+export const ROUND = [17, 18, 19, 24, 23, 22, 21, 20]
 
 /** The round pictures are 202 px wide (images.json → px): never drawn larger than that. */
 export const THUMB_PX = 202

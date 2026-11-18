@@ -99,7 +99,7 @@ export const STAGES: Stage[] = [
 
 /** 47 data.json → stats[] (t03 to t08) */
 export const STATS_47 = [
-  { to: 60, suffix: '+', title: 'AI agents built by our engineers', line: 'Each one built for one job.' },
+  { to: 600, suffix: '+', title: 'AI agents built by our engineers', line: 'Each one built for one job.' },
   { to: 70, suffix: '+', title: 'skills written for those agents', line: 'Carefully curated, one task at a time.' },
 ]
 /** 47 data.json → pictureCaption (t09: first line navy, second flame) */
