@@ -90,7 +90,7 @@ export const DELEGATES_TEXT = "The world's leading AI summit. Theme: “Back to 
 export const JUDGES = {
   title: 'Gartner - Eye of Innovation 2026' /* owner, 19 Nov: the award's name */,
   who: 'Jaydeep Chakrabarty',
-  role: 'Senior Vice President - Head of AI',
+  role: 'Senior Vice President - Head of Everyday AI', // owner, 19 Nov (the printed page says Head of AI)
   org: 'Piramal Finance',
 }
 
