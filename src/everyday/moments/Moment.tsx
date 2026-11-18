@@ -66,7 +66,7 @@ export default function Moment({ product, module }: { product: Product; module: 
       {/* the old way, as a headline with its detail line under it, top left: on every moment */}
       <p className="ev-before-h">
         <Rise>{sentences(product.before.headline)}</Rise>
-        <span className="ev-before-d">{product.before.detail}</span>
+        {product.before.detail ? <span className="ev-before-d">{product.before.detail}</span> : null}
       </p>
 
       {/* ---------- THE NAME ---------- */}

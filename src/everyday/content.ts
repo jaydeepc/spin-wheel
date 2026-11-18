@@ -315,7 +315,7 @@ export const PRODUCTS: Product[] = [
     time: '10:30 am',
     place: 'On a field visit',
     photo: '/everyday/moment-visit.jpg',
-    before: { headline: 'Disposition notes, typed in at the end of the day.', detail: 'Details slip. Follow-ups are late.' },
+    before: { headline: 'Disposition notes, typed in at the end of the day.', detail: '' },
     priya: {
       before: 'Earlier, I typed in my disposition notes myself, mostly at the end of the day.',
       tool: 'So my team built our own app, on BYOT. Nobody in my team writes code.',
