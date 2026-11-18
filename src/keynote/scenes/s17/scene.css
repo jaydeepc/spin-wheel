@@ -1,0 +1,117 @@
+/* Slide 17 · enough of pilots */
+.s17 {
+  position: absolute;
+  inset: 0;
+}
+.s17-stat {
+  position: absolute;
+}
+.s17-stat p {
+  margin: calc(var(--u) * 0.5) 0 0;
+  font-size: calc(var(--u) * 1.45);
+  color: var(--kn-muted);
+  max-width: calc(var(--u) * 17);
+}
+.s17-stat p b {
+  color: var(--kn-ink);
+}
+.s17-num {
+  display: block;
+  font-size: calc(var(--u) * 5);
+  line-height: 1;
+  visibility: hidden;
+}
+.s17-stat--grey {
+  left: calc(var(--u) * 5.6);
+  top: calc(var(--u) * 22.6);
+}
+.s17-stat--grey .s17-num {
+  color: #8a96ab;
+}
+.s17-stat--blue {
+  left: calc(var(--u) * 27.2);
+  top: calc(var(--u) * 22.6);
+}
+.s17-stat--blue .s17-num {
+  color: var(--kn-azure);
+}
+.s17-stat--flame {
+  left: calc(var(--u) * 45.2);
+  top: calc(var(--u) * 14.4);
+}
+.s17-stat--flame .s17-num {
+  color: var(--kn-flame-deep);
+  font-size: calc(var(--u) * 7.6);
+}
+.s17-stat--flame p {
+  max-width: calc(var(--u) * 12.5);
+}
+
+/* where there is no WebGL: the two windows on the deck's one flat picture (placed by place()) */
+.s17-flat--parked {
+  clip-path: inset(0 32% 0 0);
+}
+.s17-flat--six {
+  clip-path: inset(0 0 0 68%);
+}
+.s17-flat {
+  display: none;
+}
+.s17--flat .s17-flat {
+  display: block;
+}
+/* … and there the numbers stand where the deck has them (text.json → t03, t05, t07, lifted with the picture) */
+.s17--flat .s17-stat--grey {
+  left: calc(var(--u) * 5.6);
+  top: calc(var(--u) * 24.6);
+}
+.s17--flat .s17-stat--blue {
+  left: calc(var(--u) * 30.6);
+  top: calc(var(--u) * 24.6);
+}
+.s17--flat .s17-stat--flame {
+  left: calc(var(--u) * 43.5);
+  top: calc(var(--u) * 13.9);
+}
+
+.s17-clip {
+  position: absolute;
+  left: calc(var(--u) * 66.9);
+  top: calc(var(--u) * 16.2);
+  visibility: hidden;
+}
+.s17-why {
+  position: absolute;
+  left: calc(var(--u) * 67.5);
+  top: calc(var(--u) * 32.2);
+  width: calc(var(--u) * 26.5);
+}
+.s17-why .kn-kicker,
+.s17-34 {
+  visibility: hidden;
+}
+.s17-34 {
+  display: block;
+  margin-top: calc(var(--u) * 0.8);
+  font-size: calc(var(--u) * 5);
+  line-height: 1.1;
+  color: var(--kn-ink);
+}
+.s17-why p {
+  margin: calc(var(--u) * 0.6) 0 0;
+  font-size: calc(var(--u) * 1.5);
+  color: var(--kn-muted);
+}
+.s17-why p b {
+  color: var(--kn-ink);
+}
+/* a footnote: the deck prints these at 0.75u; here 0.85u, the smallest type in the keynote */
+.s17-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.35);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  color: #7c88a0;
+  visibility: hidden;
+}

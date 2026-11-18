@@ -1,0 +1,441 @@
+/* Slide 44 · PIA's cross-sell journey: a call in progress */
+.s44 {
+  position: absolute;
+  inset: 0;
+}
+.s44 p,
+.s44 h3 {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------- the line and its steps */
+.s44-line {
+  position: absolute;
+  top: calc(var(--u) * 17.42);
+  height: calc(var(--u) * 0.16);
+}
+.s44-line-base,
+.s44-line-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+}
+.s44-line-base {
+  background: rgba(7, 26, 80, 0.14);
+}
+.s44-line-fill {
+  background: var(--kn-flame);
+}
+.s44-sep {
+  position: absolute;
+  top: calc(var(--u) * 16.5);
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 2);
+  margin-left: calc(var(--u) * -1);
+  color: var(--kn-flame);
+  visibility: hidden;
+}
+.s44-sep svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.s44-drop {
+  position: absolute;
+  top: calc(var(--u) * 18.8);
+  width: calc(var(--u) * 0.1);
+  height: calc(var(--u) * 11.9);
+  margin-left: calc(var(--u) * -0.05);
+  background: repeating-linear-gradient(to bottom, rgba(45, 106, 209, 0.75) 0, rgba(45, 106, 209, 0.75) calc(var(--u) * 0.16), transparent calc(var(--u) * 0.16), transparent calc(var(--u) * 0.4));
+}
+.s44-step {
+  position: absolute;
+  top: calc(var(--u) * 14.9);
+  width: calc(var(--u) * 18);
+  margin-left: calc(var(--u) * -9);
+  text-align: center;
+}
+.s44-stop {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 2.6);
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.2);
+  margin: calc(var(--u) * -0.6) 0 0 calc(var(--u) * -0.6);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.16) rgba(7, 26, 80, 0.3),
+    0 calc(var(--u) * 0.15) calc(var(--u) * 0.5) rgba(7, 26, 80, 0.15);
+  visibility: hidden;
+}
+.s44-disc,
+.s44-ringbox {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: calc(var(--u) * 5.2);
+  height: calc(var(--u) * 5.2);
+  margin-left: calc(var(--u) * -2.6);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  visibility: hidden;
+}
+.s44-disc {
+  background: radial-gradient(circle at 34% 26%, #f88a66 0%, var(--kn-flame) 55%, var(--kn-flame-deep) 100%);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.3) rgba(255, 255, 255, 0.95),
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.4) rgba(235, 84, 44, 0.38);
+  color: #fff;
+}
+.s44-disc svg {
+  width: calc(var(--u) * 2.9);
+  height: calc(var(--u) * 2.9);
+  display: block;
+  overflow: visible;
+}
+/* step 5: the deck's dashed yellow ring */
+.s44-ringbox {
+  width: calc(var(--u) * 5.8);
+  height: calc(var(--u) * 5.8);
+  margin-left: calc(var(--u) * -2.9);
+  top: calc(var(--u) * -0.3);
+}
+.s44-ring-fill {
+  position: absolute;
+  inset: calc(var(--u) * 0.55);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #fffbe9 0%, #ffeeb5 100%);
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1.2) rgba(242, 182, 0, 0.35);
+}
+.s44-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 62%, transparent 64%);
+  border-radius: 50%;
+}
+.s44-ring-icon {
+  position: relative;
+  color: var(--kn-flame-deep);
+}
+.s44-ring-icon svg {
+  width: calc(var(--u) * 2.8);
+  height: calc(var(--u) * 2.8);
+  display: block;
+}
+.s44-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 6.25);
+  font-size: calc(var(--u) * 1.15);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  word-spacing: 0.3em;
+  color: #bf8a00;
+  visibility: hidden;
+}
+.s44-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 6.7);
+  font-size: calc(var(--u) * 1.85);
+  line-height: 1.17;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+.s44-tl {
+  display: block;
+}
+.s44-title .kn-flame {
+  color: var(--kn-flame-deep);
+}
+.s44-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 11.55);
+  font-size: calc(var(--u) * 1.36);
+  line-height: 1.25;
+  color: var(--kn-muted);
+  visibility: hidden;
+}
+.s44-step--payout .s44-title {
+  top: calc(var(--u) * 8.05);
+}
+.s44-step--payout .s44-body {
+  top: calc(var(--u) * 12.9);
+}
+
+/* ---------------------------------------------------------------- what hangs between the steps */
+.s44-under {
+  position: absolute;
+  top: calc(var(--u) * 31.1);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.s44-under em {
+  font-style: italic;
+  color: var(--kn-ink);
+  text-align: center;
+  line-height: 1.2;
+}
+.s44-does {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: calc(var(--u) * 0.9);
+}
+.s44-do {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(var(--u) * 5.4);
+}
+.s44-do-ring {
+  width: calc(var(--u) * 3.6);
+  height: calc(var(--u) * 3.6);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.17) var(--kn-flame),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(235, 84, 44, 0.16);
+  color: var(--kn-flame-deep);
+  visibility: hidden;
+}
+.s44-do-ring svg {
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 2);
+  display: block;
+}
+.s44-do em {
+  margin-top: calc(var(--u) * 0.55);
+  font-size: calc(var(--u) * 1.2);
+  visibility: hidden;
+}
+.s44-states {
+  display: flex;
+  gap: calc(var(--u) * 0.65);
+}
+.s44-st {
+  width: calc(var(--u) * 3.4);
+  height: calc(var(--u) * 3.4);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.16);
+  visibility: hidden;
+}
+.s44-st svg {
+  width: calc(var(--u) * 1.9);
+  height: calc(var(--u) * 1.9);
+  display: block;
+}
+/* the deck's own signal colours: waiting, paused, with an advisor, done */
+.s44-st--grey {
+  background: #dfe2e8;
+  color: #2b3d57;
+}
+.s44-st--yellow {
+  background: #f8b900;
+  color: #2b3d57;
+}
+.s44-st--navy {
+  background: #2b3d57;
+  color: #fff;
+}
+.s44-st--green {
+  background: #10a958;
+  color: #fff;
+}
+.s44-cap {
+  margin-top: calc(var(--u) * 0.7);
+  font-size: calc(var(--u) * 1.3);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s44-venn {
+  position: relative;
+  width: calc(var(--u) * 9.6);
+  height: calc(var(--u) * 6.9);
+}
+.s44-vc {
+  position: absolute;
+  width: calc(var(--u) * 4.7);
+  height: calc(var(--u) * 4.7);
+  border-radius: 50%;
+  visibility: hidden;
+}
+.s44-vc b {
+  position: absolute;
+  font-size: calc(var(--u) * 0.9);
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s44-vc--pia {
+  left: calc(var(--u) * 0.7);
+  top: 0;
+  background: rgba(253, 222, 211, 0.75);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) var(--kn-flame);
+}
+.s44-vc--pia b {
+  left: calc(var(--u) * 0.6);
+  top: calc(var(--u) * 1.3);
+}
+.s44-vc--customer {
+  left: calc(var(--u) * 4.2);
+  top: 0;
+  background: rgba(214, 221, 232, 0.75);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) #2b3d57;
+}
+.s44-vc--customer b {
+  right: calc(var(--u) * 0.35);
+  top: calc(var(--u) * 1.3);
+}
+.s44-vc--offer {
+  left: calc(var(--u) * 2.45);
+  top: calc(var(--u) * 2.2);
+  background: rgba(255, 240, 190, 0.8);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) #f2b600;
+}
+.s44-vc--offer b {
+  left: 0;
+  right: 0;
+  bottom: calc(var(--u) * 0.55);
+  text-align: center;
+}
+.s44-vdot {
+  position: absolute;
+  left: calc(var(--u) * 4.38);
+  top: calc(var(--u) * 2.75);
+  width: calc(var(--u) * 0.85);
+  height: calc(var(--u) * 0.85);
+  border-radius: 50%;
+  background: var(--kn-flame);
+  box-shadow: 0 0 0 calc(var(--u) * 0.14) #fff;
+  visibility: hidden;
+}
+.s44-shared .s44-cap {
+  margin-top: calc(var(--u) * 0.35);
+}
+
+/* ---------------------------------------------------------------- the two bars */
+.s44-bar {
+  position: absolute;
+  height: calc(var(--u) * 2.75);
+  overflow: hidden;
+  border-radius: calc(var(--u) * 0.25) 0 0 calc(var(--u) * 0.25);
+}
+.s44-bar--pia {
+  top: calc(var(--u) * 41.2);
+}
+.s44-bar--human {
+  top: calc(var(--u) * 44.45);
+}
+.s44-bar-fill {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, calc(100% - var(--u) * 1.4) 0, 100% 50%, calc(100% - var(--u) * 1.4) 100%, 0 100%);
+}
+.s44-bar--pia .s44-bar-fill {
+  background: linear-gradient(90deg, var(--kn-flame-deep) 0%, var(--kn-flame) 100%);
+}
+.s44-bar--human .s44-bar-fill {
+  background: linear-gradient(90deg, #22344e 0%, #2b3d57 100%);
+}
+.s44-bar-text {
+  position: absolute;
+  left: calc(var(--u) * 1.5);
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  font-size: calc(var(--u) * 1.36);
+  color: #fff;
+  white-space: pre;
+}
+.s44-bar-text b {
+  visibility: hidden;
+}
+.s44-voice {
+  position: absolute;
+  right: calc(var(--u) * 2.3);
+  top: 50%;
+  height: calc(var(--u) * 1.7);
+  margin-top: calc(var(--u) * -0.85);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.17);
+  visibility: hidden;
+}
+.s44-voice i {
+  display: block;
+  width: calc(var(--u) * 0.17);
+  border-radius: 999px;
+  background: #fff;
+  animation: s44-live 1.4s ease-in-out infinite;
+}
+@keyframes s44-live {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.45);
+  }
+}
+.s44-onward {
+  position: absolute;
+  top: calc(var(--u) * 41.875);
+  height: calc(var(--u) * 1.4);
+  display: flex;
+  align-items: center;
+  color: var(--kn-flame);
+  visibility: hidden;
+}
+.s44-onward i {
+  flex: 1;
+  height: calc(var(--u) * 0.16);
+  background: repeating-linear-gradient(to right, var(--kn-flame) 0, var(--kn-flame) calc(var(--u) * 0.16), transparent calc(var(--u) * 0.16), transparent calc(var(--u) * 0.62));
+}
+.s44-onward svg {
+  flex: none;
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.4);
+  margin-left: calc(var(--u) * 0.3);
+}
+
+/* ---------------------------------------------------------------- the two takeaways */
+.s44-takes {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 47.65);
+  display: flex;
+  gap: calc(var(--u) * 3);
+  align-items: center;
+}
+.s44-take {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+  font-size: calc(var(--u) * 1.55);
+  font-weight: 700;
+  color: #2b4054;
+  white-space: nowrap;
+}
+.s44-take-n {
+  font-size: calc(var(--u) * 2.9);
+  line-height: 1;
+  color: var(--kn-flame-deep);
+  visibility: hidden;
+}
+.s44-take .kn-flame {
+  color: var(--kn-flame-ink);
+}

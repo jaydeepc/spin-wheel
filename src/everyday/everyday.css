@@ -79,7 +79,9 @@
   overflow: clip; /* never scrollable, even by focus or scrollIntoView */
   background: #ffffff;
   color: var(--ev-body);
-  font-family: 'Open Sans', var(--font-sans), system-ui, sans-serif;
+  /* Calibri, the brand font, at the optical size and on the line metrics this film was drawn
+     with (it was drawn in Open Sans). One knob sizes it: FILM_SIZE_ADJUST in src/brand/font.ts. */
+  font-family: var(--font-brand-film), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   user-select: none;
   -webkit-user-select: none;
@@ -654,7 +656,7 @@
   padding: 0 0.12em;
 }
 .ev-deva {
-  font-family: 'Kohinoor Devanagari', 'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', 'Open Sans', sans-serif;
+  font-family: 'Kohinoor Devanagari', 'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', var(--font-brand-film), sans-serif;
   font-weight: 700;
   letter-spacing: 0;
   line-height: 2;

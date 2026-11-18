@@ -1,0 +1,450 @@
+/* Slide 50: Martin, Prastuti, the same room twice. Everything is prefixed s50-. */
+
+.s50 {
+  position: absolute;
+  inset: 0;
+  --s50-top: calc(var(--u) * 16.8);
+  --s50-media: calc(var(--u) * 7.7); /* from a column's top to its picture */
+  --s50-photo-w: calc(var(--u) * 19.6);
+  --s50-grey: #8391a8;
+}
+
+/* ------------------------------------------------------------------ Martin */
+
+.s50-person {
+  position: absolute;
+  left: var(--kn-x0);
+  top: var(--s50-top);
+  width: calc(var(--u) * 19.4);
+  height: calc(var(--u) * 32.6);
+  box-sizing: border-box;
+  padding: calc(var(--u) * 2.2) calc(var(--u) * 1.6) calc(var(--u) * 2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  visibility: hidden;
+}
+
+/* the empty portrait frame: Martin's initial where his photograph will be */
+.s50-portrait {
+  position: relative;
+  width: calc(var(--u) * 9.6);
+  height: calc(var(--u) * 9.6);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 58%),
+    linear-gradient(150deg, #e9f2ff 0%, #f4f7fc 46%, #ffeee6 100%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) rgba(67, 132, 212, 0.28);
+  display: grid;
+  place-items: center;
+  visibility: hidden;
+}
+.s50-portrait-ring {
+  position: absolute;
+  inset: calc(var(--u) * -0.55);
+  border-radius: 50%;
+  border: calc(var(--u) * 0.09) dashed rgba(67, 132, 212, 0.5);
+}
+.s50-portrait-initial {
+  font-size: calc(var(--u) * 5);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--kn-azure-ink);
+  opacity: 0.6;
+}
+.s50-portrait-tag {
+  margin-top: calc(var(--u) * 1.15);
+  padding: calc(var(--u) * 0.22) calc(var(--u) * 0.8);
+  border-radius: calc(var(--u) * 1);
+  background: #eef3fa;
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s50-grey);
+  visibility: hidden;
+}
+.s50-name {
+  margin-top: calc(var(--u) * 1.3);
+  font-size: calc(var(--u) * 2.9);
+  line-height: 1.05;
+  color: var(--kn-ink);
+  visibility: hidden;
+}
+.s50-role {
+  margin-top: calc(var(--u) * 0.7);
+  font-size: calc(var(--u) * 1.18);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--kn-body);
+  visibility: hidden;
+}
+.s50-unit {
+  margin-top: calc(var(--u) * 0.25);
+  font-size: calc(var(--u) * 1.18);
+  font-weight: 700;
+  color: var(--kn-flame-ink);
+  visibility: hidden;
+}
+.s50-person-rule {
+  width: calc(var(--u) * 3);
+  height: calc(var(--u) * 0.14);
+  margin-top: calc(var(--u) * 1.15);
+  border-radius: calc(var(--u) * 0.1);
+  background: var(--kn-flame);
+}
+.s50-person-line {
+  margin: calc(var(--u) * 1.05) 0 0;
+  font-size: calc(var(--u) * 1.18);
+  line-height: 1.32;
+  color: var(--kn-body);
+  visibility: hidden;
+}
+
+/* ------------------------------------------------------------- the columns */
+
+.s50-col {
+  position: absolute;
+  top: var(--s50-top);
+  height: calc(var(--u) * 27);
+}
+.s50-col--1 {
+  left: calc(var(--u) * 26.2);
+  width: var(--s50-photo-w);
+}
+.s50-col--2 {
+  left: calc(var(--u) * 48.4);
+  width: calc(var(--u) * 25.4);
+}
+.s50-col--3 {
+  left: calc(var(--u) * 76.2);
+  width: var(--s50-photo-w);
+}
+
+.s50-step {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.7);
+  height: calc(var(--u) * 1.9);
+}
+.s50-step-n {
+  width: calc(var(--u) * 1.9);
+  height: calc(var(--u) * 1.9);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--u) * 1);
+  font-weight: 700;
+  color: #fff;
+  background: var(--s50-grey);
+  visibility: hidden;
+}
+.s50-step-label {
+  font-size: calc(var(--u) * 0.98);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--s50-grey);
+  visibility: hidden;
+}
+.s50-step[data-step='turn'] .s50-step-n {
+  background: var(--kn-flame);
+}
+.s50-step[data-step='turn'] .s50-step-label {
+  color: var(--kn-flame-ink);
+}
+.s50-step[data-step='result'] .s50-step-n {
+  background: var(--kn-azure);
+}
+.s50-step[data-step='result'] .s50-step-label {
+  color: var(--kn-azure-ink);
+}
+
+.s50-title {
+  position: absolute;
+  left: 0;
+  right: calc(var(--u) * -1);
+  top: calc(var(--u) * 2.75);
+  margin: 0;
+  font-size: calc(var(--u) * 1.62);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--kn-ink);
+}
+
+/* the photographs: whole, at their own ratio, on a white mount */
+.s50-photo {
+  position: absolute;
+  left: 0;
+  top: var(--s50-media);
+  width: 100%;
+  margin: 0;
+  border-radius: calc(var(--u) * 0.9);
+  background: #fff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.16) #fff,
+    0 calc(var(--u) * 0.9) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.14),
+    0 calc(var(--u) * 0.15) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.08);
+  visibility: hidden;
+}
+.s50-photo .kn-pic {
+  border-radius: calc(var(--u) * 0.9);
+}
+.s50-now {
+  position: absolute;
+  inset: 0;
+}
+/* the light that passes over the room */
+.s50-edge {
+  position: absolute;
+  top: calc(var(--u) * -0.5);
+  bottom: calc(var(--u) * -0.5);
+  left: calc(var(--u) * -0.75);
+  width: calc(var(--u) * 1.5);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95) 46%, #fff 50%, rgba(255, 255, 255, 0.95) 54%, rgba(255, 255, 255, 0));
+  border-radius: 50%;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.s50-text {
+  position: absolute;
+  left: 0;
+  right: calc(var(--u) * -0.6);
+  top: calc(var(--s50-media) + var(--s50-photo-w) * 389 / 584 + var(--u) * 1.35);
+  margin: 0;
+  font-size: calc(var(--u) * 1.24);
+  line-height: 1.32;
+  color: var(--kn-body);
+}
+.s50-text b,
+.s50-text strong {
+  color: var(--kn-ink);
+}
+
+.s50-arrow {
+  position: absolute;
+  top: calc(var(--s50-top) + var(--s50-media) + var(--u) * 5.6);
+  width: calc(var(--u) * 1.9);
+  height: calc(var(--u) * 0.95);
+  overflow: visible;
+}
+.s50-arrow path {
+  stroke: var(--kn-flame);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s50-arrow--1 {
+  left: calc(var(--u) * 46.15);
+}
+.s50-arrow--2 {
+  left: calc(var(--u) * 74.05);
+}
+
+/* ---------------------------------------------- the request and the answer */
+
+.s50-bubble {
+  position: absolute;
+  left: 0;
+  top: var(--s50-media);
+  width: 100%;
+  height: calc(var(--u) * 3.5);
+  box-sizing: border-box;
+  border-radius: calc(var(--u) * 1.75);
+  background: #e8f1fd;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.08) rgba(67, 132, 212, 0.34);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+.s50-bubble-tail {
+  position: absolute;
+  left: calc(var(--u) * 2.6);
+  bottom: calc(var(--u) * -0.42);
+  width: calc(var(--u) * 0.95);
+  height: calc(var(--u) * 0.95);
+  background: #e8f1fd;
+  box-shadow: inset calc(var(--u) * -0.08) calc(var(--u) * -0.08) 0 rgba(67, 132, 212, 0.34);
+  transform: rotate(45deg);
+  border-radius: 0 0 calc(var(--u) * 0.2) 0;
+}
+.s50-prompt {
+  position: relative;
+  margin: 0;
+  font-size: calc(var(--u) * 1.16);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s50-pw {
+  display: inline-block;
+  margin-right: 0.26em;
+}
+.s50-pw:last-child {
+  margin-right: 0;
+}
+.s50-ch {
+  display: inline-block;
+  visibility: hidden;
+}
+
+.s50-deck {
+  position: absolute;
+  left: 0;
+  top: calc(var(--s50-media) + var(--u) * 5);
+  width: 100%;
+  height: calc(var(--u) * 14.3);
+  box-sizing: border-box;
+  padding: calc(var(--u) * 1.5) calc(var(--u) * 1.4) 0;
+  border-radius: calc(var(--u) * 1);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 1) calc(var(--u) * 2.6) rgba(7, 26, 80, 0.14),
+    0 calc(var(--u) * 0.15) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.08);
+  overflow: hidden;
+  visibility: hidden;
+}
+.s50-sheen {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 34%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 214, 198, 0.55) 40%, rgba(214, 232, 255, 0.6) 60%, rgba(255, 255, 255, 0));
+  pointer-events: none;
+  visibility: hidden;
+}
+.s50-deck-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.8);
+  height: calc(var(--u) * 2.8);
+}
+.s50-deck-bar {
+  width: calc(var(--u) * 0.38);
+  height: calc(var(--u) * 2.5);
+  border-radius: calc(var(--u) * 0.2);
+  background: var(--kn-flame);
+}
+.s50-deck-mask,
+.s50-tile-mask {
+  display: block;
+  overflow: hidden;
+  /* room for the Tamil vowel signs above and below the line */
+  padding: 0.24em 0.05em;
+}
+.s50-deck-title,
+.s50-tile-word {
+  display: block;
+  font-family: var(--kn-font-indic);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.s50-deck-title {
+  font-size: calc(var(--u) * 1.72);
+  color: var(--kn-ink);
+}
+
+.s50-tiles {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--u) * 0.7);
+  margin-top: calc(var(--u) * 1.1);
+}
+.s50-tile {
+  position: relative;
+  height: calc(var(--u) * 6.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.35);
+  color: var(--kn-ink);
+}
+.s50-tile[data-tone='flame'] {
+  color: var(--kn-flame-deep);
+}
+.s50-tile[data-tone='azure'] {
+  color: var(--kn-azure-ink);
+}
+.s50-tile-frame,
+.s50-tile-ghost {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.7);
+}
+.s50-tile-frame {
+  border: calc(var(--u) * 0.16) solid currentColor;
+  background: #fff;
+  visibility: hidden;
+}
+.s50-tile[data-tone='flame'] .s50-tile-frame {
+  background: #fff8f5;
+}
+.s50-tile[data-tone='azure'] .s50-tile-frame {
+  background: #f5f9ff;
+}
+.s50-tile-ghost {
+  border: calc(var(--u) * 0.1) dashed #c9d3e2;
+  background: #f6f8fb;
+  visibility: hidden;
+}
+.s50-tile-mask {
+  position: relative;
+}
+.s50-tile-word {
+  font-size: calc(var(--u) * 1.62);
+}
+.s50-tile-label {
+  position: relative;
+  font-size: calc(var(--u) * 0.88);
+  font-weight: 700;
+  color: var(--kn-body);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s50-mark {
+  position: absolute;
+  right: calc(var(--u) * 1.4);
+  bottom: calc(var(--u) * 0.6);
+  font-size: calc(var(--u) * 0.86);
+  font-style: italic;
+  color: var(--s50-grey);
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- the banner */
+
+.s50-banner {
+  position: absolute;
+  left: calc(var(--u) * 26.2);
+  top: calc(var(--u) * 45.2);
+  width: calc(var(--u) * 69.6);
+  height: calc(var(--u) * 4.2);
+  border-radius: calc(var(--u) * 1.1);
+  background: #fff1ea;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.08) var(--kn-peach-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+.s50-banner p {
+  margin: 0;
+  font-size: calc(var(--u) * 1.5);
+  color: var(--kn-body);
+  white-space: pre-wrap;
+}
+.s50-banner-navy {
+  color: var(--kn-ink);
+}
+.s50-banner-flame {
+  color: var(--kn-flame-ink);
+}

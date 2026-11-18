@@ -1,0 +1,81 @@
+/* Slides 51 to 54: the wheel on a kiosk screen. Everything is prefixed s51- (the span's first slide). */
+
+.s51 {
+  position: absolute;
+  inset: 0;
+  /* the screen: the picture's own 16 : 9, as large as the stage allows above Back / Next */
+  --s51-w: calc(var(--u) * 85.6);
+  --s51-rim: calc(var(--u) * 0.42);
+}
+
+.s51-kiosk {
+  position: absolute;
+  left: calc(var(--u) * 7.2 - var(--s51-rim));
+  top: calc(var(--u) * 1.5 - var(--s51-rim));
+  width: calc(var(--s51-w) + var(--s51-rim) * 2);
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* the body of the screen: deep navy glass with a fine light edge */
+.s51-bezel {
+  padding: var(--s51-rim);
+  border-radius: calc(var(--u) * 1.5);
+  background: linear-gradient(160deg, #16296a 0%, #071a50 38%, #050f33 100%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.05) rgba(255, 255, 255, 0.16),
+    inset 0 calc(var(--u) * 0.1) calc(var(--u) * 0.2) rgba(255, 255, 255, 0.14),
+    0 calc(var(--u) * 2.2) calc(var(--u) * 4.4) rgba(7, 26, 80, 0.22),
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.16);
+}
+
+.s51-screen {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: calc(var(--u) * 1.1);
+  background: #fff;
+  /* keeps the rounded corners clean over a playing video */
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.s51-still,
+.s51-clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+.s51-still {
+  opacity: 0;
+}
+.s51-still[data-poster='wheel0'] {
+  opacity: 1;
+}
+.s51-clip {
+  opacity: 0;
+  background: transparent;
+}
+
+/* a light behind the screen: cool while it waits, warm while it spins */
+.s51-halo {
+  position: absolute;
+  left: calc(var(--u) * 1);
+  top: calc(var(--u) * -3);
+  width: calc(var(--u) * 98);
+  height: calc(var(--u) * 58);
+  border-radius: 50%;
+  visibility: hidden;
+  pointer-events: none;
+}
+.s51-halo--cool {
+  background: radial-gradient(closest-side, rgba(101, 169, 245, 0.3), rgba(101, 169, 245, 0.12) 55%, rgba(101, 169, 245, 0) 100%);
+}
+.s51-halo--warm {
+  background: radial-gradient(closest-side at 34% 50%, rgba(241, 100, 67, 0.5), rgba(241, 100, 67, 0.16) 60%, rgba(241, 100, 67, 0) 100%);
+}

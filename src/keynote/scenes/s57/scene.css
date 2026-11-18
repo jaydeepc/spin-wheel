@@ -1,0 +1,187 @@
+/* Slide 57 · tokens up 20x, cost per token down 46% */
+.s57 {
+  position: absolute;
+  inset: 0;
+}
+
+/* the token chart's wrapper, each figure's wrapper: what build() moves aside */
+.s57-tok,
+.s57-slot {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- the two chart cards ---- */
+.s57-panel {
+  position: absolute;
+  top: calc(var(--u) * 15.4);
+  width: calc(var(--u) * 44.7);
+  height: calc(var(--u) * 23.2);
+  visibility: hidden;
+}
+.s57-panel--tokens {
+  left: calc(var(--u) * 4.2);
+}
+.s57-panel--cost {
+  left: calc(var(--u) * 51.1);
+}
+.s57-ptitle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 1.15);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 1.6);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+.s57-cost {
+  position: absolute;
+  left: calc(var(--u) * 1.6);
+  top: calc(var(--u) * 3.3);
+}
+.s57-level {
+  stroke: var(--kn-azure);
+  stroke-width: 1.3;
+  stroke-dasharray: 1 6;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+/* ---- the token chart ---- */
+.s57-axis {
+  position: absolute;
+  height: calc(var(--u) * 0.14);
+  border-radius: 999px;
+  background: rgba(7, 26, 80, 0.5);
+}
+.s57-col {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.s57-fbar {
+  position: absolute;
+  left: 0;
+  border-radius: calc(var(--u) * 0.25) calc(var(--u) * 0.25) 0 0;
+  background: linear-gradient(180deg, #f67a5c 0%, #ea5330 100%);
+}
+.kn-scene[data-gl='1'] .s57-fbar {
+  display: none;
+}
+.s57-val,
+.s57-q {
+  position: absolute;
+  left: calc(var(--u) * -3);
+  width: calc(var(--u) * 6);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.s57-val {
+  font-size: calc(var(--u) * 1.3);
+  font-weight: 700;
+  color: var(--kn-ink);
+  font-variant-numeric: tabular-nums;
+  visibility: hidden;
+}
+.s57-q {
+  font-size: calc(var(--u) * 0.98);
+  color: var(--kn-muted);
+  visibility: hidden;
+}
+
+/* ---- the three figures ---- */
+.s57-stat {
+  position: absolute;
+  top: calc(var(--u) * 40);
+  width: calc(var(--u) * 29.2);
+  height: calc(var(--u) * 7.5);
+  box-sizing: border-box;
+  padding: 0 calc(var(--u) * 1.2);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.2);
+  visibility: hidden;
+}
+.s57-stat--usage {
+  left: calc(var(--u) * 4.2);
+}
+.s57-stat--cost {
+  left: calc(var(--u) * 35.4);
+}
+.s57-stat--saved {
+  left: calc(var(--u) * 66.6);
+}
+.s57-disc {
+  flex: none;
+  width: calc(var(--u) * 4.6);
+  height: calc(var(--u) * 4.6);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(160deg, #14307c 0%, #071a50 75%);
+  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.22);
+}
+.s57-disc svg {
+  width: 50%;
+  height: 50%;
+}
+.s57-top {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 0.9);
+  white-space: nowrap;
+}
+.s57-num {
+  font-size: calc(var(--u) * 3.3);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+.s57-stat--usage .s57-num {
+  color: var(--kn-flame-deep);
+}
+.s57-stat--cost .s57-num {
+  color: var(--kn-azure-ink);
+}
+.s57-sub {
+  font-size: calc(var(--u) * 1.15);
+  color: var(--kn-muted);
+}
+.s57-arrow {
+  display: inline-block;
+  width: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 0.75);
+  margin: 0 calc(var(--u) * 0.4);
+}
+.s57-sline {
+  margin: calc(var(--u) * 0.35) 0 0;
+  font-size: calc(var(--u) * 1.22);
+  line-height: 1.2;
+  color: var(--kn-body);
+  white-space: nowrap;
+}
+
+/* ---- the footnote ---- */
+.s57-foot {
+  position: absolute;
+  left: calc(var(--u) * 4.2);
+  width: calc(var(--u) * 91.6);
+  top: calc(var(--u) * 48.55);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  line-height: 1.25;
+  font-style: italic;
+  color: var(--kn-muted);
+  visibility: hidden;
+}
+
+.s57-sub--1 {
+  font-size: calc(var(--u) * 1.05);
+}

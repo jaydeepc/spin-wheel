@@ -8,3 +8,6 @@ public/_concepts
 .vercel
 *.tsbuildinfo
 .env*
+# LOCAL ONLY: copies of Microsoft's Calibri from the Office app on this Mac. The licence does not
+# allow publishing them: never commit, never deploy. See src/brand/README.md.
+public/fonts/local-calibri/

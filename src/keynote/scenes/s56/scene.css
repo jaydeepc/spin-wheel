@@ -1,0 +1,203 @@
+/* Slide 56 · the AI ecosystem: an engine in an orbit, six parts docked around it */
+.s56 {
+  position: absolute;
+  inset: 0;
+  --s56-cx: calc(var(--u) * 50);
+  --s56-cy: calc(var(--u) * 27.4);
+}
+
+/* ---- the centre ---- */
+.s56-disc,
+.s56-halo,
+.s56-ring,
+.s56-flat,
+.s56-shadow {
+  position: absolute;
+  left: var(--s56-cx);
+  top: var(--s56-cy);
+  visibility: hidden;
+}
+.s56-disc {
+  width: calc(var(--u) * 19);
+  height: calc(var(--u) * 19);
+  margin: calc(var(--u) * -9.5) 0 0 calc(var(--u) * -9.5);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 34%, #ffffff 0%, #fff1ea 46%, #fddfd3 100%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.1) rgba(255, 255, 255, 0.9),
+    0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(235, 84, 44, 0.16),
+    0 calc(var(--u) * 0.2) calc(var(--u) * 0.6) rgba(7, 26, 80, 0.06);
+}
+.s56-halo {
+  width: calc(var(--u) * 34);
+  height: calc(var(--u) * 34);
+  margin: calc(var(--u) * -17) 0 0 calc(var(--u) * -17);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(241, 100, 67, 0.3) 0%, rgba(241, 100, 67, 0.14) 38%, rgba(241, 100, 67, 0) 68%);
+}
+/* the chip's contact shadow on the disc */
+.s56-shadow {
+  width: calc(var(--u) * 12);
+  height: calc(var(--u) * 3.6);
+  margin: calc(var(--u) * -1.9) 0 0 calc(var(--u) * -6);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(7, 26, 80, 0.26) 0%, rgba(7, 26, 80, 0.1) 45%, rgba(7, 26, 80, 0) 70%);
+}
+.s56-ring {
+  width: calc(var(--u) * 22.8);
+  height: calc(var(--u) * 22.8);
+  margin: calc(var(--u) * -11.4) 0 0 calc(var(--u) * -11.4);
+  overflow: visible;
+}
+.s56-ring circle {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 5;
+}
+.s56-flat {
+  width: calc(var(--u) * 6.4);
+  height: calc(var(--u) * 6.4);
+  margin: calc(var(--u) * -7.6) 0 0 calc(var(--u) * -3.2);
+  border-radius: 50%;
+  background: var(--kn-flame);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+.s56-flat svg {
+  width: 56%;
+  height: 56%;
+}
+.kn-scene[data-gl='1'] .s56-ring,
+.kn-scene[data-gl='1'] .s56-flat {
+  display: none;
+}
+.s56-logo {
+  position: absolute;
+  left: calc(var(--u) * 50);
+  top: calc(var(--u) * 31.1);
+  transform: translateX(-50%);
+  margin-left: calc(var(--u) * -0.3);
+  visibility: hidden;
+}
+.s56-pill {
+  position: absolute;
+  left: calc(var(--u) * 39.6);
+  width: calc(var(--u) * 20.8);
+  top: calc(var(--u) * 40.5);
+  height: calc(var(--u) * 3.1);
+  border-radius: calc(var(--u) * 1.55);
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #f4714f 0%, #ea5330 100%);
+  color: #fff;
+  font-size: calc(var(--u) * 1.12);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em;
+  white-space: nowrap;
+  box-shadow: 0 calc(var(--u) * 0.5) calc(var(--u) * 1.4) rgba(235, 84, 44, 0.32);
+  visibility: hidden;
+}
+.s56-line {
+  position: absolute;
+  left: calc(var(--u) * 35);
+  width: calc(var(--u) * 30);
+  top: calc(var(--u) * 44.5);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 1.9);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-fg);
+  white-space: nowrap;
+}
+
+/* ---- the connectors ---- */
+.s56-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.s56-link {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 0.16;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.s56-plug {
+  fill: #fff;
+  stroke: var(--kn-flame);
+  stroke-width: 0.16;
+}
+
+/* ---- the six parts ---- */
+.s56-card {
+  position: absolute;
+  width: calc(var(--u) * 31);
+  height: calc(var(--u) * 10.2);
+  box-sizing: border-box;
+  padding: 0 calc(var(--u) * 1.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.4);
+  border-radius: calc(var(--u) * 1.4);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.07) rgba(7, 26, 80, 0.06),
+    var(--kn-shadow);
+  visibility: hidden;
+}
+.s56-card--l {
+  left: calc(var(--u) * 4.2);
+}
+.s56-card--r {
+  left: calc(var(--u) * 64.8);
+}
+.s56-card[data-row='0'] {
+  top: calc(var(--u) * 14.6);
+}
+.s56-card[data-row='1'] {
+  top: calc(var(--u) * 26.2);
+}
+.s56-card[data-row='2'] {
+  top: calc(var(--u) * 37.8);
+}
+.s56-ico {
+  flex: none;
+  width: calc(var(--u) * 4.6);
+  height: calc(var(--u) * 4.6);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--kn-flame-deep);
+  background: linear-gradient(160deg, #fff4ef 0%, #fde3d9 100%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.08) var(--kn-peach-line);
+}
+.s56-ico svg {
+  width: 52%;
+  height: 52%;
+}
+.s56-title {
+  margin: 0;
+  font-size: calc(var(--u) * 1.95);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s56-title em {
+  font-style: normal;
+  color: var(--kn-flame-deep);
+}
+.s56-body {
+  margin: calc(var(--u) * 0.45) 0 0;
+  font-size: calc(var(--u) * 1.36);
+  line-height: 1.24;
+  color: var(--kn-muted);
+}

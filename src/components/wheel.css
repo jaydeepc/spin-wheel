@@ -178,14 +178,14 @@
   background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 70%);
   transform: rotate(-30deg);
 }
-/* The flame mark, shown from the left of the supplied lockup (the mark is its first 26.5%). Never rotated or recoloured. */
+/* The flame mark: the brand's own mark file (706 x 1200). Never rotated or recoloured. */
 .wheel__mark {
   position: relative;
   z-index: 1;
   display: block;
   height: 58%;
-  aspect-ratio: 495 / 848;
-  background: url('/brand/piramal-ai-lockup.png') left center / auto 100% no-repeat;
+  aspect-ratio: 706 / 1200;
+  background: url('/brand/piramal-ai-mark.png') center / contain no-repeat;
 }
 
 /* ---------- Docked in the kiosk corner (the rig is scaled to about a quarter) ----------

@@ -1,0 +1,149 @@
+/* Slide 07 · Growth PBT as bars, Company PAT as pills, the guidance as a dashed box of light */
+.s07 {
+  position: absolute;
+  inset: 0;
+}
+/* the deck sets this headline on one line; so does the keynote (it is 80u long) */
+.s07 .kn-h {
+  white-space: nowrap;
+  text-wrap: nowrap;
+}
+.s07-card {
+  position: absolute;
+  visibility: hidden;
+}
+.s07-card.kn-card--peach {
+  background: #fffbf9;
+}
+.s07-chart {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.s07-title {
+  position: absolute;
+  left: calc(var(--u) * 2.4);
+  top: calc(var(--u) * 1.35);
+  right: calc(var(--u) * 2);
+  margin: 0;
+  font-size: calc(var(--u) * 1.62);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+/* a stroke under the words of the title a move is about */
+.s07-mark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: calc(var(--u) * 0.2);
+  border-radius: 999px;
+  background: var(--kn-flame);
+  transform: scaleX(0);
+  transform-origin: 0% 50%;
+}
+
+/* ---------------------------------------------------------------- the chart (strokes are made quiet with stroke-opacity: the moves own opacity) */
+.s07 .s07-axis {
+  opacity: 1;
+  stroke-opacity: 0.5;
+}
+.s07-chart text {
+  fill: var(--kn-body);
+}
+.s07 .s07-year {
+  fill: var(--kn-ink);
+  visibility: hidden;
+}
+.s07-legend {
+  visibility: hidden;
+}
+.s07 .s07-val {
+  fill: #fff;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.s07-pill {
+  visibility: hidden;
+}
+.s07 .s07-pill text {
+  fill: var(--kn-ink);
+  font-weight: 700;
+}
+.s07-divider line {
+  stroke: var(--kn-fg);
+  stroke-width: 1.1;
+  stroke-dasharray: 3 3.6;
+  stroke-opacity: 0.45;
+}
+.s07-call rect {
+  fill: #fff;
+  stroke: var(--kn-fg);
+  stroke-opacity: 0.28;
+  stroke-width: 0.8;
+  visibility: hidden;
+}
+.s07 .s07-call text {
+  fill: var(--kn-muted);
+  visibility: hidden;
+}
+.s07-lead {
+  stroke: var(--kn-fg);
+  stroke-opacity: 0.45;
+  stroke-width: 0.9;
+}
+.s07-arc {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s07-box {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 2.2;
+  visibility: hidden;
+}
+.s07-haze,
+.s07-range {
+  visibility: hidden;
+}
+.s07-range {
+  fill: var(--kn-flame);
+  fill-opacity: 0.2;
+}
+.s07 .s07-guidance {
+  fill: var(--kn-flame-ink);
+  font-weight: 700;
+  visibility: hidden;
+}
+.s07 .s07-tag {
+  fill: var(--kn-ink);
+  font-weight: 700;
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- under the card */
+.s07-under {
+  position: absolute;
+  left: calc(var(--u) * 13.8);
+  top: calc(var(--u) * 47.05);
+  margin: 0;
+  font-size: calc(var(--u) * 1.4);
+  line-height: 1.2;
+  font-style: italic;
+  color: #8a94aa;
+  visibility: hidden;
+}
+/* the note of the footer: the deck prints it at 0.98u */
+.s07-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.3);
+  margin: 0;
+  font-size: calc(var(--u) * 0.95);
+  color: #7c88a0;
+  visibility: hidden;
+}

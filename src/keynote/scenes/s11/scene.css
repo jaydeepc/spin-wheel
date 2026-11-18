@@ -1,0 +1,146 @@
+/* Slide 11 · the two woven rings. The rings themselves are WebGL (weave.ts); everything read is here. */
+.s11 {
+  position: absolute;
+  inset: 0;
+  --s11-ink: #1b2340; /* the deck's colour for these labels (pack/11/text.json) */
+}
+
+/* the flat rings: only where there is no WebGL */
+.s11-fb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+[data-gl='1'] .s11-fb {
+  display: none;
+}
+.s11-fb-arc {
+  stroke-linecap: butt;
+}
+
+/* WHAT and HOW, in the middle of their rings */
+.s11-core {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  color: var(--kn-navy);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.s11-core--what {
+  font-size: calc(var(--u) * 2.7);
+}
+.s11-core--how {
+  font-size: calc(var(--u) * 2.4);
+}
+.s11-core-t {
+  display: block;
+  /* the tracking's trailing space, taken back so the word sits in the middle */
+  margin-right: -0.06em;
+  visibility: hidden;
+}
+
+/* a family's name beside its ring: small spaced capitals in the family's colour */
+.s11-fam {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: calc(var(--u) * 1.22);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.s11-fam[data-side='left'] {
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+.s11-fam[data-side='right'] {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.s11-fam-t {
+  display: block;
+  margin-right: -0.22em;
+  visibility: hidden;
+}
+
+/* a capability: its nearest edge stands on the ray through its dot */
+.s11-lab {
+  position: absolute;
+  font-size: calc(var(--u) * 1.34);
+  line-height: 1.12;
+  color: var(--s11-ink);
+  white-space: pre;
+}
+.s11-lab[data-side='r'] {
+  transform: translate(0, -50%);
+  text-align: left;
+}
+.s11-lab[data-side='l'] {
+  transform: translate(-100%, -50%);
+  text-align: right;
+}
+.s11-lab[data-side='t'] {
+  transform: translate(-50%, -100%);
+  text-align: center;
+}
+.s11-lab[data-side='b'] {
+  transform: translate(-50%, 0);
+  text-align: center;
+}
+.s11-lab-t {
+  display: block;
+  visibility: hidden;
+}
+
+/* the plus between WHAT and HOW */
+.s11-plus {
+  position: absolute;
+  left: calc(var(--u) * 54.5);
+  top: calc(var(--u) * 26.1);
+  width: calc(var(--u) * 2.8);
+  height: calc(var(--u) * 2.8);
+  overflow: visible;
+}
+.s11-plus path {
+  fill: none;
+  stroke: var(--kn-flame-deep);
+  stroke-width: 0.78;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+
+/* the closing lines */
+.s11-close {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 44.75);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 2.7);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--kn-flame-deep);
+  white-space: nowrap;
+}
+.s11-sub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 48.15);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 1.7);
+  line-height: 1.15;
+  font-style: italic;
+  color: var(--s11-ink);
+  white-space: nowrap;
+}
+
+/* everything of one ring that is read: moved as one when WHAT steps aside for HOW */
+.s11-side {
+  position: absolute;
+  inset: 0;
+}

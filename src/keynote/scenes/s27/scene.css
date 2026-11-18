@@ -1,0 +1,241 @@
+/* Slide 27 · the company's own pin-board: eight cards round the words in the middle */
+.s27 {
+  position: absolute;
+  inset: 0;
+}
+
+/* the words in the middle of the board */
+.s27-centre {
+  position: absolute;
+  left: calc(var(--u) * 33);
+  width: calc(var(--u) * 34);
+  top: calc(var(--u) * 28.4);
+  margin: 0;
+  text-align: center;
+  font-family: var(--kn-font);
+  font-size: calc(var(--u) * 2.62);
+  line-height: 1.16;
+  font-weight: 700;
+  letter-spacing: -0.004em;
+  color: var(--kn-ink);
+}
+.s27-centre-line {
+  display: block;
+  white-space: nowrap;
+}
+.s27-centre .kn-flame {
+  color: var(--kn-flame-deep);
+}
+
+/* the board: slide 16's peg holes, fading out toward the edges (its values, copied) */
+.s27-board {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 8);
+  bottom: 0;
+  background-image: radial-gradient(circle, rgba(7, 26, 80, 0.16) 0, rgba(7, 26, 80, 0.16) calc(var(--u) * 0.1), rgba(7, 26, 80, 0) calc(var(--u) * 0.17));
+  background-size: calc(var(--u) * 2.5) calc(var(--u) * 2.5);
+  background-position: calc(var(--u) * 0.6) calc(var(--u) * 0.3);
+  -webkit-mask-image: radial-gradient(ellipse 62% 60% at 50% 46%, #000 30%, rgba(0, 0, 0, 0.55) 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 60% at 50% 46%, #000 30%, rgba(0, 0, 0, 0.55) 62%, transparent 100%);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* one place on the board: the card's box before it is tilted */
+.s27-slot {
+  position: absolute;
+  width: calc(var(--u) * 26.2);
+  height: calc(var(--u) * 9.6);
+}
+/* the place before its card is there: a faint outline and the hole its pin will take */
+.s27-ghost {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.9);
+  border: calc(var(--u) * 0.09) dashed rgba(7, 26, 80, 0.17);
+  background: rgba(255, 255, 255, 0.3);
+  transform-origin: 50% calc(var(--u) * 0.85);
+  transform: rotate(var(--s27-tilt));
+  visibility: hidden;
+}
+.s27-ghost::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 0.85);
+  width: calc(var(--u) * 0.36);
+  height: calc(var(--u) * 0.36);
+  margin: calc(var(--u) * -0.18) 0 0 calc(var(--u) * -0.18);
+  border-radius: 50%;
+  background: rgba(7, 26, 80, 0.22);
+}
+
+/* the card: build() flies it in and swings it about its pin */
+.s27-card {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  visibility: hidden;
+}
+/* it hangs from its pin: the tilt, and the idle sway, turn about it (paper, shadow and pin together), as on slide 16 */
+.s27-hang {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% calc(var(--u) * 0.85);
+  transform: rotate(var(--s27-tilt));
+  animation: s27-sway var(--s27-pace) ease-in-out var(--s27-lag) infinite;
+}
+@keyframes s27-sway {
+  0%,
+  100% {
+    transform: rotate(var(--s27-tilt));
+  }
+  50% {
+    transform: rotate(calc(var(--s27-tilt) + var(--s27-sway)));
+  }
+}
+.s27-cast {
+  position: absolute;
+  inset: calc(var(--u) * 0.5) calc(var(--u) * 0.5) calc(var(--u) * -0.1);
+  border-radius: calc(var(--u) * 1.2);
+  background: rgba(7, 26, 80, 0.22);
+  filter: blur(calc(var(--u) * 0.95));
+  transform: translate(calc(var(--u) * 0.22), calc(var(--u) * 0.62));
+}
+.s27-paper {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.9);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 0.08) calc(var(--u) * 0.25) rgba(7, 26, 80, 0.1),
+    inset 0 0 0 calc(var(--u) * 0.05) rgba(7, 26, 80, 0.04);
+}
+
+/* the pin: slide 16's flame-coloured head catching the light, its shadow falling on the card */
+.s27-pin {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 0.85);
+  width: calc(var(--u) * 1.16);
+  height: calc(var(--u) * 1.16);
+  margin: calc(var(--u) * -0.58) 0 0 calc(var(--u) * -0.58);
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #ffc2ad 0%, #f6714e 34%, #e04a22 68%, #b53511 100%);
+  box-shadow:
+    calc(var(--u) * 0.14) calc(var(--u) * 0.32) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.3),
+    inset 0 calc(var(--u) * -0.1) calc(var(--u) * 0.18) rgba(120, 30, 5, 0.35);
+  visibility: hidden;
+}
+.s27-pin::after {
+  content: '';
+  position: absolute;
+  left: 24%;
+  top: 17%;
+  width: 26%;
+  height: 20%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  transform: rotate(-28deg);
+}
+
+/*
+ * Its object, in front of a tinted disc. ONE RULE for all eight: the disc is 5.9u, the object's
+ * picture box is 7.6u about the same middle (every picture fills 94% of its box on its longer
+ * side, so each object is 7.15u long: 121% of the disc), and 1.2u stays free to the card's edge.
+ */
+.s27-disc,
+.s27-obj,
+.s27-shade {
+  position: absolute;
+  left: calc(var(--u) * 4.95);
+  top: 50%;
+  visibility: hidden;
+}
+.s27-disc {
+  width: calc(var(--u) * 5.9);
+  height: calc(var(--u) * 5.9);
+  margin: calc(var(--u) * -2.95) 0 0 calc(var(--u) * -2.95);
+  border-radius: 50%;
+}
+.s27-disc[data-tone='peach'] {
+  background: radial-gradient(circle at 34% 28%, #fff6f1 0%, #fde2d6 78%, #fbd5c6 100%);
+}
+.s27-disc[data-tone='ice'] {
+  background: radial-gradient(circle at 34% 28%, #f5faff 0%, #dbeafb 78%, #cfe2f9 100%);
+}
+/* the soft shadow the object throws */
+.s27-shade {
+  width: calc(var(--u) * 5.4);
+  height: calc(var(--u) * 1.3);
+  margin: calc(var(--u) * 2.5) 0 0 calc(var(--u) * -2.7);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(7, 26, 80, 0.2) 0%, rgba(7, 26, 80, 0.08) 55%, rgba(7, 26, 80, 0) 100%);
+}
+.s27-obj {
+  width: calc(var(--u) * 7.6);
+  height: calc(var(--u) * 7.6);
+  margin: calc(var(--u) * -3.8) 0 0 calc(var(--u) * -3.8);
+}
+.s27-breath {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.s27-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* the thread that ties the eight into one ring */
+.s27-thread {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.s27-tie-line {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 0.2;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+.s27-knot {
+  fill: var(--kn-flame);
+  stroke: #fff;
+  stroke-width: 0.13;
+  visibility: hidden;
+}
+
+/* its words */
+.s27-text {
+  position: absolute;
+  left: calc(var(--u) * 9.7);
+  right: calc(var(--u) * 0.9);
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.s27-name {
+  margin: 0;
+  font-size: calc(var(--u) * 1.7);
+  line-height: 1.14;
+  font-weight: 700;
+  color: var(--kn-flame-deep);
+}
+.s27-line {
+  margin: calc(var(--u) * 0.4) 0 0;
+  font-size: calc(var(--u) * 1.1);
+  line-height: 1.2;
+  color: var(--kn-muted);
+  visibility: hidden;
+}

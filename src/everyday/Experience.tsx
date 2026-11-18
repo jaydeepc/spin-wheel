@@ -13,6 +13,7 @@
 
 import { Component, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import gsap from 'gsap'
+import { brandFontsReady } from '@/brand/font'
 import { PRIYA, PROMPTS, productByKey } from './content'
 import { readDebug } from './core/debug'
 import { director } from './core/director'
@@ -221,13 +222,8 @@ export default function Experience() {
         hero.addEventListener('error', settle, { once: true })
       }
     })
-    const fonts = document.fonts
-    const fontsIn = fonts?.ready
-      ? Promise.all([fonts.load('800 40px "Open Sans"'), fonts.load('300 40px "Open Sans"'), fonts.load('600 40px "Open Sans"'), fonts.ready]).then(
-          () => undefined,
-          () => undefined,
-        )
-      : Promise.resolve()
+    // The brand font (Calibri: Light, Regular, Bold), ready before anything is measured.
+    const fontsIn = brandFontsReady('film')
     Promise.all([fontsIn, heroIn]).then(boot, boot)
 
     return () => {

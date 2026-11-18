@@ -1,0 +1,326 @@
+/* Slide 22 · compute hits a power wall: a lead that is too short */
+.s22 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- the wall (a ground: it runs to the stage's right edge and under the chrome) ---- */
+.s22-wall {
+  position: absolute;
+  left: calc(var(--u) * 85.4);
+  right: 0;
+  top: calc(var(--u) * 11.5);
+  bottom: 0;
+  background:
+    linear-gradient(90deg, rgba(7, 26, 80, 0.1) 0, rgba(7, 26, 80, 0) calc(var(--u) * 0.9)),
+    linear-gradient(180deg, rgba(224, 233, 247, 0) 0%, rgba(224, 233, 247, 0.92) 16%, rgba(229, 237, 249, 0.95) 100%);
+  box-shadow: calc(var(--u) * -1.2) 0 calc(var(--u) * 2.4) rgba(7, 26, 80, 0.05);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+  visibility: hidden;
+}
+.s22-wall::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--u) * 0.1);
+  background: rgba(7, 26, 80, 0.16);
+}
+
+/* ---- the two figures ---- */
+.s22-fact {
+  position: absolute;
+}
+.s22-fact--power {
+  left: var(--kn-x0);
+  top: calc(var(--u) * 13.6);
+  width: calc(var(--u) * 42);
+}
+.s22-fact--money {
+  left: calc(var(--u) * 49.6);
+  top: calc(var(--u) * 16.2);
+  width: calc(var(--u) * 30);
+}
+.s22-line {
+  margin: calc(var(--u) * 0.7) 0 0;
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1.26;
+  color: var(--kn-muted);
+}
+.s22-fact--money .s22-line {
+  font-size: calc(var(--u) * 1.42);
+}
+.s22-num {
+  display: block;
+  font-size: calc(var(--u) * 5.6);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--kn-ink);
+  visibility: hidden;
+}
+
+/* the meter: three drums of digits */
+.s22-meter {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--u) * 1.5);
+  font-size: calc(var(--u) * 8.8);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: var(--kn-flame-deep);
+  visibility: hidden;
+}
+/* the housing: a window on three drums, shaded as a cylinder is, with the meter's turning disc under them */
+.s22-drums {
+  position: relative;
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+  padding: 0 calc(var(--u) * 0.35);
+  border-radius: calc(var(--u) * 1);
+  background: linear-gradient(180deg, rgba(7, 26, 80, 0.13) 0%, rgba(255, 255, 255, 0.82) 20%, rgba(255, 255, 255, 0.82) 74%, rgba(7, 26, 80, 0.12) 100%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.08) rgba(7, 26, 80, 0.13),
+    inset 0 calc(var(--u) * 0.5) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.1),
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.4) rgba(7, 26, 80, 0.08);
+}
+.s22-drum {
+  display: block;
+  height: 1.06em;
+  padding: 0 calc(var(--u) * 0.3);
+  overflow: hidden;
+  /* a drum: the digit above and the digit below fade as they turn away */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+}
+.s22-drum + .s22-drum {
+  box-shadow: inset calc(var(--u) * 0.08) 0 0 rgba(7, 26, 80, 0.1);
+}
+.s22-disc {
+  position: absolute;
+  left: calc(var(--u) * 0.9);
+  right: calc(var(--u) * 0.9);
+  bottom: calc(var(--u) * 0.62);
+  height: calc(var(--u) * 0.2);
+  border-radius: 99px;
+  background: rgba(7, 26, 80, 0.14);
+  overflow: hidden;
+}
+.s22-disc i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16%;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--kn-flame-deep);
+  transform: translateX(260%);
+  animation: s22-disc 2.2s linear infinite;
+}
+@keyframes s22-disc {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(640%);
+  }
+}
+.s22-strip {
+  display: block;
+  will-change: transform;
+}
+.s22-strip i {
+  display: block;
+  height: 1.06em;
+  font-style: normal;
+  text-align: center;
+}
+.s22-unit {
+  display: block;
+}
+
+/* ---- the pylon: the deck's photograph on the wall ---- */
+.s22-pylon {
+  position: absolute;
+  left: calc(var(--u) * 87);
+  top: calc(var(--u) * 14.6);
+  width: calc(var(--u) * 8.8);
+  display: flex;
+  justify-content: center;
+  visibility: hidden;
+}
+.s22-pylon-frame {
+  display: block;
+  /* 8.2u wide as the deck shows it, and never wider than the photograph's own 246 pixels */
+  width: min(calc(var(--u) * 8.2), 246px);
+  padding: calc(var(--u) * 0.28);
+  box-sizing: content-box;
+  border-radius: calc(var(--u) * 1.1);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.1) calc(var(--u) * 0.3) rgba(7, 26, 80, 0.1);
+}
+.s22-pylon-frame .kn-pic {
+  display: block;
+  width: 100%;
+  border-radius: calc(var(--u) * 0.85);
+}
+
+/* ---- the socket, the lead, the plug ---- */
+.s22-socket {
+  position: absolute;
+  display: block;
+  filter: drop-shadow(0 calc(var(--u) * 0.35) calc(var(--u) * 0.7) rgba(7, 26, 80, 0.2));
+  visibility: hidden;
+}
+.s22-lead {
+  position: absolute;
+  height: calc(var(--u) * 0.4);
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 226, 210, 0.95) 0, rgba(255, 226, 210, 0.95) calc(var(--u) * 0.55), rgba(255, 226, 210, 0) calc(var(--u) * 0.55), rgba(255, 226, 210, 0) calc(var(--u) * 1.3)) 0 50% / calc(var(--u) * 1.3) calc(var(--u) * 0.1) repeat-x,
+    linear-gradient(180deg, #f6835d, #ec5a30);
+  box-shadow: 0 calc(var(--u) * 0.2) calc(var(--u) * 0.5) rgba(241, 100, 67, 0.3);
+  /* the charge keeps running down the lead toward a socket it cannot reach */
+  animation: s22-march 0.9s linear infinite;
+  visibility: hidden;
+}
+@keyframes s22-march {
+  to {
+    background-position:
+      calc(var(--u) * 1.3) 50%,
+      0 0;
+  }
+}
+.s22-plug {
+  position: absolute;
+  display: block;
+  filter: drop-shadow(0 calc(var(--u) * 0.3) calc(var(--u) * 0.5) rgba(7, 26, 80, 0.28));
+  visibility: hidden;
+}
+/* three small strokes over the gap: it did not go in */
+.s22-miss {
+  position: absolute;
+  width: calc(var(--u) * 2.6);
+  height: calc(var(--u) * 2.6);
+  overflow: visible;
+  fill: none;
+  stroke: var(--kn-flame-deep);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+/* ---- the chips ---- */
+.s22-chip {
+  position: absolute;
+  display: block;
+  visibility: hidden;
+}
+.s22-chip > img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 calc(var(--u) * 0.45) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.26));
+}
+/* a waiting chip's own lead: curled back, going nowhere */
+.s22-tail {
+  position: absolute;
+  left: 93%;
+  top: 50%;
+  width: 22%;
+  height: 33%;
+  margin-top: -5.5%;
+  overflow: visible;
+  fill: none;
+  stroke: #7d89a8;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.s22-glow {
+  position: absolute;
+  inset: -62%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(241, 100, 67, 0.46) 0%, rgba(241, 100, 67, 0.22) 30%, rgba(241, 100, 67, 0) 66%);
+  visibility: hidden;
+}
+/* the lit core: it lies on the chip's own raised plate */
+.s22-core {
+  position: absolute;
+  inset: 22.2%;
+  border-radius: 9%;
+  background: radial-gradient(circle at 42% 36%, #ffd9bd 0%, #fb9468 26%, #f16443 60%, #d9481f 100%);
+  box-shadow:
+    0 0 calc(var(--u) * 1.6) rgba(241, 100, 67, 0.75),
+    inset 0 0 0 calc(var(--u) * 0.07) rgba(255, 224, 205, 0.7),
+    inset 0 calc(var(--u) * -0.5) calc(var(--u) * 0.9) rgba(160, 40, 10, 0.35);
+  visibility: hidden;
+}
+.s22-core-hot {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 42% 36%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 55%);
+  animation: s22-breathe 2.6s ease-in-out infinite alternate;
+}
+@keyframes s22-breathe {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- the two captions ---- */
+.s22-cap {
+  position: absolute;
+  top: calc(var(--u) * 46.9);
+  margin: 0;
+  font-size: calc(var(--u) * 1.55);
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s22-cap--ready {
+  left: calc(var(--u) * 25);
+  width: calc(var(--u) * 34);
+  color: var(--kn-muted);
+}
+.s22-cap--not {
+  left: calc(var(--u) * 64.4);
+  width: calc(var(--u) * 20);
+  text-align: right;
+  font-weight: 700;
+  color: var(--kn-flame-ink);
+}
+
+/* ---- the clippings ---- */
+.s22-clip {
+  position: absolute;
+  visibility: hidden;
+}
+.s22-clip--1 {
+  left: calc(var(--u) * 4.4);
+  top: calc(var(--u) * 28.7);
+}
+.s22-clip--2 {
+  left: calc(var(--u) * 40.6);
+  top: calc(var(--u) * 27.9);
+}
+.s22-clip .kn-clip-text {
+  font-size: calc(var(--u) * 1.32);
+}
+
+.s22-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.7);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  color: #7c88a0;
+  visibility: hidden;
+}

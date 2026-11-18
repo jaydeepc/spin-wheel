@@ -11,8 +11,10 @@
  *   plain    SmartHelp, Piramal Mind   the wordmark lands, is underlined, and the underline
  *                                     runs out under the whole word and back
  *
- * Open Sans metrics used below (for a line box with line-height 1):
- * cap top 0.174 em, cap middle 0.531 em, baseline 0.888 em from the top of the box.
+ * The metrics used below (for a line box with line-height 1): cap top 0.174 em, cap middle
+ * 0.531 em, baseline 0.888 em from the top of the box. They are Open Sans's, which the film was
+ * drawn in, and they still hold: the film's Calibri (--font-brand-film, src/brand/font.ts) is
+ * scaled to Open Sans's cap height and keeps Open Sans's ascent and descent.
  */
 
 import gsap from 'gsap'

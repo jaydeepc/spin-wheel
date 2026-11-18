@@ -1,0 +1,184 @@
+/* Slide 59 · six pillars: a ground slab, six piers, the beam they carry */
+.s59 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- the slabs: the beam above, the ground below ---- */
+.s59-slab {
+  position: absolute;
+  left: var(--s59-slab-x);
+  width: var(--s59-slab-w);
+  display: grid;
+  place-items: center;
+}
+.s59-roof {
+  top: var(--s59-roof-top);
+  height: var(--s59-roof-h);
+}
+.s59-base {
+  top: var(--s59-base-top);
+  height: var(--s59-base-h);
+}
+.s59-slab-t {
+  position: relative;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  margin-right: -0.32em;
+  color: #fff;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.s59-roof-t {
+  font-size: calc(var(--u) * 1.75);
+}
+.s59-base-t {
+  font-size: calc(var(--u) * 1.3);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ---- the flat plates: only where there is no WebGL (structure.ts draws the stone) ---- */
+.s59-plate {
+  position: absolute;
+  inset: 0;
+}
+.kn-scene[data-gl] .s59-plate {
+  display: none;
+}
+.s59-plate--navy {
+  border-radius: calc(var(--u) * 0.3);
+  background: linear-gradient(180deg, #12297a 0%, #0b2163 100%);
+}
+.s59-plate--stone {
+  background: #fff;
+  border-top: var(--s59-cap) solid var(--kn-flame);
+  box-shadow: 0 0 0 calc(var(--u) * 0.06) rgba(7, 26, 80, 0.1);
+}
+
+/* ---- one pier ---- */
+.s59-col {
+  position: absolute;
+  top: var(--s59-col-top);
+  width: var(--s59-col-w);
+  height: var(--s59-col-h);
+}
+/* what rides up with the stone is cut off at the ground's surface, as the stone is */
+.s59-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.s59-ride {
+  position: absolute;
+  inset: 0;
+}
+.s59-sheen {
+  position: absolute;
+  inset: var(--s59-cap) 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 38%, rgba(67, 132, 212, 0.09) 100%);
+}
+.kn-scene:not([data-gl]) .s59-sheen {
+  display: none;
+}
+.s59-tile {
+  position: absolute;
+  left: calc(var(--u) * 1.15);
+  top: calc(var(--u) * 2.5);
+  width: calc(var(--u) * 3.5);
+  height: calc(var(--u) * 3.5);
+  border-radius: calc(var(--u) * 0.85);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(150deg, #f57a55 0%, var(--kn-flame) 55%, var(--kn-flame-deep) 100%);
+  box-shadow: 0 calc(var(--u) * 0.35) calc(var(--u) * 0.9) rgba(235, 84, 44, 0.28);
+}
+.s59-tile svg {
+  width: 58%;
+  height: 58%;
+  display: block;
+}
+
+.s59-copy {
+  position: absolute;
+  left: calc(var(--u) * 1.15);
+  right: calc(var(--u) * 1);
+  top: calc(var(--u) * 7.5);
+  bottom: calc(var(--u) * 1.5);
+  display: flex;
+  flex-direction: column;
+}
+.s59-title {
+  margin: 0;
+  min-height: calc(var(--u) * 3.9);
+  font-size: calc(var(--u) * 1.72);
+  line-height: 1.12;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+.s59-line {
+  margin: calc(var(--u) * 0.9) 0 0;
+  min-height: calc(var(--u) * 3.3);
+  font-size: calc(var(--u) * 1.36);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-body);
+}
+.s59-rule {
+  display: block;
+  margin-top: auto;
+  height: calc(var(--u) * 0.08);
+  background: rgba(7, 26, 80, 0.14);
+}
+.s59-tech {
+  margin: calc(var(--u) * 0.9) 0 0;
+  min-height: calc(var(--u) * 3.7);
+  font-size: calc(var(--u) * 1.04);
+  line-height: 1.22;
+  color: var(--kn-muted);
+  text-wrap: balance;
+  visibility: hidden;
+}
+
+/* a deliberate line of the technology: never broken inside a product name */
+.s59-tech-l {
+  display: block;
+  white-space: nowrap;
+}
+
+/* the plan of a pier that is still to rise: a fine outline on the air */
+.s59-ghost {
+  position: absolute;
+  inset: 0;
+  border: calc(var(--u) * 0.07) dashed rgba(7, 26, 80, 0.22);
+  border-bottom: 0;
+  border-radius: calc(var(--u) * 0.22) calc(var(--u) * 0.22) 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.34) 100%);
+  visibility: hidden;
+}
+
+/* the slow light that walks across the faces once the beam lies on them (idle; &still=1 stops it) */
+.s59-glint {
+  position: absolute;
+  inset: var(--s59-cap) 0 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+.s59-glint::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 55%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: translateX(-130%) skewX(-14deg);
+  animation: s59-glint 9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: inherit;
+}
+@keyframes s59-glint {
+  0% { transform: translateX(-130%) skewX(-14deg); }
+  22% { transform: translateX(260%) skewX(-14deg); }
+  100% { transform: translateX(260%) skewX(-14deg); }
+}

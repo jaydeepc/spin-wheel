@@ -1,0 +1,261 @@
+/* Slide 19 · open-weight models: two numbers as growing measures */
+.s19 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- the padlock: the deck's photograph, framed ---- */
+.s19-lock {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 16.4);
+  width: calc(var(--u) * 16.2);
+  margin: 0;
+}
+.s19-lock-frame {
+  position: relative;
+  display: block;
+  padding: calc(var(--u) * 0.32);
+  border-radius: calc(var(--u) * 1.5);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 1.1) calc(var(--u) * 2.6) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.12) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.1);
+  overflow: hidden;
+  visibility: hidden;
+}
+.s19-lock-frame .kn-pic {
+  display: block;
+  width: 100%;
+  border-radius: calc(var(--u) * 1.2);
+}
+/* a light that crosses the photograph once, as it arrives (it lies over it: the picture itself is untouched) */
+.s19-lock-sheen {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 38%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: skewX(-14deg);
+  pointer-events: none;
+  visibility: hidden;
+}
+.s19-lock-cap {
+  margin-top: calc(var(--u) * 1.15);
+  font-size: calc(var(--u) * 1.3);
+  line-height: 1.28;
+  color: var(--kn-muted);
+}
+
+/* ---- a measure: its number, its line, its bars ---- */
+.s19-m {
+  position: absolute;
+  top: calc(var(--u) * 15.3);
+}
+.s19-m--share {
+  left: calc(var(--u) * 25.4);
+  width: calc(var(--u) * 19.8);
+}
+.s19-m--price {
+  left: calc(var(--u) * 47.6);
+  width: calc(var(--u) * 17.6);
+}
+.s19-num {
+  display: block;
+  font-size: calc(var(--u) * 6.6);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  visibility: hidden;
+}
+.s19-num--flame {
+  color: var(--kn-flame-deep);
+}
+.s19-num--navy {
+  color: var(--kn-ink);
+}
+.s19-line {
+  margin: calc(var(--u) * 0.75) 0 0;
+  font-size: calc(var(--u) * 1.36);
+  line-height: 1.28;
+  color: var(--kn-muted);
+}
+
+/* ---- ten tokens: the slots the coins land on ---- */
+.s19-row {
+  position: absolute;
+  left: calc(var(--u) * 25.4);
+  top: calc(var(--u) * 29.3);
+  width: calc(var(--u) * 39);
+  height: calc(var(--u) * 3.5);
+  display: flex;
+}
+.s19-slot {
+  position: relative;
+  flex: 1 1 0;
+}
+/* the size a token was: stays when the coin shrinks */
+.s19-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 3.36);
+  height: calc(var(--u) * 3.36);
+  margin: calc(var(--u) * -1.68) 0 0 calc(var(--u) * -1.68);
+  border: calc(var(--u) * 0.1) dashed rgba(7, 26, 80, 0.4);
+  border-radius: 50%;
+  visibility: hidden;
+}
+/* the flat coin, only where there is no WebGL */
+.s19-dcoin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 3.24);
+  height: calc(var(--u) * 3.24);
+  margin: calc(var(--u) * -1.62) 0 0 calc(var(--u) * -1.62);
+  border-radius: 50%;
+  background: #b4bed4;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.3) rgba(255, 255, 255, 0.28);
+  visibility: hidden;
+}
+
+/* ---- a measure from 0 to 100, as wide as the ten coins ---- */
+.s19-rule {
+  position: absolute;
+  left: calc(var(--u) * 25.4);
+  width: calc(var(--u) * 39);
+  height: calc(var(--u) * 0.72);
+}
+.s19-rule--share {
+  top: calc(var(--u) * 34.3);
+}
+.s19-rule--price {
+  top: calc(var(--u) * 38.7);
+}
+.s19-track,
+.s19-fill,
+.s19-ghost {
+  position: absolute;
+  inset: 0;
+  border-radius: 99px;
+}
+.s19-track {
+  background: rgba(7, 26, 80, 0.09);
+  visibility: hidden;
+}
+.s19-fill--flame {
+  background: linear-gradient(90deg, #f6906c, #ec5a30);
+  clip-path: inset(0 100% 0 0);
+}
+.s19-fill--navy {
+  background: linear-gradient(90deg, #20377c, #071a50);
+  clip-path: inset(0 100% 0 0);
+}
+.s19-ghost {
+  inset: calc(var(--u) * -0.16);
+  border: calc(var(--u) * 0.1) dashed rgba(7, 26, 80, 0.4);
+  visibility: hidden;
+}
+.s19-tick {
+  position: absolute;
+  top: 0;
+  width: 0;
+  visibility: hidden;
+}
+.s19-tick i {
+  position: absolute;
+  left: calc(var(--u) * -0.06);
+  top: calc(var(--u) * -0.28);
+  width: calc(var(--u) * 0.12);
+  height: calc(var(--u) * 1.28);
+  border-radius: 99px;
+  background: var(--kn-ink);
+}
+.s19-tick-t,
+.s19-end {
+  position: absolute;
+  top: calc(var(--u) * 1.25);
+  white-space: nowrap;
+  font-size: calc(var(--u) * 1.1);
+  line-height: 1;
+  color: var(--kn-muted);
+}
+.s19-tick-t {
+  left: calc(var(--u) * -5);
+  width: calc(var(--u) * 10);
+  text-align: center;
+}
+.s19-tick-t b,
+.s19-end b {
+  font-size: calc(var(--u) * 1.3);
+  color: var(--kn-ink);
+}
+.s19-end {
+  right: 0;
+  visibility: hidden;
+}
+.s19-end--now {
+  padding-right: calc(var(--u) * 0.1);
+}
+
+.s19-under {
+  position: absolute;
+  left: calc(var(--u) * 25.4);
+  top: calc(var(--u) * 42.55);
+  margin: 0;
+  white-space: nowrap;
+  font-size: calc(var(--u) * 1.22);
+  color: var(--kn-muted);
+}
+
+/* ---- why enterprises switch ---- */
+.s19-why {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 45.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+}
+.s19-why-k {
+  margin-right: calc(var(--u) * 1.3);
+  font-size: calc(var(--u) * 0.95);
+  visibility: hidden;
+}
+.s19-why .s19-pill {
+  height: calc(var(--u) * 2.5);
+  padding: 0 calc(var(--u) * 1.5);
+  border-radius: calc(var(--u) * 1.25);
+  font-size: calc(var(--u) * 1.16);
+  color: var(--kn-navy);
+  background: rgba(255, 255, 255, 0.92);
+  visibility: hidden;
+}
+
+/* ---- the clippings ---- */
+.s19-clip {
+  position: absolute;
+  left: calc(var(--u) * 68.3);
+  visibility: hidden;
+}
+.s19-clip--1 {
+  top: calc(var(--u) * 17.3);
+}
+.s19-clip--2 {
+  top: calc(var(--u) * 31);
+  left: calc(var(--u) * 68);
+}
+.s19-clip .kn-clip-text {
+  font-size: calc(var(--u) * 1.4);
+}
+
+.s19-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.25);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  color: #7c88a0;
+  visibility: hidden;
+}

@@ -1,0 +1,645 @@
+/* ============================================================
+   THE KEYNOTE · shared styles
+   One 16:9 stage, letterboxed and centred. Everything is sized
+   in one fluid unit, --u = 1/100 of the stage's width, so a
+   scene is identical in proportion on any screen.
+   Shared classes are prefixed "kn-". A scene's own classes are
+   prefixed with its id ("s05-") and live in its own scene.css.
+   The stage is 100u x 56.25u, measured from its top left corner.
+   ============================================================ */
+
+.kn-root {
+  --u: min(1vw, calc(100vh / 56.25));
+  --u: min(1vw, calc(100dvh / 56.25));
+
+  /* the brand font: Calibri in its weights (300 Light, 400 Regular, 700 Bold, and italics) */
+  --kn-font: var(--font-brand, Calibri, Carlito, 'Segoe UI', Arial, sans-serif);
+  /* Indian scripts (slides 23, 41, 50): Calibri has none of them. Latin letters and figures stay
+     Calibri; each script falls to the machine's own face (Nirmala UI on Windows, as in the deck;
+     Kohinoor and the Sangam faces on a Mac). Use it on the element that holds such a string. */
+  --kn-font-indic: var(--kn-font), 'Nirmala UI', 'Kohinoor Devanagari', 'Kohinoor Bangla', 'Kohinoor Gujarati',
+    'Kohinoor Telugu', 'Gurmukhi Sangam MN', 'Tamil Sangam MN', 'Kannada Sangam MN', 'Malayalam Sangam MN',
+    'Noto Sans Oriya', 'Noto Nastaliq Urdu', 'Noto Sans', sans-serif;
+  /* the deck's "in the news" clippings are set in a newspaper serif */
+  --kn-serif: Georgia, 'Times New Roman', serif;
+
+  /* the brand */
+  --kn-navy: #071a50;
+  --kn-ink: #0d1f57;
+  --kn-body: #2c3a5e;
+  --kn-muted: #5b6885;
+  --kn-line: #d5deec;
+  --kn-flame: #f16443;
+  --kn-flame-deep: #eb542c;
+  --kn-flame-ink: #d9481f; /* flame for text on white */
+  --kn-azure: #4384d4;
+  --kn-azure-ink: #2d6ad1;
+  --kn-sky: #65a9f5;
+  --kn-peach: #fde3d9; /* tinted panels, warm */
+  --kn-peach-line: #f6c4b4;
+  --kn-ice: #dcecfd; /* tinted panels, cool */
+  --kn-ice-line: #bcd8f6;
+  --kn-paper: #ffffff;
+  --kn-shadow: 0 calc(var(--u) * 0.5) calc(var(--u) * 1.6) rgba(7, 26, 80, 0.09), 0 calc(var(--u) * 0.1) calc(var(--u) * 0.3) rgba(7, 26, 80, 0.06);
+
+  /* THE SAFE AREA of a scene (stage coordinates): keep your content inside it */
+  --kn-x0: calc(var(--u) * 4.2); /* left edge of content */
+  --kn-x1: calc(var(--u) * 95.8); /* right edge of content */
+  --kn-y0: calc(var(--u) * 6.4); /* under the top bar */
+  --kn-y1: calc(var(--u) * 50.6); /* above Back / Next */
+
+  /* what the current theme reads as (a scene on a dark slide gets the dark set) */
+  --kn-fg: var(--kn-ink);
+  --kn-fg-soft: var(--kn-muted);
+  --kn-hair: rgba(7, 26, 80, 0.14);
+
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  overflow: clip;
+  background: #fffdfc;
+  color: var(--kn-body);
+  font-family: var(--kn-font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Calibri joins "ti", "tt", "ft" in a browser; PowerPoint does not, and the owner knows these
+     words from the deck ("Introduction", "Action", "Relisting") */
+  font-variant-ligatures: no-common-ligatures;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+.kn-root[data-theme='dark'] {
+  background: #04114a;
+}
+.kn-root[data-theme='dark'],
+.kn-scene[data-theme='dark'] {
+  --kn-fg: #ffffff;
+  --kn-fg-soft: rgba(255, 255, 255, 0.72);
+  --kn-hair: rgba(255, 255, 255, 0.22);
+}
+.kn-scene[data-theme='light'] {
+  --kn-fg: var(--kn-ink);
+  --kn-fg-soft: var(--kn-muted);
+  --kn-hair: rgba(7, 26, 80, 0.14);
+}
+.kn-root *,
+.kn-root *::before,
+.kn-root *::after {
+  box-sizing: border-box;
+}
+.kn-root img {
+  -webkit-user-drag: none;
+}
+
+/* ---- the backdrop: one WebGL canvas behind everything ---- */
+.kn-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* no WebGL: the same wash, still */
+.kn-root[data-gl='0'] .kn-backdrop {
+  display: none;
+}
+.kn-root[data-gl='0'] {
+  background:
+    radial-gradient(90% 80% at 0% 0%, rgba(253, 207, 192, 0.9), transparent 60%),
+    radial-gradient(90% 80% at 100% 100%, rgba(174, 217, 255, 0.9), transparent 60%), #fffdfc;
+}
+.kn-root[data-gl='0'][data-theme='dark'] {
+  background:
+    radial-gradient(80% 70% at 100% 0%, rgba(133, 51, 51, 0.8), transparent 60%),
+    radial-gradient(90% 70% at 25% 110%, rgba(5, 36, 148, 0.9), transparent 60%), #04114a;
+}
+
+/* ---- the stage ---- */
+.kn-stage {
+  position: absolute;
+  left: calc(50% - var(--u) * 50);
+  top: calc(50% - var(--u) * 28.125);
+  width: calc(var(--u) * 100);
+  height: calc(var(--u) * 56.25);
+}
+.kn-layer {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+.kn-scene {
+  position: absolute;
+  inset: 0;
+  color: var(--kn-body);
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1.25;
+}
+/* scene-owned WebGL (three/sceneCanvas.ts) */
+.kn-gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+.kn-gl--above {
+  z-index: 5;
+}
+
+/* ============================================================
+   THE CHROME: the table of contents at the top, Back / Next at
+   the bottom right, a thin line of progress. Never in the way.
+   ============================================================ */
+.kn-chrome {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  font-family: var(--kn-font);
+}
+.kn-root[data-chrome='0'] .kn-chrome {
+  visibility: hidden;
+}
+.kn-chrome button {
+  /* the family only: a `font` shorthand here would outrank the size and weight a pill sets for itself */
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.kn-chrome button:focus-visible {
+  outline: calc(var(--u) * 0.16) solid var(--kn-azure);
+  outline-offset: calc(var(--u) * 0.2);
+}
+
+.kn-top {
+  position: absolute;
+  left: calc(var(--u) * 3);
+  right: calc(var(--u) * 3);
+  top: calc(var(--u) * 1);
+  height: calc(var(--u) * 4.6);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.2);
+}
+
+/* the section rail: A to F, the current one opened to its name */
+.kn-rail {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.35);
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.kn-rail[data-show='0'] {
+  opacity: 0;
+  transform: translateY(calc(var(--u) * -1));
+  pointer-events: none;
+}
+.kn-rail[data-show='0'] button {
+  pointer-events: none;
+}
+.kn-rail-item {
+  display: flex !important;
+  align-items: center;
+  height: calc(var(--u) * 2.2);
+  border-radius: calc(var(--u) * 1.1);
+  padding: 0 !important;
+  color: var(--kn-fg-soft) !important;
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    box-shadow 0.5s ease;
+}
+.kn-rail-letter {
+  width: calc(var(--u) * 2.2);
+  height: calc(var(--u) * 2.2);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  opacity: 0.62;
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    opacity 0.5s ease;
+}
+.kn-rail-item[data-state='done'] .kn-rail-letter {
+  opacity: 0.9;
+}
+.kn-rail-item:hover .kn-rail-letter {
+  opacity: 1;
+}
+.kn-rail-name {
+  display: block;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transition:
+    max-width 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.45s ease,
+    padding 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.kn-rail-item[data-state='on'] {
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.06) rgba(7, 26, 80, 0.08),
+    0 calc(var(--u) * 0.25) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.08);
+  color: var(--kn-navy) !important;
+}
+.kn-rail-item[data-state='on'] .kn-rail-letter {
+  background: var(--kn-flame);
+  color: #fff;
+  opacity: 1;
+}
+.kn-rail-item[data-state='on'] .kn-rail-name {
+  max-width: calc(var(--u) * 26);
+  opacity: 1;
+  padding: 0 calc(var(--u) * 1) 0 calc(var(--u) * 0.65);
+}
+.kn-root[data-theme='dark'] .kn-rail-item[data-state='on'] {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 calc(var(--u) * 0.06) rgba(255, 255, 255, 0.2);
+  color: #fff !important;
+}
+/* the thread that joins the letters */
+.kn-rail-link {
+  width: calc(var(--u) * 0.7);
+  height: calc(var(--u) * 0.08);
+  background: var(--kn-hair);
+  border-radius: 1px;
+}
+
+/* the slide's own breadcrumb, beside the rail */
+.kn-crumb {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  min-width: 0;
+  margin-left: calc(var(--u) * 0.3);
+  padding-left: calc(var(--u) * 1.4);
+  border-left: calc(var(--u) * 0.08) solid var(--kn-hair);
+  height: calc(var(--u) * 1.9);
+  /* the deck's own breadcrumb is 1.05u in a wider face: this must read from the back of the room */
+  font-size: calc(var(--u) * 1.1);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--kn-fg);
+  transition: opacity 0.4s ease;
+}
+.kn-crumb-part {
+  opacity: 0.78;
+}
+.kn-crumb-part[data-last='1'] {
+  opacity: 1;
+}
+.kn-crumb[data-show='0'] {
+  opacity: 0;
+}
+.kn-crumb-part,
+.kn-crumb-sep {
+  display: inline-block;
+  animation: kn-crumb-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.kn-crumb-sep {
+  opacity: 0.55;
+  animation-name: kn-crumb-sep-in;
+}
+.kn-crumb-part[data-last='1'] {
+  color: var(--kn-flame-ink);
+}
+.kn-root[data-theme='dark'] .kn-crumb-part[data-last='1'] {
+  color: var(--kn-flame);
+}
+@keyframes kn-crumb-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--u) * 0.7));
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes kn-crumb-sep-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.55;
+  }
+}
+
+.kn-top-gap {
+  flex: 1;
+}
+.kn-toplogo {
+  /* the deck's logo is 5.6u high; this one shares its bar with the rail, 1u clear of the top */
+  height: calc(var(--u) * 4.6);
+  width: auto;
+  display: block;
+  transition: opacity 0.5s ease;
+}
+.kn-toplogo[data-show='0'] {
+  opacity: 0;
+}
+
+/* Back / Next, bottom right */
+.kn-nav {
+  position: absolute;
+  right: calc(var(--u) * 2.6);
+  bottom: calc(var(--u) * 1.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+}
+.kn-count {
+  font-size: calc(var(--u) * 0.95);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--kn-fg-soft);
+  font-variant-numeric: tabular-nums;
+  margin-right: calc(var(--u) * 0.4);
+  opacity: 0.8;
+  transition: opacity 0.4s ease;
+}
+.kn-count[data-show='0'] {
+  opacity: 0;
+}
+.kn-chrome .kn-pill {
+  height: calc(var(--u) * 2.5);
+  min-width: calc(var(--u) * 2.5);
+  border-radius: calc(var(--u) * 1.25);
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.45);
+  background: rgba(255, 255, 255, 0.78) !important;
+  color: var(--kn-navy) !important;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.06) rgba(7, 26, 80, 0.1),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.1);
+  font-size: calc(var(--u) * 0.95);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition:
+    opacity 0.35s ease,
+    transform 0.2s ease,
+    background-color 0.3s ease;
+}
+.kn-pill svg {
+  width: calc(var(--u) * 1.05);
+  height: calc(var(--u) * 1.05);
+  display: block;
+}
+.kn-pill:active {
+  transform: scale(0.95);
+}
+.kn-pill--next {
+  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 1.15) !important;
+}
+.kn-pill--quiet {
+  opacity: 0.62;
+}
+.kn-pill--quiet:hover {
+  opacity: 1;
+}
+.kn-pill[disabled] {
+  opacity: 0.25;
+  cursor: default;
+}
+.kn-nav[data-state='moving'] .kn-pill--next {
+  opacity: 0.45;
+}
+.kn-nav[data-state='ready'] .kn-pill--next {
+  opacity: 1;
+}
+.kn-root[data-theme='dark'] .kn-pill {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 calc(var(--u) * 0.06) rgba(255, 255, 255, 0.22);
+}
+
+/* the thin line of progress along the foot of the screen */
+.kn-root[data-chrome='0'] .kn-progress {
+  visibility: hidden;
+}
+.kn-progress {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u) * 0.24);
+  background: var(--kn-hair);
+  overflow: hidden;
+}
+.kn-progress-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #071a50 0%, #2d3a7a 55%, var(--kn-flame) 100%);
+  transform-origin: 0 50%;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.kn-root[data-theme='dark'] .kn-progress-fill {
+  background: linear-gradient(90deg, #f9b3a0 0%, var(--kn-flame) 100%);
+}
+
+/* "number + Enter" */
+.kn-typed {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * 1.6);
+  transform: translateX(-50%);
+  height: calc(var(--u) * 2.6);
+  padding: 0 calc(var(--u) * 1.2);
+  border-radius: calc(var(--u) * 1.3);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.6);
+  background: var(--kn-navy);
+  color: #fff;
+  font-size: calc(var(--u) * 1);
+  font-weight: 700;
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1.4) rgba(7, 26, 80, 0.3);
+}
+.kn-typed small {
+  font-size: calc(var(--u) * 0.8);
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* ============================================================
+   THE OVERVIEW: every slide, by section. G or the grid button.
+   ============================================================ */
+.kn-over {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(250, 250, 253, 0.94);
+  backdrop-filter: blur(calc(var(--u) * 1.2));
+  -webkit-backdrop-filter: blur(calc(var(--u) * 1.2));
+  padding: calc(var(--u) * 3) calc(var(--u) * 4) calc(var(--u) * 5);
+  animation: kn-over-in 0.3s ease both;
+  color: var(--kn-navy);
+  font-family: var(--kn-font);
+}
+@keyframes kn-over-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.kn-over-head {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 1.4);
+  margin-bottom: calc(var(--u) * 1.6);
+}
+.kn-over-head h2 {
+  margin: 0;
+  font-size: max(18px, calc(var(--u) * 2.2));
+  font-weight: 700;
+}
+.kn-over-head p {
+  margin: 0;
+  font-size: max(12px, calc(var(--u) * 0.95));
+  color: var(--kn-muted);
+}
+.kn-over-close {
+  margin-left: auto;
+  font: inherit;
+  font-size: max(12px, calc(var(--u) * 0.95));
+  font-weight: 700;
+  color: var(--kn-navy);
+  background: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: calc(var(--u) * 0.5) calc(var(--u) * 1.2);
+  box-shadow: 0 0 0 1px rgba(7, 26, 80, 0.12);
+  cursor: pointer;
+}
+.kn-over-sec {
+  margin-top: calc(var(--u) * 1.6);
+}
+.kn-over-sec h3 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.7);
+  margin: 0 0 calc(var(--u) * 0.8);
+  font-size: max(13px, calc(var(--u) * 1.15));
+  font-weight: 700;
+}
+.kn-over-sec h3 b {
+  width: max(22px, calc(var(--u) * 1.9));
+  height: max(22px, calc(var(--u) * 1.9));
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--kn-flame);
+  color: #fff;
+  font-size: max(11px, calc(var(--u) * 0.95));
+}
+.kn-over-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(max(150px, calc(var(--u) * 10.6)), 1fr));
+  gap: calc(var(--u) * 0.9);
+}
+.kn-over-item {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: #fff;
+  border-radius: calc(var(--u) * 0.5);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(7, 26, 80, 0.1),
+    0 calc(var(--u) * 0.2) calc(var(--u) * 0.7) rgba(7, 26, 80, 0.08);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease;
+}
+.kn-over-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.kn-over-item span {
+  position: absolute;
+  left: calc(var(--u) * 0.35);
+  bottom: calc(var(--u) * 0.35);
+  min-width: max(20px, calc(var(--u) * 1.7));
+  padding: 0 calc(var(--u) * 0.4);
+  height: max(18px, calc(var(--u) * 1.4));
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(7, 26, 80, 0.86);
+  color: #fff;
+  font-family: var(--kn-font);
+  font-size: max(10px, calc(var(--u) * 0.8));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.kn-over-item:hover,
+.kn-over-item:focus-visible {
+  transform: translateY(calc(var(--u) * -0.25)) scale(1.03);
+  box-shadow:
+    0 0 0 2px var(--kn-azure),
+    0 calc(var(--u) * 0.6) calc(var(--u) * 1.6) rgba(7, 26, 80, 0.18);
+  outline: none;
+  z-index: 1;
+}
+.kn-over-item[data-on='1'] {
+  box-shadow:
+    0 0 0 max(2px, calc(var(--u) * 0.2)) var(--kn-flame),
+    0 calc(var(--u) * 0.6) calc(var(--u) * 1.6) rgba(241, 100, 67, 0.3);
+}
+.kn-over-item[data-on='1'] span {
+  background: var(--kn-flame);
+}
+
+/* &still=1: a scene's own idle CSS animations (a shimmer, a float) are stopped at their beginning */
+.kn-root[data-still='1'] .kn-scene *,
+.kn-root[data-still='1'] .kn-scene *::before,
+.kn-root[data-still='1'] .kn-scene *::after {
+  animation: none !important;
+}
+/* &still=1: nothing in the chrome is on its way anywhere, so two shots of one frame are identical */
+.kn-root[data-still='1'] .kn-chrome *,
+.kn-root[data-still='1'] .kn-progress-fill {
+  transition: none !important;
+  animation-duration: 0s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kn-crumb-part,
+  .kn-crumb-sep,
+  .kn-over {
+    animation-duration: 0.01s;
+  }
+}

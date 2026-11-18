@@ -1,0 +1,314 @@
+/* Slide 60 · one console: four levers on a deck, and the instrument they feed */
+.s60 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- one lever's card: it stands on the deck, over its lever ---- */
+.s60-card {
+  position: absolute;
+  top: var(--s60-top);
+  width: var(--s60-card-w);
+  height: var(--s60-card-h);
+  padding: calc(var(--u) * 1.3) calc(var(--u) * 1.2) 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  visibility: hidden;
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.1) rgba(2, 8, 32, 0.3),
+    var(--kn-shadow);
+}
+.s60-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--u) * 0.36);
+  background: var(--kn-flame);
+}
+.s60-n {
+  position: absolute;
+  right: calc(var(--u) * 1.2);
+  top: calc(var(--u) * 1.35);
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.s60-tile {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 3.2);
+  height: calc(var(--u) * 3.2);
+  border-radius: calc(var(--u) * 0.8);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #aab5ca;
+  overflow: hidden;
+}
+.s60-tile-on {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(150deg, #f57a55 0%, var(--kn-flame) 55%, var(--kn-flame-deep) 100%);
+  visibility: hidden;
+}
+.s60-tile svg {
+  position: relative;
+  width: 58%;
+  height: 58%;
+  display: block;
+}
+.s60-title {
+  margin: calc(var(--u) * 0.9) 0 0;
+  font-size: calc(var(--u) * 1.62);
+  line-height: 1.12;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s60-promise {
+  margin: calc(var(--u) * 0.55) 0 0;
+  min-height: calc(var(--u) * 3.3);
+  font-size: calc(var(--u) * 1.4);
+  line-height: 1.16;
+  font-weight: 700;
+  color: var(--kn-flame-ink);
+  text-wrap: balance;
+}
+.s60-rule {
+  display: block;
+  flex: none;
+  margin-top: calc(var(--u) * 0.7);
+  height: calc(var(--u) * 0.08);
+  background: rgba(7, 26, 80, 0.13);
+}
+.s60-detail {
+  margin: calc(var(--u) * 0.7) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: calc(var(--u) * 1.06);
+  line-height: 1.22;
+  color: var(--kn-body);
+}
+ul.s60-detail li {
+  position: relative;
+  padding-left: calc(var(--u) * 0.9);
+}
+ul.s60-detail li + li {
+  margin-top: calc(var(--u) * 0.3);
+}
+ul.s60-detail li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.48em;
+  width: calc(var(--u) * 0.32);
+  height: calc(var(--u) * 0.32);
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---- the flat console: only where there is no WebGL (levers.ts draws the real one here) ---- */
+.s60-flat {
+  position: absolute;
+  border-radius: calc(var(--u) * 0.6);
+  background: linear-gradient(180deg, #12297a 0%, #0a1f62 100%);
+  visibility: hidden;
+}
+.kn-scene[data-gl] .s60-flat {
+  display: none;
+}
+.s60-flat-bus {
+  position: absolute;
+  right: 0;
+  height: calc(var(--u) * 0.28);
+  margin-top: calc(var(--u) * -0.14);
+  background: #020820;
+}
+.s60-flat-slot {
+  position: absolute;
+  width: calc(var(--u) * 1.14);
+  margin-left: calc(var(--u) * -0.57);
+  border-radius: 999px;
+  background: #020820;
+  box-shadow: 0 0 0 calc(var(--u) * 0.2) rgba(228, 233, 243, 0.8);
+}
+.s60-flat-grip {
+  position: absolute;
+  left: calc(var(--u) * -3.1);
+  width: calc(var(--u) * 7.36);
+  top: calc(var(--u) * -0.1);
+  height: calc(var(--u) * 1.96);
+  border-radius: 999px;
+  background: var(--kn-flame);
+}
+
+/* ---- the instrument: the deck's navy panel ---- */
+.s60-panel {
+  position: absolute;
+  top: var(--s60-top);
+  height: var(--s60-panel-h);
+  visibility: hidden;
+}
+.s60-panel-label {
+  position: absolute;
+  left: calc(var(--u) * 2.1);
+  top: calc(var(--u) * 1.9);
+  font-size: calc(var(--u) * 1.02);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #ff8a66;
+  visibility: hidden;
+}
+.s60-panel-title {
+  position: absolute;
+  left: calc(var(--u) * 2.1);
+  top: calc(var(--u) * 3.5);
+  margin: 0;
+  font-size: calc(var(--u) * 2.2);
+  line-height: 1.1;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+/* the light's way from the deck's channel up to the three measures */
+.s60-ways {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 3);
+  height: 100%;
+  overflow: visible;
+}
+.s60-ways path {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: butt;
+}
+.s60-ways-dim {
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 1.6;
+  visibility: hidden;
+}
+.s60-ways-lit {
+  stroke: #ff7a4d;
+  stroke-width: 2.8;
+}
+.s60-ways-lit path {
+  visibility: hidden;
+}
+.s60-ways-flash {
+  stroke: #ffe1d2;
+  stroke-width: 4.4;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+.s60-meter {
+  position: absolute;
+  left: calc(var(--u) * 2.1);
+  right: calc(var(--u) * 2.1);
+  padding-left: calc(var(--u) * 3.9);
+  visibility: hidden;
+}
+.s60-disc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--s60-disc);
+  height: var(--s60-disc);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(150deg, #f57a55 0%, var(--kn-flame) 60%, var(--kn-flame-deep) 100%);
+}
+.s60-disc svg {
+  width: 56%;
+  height: 56%;
+  display: block;
+}
+.s60-meter-title {
+  display: block;
+  font-size: calc(var(--u) * 1.6);
+  line-height: 1.1;
+  color: #fff;
+}
+.s60-meter-line {
+  display: block;
+  margin-top: calc(var(--u) * 0.22);
+  font-size: calc(var(--u) * 1.16);
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.8);
+}
+/* the trace: where it was (a fine dashed level), and one step per lever the right way */
+.s60-trace {
+  display: block;
+  margin-top: calc(var(--u) * 0.45);
+  width: calc(var(--u) * 17.5);
+  height: auto;
+  overflow: visible;
+}
+.s60-trace-was {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 0.8;
+  stroke-dasharray: 1.2 3.2;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+.s60-trace-line {
+  fill: none;
+  stroke: #8fc3ff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+.s60-trace-start {
+  fill: #0a1f62;
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 1.3;
+  visibility: hidden;
+}
+.s60-trace-head {
+  opacity: 0;
+}
+.s60-trace-head circle {
+  fill: #fff;
+}
+.s60-trace-head path {
+  fill: none;
+  stroke: var(--kn-flame-deep);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---- the deck's closing line ---- */
+.s60-banner {
+  position: absolute;
+  left: var(--kn-x0);
+  right: calc(var(--u) * 4.2);
+  display: flex;
+  align-items: center;
+  padding: 0 calc(var(--u) * 2.2);
+  border-radius: calc(var(--u) * 0.2) calc(var(--u) * 1.1) calc(var(--u) * 1.1) calc(var(--u) * 0.2);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    inset calc(var(--u) * 0.42) 0 0 var(--kn-flame),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.07);
+  visibility: hidden;
+}
+.s60-banner p {
+  margin: 0;
+  font-size: calc(var(--u) * 1.72);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+.s60-banner .kn-flame {
+  color: var(--kn-flame-deep);
+}

@@ -1,0 +1,472 @@
+/* Slide 23 · Sovereign and Indic AI: three labs, each a year ago and today */
+.s23 {
+  position: absolute;
+  inset: 0;
+  --s23-flame: #f16443;
+  --s23-azure: #3e84d6;
+  --s23-grey: #b3bdd0;
+}
+
+/* ---- the two column heads ---- */
+.s23-head {
+  position: absolute;
+  top: calc(var(--u) * 15.55);
+  font-size: calc(var(--u) * 0.9);
+  visibility: hidden;
+}
+.s23-head--ago {
+  left: calc(var(--u) * 25.2);
+  width: calc(var(--u) * 14);
+  text-align: center;
+}
+.s23-head--now {
+  left: calc(var(--u) * 41.7);
+}
+
+/* ---- one lab: a row ---- */
+.s23-row {
+  position: absolute;
+  left: 0;
+  width: calc(var(--u) * 72);
+}
+.s23-row--a {
+  top: calc(var(--u) * 17.3);
+  height: calc(var(--u) * 10);
+}
+.s23-row--b {
+  top: calc(var(--u) * 28.7);
+  height: calc(var(--u) * 11.2);
+}
+.s23-row--c {
+  top: calc(var(--u) * 41.1);
+  height: calc(var(--u) * 7.6);
+}
+.s23-rule {
+  position: absolute;
+  left: var(--kn-x0);
+  width: calc(var(--u) * 65.6);
+  height: calc(var(--u) * 0.1);
+  border-radius: 999px;
+  background: rgba(7, 26, 80, 0.13);
+}
+.s23-rule--1 {
+  top: calc(var(--u) * 27.95);
+}
+.s23-rule--2 {
+  top: calc(var(--u) * 40.45);
+}
+
+/* its name, and what happened to its model */
+.s23-lab {
+  position: absolute;
+  left: var(--kn-x0);
+  width: calc(var(--u) * 20.5);
+}
+.s23-row--a .s23-lab {
+  top: calc(var(--u) * 1.8);
+}
+.s23-row--b .s23-lab {
+  top: calc(var(--u) * 2.3);
+}
+.s23-row--c .s23-lab {
+  top: calc(var(--u) * 0.5);
+}
+.s23-name {
+  margin: 0;
+  font-size: calc(var(--u) * 2.5);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--kn-ink);
+  visibility: hidden;
+}
+.s23-name--flame {
+  color: var(--kn-flame-deep);
+}
+.s23-name--azure {
+  color: var(--s23-azure);
+}
+.s23-line {
+  margin: calc(var(--u) * 0.45) 0 0;
+  font-size: calc(var(--u) * 1.3);
+  line-height: 1.22;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+
+/* a year ago: the caption under each small thing */
+.s23-cap {
+  position: absolute;
+  left: calc(var(--u) * 25.2);
+  width: calc(var(--u) * 14);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 0.98);
+  line-height: 1.22;
+  color: #7f8ba3;
+  text-wrap: balance;
+  visibility: hidden;
+}
+.s23-cap--a {
+  top: calc(var(--u) * 6.75);
+}
+.s23-cap--b {
+  top: calc(var(--u) * 7.2);
+}
+.s23-cap--c {
+  top: calc(var(--u) * 5.35);
+}
+
+/* the arrow from then to now */
+.s23-arrow {
+  position: absolute;
+  left: calc(var(--u) * 37.75);
+  width: calc(var(--u) * 3);
+  height: calc(var(--u) * 0.8);
+  overflow: visible;
+}
+.s23-row--a .s23-arrow {
+  top: calc(var(--u) * 3.6);
+}
+.s23-row--b .s23-arrow {
+  top: calc(var(--u) * 4);
+}
+.s23-row--c .s23-arrow {
+  top: calc(var(--u) * 3.1);
+}
+.s23-arrow-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.s23-arrow-head {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  visibility: hidden;
+}
+.s23-arrow--flame {
+  color: var(--s23-flame);
+}
+.s23-arrow--navy {
+  color: var(--kn-ink);
+}
+.s23-arrow--azure {
+  color: var(--s23-azure);
+}
+
+/* what stands in the "today" column: one line of words under or beside the picture */
+.s23-stat {
+  position: absolute;
+  margin: 0;
+  font-size: calc(var(--u) * 1.22);
+  line-height: 1.24;
+  color: var(--kn-muted);
+}
+
+/* ---- Sarvam: 24B and 105B, drawn to scale (areas 24 : 105) ---- */
+.s23-small,
+.s23-big,
+.s23-ring {
+  position: absolute;
+  border-radius: 50%;
+}
+.s23-small {
+  left: calc(var(--u) * 30.049);
+  top: calc(var(--u) * 1.849);
+  width: calc(var(--u) * 4.302);
+  height: calc(var(--u) * 4.302);
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 36% 30%, #c3cbdb 0%, #aab4c9 78%);
+  color: #fff;
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 700;
+  visibility: hidden;
+}
+.s23-big,
+.s23-ring {
+  left: calc(var(--u) * 41.9);
+  top: calc(var(--u) * 0.5);
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 9);
+}
+.s23-big {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 34% 28%, #f88463 0%, #f16443 46%, #e9532b 100%);
+  box-shadow: 0 calc(var(--u) * 0.7) calc(var(--u) * 1.6) rgba(233, 83, 43, 0.28);
+  color: #fff;
+  font-size: calc(var(--u) * 2.55);
+  font-weight: 700;
+  visibility: hidden;
+}
+.s23-ring {
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.14) var(--s23-flame);
+  visibility: hidden;
+}
+.s23-x {
+  position: absolute;
+  left: calc(var(--u) * 52.6);
+  top: calc(var(--u) * 0.9);
+  font-size: calc(var(--u) * 4.9);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--kn-flame-deep);
+  overflow: hidden;
+}
+.s23-x-in {
+  display: block;
+}
+.s23-stat--a {
+  left: calc(var(--u) * 52.6);
+  top: calc(var(--u) * 6.2);
+  width: calc(var(--u) * 17.4);
+}
+
+/* ---- BharatGen: two pills, then 22 ---- */
+.s23-two {
+  position: absolute;
+  left: calc(var(--u) * 25.2);
+  top: calc(var(--u) * 1.9);
+  width: calc(var(--u) * 14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+}
+.s23-old,
+.s23-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--u) * 1.95);
+  border-radius: 999px;
+  font-family: var(--kn-font-indic);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+.s23-old {
+  min-width: calc(var(--u) * 6.4);
+  padding: 0 calc(var(--u) * 1);
+  background: #eef1f6;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) #cdd4e1;
+  color: #5b6885;
+  font-size: calc(var(--u) * 0.92);
+  visibility: hidden;
+}
+.s23-cloud {
+  position: absolute;
+  left: calc(var(--u) * 41.7);
+  top: calc(var(--u) * 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 0.36);
+}
+.s23-cloud-line {
+  display: flex;
+  gap: calc(var(--u) * 0.42);
+}
+.s23-pill {
+  padding: 0 calc(var(--u) * 0.82);
+  background: #fff;
+  color: var(--kn-ink);
+  font-size: calc(var(--u) * 0.98);
+  visibility: hidden;
+}
+.s23-pill::after,
+.s23-pill-lit {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.s23-pill::after {
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.12) currentColor;
+}
+.s23-pill-text {
+  position: relative;
+}
+.s23-pill--flame::after {
+  color: var(--s23-flame);
+}
+.s23-pill--navy::after {
+  color: var(--kn-ink);
+}
+.s23-pill--azure::after {
+  color: var(--s23-azure);
+}
+/* lit: the pill takes its own colour as a soft ground */
+.s23-pill-lit {
+  visibility: hidden;
+}
+.s23-pill--flame .s23-pill-lit {
+  background: #fde4da;
+}
+.s23-pill--navy .s23-pill-lit {
+  background: #dfe5f4;
+}
+.s23-pill--azure .s23-pill-lit {
+  background: #dcebfc;
+}
+.s23-stat--b {
+  left: calc(var(--u) * 41.7);
+  top: calc(var(--u) * 9.5);
+  width: calc(var(--u) * 29);
+  font-size: calc(var(--u) * 1.08);
+  white-space: nowrap;
+}
+
+/* ---- Gnani.ai: the waveforms ---- */
+.s23-wave {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.s23-wave--ago {
+  left: calc(var(--u) * 30.35);
+  top: calc(var(--u) * 2.1);
+  width: calc(var(--u) * 3.7);
+  height: calc(var(--u) * 2.4);
+}
+.s23-wave--ago i {
+  width: calc(var(--u) * 0.3);
+  border-radius: 999px;
+  background: var(--s23-grey);
+  opacity: 0.85;
+}
+.s23-wave--now {
+  left: calc(var(--u) * 41.7);
+  top: calc(var(--u) * 0.2);
+  width: calc(var(--u) * 12.3);
+  height: calc(var(--u) * 6.6);
+}
+.s23-bar {
+  width: calc(var(--u) * 0.32);
+  visibility: hidden;
+}
+.s23-bar i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--s23-azure);
+  animation: s23-sing var(--s23-t, 1.7s) ease-in-out var(--s23-d, 0s) infinite alternate;
+}
+@keyframes s23-sing {
+  from {
+    transform: scaleY(0.72);
+  }
+  to {
+    transform: scaleY(1.06);
+  }
+}
+.s23-mil {
+  position: absolute;
+  left: calc(var(--u) * 55.7);
+  top: calc(var(--u) * 0.55);
+  font-size: calc(var(--u) * 3.2);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--s23-azure);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  visibility: hidden;
+}
+.s23-stat--c {
+  left: calc(var(--u) * 55.7);
+  top: calc(var(--u) * 4.25);
+  width: calc(var(--u) * 15);
+}
+
+/* ---- the chorus: the singers, their line, the news ---- */
+.s23-photo {
+  position: absolute;
+  left: calc(var(--u) * 73.2);
+  top: calc(var(--u) * 15.6);
+  width: calc(var(--u) * 22.6);
+  padding: calc(var(--u) * 0.24);
+  border-radius: calc(var(--u) * 1.25);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 0.7) calc(var(--u) * 2) rgba(7, 26, 80, 0.14),
+    0 calc(var(--u) * 0.1) calc(var(--u) * 0.3) rgba(7, 26, 80, 0.08);
+  visibility: hidden;
+}
+.s23-photo .kn-pic {
+  border-radius: calc(var(--u) * 1.02);
+}
+.s23-quote {
+  position: absolute;
+  left: calc(var(--u) * 73.2);
+  top: calc(var(--u) * 31.6);
+  margin: 0;
+  font-family: var(--kn-font-indic);
+  font-size: calc(var(--u) * 2);
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--kn-flame-deep);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s23-para {
+  position: absolute;
+  left: calc(var(--u) * 73.2);
+  top: calc(var(--u) * 34.75);
+  width: calc(var(--u) * 22.6);
+  margin: 0;
+  font-size: calc(var(--u) * 1.22);
+  line-height: 1.26;
+  color: var(--kn-muted);
+}
+.s23-clip {
+  position: absolute;
+  left: calc(var(--u) * 72.9);
+  top: calc(var(--u) * 40.25);
+  visibility: hidden;
+}
+
+/* the deck prints its sources at 0.75u; here 0.85u, the smallest type in the keynote */
+.s23-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.4);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  color: #7c88a0;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+/* ---- the first rest: the places "today" will fill, empty ---- */
+.s23-slot {
+  position: absolute;
+  visibility: hidden;
+}
+.s23-slot--a {
+  left: calc(var(--u) * 41.9);
+  top: calc(var(--u) * 0.5);
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 9);
+  border-radius: 50%;
+  border: calc(var(--u) * 0.1) dashed rgba(7, 26, 80, 0.2);
+}
+.s23-slot--c {
+  left: calc(var(--u) * 41.7);
+  top: calc(var(--u) * 3.45);
+  width: calc(var(--u) * 12.3);
+  border-top: calc(var(--u) * 0.1) dashed rgba(7, 26, 80, 0.22);
+}
+.s23-pill--slot {
+  background: transparent;
+  color: transparent;
+  border: calc(var(--u) * 0.1) dashed rgba(7, 26, 80, 0.18);
+  box-sizing: border-box;
+}
+.s23-pill--slot::after {
+  content: none;
+}

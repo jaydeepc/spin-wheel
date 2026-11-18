@@ -1,0 +1,214 @@
+/* The section divider (scenes/_shared/divider.tsx) */
+.kn-div {
+  position: absolute;
+  inset: 0;
+  color: var(--kn-fg);
+}
+
+/* ---- the agenda in small, down the left ---- */
+.kn-div-agenda {
+  position: absolute;
+  left: calc(var(--u) * 6);
+  top: calc(var(--u) * 16.6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.kn-div-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.1);
+  height: calc(var(--u) * 3.3);
+  color: var(--kn-fg-soft);
+  font-size: calc(var(--u) * 1.18);
+  white-space: nowrap;
+}
+.kn-div-dot {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 2.3);
+  height: calc(var(--u) * 2.3);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.kn-div-dot b {
+  position: relative;
+  font-size: calc(var(--u) * 1.12);
+  font-weight: 700;
+}
+.kn-div-dot-on {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--kn-flame);
+  box-shadow: 0 0 calc(var(--u) * 1.6) rgba(241, 100, 67, 0.55);
+  visibility: hidden;
+}
+.kn-div-row[data-on='0'] {
+  opacity: 0.62;
+}
+.kn-div-row[data-on='0'][data-done='1'] {
+  opacity: 0.8;
+}
+.kn-div-name {
+  position: relative;
+}
+/* the lit name lies exactly over the quiet one: a change of weight would move the words */
+.kn-div-name-on {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--kn-fg);
+  text-shadow: 0 0 0.02em currentColor;
+  visibility: hidden;
+}
+.kn-div-thread {
+  position: absolute;
+  left: calc(var(--u) * 1.15 - var(--u) * 0.04);
+  top: calc(var(--u) * 1.65);
+  bottom: calc(var(--u) * 1.65);
+  width: calc(var(--u) * 0.08);
+  background: var(--kn-hair);
+}
+.kn-div-spark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 1.5);
+  margin: calc(var(--u) * -0.75) 0 0 calc(var(--u) * -0.75);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #ffd3c4 28%, rgba(241, 100, 67, 0.55) 55%, rgba(241, 100, 67, 0) 72%);
+  visibility: hidden;
+}
+
+/* ---- the slide's own line ---- */
+.kn-div-main {
+  position: absolute;
+  left: calc(var(--u) * 36);
+  right: calc(var(--u) * 5);
+  top: 0;
+  bottom: calc(var(--u) * 2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* where the agenda's block of glass comes to stand (a mesh, scenes/s02/monolith.ts) */
+.kn-div-slot {
+  flex: none;
+  width: calc(var(--u) * 9.4);
+  height: calc(var(--u) * 9.4);
+  margin: 0 0 calc(var(--u) * 2.2) calc(var(--u) * 0.4);
+  display: grid;
+  place-items: center;
+}
+/* without WebGL: the same block, flat */
+.kn-div-key {
+  width: 92%;
+  height: 92%;
+  border-radius: 14%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(150deg, #12349c 0%, #06164c 80%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.1) var(--kn-flame),
+    0 0 0 calc(var(--u) * 0.32) rgba(255, 255, 255, 0.55),
+    var(--kn-shadow);
+  color: #fff;
+  font-size: calc(var(--u) * 5.3);
+  line-height: 1;
+  font-weight: 700;
+  visibility: hidden;
+}
+.kn-div[data-theme='dark'] .kn-div-key {
+  background: linear-gradient(150deg, #2a5bdc 0%, #0f2f9c 80%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.1) var(--kn-flame),
+    0 0 0 calc(var(--u) * 0.32) rgba(255, 255, 255, 0.22);
+}
+.kn-scene[data-gl='1'] .kn-div-key {
+  display: none;
+}
+.kn-div-title {
+  margin: 0;
+  font-size: calc(var(--u) * 6.4);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+.kn-div-sub {
+  margin: calc(var(--u) * 1.5) 0 0;
+  font-size: calc(var(--u) * 2.5);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-fg);
+}
+.kn-div-sub[data-italic='1'] {
+  font-weight: 400;
+  font-style: italic;
+}
+.kn-div-rule {
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 0.22);
+  margin-top: calc(var(--u) * 2.2);
+  border-radius: 999px;
+  background: var(--kn-flame);
+}
+
+/* ---- the section's letter, very large, in outline, in depth ---- */
+.kn-div-giant {
+  position: absolute;
+  /* it stands to the RIGHT of the line, running off the stage, and thins out where the line is:
+     the letter frames the words, it never crosses them */
+  right: calc(var(--u) * -11);
+  top: calc(var(--u) * 2);
+  width: calc(var(--u) * 46);
+  height: calc(var(--u) * 52);
+  perspective: calc(var(--u) * 70);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0.16) 44%, #000 76%);
+  mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0.16) 44%, #000 76%);
+}
+.kn-div-letter {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  visibility: hidden;
+}
+.kn-div-letter span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--u) * 50);
+  line-height: 1;
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: calc(var(--u) * 0.12) rgba(255, 255, 255, 0.2);
+}
+.kn-div-letter span:nth-child(2) {
+  transform: translateZ(calc(var(--u) * -2.2));
+  -webkit-text-stroke-color: rgba(255, 255, 255, 0.12);
+}
+.kn-div-letter span:nth-child(3) {
+  transform: translateZ(calc(var(--u) * -4.4));
+  -webkit-text-stroke-color: rgba(255, 255, 255, 0.07);
+}
+.kn-div-letter span:nth-child(4) {
+  transform: translateZ(calc(var(--u) * -6.6));
+  -webkit-text-stroke-color: rgba(255, 255, 255, 0.04);
+}
+.kn-div[data-theme='light'] .kn-div-letter span {
+  -webkit-text-stroke-color: rgba(7, 26, 80, 0.14);
+}
+.kn-div[data-theme='light'] .kn-div-letter span:nth-child(2) {
+  -webkit-text-stroke-color: rgba(7, 26, 80, 0.09);
+}
+.kn-div[data-theme='light'] .kn-div-letter span:nth-child(3) {
+  -webkit-text-stroke-color: rgba(7, 26, 80, 0.055);
+}
+.kn-div[data-theme='light'] .kn-div-letter span:nth-child(4) {
+  -webkit-text-stroke-color: rgba(7, 26, 80, 0.03);
+}

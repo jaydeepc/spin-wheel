@@ -1,0 +1,158 @@
+/* Slides 61 to 64: the team. One scene (see index.tsx). The mesh's nodes: ../_shared/people/people.css */
+.s61 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- 61: "The Team" ---- */
+.s61 .s61-title {
+  left: 0;
+  top: calc(var(--u) * 21.6);
+  width: calc(var(--u) * 100);
+  text-align: center;
+  font-size: calc(var(--u) * 9.4);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+.s61-rule {
+  position: absolute;
+  left: calc(var(--u) * 45);
+  top: calc(var(--u) * 33.2);
+  width: calc(var(--u) * 10);
+  height: calc(var(--u) * 0.22);
+  border-radius: 99px;
+  background: var(--kn-navy);
+}
+
+/* ---- 62, 63: the cards ---- */
+.s61-row {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 12.5);
+  display: flex;
+  gap: calc(var(--u) * 2.2);
+  align-items: stretch;
+}
+.s61-card {
+  position: relative;
+  box-sizing: border-box;
+  padding: calc(var(--u) * 1.8) calc(var(--u) * 2.2) calc(var(--u) * 1.9);
+  min-height: calc(var(--u) * 35.2);
+  will-change: transform;
+}
+.s61-row--62 .s61-card {
+  width: calc(var(--u) * 44.4);
+}
+.s61-row--63 .s61-card {
+  width: calc(var(--u) * 28.4);
+  min-height: calc(var(--u) * 34.6);
+}
+.s61-panel {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.2);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    inset 0 calc(var(--u) * 0.34) 0 var(--kn-navy),
+    var(--kn-shadow);
+  visibility: hidden;
+}
+.s61-media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 12.8);
+  margin-bottom: calc(var(--u) * 1.5);
+}
+.s61-txt {
+  position: relative;
+  margin: 0;
+  visibility: hidden;
+}
+.s61-tag {
+  font-size: calc(var(--u) * 0.95);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--kn-flame-ink);
+}
+.s61-ct {
+  margin-top: calc(var(--u) * 0.55);
+  font-size: calc(var(--u) * 2.05);
+  line-height: 1.16;
+  font-weight: 700;
+  color: var(--kn-ink);
+  text-wrap: balance;
+}
+.s61-row--63 .s61-ct {
+  font-size: calc(var(--u) * 1.9);
+}
+.s61-who {
+  margin-top: calc(var(--u) * 0.5);
+  font-size: calc(var(--u) * 1.42);
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--kn-azure-ink);
+}
+.s61-tx {
+  margin-top: calc(var(--u) * 0.8);
+  font-size: calc(var(--u) * 1.42);
+  line-height: 1.38;
+  color: var(--kn-body);
+}
+.s61-tx b {
+  color: var(--kn-ink);
+}
+.s61-tx .kn-count-n {
+  font-variant-numeric: tabular-nums;
+}
+.s61-where {
+  margin-top: calc(var(--u) * 0.85);
+  font-size: calc(var(--u) * 1.12);
+  color: var(--kn-muted);
+}
+
+/* ---- 64: the line under the mesh ---- */
+.s61-line {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 46.5);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.1);
+  font-size: calc(var(--u) * 2.25);
+  line-height: 1.2;
+  font-weight: 300;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s61-l {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.7);
+  visibility: hidden;
+}
+.s61-sign {
+  color: var(--kn-muted);
+  font-weight: 400;
+}
+.s61-l--team {
+  font-weight: 700;
+  font-size: calc(var(--u) * 2.9);
+  color: var(--kn-flame-deep);
+}
+.s61-dot {
+  width: calc(var(--u) * 1.25);
+  height: calc(var(--u) * 1.25);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.s61-dot--people {
+  border: calc(var(--u) * 0.24) solid var(--kn-navy);
+  background: #fff;
+}
+.s61-dot--ai {
+  border: calc(var(--u) * 0.24) solid var(--kn-flame);
+  background: var(--kn-navy);
+}

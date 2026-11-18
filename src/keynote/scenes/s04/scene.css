@@ -1,0 +1,125 @@
+/* Slide 04 · the growth book and the legacy book, then and now */
+.s04 {
+  position: absolute;
+  inset: 0;
+}
+/* the deck's line under the headline, in its orange */
+.s04-sub {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 10.75);
+  margin: 0;
+  font-size: calc(var(--u) * 1.95);
+  line-height: 1.2;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.s04-sub .kn-flame {
+  color: var(--kn-flame-deep);
+}
+
+/* ---- the two cards ---- */
+.s04-card {
+  position: absolute;
+  top: calc(var(--u) * 14.5);
+  height: calc(var(--u) * 35.3);
+  visibility: hidden;
+}
+.s04-card--growth {
+  left: var(--kn-x0);
+  width: calc(var(--u) * 48.6);
+}
+.s04-card--legacy {
+  left: calc(var(--u) * 54.4);
+  width: calc(var(--u) * 41.4);
+}
+.s04-title {
+  position: absolute;
+  left: calc(var(--u) * 1.9);
+  right: calc(var(--u) * 1.4);
+  top: calc(var(--u) * 1.5);
+  margin: 0;
+  font-size: calc(var(--u) * 1.82);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s04-unit {
+  position: absolute;
+  left: calc(var(--u) * 1.9);
+  top: calc(var(--u) * 4.5);
+  margin: 0;
+  font-size: calc(var(--u) * 1.05);
+  font-style: italic;
+  color: #1f4f86;
+  visibility: hidden;
+}
+
+/* ---- the charts (the kit's), and what the scene draws inside them ---- */
+.s04-chart {
+  position: absolute;
+  top: calc(var(--u) * 6.4);
+}
+.s04-growth {
+  left: calc(var(--u) * 1.9);
+}
+.s04-legacy {
+  left: calc(var(--u) * 8.7);
+}
+.s04-chart .kn-bar-label {
+  fill: var(--kn-ink);
+}
+/* the deck's green arrow and its "5x" */
+.s04-arc {
+  fill: none;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+}
+.s04-x {
+  font-size: 38px;
+  font-weight: 700;
+  fill: var(--kn-ink);
+  letter-spacing: -0.01em;
+}
+/* the legend: a leader from each slice to its name and its share */
+.s04-lead {
+  fill: none;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s04-name {
+  font-size: 10.8px;
+  fill: var(--kn-body);
+}
+.s04-share {
+  font-size: 11.6px;
+  font-weight: 700;
+  fill: var(--kn-ink);
+  font-variant-numeric: tabular-nums;
+}
+/* the legacy book: "Down 96%" and the sliver's share */
+.s04-downtext {
+  font-size: 27px;
+  font-weight: 700;
+  fill: var(--kn-ink);
+  font-variant-numeric: tabular-nums;
+}
+.s04-tick {
+  fill: none;
+  stroke: var(--kn-ink);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s04-tiny {
+  font-size: 11px;
+  font-weight: 700;
+  font-style: italic;
+  fill: var(--kn-ink);
+}
+.s04-chart .kn-bar-val {
+  font-variant-numeric: tabular-nums;
+}

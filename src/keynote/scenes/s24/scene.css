@@ -1,0 +1,146 @@
+/* Slide 24 · the attacker and the defender: a king, his attackers, a dome of glass */
+.s24 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- left: the deck's photograph, and what was stolen ---- */
+.s24-photo {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 15.9);
+  width: calc(var(--u) * 26.4);
+  padding: calc(var(--u) * 0.24);
+  border-radius: calc(var(--u) * 1.25);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 0.7) calc(var(--u) * 2) rgba(7, 26, 80, 0.14),
+    0 calc(var(--u) * 0.1) calc(var(--u) * 0.3) rgba(7, 26, 80, 0.08);
+  visibility: hidden;
+}
+.s24-photo .kn-pic {
+  border-radius: calc(var(--u) * 1.02);
+}
+.s24-num {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 34.5);
+  font-size: calc(var(--u) * 7.8);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--kn-flame-deep);
+  visibility: hidden;
+}
+.s24-line {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 43.1);
+  width: calc(var(--u) * 27.4);
+  margin: 0;
+  font-size: calc(var(--u) * 1.45);
+  line-height: 1.26;
+  color: var(--kn-muted);
+}
+
+/* ---- the middle, only where there is no WebGL: the king and his dome, flat ---- */
+.s24-flat {
+  position: absolute;
+  left: calc(var(--u) * 35.2);
+  top: calc(var(--u) * 19);
+  width: calc(var(--u) * 26);
+  height: calc(var(--u) * 17);
+  overflow: visible;
+}
+[data-gl] .s24-flat {
+  display: none;
+}
+.s24-flat-board {
+  fill: #e6ecf6;
+  stroke: rgba(13, 31, 87, 0.4);
+  stroke-width: 0.08;
+  visibility: hidden;
+}
+.s24-flat-king {
+  fill: #0c2470;
+  visibility: hidden;
+}
+.s24-flat-dome {
+  fill: rgba(47, 107, 255, 0.07);
+  stroke: #2f6bff;
+  stroke-width: 0.16;
+  stroke-linecap: round;
+}
+
+/* ---- right: attack, attack, attack ---- */
+.s24-clip {
+  position: absolute;
+  left: calc(var(--u) * 66.6);
+  visibility: hidden;
+}
+.s24-clip .kn-clip-paper {
+  padding: calc(var(--u) * 1.25) calc(var(--u) * 1.35) calc(var(--u) * 0.9);
+}
+.s24-clip .kn-clip-text {
+  margin-top: calc(var(--u) * 0.6);
+  font-size: calc(var(--u) * 1.24);
+  line-height: 1.2;
+}
+.s24-clip .kn-clip-source {
+  margin-top: calc(var(--u) * 0.6);
+}
+.s24-clip--leap {
+  top: calc(var(--u) * 16.1);
+}
+.s24-clip--playbook {
+  top: calc(var(--u) * 27.5);
+}
+.s24-clip--damage {
+  top: calc(var(--u) * 38.9);
+}
+
+/* ---- the counter-move ---- */
+.s24-answer {
+  position: absolute;
+  left: calc(var(--u) * 33.6);
+  top: calc(var(--u) * 37.9);
+  width: calc(var(--u) * 29.2);
+  padding: calc(var(--u) * 1.25) calc(var(--u) * 1.6) calc(var(--u) * 1.3);
+  box-shadow:
+    0 calc(var(--u) * 0.9) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.26),
+    0 calc(var(--u) * 0.1) calc(var(--u) * 0.3) rgba(7, 26, 80, 0.2);
+  visibility: hidden;
+}
+.s24-answer-k {
+  color: #f9b79f;
+  letter-spacing: 0.22em;
+  visibility: hidden;
+}
+.s24-answer-t {
+  margin: calc(var(--u) * 0.3) 0 0;
+  font-size: calc(var(--u) * 2.15);
+  line-height: 1.12;
+  font-weight: 700;
+  color: #fff;
+}
+.s24-answer-p {
+  margin: calc(var(--u) * 0.4) 0 0;
+  font-size: calc(var(--u) * 1.2);
+  line-height: 1.27;
+  color: #dce6f5;
+}
+.s24-answer .kn-wi b {
+  color: #fff;
+}
+
+/* the deck prints its sources at 0.75u; here 0.85u, the smallest type in the keynote */
+.s24-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.55);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  color: #7c88a0;
+  white-space: nowrap;
+  visibility: hidden;
+}

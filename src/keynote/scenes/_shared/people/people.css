@@ -1,0 +1,119 @@
+/* THE PEOPLE GROUP (slides 61 to 64): the nodes of the mesh. Placed by mesh.ts. */
+.people-mesh {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.people-slot {
+  flex: none;
+}
+.people-node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--people-w);
+  aspect-ratio: 1 / 1;
+  visibility: hidden;
+  will-change: transform, opacity;
+  transform-origin: 50% 50%;
+}
+
+/* ---- a face: a real photograph in the deck's circle, a thin navy ring ---- */
+.people-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e8edf6;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.13) #fff,
+    0 0 0 calc(var(--u) * 0.27) var(--kn-navy),
+    0 calc(var(--u) * 0.45) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.22);
+}
+.people-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* cropped to the circle as the deck crops it, never squeezed */
+}
+.people-face--whole {
+  overflow: visible;
+  background: none;
+}
+.people-face--whole img {
+  object-fit: contain;
+}
+
+/* ---- an AI teammate: the same family, a flame ring, and a second ring that turns ---- */
+.people-node--ai .people-face {
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) #fff,
+    0 0 0 calc(var(--u) * 0.38) var(--kn-flame),
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.6) rgba(237, 66, 36, 0.34);
+}
+.people-node--ai .people-face--whole {
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) #fff,
+    0 0 0 calc(var(--u) * 0.38) var(--kn-flame);
+  background: #fff;
+}
+.people-orbit {
+  position: absolute;
+  inset: calc(var(--u) * -0.95);
+  border-radius: 50%;
+  border: calc(var(--u) * 0.1) dashed rgba(237, 66, 36, 0.6);
+  animation: people-turn 26s linear infinite;
+}
+.people-ping {
+  position: absolute;
+  inset: calc(var(--u) * -0.4);
+  border-radius: 50%;
+  border: calc(var(--u) * 0.16) solid var(--kn-flame);
+  opacity: 0;
+}
+@keyframes people-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- a print: a real photograph or a real document, whole, in its own proportions ---- */
+.people-print {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: calc(var(--u) * 0.35);
+  background: #fff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.2) #fff,
+    0 0 0 calc(var(--u) * 0.26) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.7) calc(var(--u) * 1.8) rgba(7, 26, 80, 0.22);
+}
+.people-print img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.people-node--paper .people-print {
+  border-radius: calc(var(--u) * 0.12);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.06) rgba(7, 26, 80, 0.2),
+    0 calc(var(--u) * 0.6) calc(var(--u) * 1.6) rgba(7, 26, 80, 0.2);
+}
+.people-sheet {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  border-radius: calc(var(--u) * 0.12);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.06) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.12);
+  transform-origin: 20% 100%;
+}
+/* the cover over the filing agent's name, street and e-mail on the receipt */
+.people-mask {
+  position: absolute;
+  border-radius: calc(var(--u) * 0.25);
+  background: linear-gradient(180deg, #e9edf5, #dfe5f0);
+  box-shadow: 0 0 calc(var(--u) * 0.3) calc(var(--u) * 0.04) #e6eaf3;
+}

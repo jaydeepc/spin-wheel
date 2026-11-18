@@ -1,0 +1,189 @@
+/* Slide 28 · the star agents: four characters introduced one by one, then all four together */
+.s28 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- the cast's seats, along the bottom ---- */
+.s28-seat {
+  position: absolute;
+}
+.s28-ring,
+.s28-ring-on {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  visibility: hidden;
+}
+.s28-ring {
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.1) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.06);
+  background: rgba(255, 255, 255, 0.5);
+}
+/* its agent is on stage */
+.s28-ring-on {
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.16) var(--kn-flame);
+}
+/* the blank badge that waits in the seat where there is no WebGL (with WebGL it is a mesh) */
+.s28-blank {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #fffaf6 0%, #fde9de 100%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.2) var(--kn-flame);
+  visibility: hidden;
+}
+.kn-scene[data-gl='1'] .s28-blank {
+  display: none;
+}
+.s28-seat-name {
+  position: absolute;
+  left: calc(100% + var(--u) * 1.1);
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: calc(var(--u) * 1.75);
+  font-weight: 700;
+  color: var(--kn-ink);
+  visibility: hidden;
+}
+
+/* ---- on stage: the agent being introduced ---- */
+.s28-hero {
+  position: absolute;
+  width: calc(var(--u) * 44);
+}
+.s28-hero-fn {
+  display: block;
+  visibility: hidden;
+}
+.s28-hero-fn .kn-kicker {
+  font-size: calc(var(--u) * 1.12);
+  letter-spacing: 0.2em;
+}
+.s28-hero-name {
+  margin: calc(var(--u) * 0.2) 0 0 calc(var(--u) * -0.35);
+  font-family: var(--kn-font);
+  font-size: calc(var(--u) * 9.8);
+  line-height: 1.06;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  color: var(--kn-azure-ink);
+  white-space: nowrap;
+}
+.s28-hero-does {
+  margin: calc(var(--u) * 0.5) 0 0;
+  max-width: calc(var(--u) * 40);
+  font-size: calc(var(--u) * 2.5);
+  line-height: 1.2;
+  font-weight: 300;
+  color: var(--kn-ink);
+  text-wrap: balance;
+}
+
+/* ---- the portraits: one element each; it travels from the stage to its seat and into the row ---- */
+.s28-face {
+  position: absolute;
+  z-index: 3;
+  filter: drop-shadow(0 calc(var(--u) * 0.55) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.16));
+  will-change: transform;
+  visibility: hidden;
+}
+.s28-pic,
+.s28-emblem {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.s28-pic {
+  object-fit: contain;
+}
+/* ABCD is a square render: the deck shows it in a circle */
+.s28-pic--abcd {
+  inset: 1.4%;
+  width: 97.2%;
+  height: 97.2%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 0 calc(var(--u) * 0.26) #fff;
+}
+/* the ring of light as a portrait lands */
+.s28-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) rgba(241, 100, 67, 0.75),
+    0 0 calc(var(--u) * 2.4) rgba(241, 100, 67, 0.35);
+  visibility: hidden;
+}
+
+/* Nivaaran's emblem (emblem.tsx) */
+.s28-em-n {
+  font-family: var(--kn-font);
+  font-size: 74px;
+  font-weight: 700;
+  fill: #fff;
+}
+.s28-em-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: s28-listen 2.6s ease-in-out infinite;
+}
+@keyframes s28-listen {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.62);
+  }
+}
+
+/* ---- all four together: the deck's row ---- */
+.s28-col {
+  position: absolute;
+  text-align: center;
+}
+.s28-col-name {
+  margin: 0;
+  font-family: var(--kn-font);
+  font-size: calc(var(--u) * 3.7);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.008em;
+  color: var(--kn-azure-ink);
+}
+.s28-col-fn {
+  display: block;
+  margin-top: calc(var(--u) * 0.55);
+  visibility: hidden;
+}
+.s28-col-fn .kn-kicker {
+  font-size: calc(var(--u) * 0.9);
+}
+.s28-col-does {
+  margin: calc(var(--u) * 0.45) auto 0;
+  max-width: calc(var(--u) * 19.5);
+  font-size: calc(var(--u) * 1.42);
+  line-height: 1.22;
+  color: var(--kn-body);
+  text-wrap: balance;
+  visibility: hidden;
+}
+.s28-tail {
+  position: absolute;
+  right: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 46.4);
+  margin: 0;
+  font-size: calc(var(--u) * 2.7);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}

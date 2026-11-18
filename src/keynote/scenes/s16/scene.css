@@ -1,0 +1,203 @@
+/* Slide 16 · the board of the year's eight themes */
+.s16 {
+  position: absolute;
+  inset: 0;
+  /* the cards come from the room in real depth */
+  perspective: calc(var(--u) * 130);
+  perspective-origin: 50% 54%;
+}
+
+/* ---- the board: peg holes, fading out toward the edges (no frame: the stage is the board) ---- */
+.s16-board {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 8);
+  bottom: 0;
+  background-image: radial-gradient(circle, rgba(7, 26, 80, 0.16) 0, rgba(7, 26, 80, 0.16) calc(var(--u) * 0.1), rgba(7, 26, 80, 0) calc(var(--u) * 0.17));
+  background-size: calc(var(--u) * 2.5) calc(var(--u) * 2.5);
+  background-position: calc(var(--u) * 0.6) calc(var(--u) * 0.3);
+  -webkit-mask-image: radial-gradient(ellipse 62% 60% at 50% 46%, #000 30%, rgba(0, 0, 0, 0.55) 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 60% at 50% 46%, #000 30%, rgba(0, 0, 0, 0.55) 62%, transparent 100%);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ---- the question, in the middle of the board ---- */
+.s16-ask {
+  position: absolute;
+  left: calc(var(--u) * 32);
+  top: calc(var(--u) * 27.55);
+  width: calc(var(--u) * 36);
+  text-align: left;
+}
+.s16-q {
+  display: grid;
+  grid-template-columns: calc(var(--u) * 6.6) auto;
+  align-items: baseline;
+  column-gap: calc(var(--u) * 1);
+  margin: 0;
+  font-size: calc(var(--u) * 2.35);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s16-q--to {
+  margin-top: calc(var(--u) * 0.75);
+}
+.s16-q-label {
+  justify-self: end;
+  font-size: calc(var(--u) * 1.05);
+  letter-spacing: 0.18em;
+  color: #8a96ab;
+  visibility: hidden;
+}
+.s16-q--to .s16-q-label {
+  color: var(--kn-flame-ink);
+}
+.s16-mark {
+  position: relative;
+}
+.s16-q--to .s16-mark {
+  color: var(--kn-flame-deep);
+}
+.s16-rule {
+  position: absolute;
+  left: 0.03em;
+  right: 0.07em;
+  bottom: 0.13em;
+  height: 0.075em;
+  border-radius: 0.04em;
+  background: currentColor;
+}
+
+/* ---- a card on its pin ---- */
+.s16-card {
+  position: absolute;
+  width: var(--s16-w);
+  height: var(--s16-h);
+  visibility: hidden;
+}
+/* it hangs from its pin: the tilt, and the idle sway, turn about it (paper, shadow and pin together) */
+.s16-hang {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% calc(var(--u) * 0.85);
+  transform: rotate(var(--s16-tilt));
+  animation: s16-sway var(--s16-pace) ease-in-out var(--s16-lag) infinite;
+}
+/* the card's shadow on the board: its own element, so that it can lie far off while the card is in the air */
+.s16-cast {
+  position: absolute;
+  inset: calc(var(--u) * 0.5) calc(var(--u) * 0.5) calc(var(--u) * -0.1);
+  border-radius: calc(var(--u) * 1.2);
+  background: rgba(7, 26, 80, 0.22);
+  filter: blur(calc(var(--u) * 0.95));
+}
+.s16-paper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.4);
+  padding: 0 calc(var(--u) * 1.3) 0 calc(var(--u) * 1.25);
+  border-radius: calc(var(--u) * 0.9);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 0.08) calc(var(--u) * 0.25) rgba(7, 26, 80, 0.1),
+    inset 0 0 0 calc(var(--u) * 0.05) rgba(7, 26, 80, 0.04);
+}
+@keyframes s16-sway {
+  0%,
+  100% {
+    transform: rotate(var(--s16-tilt));
+  }
+  50% {
+    transform: rotate(calc(var(--s16-tilt) + var(--s16-sway)));
+  }
+}
+.s16-thumb {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 6.9);
+  height: calc(var(--u) * 6.9);
+  /* a round mat under the picture: on a very large screen the picture stops at its own 202 px and sits inside it */
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0%, #fdeee8 55%, #e9f1fc 100%);
+}
+/* the ring drawn round each window when the eight answer the question */
+.s16-ring {
+  position: absolute;
+  inset: calc(var(--u) * -0.42);
+  width: calc(100% + var(--u) * 0.84);
+  height: calc(100% + var(--u) * 0.84);
+  overflow: visible;
+  pointer-events: none;
+}
+.s16-ring circle {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+.s16-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.s16-words {
+  display: block;
+  min-width: 0;
+}
+.s16-name {
+  display: block;
+  font-size: calc(var(--u) * 1.62);
+  line-height: 1.14;
+  font-weight: 700;
+  color: var(--kn-flame-deep);
+}
+.s16-line {
+  display: block;
+  margin-top: calc(var(--u) * 0.45);
+  font-size: calc(var(--u) * 1.1);
+  line-height: 1.28;
+  color: var(--kn-muted);
+}
+.s16-line b {
+  color: var(--kn-ink);
+}
+.s16-line i {
+  color: var(--kn-azure-ink);
+}
+/* the pin: a flame-coloured head catching the light, its shadow falling on the card */
+.s16-pin {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 0.85);
+  width: calc(var(--u) * 1.16);
+  height: calc(var(--u) * 1.16);
+  margin: calc(var(--u) * -0.58) 0 0 calc(var(--u) * -0.58);
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #ffc2ad 0%, #f6714e 34%, #e04a22 68%, #b53511 100%);
+  box-shadow:
+    calc(var(--u) * 0.14) calc(var(--u) * 0.32) calc(var(--u) * 0.4) rgba(7, 26, 80, 0.3),
+    inset 0 calc(var(--u) * -0.1) calc(var(--u) * 0.18) rgba(120, 30, 5, 0.35);
+  /* hidden with its card until the card is on the board (build() hides it on its own before it goes in) */
+}
+.s16-pin::after {
+  content: '';
+  position: absolute;
+  left: 24%;
+  top: 17%;
+  width: 26%;
+  height: 20%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  transform: rotate(-28deg);
+}

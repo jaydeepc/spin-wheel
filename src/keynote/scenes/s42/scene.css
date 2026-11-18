@@ -1,0 +1,395 @@
+/* Slides 42 and 43 · the town map (one scene). Everything is prefixed s42-. */
+
+.s42 {
+  position: absolute;
+  inset: 0;
+  --s42-cards-top: calc(var(--u) * 38.9);
+  --s42-card-h: calc(var(--u) * 11.6);
+}
+.s42-h {
+  width: calc(var(--u) * 80);
+}
+
+/* ---- without WebGL: the deck's picture, flat ---- */
+.s42-flat {
+  position: absolute;
+  left: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 15.6);
+  width: calc(var(--u) * 91.6);
+  aspect-ratio: 2688 / 666;
+  border-radius: calc(var(--u) * 0.9);
+  overflow: hidden;
+  box-shadow: var(--kn-shadow);
+  visibility: hidden;
+}
+.s42-flat img,
+.s42-flat svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.s42-flat polyline {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s42-flat-red {
+  stroke: #d8452c;
+  stroke-width: 0.56;
+}
+.s42-flat-bed {
+  stroke: #fff;
+  stroke-width: 1.12;
+}
+.s42-flat-blue {
+  stroke: #1f6feb;
+  stroke-width: 0.56;
+}
+.s42-flat-ghost {
+  stroke: #fff;
+  stroke-width: 0.3;
+  stroke-dasharray: 0.6 0.6;
+  opacity: 0;
+}
+.s42-flat-planbed {
+  stroke: #fff;
+  stroke-width: 1.12;
+}
+.s42-flat-plan {
+  stroke: #a9c9fb;
+  stroke-width: 0.56;
+}
+.s42-flat-dot {
+  fill: #0c2154;
+  stroke: #fff;
+  stroke-width: 0.16;
+}
+.s42-flat-pin circle {
+  fill: var(--kn-flame);
+  stroke: #fff;
+  stroke-width: 0.18;
+}
+.s42-flat-pin text {
+  fill: #fff;
+  font-family: var(--kn-font);
+  font-weight: 700;
+  font-size: 1.25px;
+}
+
+/* ---- who is driving ---- */
+.s42-chip {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 14.7);
+  visibility: hidden;
+}
+.s42-chip .kn-person--plate {
+  padding-right: calc(var(--u) * 1.9);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.07) var(--kn-peach-line),
+    var(--kn-shadow);
+}
+.s42-chip .kn-person-text b {
+  font-size: calc(var(--u) * 1.5);
+}
+.s42-chip .kn-person-text small {
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 700;
+}
+
+/* ---- the navigation banner ---- */
+.s42-nav {
+  position: absolute;
+  left: calc(var(--u) * 37.2);
+  top: calc(var(--u) * 14.75);
+  width: calc(var(--u) * 43.4);
+  height: calc(var(--u) * 4.6);
+  border-radius: calc(var(--u) * 2.3);
+  background: linear-gradient(170deg, #10296e 0%, #071a50 75%);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) rgba(255, 255, 255, 0.92),
+    0 calc(var(--u) * 0.8) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.28);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.3);
+  padding: 0 calc(var(--u) * 0.7);
+  visibility: hidden;
+}
+.s42-nav-disc {
+  flex: none;
+  width: calc(var(--u) * 3.2);
+  height: calc(var(--u) * 3.2);
+  border-radius: 50%;
+  background: #1f6feb;
+  display: grid;
+  place-items: center;
+}
+.s42-nav-disc svg {
+  width: 56%;
+  height: 56%;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s42-nav-texts {
+  position: relative;
+  flex: 1;
+  height: calc(var(--u) * 2.2);
+  overflow: hidden;
+}
+.s42-nav-t {
+  position: absolute;
+  left: 0;
+  top: 0;
+  line-height: calc(var(--u) * 2.2);
+  font-size: calc(var(--u) * 1.62);
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+/* ---- what stands over the town ---- */
+.s42-trk {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+.s42-off {
+  position: absolute;
+  width: max-content;
+}
+.s42-trk--asks .s42-off {
+  transform: translate(-38%, calc(-100% - var(--u) * 2.5));
+}
+.s42-trk--calls .s42-off {
+  transform: translate(-50%, calc(-100% - var(--u) * 2.5));
+}
+.s42-trk--digs .s42-off {
+  transform: translate(-46%, calc(var(--u) * 1.5));
+}
+.s42-trk--wrong .s42-off {
+  transform: translate(calc(var(--u) * 2.4), -70%);
+}
+.s42-say {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.4);
+  height: calc(var(--u) * 2.3);
+  padding: 0 calc(var(--u) * 1.1);
+  border-radius: calc(var(--u) * 1.15);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.06) #e3eaf3,
+    0 calc(var(--u) * 0.35) calc(var(--u) * 1) rgba(7, 26, 80, 0.22);
+  font-size: calc(var(--u) * 1.16);
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s42-say em {
+  font-style: normal;
+  color: var(--kn-flame-ink);
+}
+
+.s42-trk--tags .s42-off {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--u) * 0.45);
+  transform: translate(calc(-100% + var(--u) * 9.2), calc(var(--u) * 2.2));
+}
+.s42-tag,
+.s42-rank {
+  display: inline-flex;
+  align-items: center;
+  height: calc(var(--u) * 2.3);
+  padding: 0 calc(var(--u) * 1.2);
+  border-radius: calc(var(--u) * 1.15);
+  font-size: calc(var(--u) * 1.16);
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.3);
+  visibility: hidden;
+}
+.s42-tag--red {
+  background: #d8452c;
+}
+.s42-tag--navy {
+  background: #0c2154;
+}
+.s42-trk--rank .s42-off {
+  transform: translate(calc(-100% + var(--u) * 3.3), calc(-100% - var(--u) * 0.7));
+}
+.s42-rank {
+  height: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 1.5);
+  border-radius: calc(var(--u) * 1.5);
+  font-size: calc(var(--u) * 1.55);
+  letter-spacing: 0.02em;
+  background: var(--kn-flame);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) #fff,
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.4) rgba(7, 26, 80, 0.32);
+}
+
+/* the manager's real photograph, as the marker: never larger than its own 110 pixels */
+.s42-trk--me .s42-off {
+  transform: translate(-50%, -50%);
+}
+.s42-me {
+  display: block;
+  width: min(calc(var(--u) * 3.5), 110px);
+  height: min(calc(var(--u) * 3.5), 110px);
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e8edf6;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.2) #fff,
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.4);
+  visibility: hidden;
+}
+.s42-me img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- the five tasks ---- */
+.s42-cards {
+  position: absolute;
+  left: var(--kn-x0);
+  top: var(--s42-cards-top);
+  width: calc(var(--u) * 91.6);
+  height: var(--s42-card-h);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: calc(var(--u) * 1.15);
+}
+.s42-card {
+  position: relative;
+  visibility: hidden;
+}
+.s42-card-sh {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 calc(var(--u) * 0.5) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.13));
+}
+.s42-card-plate {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  border-radius: calc(var(--u) * 1.3);
+}
+.s42-card-warm {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #fff4ee;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) #f5a98d;
+  visibility: hidden;
+}
+.s42-card-head {
+  position: absolute;
+  left: calc(var(--u) * 0.95);
+  top: calc(var(--u) * 0.85);
+  right: calc(var(--u) * 0.6);
+  height: calc(var(--u) * 2.1);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.75);
+}
+.s42-num {
+  flex: none;
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 2.1);
+  border-radius: 50%;
+  background: var(--kn-flame);
+  color: #fff;
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.s42-card-head b {
+  font-size: calc(var(--u) * 1.48);
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s42-before,
+.s42-after {
+  position: absolute;
+  left: calc(var(--u) * 1.1);
+  right: calc(var(--u) * 1.0);
+  top: calc(var(--u) * 3.75);
+  bottom: calc(var(--u) * 0.8);
+}
+.s42-before p,
+.s42-after p {
+  margin: 0;
+  font-size: calc(var(--u) * 1.2);
+  line-height: 1.25;
+  color: #566481;
+  visibility: hidden;
+}
+.s42-before p b,
+.s42-after p b {
+  color: var(--kn-ink);
+}
+.s42-verdict {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u) * 1.95);
+  border-radius: calc(var(--u) * 1);
+  background: #fdeeea;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.06) #f3b8ac;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--u) * 1.08);
+  font-weight: 700;
+  color: #d8452c;
+  visibility: hidden;
+}
+.s42-after {
+  top: calc(var(--u) * 3.45);
+}
+.s42-says {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.5);
+  height: calc(var(--u) * 1.7);
+  margin-bottom: calc(var(--u) * 0.35);
+  visibility: hidden;
+}
+.s42-says img {
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 1.7);
+  border-radius: 50%;
+  display: block;
+}
+.s42-says span {
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--kn-flame-ink);
+}
+.s42-after p {
+  font-size: calc(var(--u) * 1.14);
+  line-height: 1.22;
+  color: var(--kn-ink);
+}
+.s42-count {
+  font-variant-numeric: tabular-nums;
+}

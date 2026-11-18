@@ -1,0 +1,395 @@
+/* Slide 06 · three numbered proofs: the AUM race, opex to AUM, retail 90+ DPD */
+.s06 {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------------------------------------------------------------- the cards */
+.s06-card {
+  position: absolute;
+  visibility: hidden;
+}
+.s06-card.kn-card--ice {
+  background: #f8fcff;
+}
+.s06-card.kn-card--peach {
+  background: #fffaf8;
+}
+.s06-card--race {
+  left: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 15.4);
+  width: calc(var(--u) * 43.6);
+  height: calc(var(--u) * 33.2);
+}
+.s06-card--opex {
+  left: calc(var(--u) * 49.4);
+  top: calc(var(--u) * 15.4);
+  width: calc(var(--u) * 46.4);
+  height: calc(var(--u) * 19.4);
+}
+.s06-card--dpd {
+  left: calc(var(--u) * 49.4);
+  top: calc(var(--u) * 36);
+  width: calc(var(--u) * 46.4);
+  height: calc(var(--u) * 12.6);
+}
+.s06-badge,
+.s06-disc {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--kn-flame);
+  color: #fff;
+  font-weight: 700;
+  line-height: 1;
+}
+.s06-badge {
+  position: absolute;
+  left: calc(var(--u) * 1.2);
+  top: calc(var(--u) * 1.05);
+  width: calc(var(--u) * 2.5);
+  height: calc(var(--u) * 2.5);
+  font-size: calc(var(--u) * 1.4);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.24) #fff,
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.2);
+  visibility: hidden;
+}
+.s06-title {
+  position: absolute;
+  left: calc(var(--u) * 4.7);
+  top: calc(var(--u) * 0.85);
+  right: calc(var(--u) * 1.4);
+  margin: 0;
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+.s06-card--dpd .s06-title {
+  top: calc(var(--u) * 1.15);
+}
+.s06-card--dpd .s06-badge {
+  top: calc(var(--u) * 0.8);
+}
+.s06-card .kn-chart {
+  position: absolute;
+}
+.s06-race {
+  left: calc(var(--u) * 0.8);
+  top: calc(var(--u) * 5);
+}
+.s06-opex {
+  left: calc(var(--u) * 0.6);
+  top: calc(var(--u) * 4.95);
+}
+.s06-dpd {
+  left: calc(var(--u) * 0.6);
+  top: calc(var(--u) * 2.8);
+}
+
+/* a stroke under the words a card is about */
+.s06-mark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: calc(var(--u) * 0.2);
+  border-radius: 999px;
+  background: var(--kn-flame);
+  transform: scaleX(0);
+  transform-origin: 0% 50%;
+}
+
+/* ---------------------------------------------------------------- shared chart parts */
+/* (strokes are made quiet with stroke-opacity, never opacity: the moves own opacity) */
+.s06 .s06-axis {
+  opacity: 1;
+  stroke-opacity: 0.55;
+}
+.s06-race text,
+.s06-opex text,
+.s06-dpd text {
+  fill: var(--kn-fg-soft);
+}
+.s06-cut {
+  stroke: var(--kn-fg);
+  stroke-width: 0.8;
+  stroke-opacity: 0.35;
+}
+.s06 .s06-fy {
+  fill: var(--kn-body);
+}
+.s06-line {
+  stroke: var(--kn-flame);
+  stroke-width: 2.6;
+  visibility: hidden;
+}
+.s06-dot {
+  fill: var(--kn-flame);
+  stroke: #fff;
+  stroke-width: 1;
+  visibility: hidden;
+}
+.s06 .s06-val {
+  font-weight: 700;
+  fill: var(--kn-body);
+  visibility: hidden;
+}
+.s06 .s06-val--edge {
+  fill: var(--kn-ink);
+}
+.s06 .s06-val--now {
+  fill: var(--kn-flame-ink);
+}
+.s06-comet-core {
+  fill: #fff;
+  stroke: var(--kn-flame);
+  stroke-width: 2.2;
+}
+.s06-comet--line {
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- 1 · the race */
+.s06-gridline {
+  stroke: var(--kn-fg);
+  stroke-width: 0.7;
+  stroke-opacity: 0.09;
+}
+.s06-hundred line {
+  stroke: var(--kn-fg);
+  stroke-width: 1.1;
+  stroke-dasharray: 2.4 3.2;
+  stroke-opacity: 0.5;
+}
+.s06 .s06-ytick,
+.s06 .s06-xtick text {
+  fill: var(--kn-body);
+}
+.s06 .s06-axis-name {
+  font-weight: 700;
+  fill: var(--kn-ink);
+}
+.s06-fin {
+  stroke: var(--kn-fg);
+  stroke-width: 0.8;
+  stroke-opacity: 0.32;
+}
+.s06-fin[data-m='1'] {
+  stroke: var(--kn-flame);
+  stroke-opacity: 0.7;
+}
+.s06-cursor {
+  stroke: var(--kn-azure);
+  stroke-width: 0.9;
+  stroke-dasharray: 1.6 2.6;
+  stroke-opacity: 0.8;
+  visibility: hidden;
+}
+.s06-curves,
+.s06-heads {
+  visibility: hidden;
+}
+.s06-curve {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s06-curve--peer {
+  stroke: #b3bdd2;
+  stroke-width: 1.15;
+}
+.s06-curve--named {
+  stroke: #7f8cab;
+  stroke-width: 1.5;
+}
+.s06-curve--us {
+  stroke: var(--kn-flame);
+  stroke-width: 3.3;
+}
+.s06-glow {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-opacity: 0.2;
+}
+.s06-head {
+  fill: #b3bdd2;
+}
+.s06-head--named {
+  fill: #7f8cab;
+}
+.s06-ring {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 1.4;
+  visibility: hidden;
+}
+.s06-mk {
+  visibility: hidden;
+}
+.s06-mk circle {
+  fill: #98a3bd;
+  stroke: #fff;
+  stroke-width: 1.4;
+}
+.s06-mk--us circle {
+  fill: var(--kn-flame);
+}
+.s06 .s06-mk text {
+  fill: #fff;
+  font-weight: 700;
+}
+.s06-mk-label {
+  visibility: hidden;
+}
+.s06-mk-label rect {
+  fill: #f8fcff;
+}
+.s06 .s06-mk-label text {
+  fill: var(--kn-body);
+}
+.s06 .s06-mk-label--us text {
+  fill: var(--kn-ink);
+  font-weight: 700;
+}
+/* the deck's label of the orange curve: its logo and the word under it, over the curve's top */
+.s06-brand {
+  position: absolute;
+  left: calc(var(--u) * 17.2);
+  top: calc(var(--u) * 5.15);
+  width: calc(var(--u) * 5.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  visibility: hidden;
+}
+.s06-brand img {
+  display: block;
+  /* 195 px wide as the deck stores it: never drawn larger than its own pixels */
+  width: min(100%, 195px);
+  height: auto;
+}
+.s06-brand span {
+  margin-top: calc(var(--u) * 0.1);
+  font-size: calc(var(--u) * 1.05);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+
+/* ---------------------------------------------------------------- beside the chart: the clock and the list */
+.s06-hero {
+  position: absolute;
+  left: calc(var(--u) * 53.5);
+  top: calc(var(--u) * 16.6);
+  width: calc(var(--u) * 40);
+}
+.s06-hero p {
+  margin: 0;
+}
+.s06-hero-who,
+.s06-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.1);
+  color: var(--kn-ink);
+}
+.s06-hero-who {
+  font-size: calc(var(--u) * 2.9);
+  font-weight: 300;
+  line-height: 1.15;
+}
+.s06-disc {
+  flex: none;
+  width: calc(var(--u) * 2.3);
+  height: calc(var(--u) * 2.3);
+  font-size: calc(var(--u) * 1.3);
+  background: #98a3bd;
+  box-shadow: 0 0 0 calc(var(--u) * 0.2) #fff;
+}
+.s06-disc--us {
+  background: var(--kn-flame);
+  visibility: hidden;
+}
+.s06-hero-num {
+  margin-top: calc(var(--u) * 0.2) !important;
+  font-size: calc(var(--u) * 12.5);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--kn-flame-deep);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s06-hero-num i {
+  font-style: normal;
+  font-size: 0.36em;
+  letter-spacing: 0;
+  font-weight: 700;
+}
+.s06-hero-rule {
+  display: block;
+  margin: calc(var(--u) * 1.5) 0 calc(var(--u) * 1.5);
+  width: calc(var(--u) * 30);
+  height: calc(var(--u) * 0.1);
+  background: var(--kn-hair);
+}
+.s06-row {
+  margin-top: calc(var(--u) * 1.15) !important;
+  font-size: calc(var(--u) * 2.25);
+  font-weight: 300;
+  line-height: 1.2;
+  visibility: hidden;
+}
+.s06-row b {
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- 2 · opex */
+.s06-band {
+  fill-opacity: 0.5;
+}
+.s06-band--goal,
+.s06-band--lower,
+.s06-arrow {
+  visibility: hidden;
+}
+.s06 .s06-note {
+  font-weight: 700;
+  fill: var(--kn-body);
+  visibility: hidden;
+}
+.s06 .s06-note--goal {
+  paint-order: stroke;
+  stroke: #fffaf8;
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+.s06-arrow {
+  fill: none;
+  stroke: var(--kn-ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* the source line: the deck prints it at 0.83u; here 0.85u, the keynote's smallest type */
+.s06-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.35);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  color: #7c88a0;
+  visibility: hidden;
+}
+
+/* the clock's lines and the rows are as wide as their words: on "opex" each shrinks about its own middle into its label in the chart */
+.s06-hero-who,
+.s06-hero-num,
+.s06-row {
+  width: fit-content;
+}

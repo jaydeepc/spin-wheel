@@ -1,0 +1,400 @@
+/* Slides 36 to 38: the ABCD Banking Agent reads a statement. One scene, three customers. */
+.s36 {
+  position: absolute;
+  inset: 0;
+  font-family: var(--kn-font);
+}
+.s36-set {
+  position: absolute;
+  inset: 0;
+  --s36-acc: #f16443;
+  --s36-acc-ink: var(--kn-flame-ink);
+  --s36-acc-line: rgba(241, 100, 67, 0.42);
+  --s36-acc-wash: rgba(241, 100, 67, 0.2);
+  --s36-acc-tape: rgba(244, 138, 106, 0.88);
+}
+.s36-set[data-accent='azure'] {
+  --s36-acc: #2d6ad1;
+  --s36-acc-ink: var(--kn-azure-ink);
+  --s36-acc-line: rgba(45, 106, 209, 0.5);
+  --s36-acc-wash: rgba(45, 106, 209, 0.2);
+  --s36-acc-tape: rgba(160, 203, 247, 0.9);
+}
+
+/* ---- the customer ---- */
+.s36-cust {
+  position: absolute;
+  left: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 16.3);
+  width: calc(var(--u) * 20.4);
+  text-align: center;
+}
+.s36-name {
+  margin: 0;
+  font-size: calc(var(--u) * 2.2);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s36-block {
+  display: inline-block;
+  height: 0.78em;
+  margin: 0 0.03em;
+  vertical-align: -0.08em;
+  background: var(--kn-navy);
+}
+.s36-desc {
+  margin: calc(var(--u) * 0.7) 0 0;
+  font-size: calc(var(--u) * 1.45);
+  line-height: 1.25;
+  color: var(--kn-body);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s36-desc b {
+  font-weight: 700;
+}
+.s36-photo {
+  margin: calc(var(--u) * 1.3) auto 0;
+  width: calc(var(--u) * 18);
+  border-radius: calc(var(--u) * 0.9);
+  overflow: hidden;
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 2.4) rgba(7, 26, 80, 0.2);
+  visibility: hidden;
+}
+.s36-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- the statement ---- */
+.s36-doc {
+  position: absolute;
+  left: calc(var(--u) * var(--s36-page-left));
+  top: calc(var(--u) * var(--s36-page-top));
+  width: calc(var(--u) * var(--s36-page-w));
+  visibility: hidden;
+}
+.s36-under,
+.s36-page {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  box-shadow: 0 0 0 calc(var(--u) * 0.05) rgba(7, 26, 80, 0.18);
+}
+.s36-under--1 {
+  transform: translate(calc(var(--u) * 0.32), calc(var(--u) * 0.32));
+}
+.s36-under--2 {
+  transform: translate(calc(var(--u) * 0.64), calc(var(--u) * 0.64));
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.05) rgba(7, 26, 80, 0.18),
+    0 calc(var(--u) * 1) calc(var(--u) * 2.6) rgba(7, 26, 80, 0.18);
+}
+.s36-page {
+  overflow: hidden;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.05) rgba(7, 26, 80, 0.22),
+    calc(var(--u) * 0.15) calc(var(--u) * 0.2) calc(var(--u) * 0.7) rgba(7, 26, 80, 0.12);
+}
+.s36-page > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* the extra privacy masks: the deck's own dotted paper */
+.s36-mask {
+  position: absolute;
+  background-color: #fff;
+  background-image: radial-gradient(circle, #2a6f97 calc(var(--u) * 0.028), transparent calc(var(--u) * 0.04)), radial-gradient(circle, #2a6f97 calc(var(--u) * 0.028), transparent calc(var(--u) * 0.04));
+  background-size: calc(var(--u) * 0.36) calc(var(--u) * 0.36);
+  background-position:
+    0 0,
+    calc(var(--u) * 0.18) calc(var(--u) * 0.18);
+}
+.s36-mask--red {
+  background-color: #e7503d;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.55) calc(var(--u) * 0.028), transparent calc(var(--u) * 0.04)), radial-gradient(circle, rgba(255, 255, 255, 0.55) calc(var(--u) * 0.028), transparent calc(var(--u) * 0.04));
+}
+/* a row as the light crosses it: a glint, no outline, gone again */
+.s36-hit {
+  position: absolute;
+  background: var(--s36-acc-wash);
+  visibility: hidden;
+}
+.s36-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--u) * 4);
+  background: linear-gradient(to bottom, transparent, var(--s36-acc-wash));
+  border-bottom: calc(var(--u) * 0.14) solid var(--s36-acc);
+  box-shadow: 0 calc(var(--u) * 0.2) calc(var(--u) * 1.2) var(--s36-acc-line);
+  visibility: hidden;
+}
+.s36-pages {
+  position: absolute;
+  right: 4.2%;
+  padding: calc(var(--u) * 0.32) calc(var(--u) * 0.8) calc(var(--u) * 0.38);
+  background: var(--s36-acc);
+  color: #fff;
+  font-size: calc(var(--u) * 1.2);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 calc(var(--u) * 0.2) calc(var(--u) * 0.7) rgba(7, 26, 80, 0.2);
+  visibility: hidden;
+}
+.s36-tape {
+  position: absolute;
+  left: 39%;
+  top: calc(var(--u) * -0.85);
+  width: calc(var(--u) * 4.6);
+  height: calc(var(--u) * 1.5);
+  background: var(--s36-acc-tape);
+  transform: rotate(-6deg);
+}
+
+/* ---- the agent ---- */
+.s36-chev {
+  position: absolute;
+  left: calc(var(--u) * 54.7);
+  top: calc(var(--u) * 27.6);
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 8.4);
+  visibility: hidden;
+}
+.s36-bot {
+  position: absolute;
+  left: calc(var(--u) * 60.6);
+  top: calc(var(--u) * 16.35);
+  width: calc(var(--u) * 7.5);
+  height: calc(var(--u) * 7.5);
+  margin: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: calc(var(--u) * 0.28) solid #fff;
+  box-sizing: border-box;
+  box-shadow: 0 calc(var(--u) * 0.5) calc(var(--u) * 1.6) rgba(7, 26, 80, 0.22);
+  z-index: 2;
+  visibility: hidden;
+}
+.s36-bot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.s36-card {
+  position: absolute;
+  left: calc(var(--u) * 59.5);
+  top: calc(var(--u) * 15.8);
+  width: calc(var(--u) * 36.3);
+  height: calc(var(--u) * 8.6);
+  box-sizing: border-box;
+  padding: 0 calc(var(--u) * 1.4) 0 calc(var(--u) * 9.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.82);
+  border: calc(var(--u) * 0.1) solid var(--s36-acc-line);
+  border-radius: calc(var(--u) * 1.1);
+  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 2) rgba(7, 26, 80, 0.1);
+  visibility: hidden;
+}
+.s36-set[data-accent='azure'] .s36-card {
+  border-width: calc(var(--u) * 0.14);
+  border-color: var(--s36-acc);
+}
+/* the card rings once when an alert is raised */
+.s36-pulse {
+  position: absolute;
+  inset: calc(var(--u) * -0.14);
+  border: calc(var(--u) * 0.2) solid var(--s36-acc);
+  border-radius: calc(var(--u) * 1.2);
+  visibility: hidden;
+  pointer-events: none;
+}
+/* while it reads and has nothing to say yet */
+.s36-think {
+  position: absolute;
+  left: calc(var(--u) * 9.6);
+  right: calc(var(--u) * 1.4);
+  top: 50%;
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--u) * 0.7);
+  transform: translateY(-50%);
+  visibility: hidden;
+}
+.s36-think i {
+  width: calc(var(--u) * 0.62);
+  height: calc(var(--u) * 0.62);
+  border-radius: 50%;
+  background: var(--s36-acc);
+  opacity: 0.25;
+  animation: s36-think 1.2s ease-in-out infinite;
+}
+.s36-think i:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.s36-think i:nth-child(3) {
+  animation-delay: 0.36s;
+}
+@keyframes s36-think {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+.s36-wait {
+  position: absolute;
+  left: calc(var(--u) * 67.55);
+  top: calc(var(--u) * 38.9);
+  width: calc(var(--u) * 20);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  color: var(--s36-acc-ink);
+  visibility: hidden;
+}
+.s36-label {
+  margin: 0;
+  font-size: calc(var(--u) * 1.12);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--kn-navy);
+}
+.s36-label em {
+  font-style: normal;
+  color: var(--s36-acc-ink);
+}
+.s36-cardtext {
+  margin: calc(var(--u) * 0.7) 0 0;
+  font-size: calc(var(--u) * 1.42);
+  line-height: 1.22;
+  color: var(--kn-ink);
+  text-wrap: balance;
+}
+
+/* ---- the lines it found ---- */
+.s36-row {
+  position: absolute;
+  left: calc(var(--u) * 59.5);
+  width: calc(var(--u) * 36.3);
+  height: 0;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+}
+.s36-cut {
+  position: relative;
+  flex: none;
+  display: block;
+  background: #fff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.05) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.35) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.16);
+  visibility: hidden;
+}
+.s36-cut img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.s36-arrow {
+  flex: none;
+  width: calc(var(--u) * 2.1);
+  height: calc(var(--u) * 0.7);
+  margin-left: auto;
+  overflow: visible;
+}
+.s36-arrow path {
+  fill: none;
+  stroke: var(--s36-acc);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s36-chip {
+  flex: none;
+  margin-left: calc(var(--u) * 0.7);
+  width: calc(var(--u) * 9.6);
+  box-sizing: border-box;
+  padding: calc(var(--u) * 0.5) calc(var(--u) * 0.4) calc(var(--u) * 0.58);
+  text-align: center;
+  background: var(--s36-acc);
+  color: #fff;
+  font-size: calc(var(--u) * 1.22);
+  line-height: 1.1;
+  font-weight: 700;
+  white-space: nowrap;
+  border-radius: calc(var(--u) * 0.25);
+  visibility: hidden;
+}
+.s36-row--37 .s36-chip,
+.s36-row--38 .s36-chip {
+  width: calc(var(--u) * 10.6);
+  padding-top: calc(var(--u) * 0.7);
+  padding-bottom: calc(var(--u) * 0.78);
+  font-size: calc(var(--u) * 1.3);
+}
+
+/* ---- what it says ---- */
+.s36-says {
+  position: absolute;
+  left: calc(var(--u) * 59.5);
+  top: calc(var(--u) * 41.4);
+  width: calc(var(--u) * 36.3);
+  height: calc(var(--u) * 8.7);
+  box-sizing: border-box;
+  padding: 0 calc(var(--u) * 1.6) calc(var(--u) * 0.2) calc(var(--u) * 1.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-left: calc(var(--u) * 0.36) solid var(--s36-acc);
+  border-radius: calc(var(--u) * 1.5);
+  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 2) rgba(7, 26, 80, 0.08);
+  visibility: hidden;
+}
+/* one or two lines found: the sentence follows them closely */
+.s36-set--37 .s36-says,
+.s36-set--38 .s36-says {
+  top: calc(var(--u) * 37.2);
+  height: calc(var(--u) * 8.4);
+}
+.s36-label--says {
+  visibility: hidden;
+}
+.s36-saystext {
+  margin: calc(var(--u) * 0.45) 0 0;
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1.24;
+  color: var(--kn-body);
+}
+
+.s36-foot {
+  position: absolute;
+  left: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 49);
+  margin: 0;
+  font-size: calc(var(--u) * 0.9);
+  color: var(--kn-muted);
+  visibility: hidden;
+}

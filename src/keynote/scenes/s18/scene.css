@@ -1,0 +1,290 @@
+/* Slide 18 · composite AI */
+.s18 {
+  position: absolute;
+  inset: 0;
+}
+
+/* the photograph, the pieces and the banner move as one block (to the middle of the stage and back) */
+.s18-block {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- the deck's photograph, whole, in its white frame ---- */
+.s18-photo {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 16.1);
+  width: calc(var(--u) * 44);
+  margin: 0;
+  padding: calc(var(--u) * 0.22);
+  border-radius: calc(var(--u) * 1);
+  background: #fff;
+  box-shadow: var(--kn-shadow);
+  visibility: hidden;
+}
+.s18-photo .kn-pic {
+  width: 100%;
+  border-radius: calc(var(--u) * 0.8);
+}
+/* a light that crosses it once, at the click (the glass keeps it inside the frame) */
+.s18-glass {
+  position: absolute;
+  inset: calc(var(--u) * 0.22);
+  border-radius: calc(var(--u) * 0.8);
+  overflow: hidden;
+  pointer-events: none;
+}
+.s18-light {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30%;
+  height: 100%;
+  visibility: hidden;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+/* ---- the two pieces ---- */
+.s18-pair {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 32);
+  width: calc(var(--s18-wp) + var(--s18-wg));
+  height: var(--s18-h);
+}
+.s18-piece {
+  position: absolute;
+  top: 0;
+  height: var(--s18-h);
+  visibility: hidden;
+}
+.s18-piece--pred {
+  left: 0;
+  width: var(--s18-wp);
+  --s18-tint: var(--kn-flame);
+  --s18-fill: #fff6f2;
+  --s18-edge: #ee9c84;
+}
+.s18-piece--gen {
+  left: var(--s18-wp);
+  width: var(--s18-wg);
+  --s18-tint: var(--kn-azure);
+  --s18-fill: #f1f7ff;
+  --s18-edge: #8bb6ea;
+}
+/* while they wait apart each drifts a little, in its own time; the timeline brings --s18-drift to 0 as they close */
+.s18-float {
+  --s18-drift: 1;
+  position: absolute;
+  inset: 0;
+  animation: s18-drift 5.2s ease-in-out infinite;
+}
+.s18-piece--gen .s18-float {
+  animation-duration: 6.1s;
+  animation-delay: -2.2s;
+}
+@keyframes s18-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(calc(var(--u) * -0.32 * var(--s18-drift))) rotate(calc(0.5deg * var(--s18-drift)));
+  }
+}
+.s18-shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 calc(var(--u) * 0.45) calc(var(--u) * 0.7) rgba(7, 26, 80, 0.13));
+}
+.s18-body {
+  fill: var(--s18-fill);
+}
+.s18-edge {
+  fill: none;
+  stroke: var(--s18-edge);
+  stroke-width: 0.14;
+  stroke-linejoin: round;
+}
+.s18-band {
+  fill: var(--s18-tint);
+}
+.s18-words {
+  position: absolute;
+  inset: 0;
+  padding: calc(var(--u) * 1.45) calc(var(--u) * 1) 0 calc(var(--u) * 1.4);
+}
+.s18-piece--gen .s18-words {
+  padding-left: calc(var(--u) * 1.25);
+}
+.s18-title {
+  margin: 0;
+  font-size: calc(var(--u) * 2.1);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--kn-flame-deep);
+}
+.s18-piece--gen .s18-title {
+  color: var(--kn-azure);
+}
+.s18-line {
+  margin: calc(var(--u) * 0.45) 0 0;
+  font-size: calc(var(--u) * 1.32);
+  font-weight: 700;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s18-chips {
+  display: flex;
+  gap: calc(var(--u) * 0.55);
+  margin-top: calc(var(--u) * 1.05);
+}
+.s18-chip {
+  height: calc(var(--u) * 2.2);
+  padding: 0 calc(var(--u) * 1.15);
+  font-size: calc(var(--u) * 1.08);
+  color: var(--kn-ink);
+  background: #fff;
+  visibility: hidden;
+}
+.s18-tools {
+  margin: calc(var(--u) * 0.95) 0 0;
+  font-size: calc(var(--u) * 1.05);
+  color: var(--kn-muted);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s18-tools b {
+  color: #7f8ba3;
+}
+/* the glint on the seam at the click */
+.s18-click {
+  position: absolute;
+  left: calc(var(--s18-wp) - var(--u) * 0.6);
+  top: calc(var(--u) * -0.6);
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--s18-h) + var(--u) * 1.2);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.5) 45%, rgba(255, 255, 255, 0));
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* the ring that leaves the joint: flame into the flame piece, blue into the blue one */
+.s18-ring {
+  position: absolute;
+  left: calc(var(--s18-kx) - var(--u) * 2);
+  top: calc(var(--s18-ky) - var(--u) * 2);
+  width: calc(var(--u) * 4);
+  height: calc(var(--u) * 4);
+  overflow: visible;
+  visibility: hidden;
+  pointer-events: none;
+}
+.s18-ring path {
+  fill: none;
+  stroke-width: 0.12;
+  stroke-linecap: round;
+}
+.s18-ring-pred {
+  stroke: var(--kn-flame);
+}
+.s18-ring-gen {
+  stroke: var(--kn-azure);
+}
+/* a light along the two bands as they become one */
+.s18-seal {
+  position: absolute;
+  top: 0;
+  height: calc(var(--u) * 0.42);
+  visibility: hidden;
+  pointer-events: none;
+}
+.s18-seal--pred {
+  left: calc(var(--u) * 1);
+  width: calc(var(--s18-wp) - var(--u) * 1);
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+}
+.s18-seal--gen {
+  left: var(--s18-wp);
+  width: calc(var(--s18-wg) - var(--u) * 1);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+}
+
+/* ---- the banner that seals it ---- */
+.s18-banner {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 45.55);
+  width: calc(var(--u) * 44);
+  height: calc(var(--u) * 3.3);
+  display: grid;
+  place-items: center;
+  border-radius: calc(var(--u) * 1);
+  background: #fdeee8;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.08) var(--kn-peach-line);
+  visibility: hidden;
+}
+.s18-banner p {
+  margin: 0;
+  font-size: calc(var(--u) * 1.6);
+  font-weight: 700;
+  color: var(--kn-ink);
+}
+
+/* ---- the clippings ---- */
+.s18-clip {
+  position: absolute;
+  left: calc(var(--u) * 59);
+  visibility: hidden;
+}
+.s18-clip--a {
+  top: calc(var(--u) * 16.9);
+}
+.s18-clip--a .kn-clip-text {
+  font-size: calc(var(--u) * 1.5);
+  min-height: calc(var(--u) * 5);
+}
+.s18-clip--b {
+  top: calc(var(--u) * 31.6);
+}
+.s18-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--u) * 2);
+}
+.s18-sub {
+  display: block;
+}
+.s18-sub-title {
+  display: block;
+  min-height: 2.5em;
+  font-size: calc(var(--u) * 1.3);
+}
+.s18-sub-text {
+  display: block;
+  margin-top: calc(var(--u) * 0.6);
+  font-family: var(--kn-font);
+  font-weight: 400;
+  font-size: calc(var(--u) * 0.98);
+  line-height: 1.35;
+  color: var(--kn-muted);
+}
+.s18-sub-text b {
+  color: var(--kn-ink);
+}
+
+/* a footnote: the deck prints these at 0.75u; here 0.85u, the smallest type in the keynote */
+.s18-src {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 49.5);
+  margin: 0;
+  font-size: calc(var(--u) * 0.85);
+  color: #7c88a0;
+  visibility: hidden;
+}

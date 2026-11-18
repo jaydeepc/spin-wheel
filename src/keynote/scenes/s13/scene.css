@@ -1,0 +1,311 @@
+/* Slide 13 · six lives, three problems */
+.s13 {
+  position: absolute;
+  inset: 0;
+}
+
+/* BHARAT: who they are. The deck's box, as a statement with its flame bar. */
+.s13-bharat {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 11.5);
+  height: calc(var(--u) * 3.3);
+  width: calc(var(--u) * 91.6);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  padding-left: calc(var(--u) * 1.5);
+}
+.s13-bharat-wash {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.5);
+  background: linear-gradient(90deg, rgba(253, 227, 217, 0.95) 0%, rgba(253, 227, 217, 0.6) 45%, rgba(253, 227, 217, 0) 82%);
+  visibility: hidden;
+}
+.s13-bharat-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--u) * 0.36);
+  border-radius: 999px;
+  background: var(--kn-flame);
+}
+.s13-bharat-t {
+  position: relative;
+  font-size: calc(var(--u) * 2.15);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kn-flame-deep);
+  visibility: hidden;
+}
+.s13-bharat-l {
+  position: relative;
+  font-size: calc(var(--u) * 1.45);
+  line-height: 1.2;
+  color: #15244b;
+  white-space: nowrap;
+}
+
+/* WHAT LIFE LOOKS LIKE: the wall of six */
+.s13-life {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 16.4);
+  width: calc(var(--u) * 57.8);
+  height: calc(var(--u) * 34.1);
+}
+.s13-kick {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: calc(var(--u) * 1.2);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #06174d;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s13-card {
+  position: absolute;
+  width: calc(var(--u) * 18);
+  height: calc(var(--u) * 15.55);
+  margin: 0;
+}
+.s13-fly {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  will-change: transform;
+}
+/* THE PARALLAX of the hanging photographs: one phase, an amount that follows how near each is.
+   The timeline brings --s13-near to 0 as they come to order. &still=1 stops it at the middle. */
+.s13-drift {
+  --s13-near: 0;
+  position: absolute;
+  inset: 0;
+  animation: s13-drift 14s ease-in-out infinite;
+}
+@keyframes s13-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(calc(var(--u) * 0.5 * var(--s13-near)), calc(var(--u) * -0.14 * var(--s13-near)), 0);
+  }
+  75% {
+    transform: translate3d(calc(var(--u) * -0.5 * var(--s13-near)), calc(var(--u) * 0.14 * var(--s13-near)), 0);
+  }
+}
+/* the mount the photograph comes to rest on */
+.s13-plate {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.95);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.5) rgba(7, 26, 80, 0.1),
+    0 calc(var(--u) * 0.1) calc(var(--u) * 0.3) rgba(7, 26, 80, 0.07);
+  visibility: hidden;
+}
+/* lit: one of the photographs a problem is drawn from */
+.s13-ring {
+  position: absolute;
+  inset: calc(var(--u) * -0.3);
+  border-radius: calc(var(--u) * 1.25);
+  border: calc(var(--u) * 0.22) solid var(--kn-flame);
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1.6) rgba(241, 100, 67, 0.28);
+  visibility: hidden;
+}
+/* the photograph: the deck's own crop (the top 1.8 : 1 of the file) */
+.s13 .s13-shot,
+.s13-shade,
+.s13-fx {
+  position: absolute;
+  left: calc(var(--u) * 0.35);
+  top: calc(var(--u) * 0.35);
+  width: calc(var(--u) * 17.3);
+  height: calc(var(--u) * 9.6);
+  border-radius: calc(var(--u) * 0.65);
+}
+/* its shadow while it hangs in the room */
+.s13-shade {
+  box-shadow:
+    0 calc(var(--u) * 1.1) calc(var(--u) * 2.6) rgba(7, 26, 80, 0.2),
+    0 calc(var(--u) * 0.2) calc(var(--u) * 0.6) rgba(7, 26, 80, 0.12);
+}
+.s13-fx {
+  overflow: hidden;
+}
+.s13-sheen {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.36) 48%, rgba(255, 255, 255, 0) 100%);
+}
+.s13-veil {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.95);
+  background: #fbf7f5;
+  visibility: hidden;
+}
+.s13-note {
+  position: absolute;
+  left: calc(var(--u) * 0.35);
+  right: calc(var(--u) * 0.35);
+  top: calc(var(--u) * 10.3);
+  bottom: 0;
+}
+.s13-cap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--u) * 1.95);
+  border-radius: calc(var(--u) * 0.35);
+  background: #eef2f8;
+  font-size: calc(var(--u) * 1.28);
+  line-height: 1;
+  font-weight: 700;
+  color: #15244b;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s13-line {
+  display: block;
+  padding: calc(var(--u) * 0.42) calc(var(--u) * 0.5) 0;
+  font-size: calc(var(--u) * 1.14);
+  line-height: 1.2;
+  color: #5a6680;
+}
+.s13-line > span {
+  display: block;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s13-figure {
+  font-weight: 700;
+  color: var(--kn-flame-ink);
+}
+
+/* PROBLEMS FOR AI TO SOLVE */
+.s13-prob {
+  position: absolute;
+  left: calc(var(--u) * 66);
+  top: calc(var(--u) * 16.4);
+  width: calc(var(--u) * 29.8);
+}
+.s13-prob-h {
+  position: absolute;
+  left: calc(var(--u) * 0.2);
+  top: 0;
+  font-size: calc(var(--u) * 1.3);
+  line-height: 1;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.12em;
+  color: var(--kn-flame-ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s13 .s13-p {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(var(--u) * 9.85);
+  padding: 0 calc(var(--u) * 1) calc(var(--u) * 0.2) calc(var(--u) * 2.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: rgba(255, 246, 241, 0.92);
+  visibility: hidden;
+}
+.s13-p--underwrite {
+  top: calc(var(--u) * 2.6);
+}
+.s13-p--serve {
+  top: calc(var(--u) * 13.35);
+}
+.s13-p--voice {
+  top: calc(var(--u) * 24.1);
+}
+.s13-p-bar {
+  position: absolute;
+  left: calc(var(--u) * 1.2);
+  top: calc(var(--u) * 1.5);
+  bottom: calc(var(--u) * 1.5);
+  width: calc(var(--u) * 0.34);
+  border-radius: 999px;
+  background: var(--kn-flame);
+}
+.s13-p-t {
+  font-size: calc(var(--u) * 2);
+  line-height: 1.1;
+  font-weight: 700;
+  color: #15244b;
+  margin-bottom: calc(var(--u) * 0.45);
+}
+.s13-p-l {
+  display: block;
+  font-size: calc(var(--u) * 1.22);
+  line-height: 1.27;
+  font-style: italic;
+  color: #5a6680;
+  white-space: nowrap;
+  visibility: hidden;
+}
+/* the voice line */
+.s13-wave {
+  position: absolute;
+  right: calc(var(--u) * 1.4);
+  top: calc(var(--u) * 1.2);
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 2.4);
+  overflow: visible;
+}
+.s13-wave rect {
+  fill: var(--kn-flame);
+  visibility: hidden;
+}
+
+/* the streaks of light */
+.s13-sparks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 30;
+  overflow: visible;
+  pointer-events: none;
+}
+.s13-spark,
+.s13-spark-glow {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 0.3;
+  stroke-linecap: round;
+  visibility: hidden;
+}
+/* the soft light around the streak */
+.s13-spark-glow {
+  stroke: #ff8a63;
+  stroke-width: 1.1;
+  stroke-opacity: 0.26;
+}
+.s13-spark-head {
+  fill: #fff;
+  stroke: var(--kn-flame);
+  stroke-width: 0.2;
+  visibility: hidden;
+}
+.s13-spark-halo {
+  fill: #ff7a52;
+  fill-opacity: 0.3;
+  visibility: hidden;
+}

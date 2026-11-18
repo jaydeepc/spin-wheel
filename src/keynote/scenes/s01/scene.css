@@ -1,0 +1,100 @@
+/* Slide 01 · the title */
+.s01 {
+  position: absolute;
+  inset: 0;
+  /* THE DECK'S LOCK-UP PICTURE (1759 x 482 px) lies on the slide at x 19.13u, y 11.177u, 63.32u wide:
+     one of its pixels is --s01-k. Everything below is placed in the picture's own pixels. */
+  --s01-k: calc(var(--u) * 0.0359977);
+  --s01-x: calc(var(--u) * 19.13);
+  --s01-y: calc(var(--u) * 11.177);
+}
+.s01-lock {
+  position: absolute;
+  inset: 0;
+}
+/* the logo: in the picture it is x 166 … 857, y 70 … 375 (11.016u high). The brand's file is the same artwork. */
+.s01-logo {
+  position: absolute;
+  left: calc(var(--s01-x) + var(--s01-k) * 166);
+  top: calc(var(--s01-y) + var(--s01-k) * 70);
+  line-height: 0;
+}
+/* a band of light that crosses the logo, seen only where the logo is (the logo itself is the mask) */
+.s01-sheen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+}
+.s01-sheen i {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 38%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: skewX(-14deg);
+}
+/* the rule: in the picture x 972 … 974, y 191 … 295, rgb(167, 168, 171) */
+.s01-bar {
+  position: absolute;
+  left: calc(var(--s01-x) + var(--s01-k) * 972);
+  top: calc(var(--s01-y) + var(--s01-k) * 191);
+  width: max(1px, calc(var(--s01-k) * 3));
+  height: calc(var(--s01-k) * 105);
+  background: rgb(167, 168, 171);
+}
+/* "Building AI / for Bharat": the deck's lettering, each line through its own window.
+   In the picture the two lines are x 1076 … 1549; line 1 is y 146 … 243, line 2 y 244 … 324. */
+.s01-theme {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+.s01-line {
+  position: absolute;
+  left: calc(var(--s01-x) + var(--s01-k) * 1066);
+  width: calc(var(--s01-k) * 494);
+  overflow: hidden;
+}
+.s01-line i {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: calc(var(--s01-k) * 1759) auto;
+}
+.s01-line--1 {
+  top: calc(var(--s01-y) + var(--s01-k) * 138);
+  height: calc(var(--s01-k) * 105.5);
+}
+.s01-line--1 i {
+  background-position: calc(var(--s01-k) * -1066) calc(var(--s01-k) * -138);
+}
+.s01-line--2 {
+  top: calc(var(--s01-y) + var(--s01-k) * 243.5);
+  height: calc(var(--s01-k) * 88.5);
+}
+.s01-line--2 i {
+  background-position: calc(var(--s01-k) * -1066) calc(var(--s01-k) * -243.5);
+}
+/* the day: the deck's line spans 64u of the stage; Calibri Bold at 5.2u does the same */
+.s01-day {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 30.6);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 5.2);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.s01-day .kn-flame {
+  color: var(--kn-flame);
+}

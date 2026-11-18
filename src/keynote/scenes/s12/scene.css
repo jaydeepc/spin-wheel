@@ -1,0 +1,163 @@
+/* Slide 12 · three Indias, one focus */
+.s12 {
+  position: absolute;
+  inset: 0;
+}
+
+/* one India: its portrait, its name, its verdict */
+.s12-col {
+  position: absolute;
+  margin: 0;
+}
+.s12-card {
+  position: relative;
+  width: 100%;
+  height: var(--s12-h);
+  visibility: hidden;
+  will-change: transform;
+}
+
+/* THE PARALLAX: every portrait (and the focus frame on it) drifts in one phase, by an amount
+   that follows how near it is. &still=1 stops it at the middle. */
+.s12-drift {
+  --s12-near: 1;
+  animation: s12-drift 13s ease-in-out infinite;
+}
+.s12-card .s12-drift {
+  position: absolute;
+  inset: 0;
+}
+@keyframes s12-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(calc(var(--u) * 0.8 * var(--s12-near)), calc(var(--u) * -0.14 * var(--s12-near)), 0);
+  }
+  75% {
+    transform: translate3d(calc(var(--u) * -0.8 * var(--s12-near)), calc(var(--u) * 0.14 * var(--s12-near)), 0);
+  }
+}
+
+/* the photograph, whole: the box has the file's own proportions */
+.s12 .s12-photo {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.8);
+  box-shadow:
+    0 calc(var(--u) * 0.9) calc(var(--u) * 2.2) rgba(7, 26, 80, 0.16),
+    0 calc(var(--u) * 0.15) calc(var(--u) * 0.5) rgba(7, 26, 80, 0.1);
+}
+/* the third file carries its rounded corners in its own transparency: nothing is cut here */
+.s12-col--r .s12-photo {
+  overflow: visible;
+}
+/* the deeper shadow of the one that comes forward */
+.s12-lift {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.8);
+  box-shadow:
+    0 calc(var(--u) * 2.2) calc(var(--u) * 4.6) rgba(7, 26, 80, 0.26),
+    0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) rgba(120, 50, 30, 0.16);
+  visibility: hidden;
+}
+/* what lies OVER the photograph: the veil of the two that step back, the passing light */
+.s12-fx {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.8);
+  overflow: hidden;
+  -webkit-mask-image: var(--s12-mask, none);
+  mask-image: var(--s12-mask, none);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+.s12-veil {
+  position: absolute;
+  inset: 0;
+  background: #fbf6f4;
+  visibility: hidden;
+}
+.s12-sheen {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.34) 48%, rgba(255, 255, 255, 0) 100%);
+}
+
+/* the name and the verdict */
+.s12-cap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: calc(var(--u) * 1.3);
+  /* wider than a stepped-back portrait: the third verdict is a long one */
+  width: calc(100% + var(--u) * 8);
+  margin-left: calc(var(--u) * -4);
+  text-align: center;
+}
+.s12-name {
+  font-size: calc(var(--u) * 2.5);
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--kn-flame-deep);
+  white-space: nowrap;
+}
+.s12-tag {
+  margin-top: calc(var(--u) * 0.55);
+  padding: calc(var(--u) * 0.32) calc(var(--u) * 0.9) calc(var(--u) * 0.3) calc(var(--u) * 1.1);
+  border-radius: 999px;
+  font-size: calc(var(--u) * 1.08);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #2a3f54;
+  background-color: rgba(241, 100, 67, 0);
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+/* the focus frame */
+.s12-focus {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  z-index: 3;
+}
+.s12-fc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 2.5);
+  height: calc(var(--u) * 2.5);
+  color: var(--kn-ink);
+  border: 0 solid currentColor;
+  will-change: transform;
+}
+.s12-fc--tl {
+  border-top-width: calc(var(--u) * 0.26);
+  border-left-width: calc(var(--u) * 0.26);
+  border-top-left-radius: calc(var(--u) * 1.5);
+}
+.s12-fc--tr {
+  border-top-width: calc(var(--u) * 0.26);
+  border-right-width: calc(var(--u) * 0.26);
+  border-top-right-radius: calc(var(--u) * 1.5);
+}
+.s12-fc--bl {
+  border-bottom-width: calc(var(--u) * 0.26);
+  border-left-width: calc(var(--u) * 0.26);
+  border-bottom-left-radius: calc(var(--u) * 1.5);
+}
+.s12-fc--br {
+  border-bottom-width: calc(var(--u) * 0.26);
+  border-right-width: calc(var(--u) * 0.26);
+  border-bottom-right-radius: calc(var(--u) * 1.5);
+}

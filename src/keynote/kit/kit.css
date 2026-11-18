@@ -1,0 +1,567 @@
+/* ============================================================
+   THE KIT · styles of the shared pieces (kit/*.tsx).
+   All sizes in --u. All classes "kn-".
+   ============================================================ */
+
+/* ---- the stub: the deck's page on a card (scenes/_shared/stub.tsx) ---- */
+.kn-stub-card {
+  position: absolute;
+  margin: 0;
+  left: calc(var(--u) * 9.1);
+  top: calc(var(--u) * 5.35);
+  width: calc(var(--u) * 81.8);
+  height: calc(var(--u) * 46.0125);
+  border-radius: calc(var(--u) * 0.9);
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.06) rgba(7, 26, 80, 0.08),
+    0 calc(var(--u) * 1.2) calc(var(--u) * 3.4) rgba(7, 26, 80, 0.16);
+  visibility: hidden;
+}
+.kn-stub-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ---- words and headlines ---- */
+.kn-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* room for descenders and italics inside the mask, taken back outside it */
+  padding: 0.1em 0.06em 0.16em 0.02em;
+  margin: -0.1em -0.06em -0.16em -0.02em;
+}
+.kn-wi {
+  display: inline-block;
+  will-change: transform;
+}
+.kn-flame {
+  font-style: inherit;
+  color: var(--kn-flame-ink);
+}
+.kn-scene[data-theme='dark'] .kn-flame {
+  color: var(--kn-flame);
+}
+/* in a headline the flame is the deck's own, a little lighter than the flame of small text */
+.kn-h .kn-flame,
+.kn-div-title .kn-flame {
+  color: var(--kn-flame-deep);
+}
+.kn-scene[data-theme='dark'] .kn-h .kn-flame,
+.kn-scene[data-theme='dark'] .kn-div-title .kn-flame {
+  color: var(--kn-flame);
+}
+.kn-azure {
+  font-style: inherit;
+  color: var(--kn-azure-ink);
+}
+.kn-scene[data-theme='dark'] .kn-azure {
+  color: var(--kn-sky);
+}
+.kn-h {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 6.9);
+  width: calc(var(--u) * 84);
+  margin: 0;
+  font-family: var(--kn-font);
+  font-weight: 700;
+  color: var(--kn-fg);
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+.kn-h--l {
+  font-size: calc(var(--u) * 3.05);
+  line-height: 1.14;
+}
+.kn-h--m {
+  font-size: calc(var(--u) * 2.2);
+  line-height: 1.18;
+}
+.kn-h--xl {
+  font-size: calc(var(--u) * 5.6);
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+}
+.kn-kicker {
+  display: inline-block;
+  font-size: calc(var(--u) * 0.86);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kn-fg-soft);
+}
+.kn-kicker--flame {
+  color: var(--kn-flame-ink);
+}
+.kn-kicker--azure {
+  color: var(--kn-azure-ink);
+}
+.kn-kicker--navy {
+  color: var(--kn-fg);
+}
+.kn-kicker--block {
+  display: block;
+}
+/* Bold words inside a lighter sentence (<Words bold={[…]}>) */
+.kn-wi b {
+  font-weight: 700;
+  color: var(--kn-fg);
+}
+.kn-wi em b {
+  color: inherit;
+}
+.kn-count-n {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- cards ---- */
+.kn-card {
+  background: var(--kn-paper);
+  border-radius: calc(var(--u) * 1.3);
+  box-shadow: var(--kn-shadow);
+  color: var(--kn-body);
+}
+.kn-card--peach {
+  background: #fff5f0;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.08) var(--kn-peach-line),
+    var(--kn-shadow);
+}
+.kn-card--ice {
+  background: #f1f8ff;
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.08) var(--kn-ice-line),
+    var(--kn-shadow);
+}
+.kn-card--navy {
+  background: linear-gradient(160deg, #0d2466 0%, #071a50 70%);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* ---- the "in the news" clipping ---- */
+.kn-clip {
+  display: inline-block;
+  width: calc(var(--u) * 22);
+}
+.kn-clip-paper {
+  position: relative;
+  padding: calc(var(--u) * 1.5) calc(var(--u) * 1.4) calc(var(--u) * 1.1);
+  background: #fff;
+  box-shadow:
+    0 calc(var(--u) * 0.5) calc(var(--u) * 1.5) rgba(7, 26, 80, 0.13),
+    0 calc(var(--u) * 0.08) calc(var(--u) * 0.25) rgba(7, 26, 80, 0.1);
+  border-radius: calc(var(--u) * 0.15);
+}
+.kn-clip-tape {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * -0.75);
+  width: calc(var(--u) * 4.4);
+  height: calc(var(--u) * 1.35);
+  margin-left: calc(var(--u) * -2.2);
+  transform: rotate(-3deg);
+  opacity: 0.82;
+  border-radius: calc(var(--u) * 0.08);
+}
+.kn-clip-tape--flame {
+  background: #f58a70;
+}
+.kn-clip-tape--navy {
+  background: #34427a;
+}
+.kn-clip-tape--azure {
+  background: #7fb4ee;
+}
+.kn-clip-top {
+  display: flex;
+  gap: calc(var(--u) * 0.8);
+  align-items: baseline;
+  padding-bottom: calc(var(--u) * 0.45);
+  border-bottom: calc(var(--u) * 0.1) solid #1b1f2e;
+  font-size: calc(var(--u) * 0.85);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.kn-clip-top b {
+  color: var(--kn-flame-ink);
+  font-weight: 700;
+}
+.kn-clip-top span {
+  color: var(--kn-muted);
+}
+.kn-clip-text {
+  margin: calc(var(--u) * 0.7) 0 0;
+  font-family: var(--kn-serif);
+  font-weight: 700;
+  font-size: calc(var(--u) * 1.22);
+  line-height: 1.22;
+  color: #141a2e;
+}
+.kn-clip-source {
+  margin-top: calc(var(--u) * 1);
+  font-size: calc(var(--u) * 0.85);
+  font-style: italic;
+  color: var(--kn-muted);
+}
+
+/* ---- chips and pills ---- */
+.kn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 2.5);
+  padding: 0 calc(var(--u) * 1.3);
+  border-radius: calc(var(--u) * 1.25);
+  background: #eef1f7;
+  color: var(--kn-navy);
+  font-size: calc(var(--u) * 1.2);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.kn-chip--flame {
+  background: var(--kn-peach);
+  color: #b03a16;
+}
+.kn-chip--azure {
+  background: var(--kn-ice);
+  color: var(--kn-navy);
+}
+.kn-chip--navy {
+  background: var(--kn-navy);
+  color: #fff;
+}
+.kn-chip-icon {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.5);
+  height: calc(var(--u) * 1.5);
+}
+.kn-chip-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.kn-pillo {
+  display: inline-flex;
+  align-items: center;
+  height: calc(var(--u) * 2.1);
+  padding: 0 calc(var(--u) * 1.1);
+  border-radius: calc(var(--u) * 1.05);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) var(--kn-navy);
+  color: var(--kn-navy);
+  font-size: calc(var(--u) * 0.98);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.kn-pillo--flame {
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) var(--kn-flame);
+  color: #b03a16;
+}
+.kn-pillo--azure {
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) var(--kn-azure);
+  color: var(--kn-azure-ink);
+}
+.kn-pillo--plain {
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.08) var(--kn-line);
+  color: var(--kn-body);
+}
+
+/* ---- a person ---- */
+.kn-person {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+}
+.kn-person-photo {
+  flex: none;
+  width: var(--kn-ps);
+  height: var(--kn-ps);
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e8edf6;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) #fff,
+    0 0 0 calc(var(--u) * 0.3) var(--kn-azure),
+    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.18);
+}
+.kn-person--flame .kn-person-photo {
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) #fff,
+    0 0 0 calc(var(--u) * 0.3) var(--kn-flame),
+    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.18);
+}
+.kn-person--navy .kn-person-photo {
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.14) #fff,
+    0 0 0 calc(var(--u) * 0.3) var(--kn-navy),
+    0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.18);
+}
+.kn-person--plain .kn-person-photo {
+  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.18);
+}
+.kn-person-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* a real photograph: cropped to the circle, never squeezed */
+}
+.kn-person--plate {
+  padding: calc(var(--u) * 0.55) calc(var(--u) * 1.3) calc(var(--u) * 0.55) calc(var(--u) * 0.6);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--kn-shadow);
+}
+.kn-person--plate .kn-person-text b {
+  color: var(--kn-ink);
+}
+.kn-person--plate .kn-person-text small {
+  color: var(--kn-muted);
+}
+.kn-person-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.kn-person-text b {
+  font-size: calc(var(--u) * 1.25);
+  color: var(--kn-fg);
+}
+.kn-person-text small {
+  font-size: calc(var(--u) * 0.92);
+  color: var(--kn-fg-soft);
+}
+
+/* ---- a picture ---- */
+.kn-pic {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+.kn-pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.kn-logo {
+  display: block;
+}
+
+/* ---- device frames ---- */
+.kn-phone,
+.kn-browser,
+.kn-laptop {
+  display: block;
+  perspective: calc(var(--u) * 90);
+}
+.kn-phone-body,
+.kn-browser-body,
+.kn-laptop-body {
+  position: relative;
+  transform-style: preserve-3d;
+}
+[data-tilt='left'] > .kn-phone-body,
+[data-tilt='left'] > .kn-browser-body,
+[data-tilt='left'] > .kn-laptop-body {
+  transform: rotateY(11deg) rotateX(3deg);
+}
+[data-tilt='right'] > .kn-phone-body,
+[data-tilt='right'] > .kn-browser-body,
+[data-tilt='right'] > .kn-laptop-body {
+  transform: rotateY(-11deg) rotateX(3deg);
+}
+.kn-shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.kn-phone-body {
+  padding: 3.4%;
+  border-radius: 13% / 6.2%;
+  background: linear-gradient(145deg, #1c2a5c, #0a1438 60%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.08) rgba(255, 255, 255, 0.18),
+    0 calc(var(--u) * 1.4) calc(var(--u) * 3.2) rgba(7, 26, 80, 0.28),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.2);
+}
+.kn-phone-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10.5% / 4.9%;
+  background: #fff;
+}
+.kn-phone-notch {
+  position: absolute;
+  left: 50%;
+  top: 2.2%;
+  width: 26%;
+  height: 2.6%;
+  margin-left: -13%;
+  border-radius: 999px;
+  background: #0a1438;
+}
+.kn-browser-body {
+  border-radius: calc(var(--u) * 0.9);
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.07) rgba(7, 26, 80, 0.12),
+    0 calc(var(--u) * 1.3) calc(var(--u) * 3.2) rgba(7, 26, 80, 0.2);
+}
+.kn-browser-bar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.4);
+  height: calc(var(--u) * 2);
+  padding: 0 calc(var(--u) * 0.9);
+  background: #eef2f9;
+  border-bottom: calc(var(--u) * 0.06) solid #dbe3f0;
+}
+.kn-browser-bar i {
+  width: calc(var(--u) * 0.62);
+  height: calc(var(--u) * 0.62);
+  border-radius: 50%;
+  background: #c5cfe2;
+}
+.kn-browser-bar i:first-child {
+  background: #f39a83;
+}
+.kn-browser-bar span {
+  margin-left: calc(var(--u) * 0.8);
+  flex: 1;
+  max-width: 46%;
+  height: calc(var(--u) * 1.3);
+  padding: 0 calc(var(--u) * 0.7);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--kn-muted);
+  font-size: calc(var(--u) * 0.85);
+  line-height: calc(var(--u) * 1.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kn-browser-screen {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+.kn-laptop-lid {
+  padding: 2.2% 2.2% 2.6%;
+  border-radius: calc(var(--u) * 1.1) calc(var(--u) * 1.1) calc(var(--u) * 0.3) calc(var(--u) * 0.3);
+  background: linear-gradient(160deg, #1c2a5c, #0a1438 70%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.07) rgba(255, 255, 255, 0.16),
+    0 calc(var(--u) * 1.3) calc(var(--u) * 3) rgba(7, 26, 80, 0.24);
+}
+.kn-laptop-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(var(--u) * 0.35);
+  background: #fff;
+}
+.kn-laptop-base {
+  height: calc(var(--u) * 0.9);
+  margin: 0 -6%;
+  border-radius: calc(var(--u) * 0.2) calc(var(--u) * 0.2) calc(var(--u) * 1) calc(var(--u) * 1);
+  background: linear-gradient(180deg, #dfe6f2, #b8c4da);
+  box-shadow: 0 calc(var(--u) * 0.8) calc(var(--u) * 1.6) rgba(7, 26, 80, 0.2);
+}
+
+/* ---- a stack of paper ---- */
+.kn-stack {
+  position: relative;
+  display: block;
+}
+.kn-sheet {
+  position: absolute;
+  inset: 0;
+}
+.kn-sheet-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: calc(var(--u) * 0.18);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.05) rgba(7, 26, 80, 0.14),
+    0 calc(var(--u) * 0.3) calc(var(--u) * 0.9) rgba(7, 26, 80, 0.12);
+}
+.kn-sheet-face > .kn-pic {
+  width: 100%;
+  height: 100%;
+}
+.kn-stack-label {
+  position: absolute;
+  right: calc(var(--u) * -0.6);
+  bottom: calc(var(--u) * -0.7);
+  padding: calc(var(--u) * 0.25) calc(var(--u) * 0.8);
+  border-radius: calc(var(--u) * 0.3);
+  background: var(--kn-flame);
+  color: #fff;
+  font-size: calc(var(--u) * 0.9);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ---- charts ---- */
+.kn-chart {
+  display: block;
+  overflow: visible;
+  font-family: var(--kn-font);
+}
+.kn-chart-axis {
+  stroke: var(--kn-fg);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+.kn-bar-val {
+  font-weight: 700;
+  fill: var(--kn-fg);
+}
+.kn-bar-seg {
+  font-weight: 700;
+}
+.kn-chart-tick {
+  stroke: var(--kn-fg);
+  stroke-width: 0.8;
+  opacity: 0.14;
+}
+.kn-chart-ticktext,
+.kn-line-group text {
+  fill: var(--kn-fg-soft);
+}
+.kn-line-group path {
+  fill: none;
+  stroke: var(--kn-fg);
+  stroke-width: 1;
+  opacity: 0.4;
+}
+.kn-bar-label,
+.kn-line-label {
+  fill: var(--kn-fg-soft);
+}
+.kn-line {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.kn-line-area {
+  fill-opacity: 0.1;
+}
+.kn-line-dot {
+  stroke-width: 2.4;
+}
+.kn-line-val {
+  font-weight: 700;
+}

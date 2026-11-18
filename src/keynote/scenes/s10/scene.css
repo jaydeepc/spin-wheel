@@ -1,0 +1,128 @@
+/* Slide 10 · the theme. The points are WebGL (dust.ts); everything read is here. */
+.s10 {
+  position: absolute;
+  inset: 0;
+  --s10-ink-body: #1b2340;
+}
+
+/* the phrase and its line: one block, so that it can stand in the middle first and rise afterwards */
+.s10-hero {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 12.2);
+  text-align: center;
+}
+.s10-theme {
+  margin: 0;
+  font-size: calc(var(--u) * 7.9);
+  line-height: 1.02;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.s10-word {
+  visibility: inherit;
+}
+/* "for": small and pale, as the deck sets it */
+.s10-word--for {
+  font-size: 0.66em;
+  font-weight: 400;
+}
+/* a mark on the line's baseline: dust.ts measures it */
+.s10-base {
+  display: inline-block;
+  width: 0;
+  height: 0;
+}
+.s10-sub {
+  margin: calc(var(--u) * 1.2) 0 0;
+  font-size: calc(var(--u) * 2.05);
+  line-height: 1.15;
+  font-style: italic;
+  color: var(--s10-ink-body);
+  white-space: nowrap;
+}
+
+/* a column: the numbered word, a rule in its colour, its line */
+.s10-col {
+  position: absolute;
+  top: calc(var(--u) * 34.6);
+}
+.s10-col-h {
+  margin: 0;
+  font-size: calc(var(--u) * 3.4);
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--s10-ink);
+  white-space: nowrap;
+}
+.s10-col-bar {
+  position: relative;
+  display: block;
+  height: calc(var(--u) * 0.3);
+  margin-top: calc(var(--u) * 0.85);
+}
+/* the place that waits for the word: a pale line */
+.s10-col-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 0.1);
+  height: calc(var(--u) * 0.1);
+  border-radius: calc(var(--u) * 0.05);
+  background: rgba(7, 26, 80, 0.13);
+}
+.s10-col-rule {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 0.15);
+  background: var(--s10-c);
+}
+.s10-col-line {
+  margin: calc(var(--u) * 1.25) 0 0 calc(var(--u) * 3.3);
+  font-size: calc(var(--u) * 1.98);
+  line-height: 1.24;
+  color: var(--s10-ink-body);
+  white-space: pre-line;
+  visibility: hidden;
+}
+.s10-col-line i {
+  font-style: italic;
+}
+
+/* while the room waits, a soft light runs along each column's rule (idle: &still=1 stops it) */
+.s10-col-rule {
+  overflow: hidden;
+}
+.s10-col-rule::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 22%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0));
+  transform: translateX(-110%);
+  animation: s10-shimmer 7.5s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+.s10-col--ai .s10-col-rule::after {
+  animation-delay: 0.5s;
+}
+.s10-col--bharat .s10-col-rule::after {
+  animation-delay: 1s;
+}
+@keyframes s10-shimmer {
+  0%,
+  55% {
+    transform: translateX(-110%);
+  }
+  85%,
+  100% {
+    transform: translateX(470%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .s10-col-rule::after {
+    animation: none;
+  }
+}

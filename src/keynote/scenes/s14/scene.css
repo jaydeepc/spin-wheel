@@ -1,0 +1,257 @@
+/* Slide 14 · we build + we buy = the structure; where it leads */
+.s14 {
+  position: absolute;
+  inset: 0;
+}
+
+.s14-upper {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* ---- WE BUILD ---- */
+.s14-kick {
+  position: absolute;
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s14-kick--build {
+  left: var(--kn-x0);
+  top: calc(var(--u) * 12.5);
+  color: var(--kn-flame-ink);
+}
+.s14-kick--buy {
+  left: calc(var(--u) * 55.5);
+  top: calc(var(--u) * 15.6);
+  color: #8a96ab;
+}
+.s14-kick--leads {
+  left: var(--kn-x0);
+  top: calc(var(--u) * 39.2);
+  font-size: calc(var(--u) * 1.3);
+  color: var(--kn-azure-ink);
+}
+
+.s14-row {
+  position: absolute;
+  left: var(--kn-x0);
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--u) * 1.5);
+}
+.s14-row--strategy {
+  top: calc(var(--u) * 15.2);
+}
+.s14-row--models {
+  top: calc(var(--u) * 21.5);
+}
+.s14-row--platform {
+  top: calc(var(--u) * 26.9);
+}
+.s14-row--team {
+  top: calc(var(--u) * 32.3);
+}
+.s14-disc {
+  flex: none;
+  width: calc(var(--u) * 4.3);
+  height: calc(var(--u) * 4.3);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 35% 30%, #fff4ee 0%, #fde0d3 78%);
+  box-shadow: 0 calc(var(--u) * 0.2) calc(var(--u) * 0.7) rgba(241, 100, 67, 0.16);
+  color: var(--kn-flame-deep);
+  visibility: hidden;
+}
+.s14-ico {
+  width: 58%;
+  height: 58%;
+  display: block;
+  overflow: visible;
+}
+.s14-row-t {
+  margin: calc(var(--u) * 0.05) 0 0;
+  font-size: calc(var(--u) * 2.05);
+  line-height: 1.15;
+  font-weight: 700;
+  color: #2b4054;
+  white-space: nowrap;
+}
+.s14-row-t .kn-flame {
+  color: var(--kn-flame-deep);
+}
+.s14-row-s {
+  display: block;
+  margin-top: calc(var(--u) * 0.1);
+  font-size: calc(var(--u) * 1.25);
+  line-height: 1.24;
+  font-style: italic;
+  color: #3d4a5f;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+/* ---- the plus ---- */
+.s14-plus {
+  position: absolute;
+  left: calc(var(--u) * 49.2);
+  top: calc(var(--u) * 22.6);
+  width: calc(var(--u) * 3.8);
+  height: calc(var(--u) * 3.8);
+  visibility: hidden;
+}
+.s14-plus::before,
+.s14-plus::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: calc(var(--u) * 0.86);
+  margin-top: calc(var(--u) * -0.43);
+  border-radius: calc(var(--u) * 0.12);
+  background: var(--kn-flame);
+}
+.s14-plus::after {
+  transform: rotate(90deg);
+}
+
+/* ---- WE BUY: deliberately quiet ---- */
+.s14-buy {
+  position: absolute;
+  left: calc(var(--u) * 55.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.4);
+  visibility: hidden;
+}
+.s14-buy--0 {
+  top: calc(var(--u) * 18.9);
+}
+.s14-buy--1 {
+  top: calc(var(--u) * 24.7);
+}
+.s14-buy--2 {
+  top: calc(var(--u) * 30.5);
+}
+.s14-buy-disc {
+  flex: none;
+  width: calc(var(--u) * 4.1);
+  height: calc(var(--u) * 4.1);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #f2f5f9;
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.14) #cfd6e2;
+  color: #8a96ab;
+}
+.s14-buy-t {
+  display: block;
+  font-size: calc(var(--u) * 1.85);
+  line-height: 1.12;
+  font-weight: 700;
+  color: #8a96ab;
+}
+.s14-buy-s {
+  display: block;
+  font-size: calc(var(--u) * 1.18);
+  line-height: 1.25;
+  font-style: italic;
+  color: #8a96ab;
+  white-space: nowrap;
+}
+
+/* ---- WHERE IT LEADS ---- */
+.s14-track {
+  position: absolute;
+  top: calc(var(--u) * 42.11);
+  height: calc(var(--u) * 0.18);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f6b7a4 0%, #f39a80 100%);
+}
+.s14-step {
+  position: absolute;
+  top: calc(var(--u) * 42.2);
+}
+.s14-dot {
+  position: absolute;
+  left: calc(var(--u) * -0.55);
+  top: calc(var(--u) * -0.55);
+  width: calc(var(--u) * 1.1);
+  height: calc(var(--u) * 1.1);
+  border-radius: 50%;
+  background: #2586e7;
+  box-shadow: 0 0 0 calc(var(--u) * 0.2) #fff;
+  visibility: hidden;
+}
+.s14-step-t {
+  position: absolute;
+  left: calc(var(--u) * 1.2);
+  top: calc(var(--u) * 1.15);
+  margin: 0;
+  font-size: calc(var(--u) * 1.95);
+  line-height: 1.15;
+  font-weight: 700;
+  color: #2b4054;
+  white-space: nowrap;
+}
+.s14-step-t .kn-flame {
+  color: var(--kn-flame-deep);
+}
+.s14-step-s {
+  position: absolute;
+  left: calc(var(--u) * 1.2);
+  top: calc(var(--u) * 3.65);
+  font-size: calc(var(--u) * 1.25);
+  line-height: 1.22;
+  font-style: italic;
+  color: #3d4a5f;
+  white-space: nowrap;
+}
+.s14-step-s > span {
+  display: block;
+  visibility: hidden;
+}
+.s14-step-s .kn-flame {
+  font-style: italic;
+  color: var(--kn-flame-ink);
+}
+.s14-step-s .kn-wi b {
+  color: inherit;
+}
+/* "not just capacity": the deck sets it a size larger than the other sub-lines */
+.s14-step--2 .s14-step-s {
+  font-size: calc(var(--u) * 1.5);
+}
+/* the glowing end of the line, under the structure */
+.s14-end {
+  position: absolute;
+  top: calc(var(--u) * 42.2);
+  width: 0;
+  height: 0;
+}
+.s14-end i {
+  position: absolute;
+  border-radius: 50%;
+  visibility: hidden;
+}
+.s14-end-halo {
+  left: calc(var(--u) * -1.6);
+  top: calc(var(--u) * -1.6);
+  width: calc(var(--u) * 3.2);
+  height: calc(var(--u) * 3.2);
+  background: radial-gradient(circle, rgba(241, 100, 67, 0.34) 0%, rgba(241, 100, 67, 0.2) 55%, rgba(241, 100, 67, 0) 72%);
+}
+.s14-end-core {
+  left: calc(var(--u) * -0.85);
+  top: calc(var(--u) * -0.85);
+  width: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 1.7);
+  background: var(--kn-flame);
+  box-shadow: 0 0 calc(var(--u) * 1.2) rgba(241, 100, 67, 0.6);
+}

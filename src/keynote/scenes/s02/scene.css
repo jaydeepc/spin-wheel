@@ -1,0 +1,102 @@
+/* Slide 02 · the agenda. A row of the list is --s02-row high (set from the number of parts). */
+.s02 {
+  position: absolute;
+  inset: 0;
+}
+.s02-h {
+  left: calc(var(--u) * 19);
+  top: calc(var(--u) * 6.3);
+  width: auto;
+}
+.s02-list {
+  position: absolute;
+  left: calc(var(--u) * 19);
+  top: calc(var(--u) * 14.1);
+  width: calc(var(--u) * 62);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.s02-row {
+  position: relative;
+  height: var(--s02-row);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2.4);
+  padding-bottom: calc(var(--u) * 0.5);
+}
+/* where the slab lands: the row keeps its place whether or not there is WebGL */
+.s02-slot {
+  flex: none;
+  width: calc(var(--s02-row) * 0.82);
+  height: calc(var(--s02-row) * 0.82);
+  display: grid;
+  place-items: center;
+}
+/* the letter without WebGL: the same navy slab, flat */
+.s02-key {
+  width: 100%;
+  height: 100%;
+  border-radius: 23%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #0f2a78 0%, #071a50 75%);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.1) var(--kn-flame),
+    var(--kn-shadow);
+  color: #fff;
+  font-size: calc(var(--s02-row) * 0.44);
+  font-weight: 700;
+  visibility: hidden;
+}
+/* with WebGL the slab is a mesh: the DOM letter stays away */
+.kn-scene[data-gl='1'] .s02-key {
+  display: none;
+}
+/* the names in Calibri Light: large and quiet beside the heavy slabs */
+.s02-name {
+  font-size: calc(var(--s02-row) * 0.5);
+  line-height: 1.15;
+  font-weight: 300;
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s02-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u) * 0.08);
+  background: var(--kn-navy);
+  opacity: 0.8;
+  border-radius: 1px;
+}
+/* the band of light that travels down the list */
+.s02-beam,
+.s02-here {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 64.8);
+  height: calc(var(--s02-row) - var(--u) * 0.5);
+  border-radius: calc(var(--u) * 1.5);
+  visibility: hidden;
+}
+.s02-beam {
+  background: linear-gradient(90deg, rgba(253, 205, 188, 0.75) 0%, rgba(255, 236, 228, 0.6) 35%, rgba(220, 236, 253, 0.5) 75%, rgba(220, 236, 253, 0) 100%);
+}
+/* where the light comes to rest: the part we start with */
+.s02-here {
+  background: linear-gradient(90deg, rgba(253, 214, 200, 0.9) 0%, rgba(255, 236, 228, 0.72) 45%, rgba(255, 244, 240, 0.2) 86%, rgba(255, 244, 240, 0) 100%);
+  box-shadow: inset calc(var(--u) * 0.28) 0 0 var(--kn-flame);
+  color: var(--kn-flame-deep);
+}
+.s02-here svg {
+  position: absolute;
+  right: calc(var(--u) * 5.2);
+  top: 50%;
+  width: calc(var(--u) * 2.2);
+  height: calc(var(--u) * 2.2);
+  margin-top: calc(var(--u) * -1.1);
+  display: block;
+}
