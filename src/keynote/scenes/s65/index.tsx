@@ -27,10 +27,15 @@ import './scene.css'
 
 /** Small line icons, drawn here: what flows in, what comes back. */
 const ICONS_IN = [
-  <path key="a" d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.6 5l-3.2 14" />,
+  <g key="a">
+    {/* a document */}
+    <path d="M7 3h7l4 4v12a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+    <path d="M14 3v4h4M8.5 12h7M8.5 16h5" />
+  </g>,
   <g key="b">
-    <path d="M4 8a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 000-4z" />
-    <path d="M14 8.5v7" strokeDasharray="1.6 1.9" />
+    {/* a decision: a tick in a circle */}
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M8.3 12.4l2.6 2.6 4.9-5.4" />
   </g>,
   <g key="c">
     <path d="M4 5h10a2 2 0 012 2v4a2 2 0 01-2 2H9l-3.5 3v-3H4a2 2 0 01-2-2V7a2 2 0 012-2z" />

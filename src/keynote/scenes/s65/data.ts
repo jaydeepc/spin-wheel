@@ -79,16 +79,16 @@ export const RECALL = 'Everything we spoke about this morning'
 export const MIND = {
   name: 'Piramal Mind', // name
   line: 'Engineered to hold all of this.', // the owner's brief
-  promise: 'The memory and the intelligence of our engineering.', // promise
+  promise: 'The memory and the intelligence of our organization.', // owner, 18 Nov: organizational knowledge, not engineering tools
   motto: 'It remembers. And it connects.', // demo.line
   inKicker: 'Flows in',
-  inTag: 'Auto-ingested', // demo.ingested
-  ins: ['Every codebase', 'Every Jira ticket', 'Every discussion'], // demo.ingests
+  inTag: 'Organizational knowledge', // owner, 18 Nov: no tool names (was 'Auto-ingested')
+  ins: ['Every document', 'Every decision', 'Every conversation'], // owner, 18 Nov: organizational knowledge (was codebase / Jira ticket / discussion)
   outKicker: 'Gives back',
   outs: [
     'It remembers what had already been decided.', // priya.after ("It remembered what had already been decided.")
     'It talks back before anything is built.', // demo.talksBack (its note: "Piramal Mind talks back before anything is built")
-    'It traces the ticket back to the change that caused it.', // demo.defect.text
+    'It connects every answer back to its source.', // owner, 18 Nov: no ticket wording
   ],
   memory: 'One connected memory', // the lead's brief
 }
