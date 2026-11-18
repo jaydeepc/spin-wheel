@@ -69,21 +69,48 @@ export default function Priya() {
 
     // ============================================================ her photo irises down into her avatar
     const slot = avatar ? stage.loc(avatar) : { x: -stage.hx, y: 17.9 * U, w: 3.6 * U, h: 3.6 * U, cx: 0, cy: 0 }
-    // Her photo is a square head-and-shoulders, the same file as her avatar. The circle is the whole
-    // width of the photo, centred, and the picture eases back to fit that width as it goes: so what
-    // lands in the avatar's place is exactly what the avatar shows.
-    const cSide = hb.w
+    // THE LANDING, for any photo (square, tall or wide, any resolution). The avatar shows her
+    // portrait cover-fitted in a circle; the photo here is cover-fitted in its frame. So: the
+    // frame closes to the largest centred circle it holds, and the picture inside eases back by
+    // exactly the difference between the two fits (read from the file's own size when the move
+    // starts). What lands in the avatar's place is then, to the pixel, what the avatar shows.
+    // (Both are centred: the same file is used for the photo and for the portrait.)
+    const cSide = Math.min(hb.w, hb.h)
     const cTop = (hb.h - cSide) / 2
+    const cLeft = (hb.w - cSide) / 2
     const sAv = slot.w / cSide
-    const clipAvatar = `inset(${cTop}px 0px ${cTop}px 0px round ${cSide / 2}px)`
+    const clipAvatar = `inset(${cTop}px ${cLeft}px ${cTop}px ${cLeft}px round ${cSide / 2}px)`
+    const heroImg = $('.pr-hero-img') as HTMLImageElement
+    const fitBack = () => {
+      const iw = heroImg.naturalWidth || 1
+      const ih = heroImg.naturalHeight || 1
+      return Math.max(cSide / iw, cSide / ih) / Math.max(hb.w / iw, hb.h / ih)
+    }
+
+    // The photo drifts a little while she is on screen (a CSS animation on the picture). For the
+    // landing to be exact that drift is taken off first, from wherever it happens to be, with no
+    // jump; going Back past this point gives it back.
+    const settle = () => {
+      if (t.time() >= tI) {
+        const now = getComputedStyle(heroImg).transform
+        heroImg.style.animation = 'none'
+        gsap.set(heroImg, { transform: now === 'none' ? 'matrix(1, 0, 0, 1, 0, 0)' : now })
+        gsap.to(heroImg, { x: 0, y: 0, scale: 1, duration: 0.6, ease: 'power2.out', overwrite: true })
+      } else {
+        gsap.killTweensOf(heroImg)
+        gsap.set(heroImg, { clearProps: 'transform' })
+        heroImg.style.animation = ''
+      }
+    }
+    t.call(settle, [], tI + 0.02)
 
     t.to(rise, { yPercent: -118, duration: 0.45, ease: 'power3.in', stagger: 0.035 }, tI)
       .to(title.chars, { yPercent: -118, duration: 0.45, ease: 'power3.in', stagger: 0.014 }, tI)
       .to(underline, { autoAlpha: 0, duration: 0.2 }, tI)
       .to(heroShadow, { autoAlpha: 0, duration: 0.25, ease: 'power1.in' }, tI)
       .set(heroZoom, { transformOrigin: '50% 50%' }, tI)
-      .to(heroZoom, { scale: hb.w / hb.h, duration: 0.95, ease: E.inOut }, tI + 0.05)
-      .to(hero, { x: slot.x - hb.x, y: slot.y - hb.y - sAv * cTop, scale: sAv, clipPath: clipAvatar, duration: 0.95, ease: E.inOut }, tI + 0.05)
+      .to(heroZoom, { scale: fitBack, duration: 0.95, ease: E.inOut }, tI + 0.05)
+      .to(hero, { x: slot.x - hb.x - sAv * cLeft, y: slot.y - hb.y - sAv * cTop, scale: sAv, clipPath: clipAvatar, duration: 0.95, ease: E.inOut }, tI + 0.05)
     if (avatar) t.to(avatar, { autoAlpha: 1, duration: 0.18, ease: 'none' }, tI + 0.9)
     t.to(hero, { autoAlpha: 0, duration: 0.1, ease: 'none' }, tI + 1.0)
     t.addLabel('done', tI + PRIYA_TIME.out)
