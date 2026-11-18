@@ -4,12 +4,12 @@
    from the accent variables (--acc, --acc-ink, --acc-soft…).
 
    THE BUDGET: outside the phone BYOT draws nothing at rest. What
-   it has to say is on the glass: the app's name and who built it,
-   four fields, the voice dock. At the result: the filed note
-   (four lines) and ONE stamp.
+   it has to say is on the glass: the REAL app (stills and a short
+   muted clip from a screen recording of it). At the result: the filled form
+   and ONE stamp.
    ============================================================ */
 
-/* ---------- BEFORE: a notebook page at 11:40 pm, half remembered (laid out for 25u × 20u) ---------- */
+/* ---------- BEFORE: a notebook page at 9:40 pm, half remembered (laid out for 25u × 20u) ---------- */
 .byot-b {
   position: absolute;
   inset: 0;
@@ -129,241 +129,81 @@
   white-space: nowrap;
 }
 
-/* ---------- The app on the phone: Visit Notes (the glass is 14.4u × 28.35u) ---------- */
+/* ---------- The app on the phone: the REAL app, from a screen recording (the glass is 14.4u × 28.3u).
+   The pictures are cropped to the glass; they hold on to its foot, where the app's sheet and its
+   button are. ---------- */
 .byot-app {
   position: absolute;
   inset: 0;
-}
-/* its name, and under it who built it: the one place that says so */
-.byot-appbar {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  column-gap: calc(var(--u) * 0.5);
-  height: calc(var(--u) * 4);
-  padding: calc(var(--u) * 0.1) calc(var(--u) * 0.7) calc(var(--u) * 0.45);
-  align-content: center;
-}
-.byot-appicon {
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 1.9);
-  height: calc(var(--u) * 1.9);
-  border-radius: calc(var(--u) * 0.55);
-  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
-  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.7) rgba(235, 84, 44, 0.35);
-}
-.byot-appicon svg {
-  width: 58%;
-  height: 58%;
-}
-.byot-apptitle {
-  font-size: calc(var(--u) * 1.3);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: var(--ev-navy);
-  white-space: nowrap;
-}
-.byot-appby {
-  grid-column: 1 / -1;
-  margin-top: calc(var(--u) * 0.3);
-  font-size: calc(var(--u) * 0.8);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.25;
-  color: var(--acc-text);
-  white-space: nowrap;
-}
-.byot-slot {
-  position: relative;
-}
-.byot-slot-outline {
-  /* the empty place a part will drop into */
-  position: absolute;
-  inset: calc(var(--u) * 0.1);
-  border-radius: calc(var(--u) * 0.7);
-  border: calc(var(--u) * 0.09) dashed #f0b9aa;
-  background: rgba(255, 241, 234, 0.5);
-}
-.byot-block {
-  position: relative;
-  will-change: transform, opacity;
-}
-
-/* the four fields */
-.byot-fields {
-  margin: 0 calc(var(--u) * 0.6);
-}
-.byot-fields .byot-block {
   background: #ffffff;
+  visibility: hidden;
 }
-.byot-field {
-  position: relative;
-  height: calc(var(--u) * 2.9);
-  padding: calc(var(--u) * 0.45) calc(var(--u) * 0.55) 0;
-  border-bottom: 1px solid #e3eaf3;
-  overflow: hidden;
+.ev-shot.byot-shot img {
+  object-position: 50% 100%;
 }
-.byot-field-k {
+.byot-shot--listen,
+.byot-shot--done {
+  visibility: hidden;
+  will-change: opacity;
+}
+.byot-clip {
+  position: absolute;
+  inset: 0;
   display: block;
-  font-size: calc(var(--u) * 0.66);
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ev-muted);
-  line-height: 1.3;
-  will-change: transform, opacity;
-}
-.byot-field-v {
-  display: block;
-  width: max-content;
-  margin-top: calc(var(--u) * 0.1);
-  font-size: calc(var(--u) * 0.92);
-  font-weight: 700;
-  color: var(--ev-navy);
-  line-height: 1.3;
-  padding-bottom: 0.1em;
-  white-space: nowrap;
-  letter-spacing: -0.015em;
-  will-change: transform;
-}
-.byot-field-skel {
-  position: absolute;
-  left: calc(var(--u) * 0.55);
-  top: calc(var(--u) * 1.68);
-  width: 46%;
-  height: calc(var(--u) * 0.56);
-  border-radius: calc(var(--u) * 0.28);
-  background: #e9eef5;
-}
-.byot-field:nth-child(2) .byot-field-skel,
-.byot-slot:last-child .byot-field-skel {
-  width: 62%;
-}
-.byot-field-sweep {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(241, 100, 67, 0) 0%, rgba(241, 100, 67, 0.16) 50%, rgba(241, 100, 67, 0) 100%);
-}
-.byot-field-tick {
-  position: absolute;
-  right: calc(var(--u) * 0.5);
-  top: calc(var(--u) * 0.42);
-  width: calc(var(--u) * 0.95);
-  height: calc(var(--u) * 0.95);
-  border-radius: 50%;
-  background: var(--acc-soft);
-  display: grid;
-  place-items: center;
-  visibility: hidden;
-}
-.byot-field-tick svg {
-  width: 60%;
-  height: 60%;
-}
-
-/* the voice dock: her words appear here, over the one control */
-.byot-slot--voice {
-  position: absolute;
-  left: calc(var(--u) * 0.6);
-  right: calc(var(--u) * 0.6);
-  top: calc(var(--u) * 16);
-  bottom: calc(var(--u) * 0.6);
-}
-.byot-dock {
-  position: absolute;
-  inset: 0;
-  border-radius: calc(var(--u) * 1.1) calc(var(--u) * 1.1) calc(var(--u) * 1.5) calc(var(--u) * 1.5);
-  background: #fff5f0;
-  border: 1px solid #f7d7cd;
-}
-.byot-note {
-  position: absolute;
-  left: calc(var(--u) * 0.75);
-  right: calc(var(--u) * 0.75);
-  top: calc(var(--u) * 0.75);
-  height: calc(var(--u) * 5.5);
-}
-.byot-note-ph {
-  /* what the control does, said where her words will appear */
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: calc(var(--u) * 1.02);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--acc-text);
-  white-space: nowrap;
-  visibility: hidden;
-}
-.byot-note-text {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  font-size: calc(var(--u) * 0.86);
-  font-weight: 600;
-  line-height: 1.38;
-  letter-spacing: -0.01em;
-  color: var(--ev-ink);
-}
-.byot-microw {
-  position: absolute;
-  left: calc(var(--u) * 0.8);
-  right: calc(var(--u) * 0.8);
-  bottom: calc(var(--u) * 1.15);
-  height: calc(var(--u) * 3.7);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.75);
-}
-.byot-wave {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.2);
-  height: calc(var(--u) * 2.3);
-}
-.byot-wave i {
-  flex: 1;
-  height: 100%;
-  border-radius: calc(var(--u) * 0.2);
-  background: var(--acc);
-  transform: scaleY(0.1);
-  opacity: 0.8;
-  will-change: transform;
-}
-
-/* the one control: the mic */
-.byot-micWrap {
-  position: relative;
-  flex: none;
-  width: calc(var(--u) * 3.7);
-  height: calc(var(--u) * 3.7);
-  visibility: hidden;
-}
-.ev-touch.byot-mic {
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: opacity;
 }
-.byot-mic-face {
+/* the one control lies on the app's own "Start voice disposition" button: measured on the
+   picture (734 px wide: the button is 58 → 672 across, 182 → 274 up from the foot) */
+.byot-startWrap {
+  position: absolute;
+  left: calc(var(--u) * 1.14);
+  bottom: calc(var(--u) * 3.57);
+  width: calc(var(--u) * 12.05);
+  height: calc(var(--u) * 1.8);
+  visibility: hidden;
+}
+.ev-touch.byot-start {
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--u) * 0.24);
+}
+/* a wide button breathes outwards evenly, not twice as wide */
+.ev-touch.byot-start[data-live='1'] .ev-touch-ring {
+  animation-name: byot-pulse;
+}
+@keyframes byot-pulse {
+  0% {
+    transform: scale(1, 1);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.1, 1.7);
+    opacity: 0;
+  }
+}
+.ev-root[data-hold='1'] .ev-touch.byot-start[data-live='1'] .ev-touch-ring {
+  animation: none;
+  opacity: 0.5;
+  transform: scale(1.05, 1.35);
+}
+.ev-root[data-hold='1'] .ev-touch.byot-start[data-live='1'] .ev-touch-ring--2 {
+  opacity: 0.22;
+  transform: scale(1.1, 1.7);
+}
+/* the press: a light wash over the real button */
+.byot-start-face {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #f4714d 0%, #e24a22 100%);
-  box-shadow:
-    0 calc(var(--u) * 0.5) calc(var(--u) * 1.2) rgba(235, 84, 44, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-.byot-mic-face svg {
-  position: absolute;
-  left: 22%;
-  top: 22%;
-  width: 56%;
-  height: 56%;
-  overflow: visible;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.35);
+  visibility: hidden;
 }
 
 /* ---------- The four parts her team put together. They fly out of the letters and into the phone. ---------- */
@@ -393,27 +233,8 @@
   fill: #f0a48f;
 }
 
-/* ---------- Her words, lifted off the line: each phrase flies into the field it fills ---------- */
-.byot-phrase {
-  position: absolute;
-  left: 0;
-  top: 0;
-  padding: calc(var(--u) * 0.22) calc(var(--u) * 0.5);
-  border-radius: calc(var(--u) * 0.55);
-  background: #ffffff;
-  border: calc(var(--u) * 0.1) solid var(--acc);
-  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.4) rgba(235, 84, 44, 0.28);
-  font-size: calc(var(--u) * 1.22);
-  font-weight: 700;
-  line-height: 1.42;
-  color: var(--acc-ink);
-  white-space: nowrap;
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-
-/* ---------- Filed 10:42 am: the ONE thing on the phone at the result. It stands where her
-   words were (core: animate() moves it onto the note), a little off the phone's right edge. ---------- */
+/* ---------- Filed 10:42 am: the ONE thing on the phone at the result. It stands low on the
+   filled form (animate() places it), a little off the phone's right edge. ---------- */
 .byot-stamp {
   position: absolute;
   left: 50%;
@@ -569,82 +390,17 @@
     font-size: max(calc(var(--u) * 1.25), calc(var(--fl) * 9.2));
   }
 
-  /* ----- the app on the phone ----- */
-  .byot-appbar {
-    height: calc(var(--u) * 4.1);
-    padding: 0 calc(var(--u) * 0.6) calc(var(--u) * 0.3);
-    column-gap: calc(var(--u) * 0.4);
+  /* ----- the app on the phone: the glass is wider here (17.4u), so the pictures lose their top
+     and the button is larger ----- */
+  .byot-startWrap {
+    left: calc(var(--u) * 1.37);
+    bottom: calc(var(--u) * 4.31);
+    width: calc(var(--u) * 14.56);
+    height: calc(var(--u) * 2.18);
   }
-  .byot-appicon {
-    width: calc(var(--u) * 1.7);
-    height: calc(var(--u) * 1.7);
-  }
-  .byot-apptitle {
-    font-size: max(calc(var(--u) * 1.3), var(--dt));
-  }
-  .byot-appby {
-    margin-top: calc(var(--u) * 0.15);
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    letter-spacing: -0.03em;
-  }
-  .byot-fields {
-    margin: 0 calc(var(--u) * 0.5);
-  }
-  .byot-field {
-    height: calc(var(--u) * 3);
-    padding: calc(var(--u) * 0.2) calc(var(--u) * 0.5) 0;
-  }
-  .byot-field-k {
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    letter-spacing: 0.1em;
-    line-height: 1.25;
-  }
-  .byot-field-v {
-    margin-top: 0;
-    font-size: max(calc(var(--u) * 1.12), var(--dt));
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-  }
-  .byot-field-skel {
-    left: calc(var(--u) * 0.5);
-    top: calc(var(--u) * 1.85);
-  }
-  .byot-field-tick {
-    right: calc(var(--u) * 0.4);
-    top: calc(var(--u) * 0.3);
-    width: calc(var(--u) * 1.1);
-    height: calc(var(--u) * 1.1);
-  }
-  .byot-slot--voice {
-    left: calc(var(--u) * 0.5);
-    right: calc(var(--u) * 0.5);
-    top: calc(var(--u) * 16.4);
-    bottom: calc(var(--u) * 0.5);
-  }
-  .byot-note {
-    left: calc(var(--u) * 0.6);
-    right: calc(var(--u) * 0.6);
-    top: calc(var(--u) * 0.5);
-    height: calc(var(--u) * 6.3);
-  }
-  .byot-note-ph {
-    font-size: max(calc(var(--u) * 1.2), var(--dt));
-  }
-  .byot-note-text {
-    font-size: max(calc(var(--u) * 1), var(--dt));
-    line-height: 1.26;
-    letter-spacing: -0.02em;
-  }
-  .byot-microw {
-    bottom: calc(var(--u) * 0.75);
-    height: calc(var(--u) * 3.4);
-  }
-  .byot-micWrap {
-    width: calc(var(--u) * 3.4);
-    height: calc(var(--u) * 3.4);
-  }
-  .byot-wave {
-    height: calc(var(--u) * 2);
+  /* the filled form is read from its top */
+  .ev-shot.byot-shot--done img {
+    object-position: 50% 0;
   }
   .byot-stamp span {
     font-size: max(calc(var(--u) * 1.3), var(--dt));
@@ -653,10 +409,6 @@
   /* ----- the things that fly, and the picture of the number ----- */
   .byot-part {
     font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 11));
-  }
-  .byot-phrase {
-    font-size: max(calc(var(--u) * 1.45), calc(var(--fl) * 11.5));
-    line-height: 1.36;
   }
   .byot-callout-in b {
     font-size: max(calc(var(--u) * 1.5), calc(var(--fl) * 11.5));

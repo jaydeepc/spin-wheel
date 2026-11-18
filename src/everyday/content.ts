@@ -120,10 +120,21 @@ export interface ByotProduct extends ProductBase {
     builtBy: string
     /** The parts the team put together to make the app. */
     blocks: string[]
+    /** What the officer says into the app, in short. Not drawn: the real screens show the note it wrote. */
     spoken: string
+    /** The app's own fields, as the real screen labels and fills them. The old-way notebook page uses the same four. */
     fields: { k: string; v: string }[]
     filed: string
     beforeWhen: string
+    /** The label of the app's own button that the visitor presses (it is in the `ask` screenshot). */
+    start: string
+    /**
+     * The real screens, from a screen recording of the app, cropped to the film's phone glass
+     * (734 x 1442 px, the app's own title bar cut off): ready to speak; listening; the fields filled.
+     */
+    shots: { ask: ShotSpec; listen: ShotSpec; done: ShotSpec }
+    /** The real app at work, muted: listening, analysing, the fields filled. H.264, no sound track; `seconds` is its length. */
+    clip: { src: string; seconds: number }
   }
 }
 export interface ByoaProduct extends ProductBase {
@@ -314,18 +325,37 @@ export const PRODUCTS: Product[] = [
     stat: { value: '634', label: 'employees built their own tool' },
     track: 'day',
     demo: {
-      app: 'Nirman',
+      app: 'Collection Central',
       builtBy: 'Built by the collections team, on BYOT',
-      blocks: ['Voice note', 'Customer', 'Disposition', 'Next step'],
-      spoken: 'Met Mr Verma at his Aminabad shop. He will pay by Friday. Call again on Saturday.',
+      blocks: ['Voice disposition', 'Interaction result', 'Reason', 'Remarks'],
+      spoken: 'He has lost his job. He expects an offer in two or three days, and will pay the EMI next month.',
       fields: [
-        { k: 'Customer', v: 'R. Verma' },
-        { k: 'Met at', v: 'Aminabad, his shop' },
-        { k: 'Disposition', v: 'Will pay by Friday' },
-        { k: 'Next step', v: 'Call again on Saturday' },
+        { k: 'Party contacted', v: 'Borrower' },
+        { k: 'Reason', v: 'Customer is Jobless' },
+        { k: 'Interaction result', v: 'PTP Not Given' },
+        { k: 'Delinquency reason', v: 'Out of Job' },
       ],
       filed: 'Filed 10:42 am',
       beforeWhen: '9:40 pm',
+      start: 'Start voice disposition',
+      shots: {
+        ask: {
+          src: '/everyday/shots/byot-ask.jpg',
+          label: 'Collection Central: ready for a voice disposition',
+          want: 'The case update form, empty, with the "Start voice disposition" button.',
+        },
+        listen: {
+          src: '/everyday/shots/byot-listen.jpg',
+          label: 'Collection Central: listening',
+          want: 'The Voice Disposition sheet while the officer speaks: "Speak Now", the microphone.',
+        },
+        done: {
+          src: '/everyday/shots/byot-done.jpg',
+          label: 'Collection Central: the disposition, filled in',
+          want: 'The same form a moment later: interaction result, reason, remarks, party contacted and delinquency reason filled in.',
+        },
+      },
+      clip: { src: '/everyday/shots/byot-run.mp4', seconds: 2 },
     },
   },
   {
