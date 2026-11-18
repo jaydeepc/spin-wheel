@@ -63,11 +63,11 @@ export default function Moment({ product, module }: { product: Product; module: 
         <p className="ev-before-tag">Before</p>
       </div>
       {/* (only where her line does not tell the old way itself: Piramal Mind) */}
-      {module.beforeHeadline ? (
-        <p className="ev-before-h">
-          <Rise>{sentences(product.before.headline)}</Rise>
-        </p>
-      ) : null}
+      {/* (version 2, ?v=2, shows it on every moment, with the detail line under it: everyday.css) */}
+      <p className="ev-before-h">
+        <Rise>{sentences(product.before.headline)}</Rise>
+      </p>
+      <p className="ev-before-d">{product.before.detail}</p>
 
       {/* ---------- THE NAME ---------- */}
       <i className="ev-flash" />

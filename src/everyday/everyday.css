@@ -2210,3 +2210,72 @@ html:has(.ev-root) body {
     font-size: max(calc(var(--u) * 1.02), calc(var(--fl) * 9));
   }
 }
+
+/* ============================================================
+   VERSION 2 (?v=2): a second layout, kept beside the first.
+   BEFORE: the old way gets a headline of its own, top left, and her bubble is narrower: so the
+   picture has more of the screen (core/buildMoment.ts lets it grow to 2.5×).
+   RESULT: one thing to read. The name steps down to a label, the statement is the headline, and
+   the supporting line and her bubble are quieter.
+   ============================================================ */
+.ev-moment[data-before-h='0'] .ev-before-h,
+.ev-before-d {
+  display: none;
+}
+.ev-root[data-v='2'] {
+  --ev-bw: calc(var(--u) * 37);
+}
+.ev-root[data-v='2'] .ev-moment .ev-before-h {
+  display: block;
+  top: calc(var(--ev-top) + var(--u) * 3.4);
+  width: calc(var(--ev-bw) + var(--u) * 2);
+  font-size: calc(var(--u) * 4.5);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+.ev-root[data-v='2'] .ev-before-d {
+  display: block;
+  position: absolute;
+  left: calc(var(--hx) * -1);
+  top: calc(var(--ev-top) + var(--u) * 21.5);
+  width: var(--ev-bw);
+  font-size: calc(var(--u) * 1.9);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ev-body);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.ev-root[data-v='2'][data-step='before'] .ev-before-d {
+  opacity: 1;
+  transition: opacity 0.45s 0.5s;
+}
+/* the result: the statement is the one headline */
+.ev-root[data-v='2'] .ev-col {
+  top: calc(var(--u) * -7.6);
+}
+.ev-root[data-v='2'] .ev-sentence {
+  font-size: calc(var(--u) * 3.9);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+.ev-root[data-v='2'] .ev-proof {
+  margin-top: calc(var(--u) * 1.6);
+  max-width: calc(var(--u) * 34);
+  font-size: calc(var(--u) * 1.45);
+  font-weight: 500;
+  color: var(--ev-muted);
+}
+.ev-root[data-v='2'] .ev-proof b {
+  font-weight: 700;
+  color: var(--ev-body);
+}
+.ev-root[data-v='2'] .ev-dockcap {
+  top: calc(var(--u) * -7.4);
+}
+.ev-root[data-v='2'][data-step='result'] .ev-voice-text {
+  font-size: calc(var(--u) * 1.6);
+  font-weight: 500;
+  color: var(--ev-body);
+}

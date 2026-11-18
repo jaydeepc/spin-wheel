@@ -29,6 +29,8 @@ export interface DebugParams {
   scene: SceneId | null
   at: string | null
   dt: number
+  /** ?v=2: the second layout of a moment (a larger old-way picture with its headline; a quieter result). */
+  v: string | null
   /** Auto-play was asked for (?auto). Without it the film is manual. */
   auto: boolean
   /** Somebody is there (see above). */
@@ -47,6 +49,7 @@ export function readDebug(): DebugParams {
     scene: scene && SCENES.includes(scene) ? scene : null,
     at: at || null,
     dt: Number(p.get('dt') ?? 0) || 0,
+    v: p.get('v'),
     auto: flag(p, 'auto'),
     touched: flag(p, 'touched'),
     dev: p.has('scene') || flag(p, 'debug'),

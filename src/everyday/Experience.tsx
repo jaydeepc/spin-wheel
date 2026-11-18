@@ -75,6 +75,8 @@ export default function Experience() {
     let alive = true
     motion()
     const debug = readDebug()
+    // ?v=2: the second layout, kept beside the first for comparison (everyday.css, "VERSION 2")
+    if (debug.v) root.dataset.v = debug.v
     const $ = <T extends Element = HTMLElement>(sel: string) => root.querySelector(sel) as unknown as T
     const stopPump = startPump(root)
     const stage = createStage($('.ev-stage'))
