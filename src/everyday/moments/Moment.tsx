@@ -65,14 +65,6 @@ export default function Moment({ product, module }: { product: Product; module: 
       {/* (only where her line does not tell the old way itself: Piramal Mind) */}
       {/* the old way, as a headline with its detail line under it, top left: on every moment */}
       <p className="ev-before-h">
-        {product.meet ? (
-          <span className="ev-before-meet">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={product.speaker.portrait} alt="" draggable={false} />
-            <b>Meet {product.speaker.name}.</b>
-            <i>{product.speaker.role}</i>
-          </span>
-        ) : null}
         <Rise>{sentences(product.before.headline)}</Rise>
         <span className="ev-before-d">{product.before.detail}</span>
       </p>

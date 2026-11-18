@@ -61,8 +61,6 @@ interface ProductBase {
   key: ProductKey
   /** Who tells this moment. */
   speaker: Speaker
-  /** This moment is where its speaker first appears: they are introduced ("Meet Rohan.") over the old-way headline. */
-  meet?: boolean
   /** The product's name: the hero of its moment. */
   name: string
   /** What the name stands for, word by word, for acronyms (B·Y·O·T → Build Your Own Tech). */
@@ -310,7 +308,6 @@ export const PRODUCTS: Product[] = [
   {
     key: 'byot',
     speaker: SPEAKERS.rohan,
-    meet: true,
     name: 'BYOT',
     expansion: ['Build', 'Your', 'Own', 'Tech'],
     promise: 'Apps built by the team that needs them. No code.',
@@ -461,7 +458,6 @@ export const PRODUCTS: Product[] = [
   {
     key: 'mind',
     speaker: SPEAKERS.atul,
-    meet: true,
     name: 'Piramal Mind',
     promise: 'The memory and the intelligence of our engineering.',
     accent: 'navy',
