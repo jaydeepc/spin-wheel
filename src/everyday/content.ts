@@ -225,7 +225,7 @@ export type Product = SmartHelpProduct | ByotProduct | ByoaProduct | PrastutiPro
 export const SPEAKERS = {
   priya: { name: 'Priya', role: 'Home-loan sales, Lucknow', portrait: '/everyday/priya.jpg' },
   rohan: { name: 'Rohan', role: 'Collections officer, Lucknow', portrait: '/people/arjun-menon.jpg' },
-  atul: { name: 'Atul', role: 'Software Engineer, Journey App Team', portrait: '/people/rohan-deshmukh.jpg' },
+  atul: { name: 'Atul', role: 'Software Engineer, Journey App Team', portrait: '/people/atul.jpg' },
 } satisfies Record<string, Speaker>
 
 export const PRODUCTS: Product[] = [

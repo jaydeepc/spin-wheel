@@ -155,7 +155,7 @@ function Before({ product }: P) {
           Old code
         </p>
         <p className="mind-b-code">
-          max_loan=<b>&quot;10L&quot;</b>
+          limit=<b>&quot;10L&quot;</b>
         </p>
         <i className="mind-b-skel" />
       </div>
