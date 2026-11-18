@@ -1343,10 +1343,9 @@
 /* ---------- REAL SCREENS (content.ts → demo.shots): a screenshot, or its placeholder ----------
    Before: PowerPoint, over the drawn editor's body. Result: the deck Prastuti built, over the
    dealt-out slides (it comes up as the run ends). */
-.prastuti-b-body {
-  position: relative;
-}
-.prastuti-b-shot {
+.ev-shot.prastuti-b-shot {
+  /* under the window's title bar (2.9u), over its drawn toolbar and slide */
+  top: calc(var(--u) * 2.9);
   z-index: 5;
 }
 .prastuti-shot {
@@ -1412,4 +1411,10 @@
   .prastuti-mini .prastuti-t-title {
     font-size: max(calc(var(--s) * 10), calc(var(--fl) * 11));
   }
+}
+
+/* the real screens keep their left edge (the app's name): what does not fit is cut on the right */
+.prastuti-b-shot img,
+.prastuti-shot img {
+  object-position: 0 0;
 }

@@ -392,12 +392,12 @@ export const PRODUCTS: Product[] = [
       beforeWhen: 'Sunday, 11 pm',
       shots: {
         before: {
-          src: '',
+          src: '/everyday/shots/prastuti-before.jpg',
           label: 'PowerPoint: a blank deck',
           want: 'PowerPoint open on an empty slide ("Click to add title"), the full ribbon showing.',
         },
         deck: {
-          src: '',
+          src: '/everyday/shots/prastuti-deck.jpg',
           label: 'Prastuti: the finished deck',
           want: 'Prastuti on a desktop with a real deck it built, in Hindi: the slide list and one chart slide open.',
         },

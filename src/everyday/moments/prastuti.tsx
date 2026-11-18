@@ -172,10 +172,10 @@ function Before({ product }: P) {
               <i />
             </div>
           </div>
-          {/* the REAL screen of the old way lies over the drawn editor: a screenshot of PowerPoint
-              (content.ts → demo.shots.before), or its placeholder until the file is supplied */}
-          <Shot shot={product.demo.shots.before} className="prastuti-b-shot" />
         </div>
+        {/* the REAL screen of the old way lies over the drawn editor, under the title bar: a
+            screenshot of PowerPoint (content.ts → demo.shots.before), with its own ribbon */}
+        <Shot shot={product.demo.shots.before} className="prastuti-b-shot" />
       </div>
     </div>
   )
@@ -449,11 +449,12 @@ function Screen({ product }: P) {
             </div>
           )
         })}
-
-        {/* the REAL deck: a screenshot of Prastuti with the deck it built (content.ts →
-            demo.shots.deck), or its placeholder. It comes up over the dealt-out slides as the run ends. */}
-        <Shot shot={d.shots.deck} className="prastuti-shot" />
       </div>
+
+      {/* the REAL deck: a screenshot of Prastuti with the deck it built (content.ts →
+          demo.shots.deck). It carries its own header, so it covers the whole screen; it comes up
+          over the dealt-out slides as the run ends. */}
+      <Shot shot={d.shots.deck} className="prastuti-shot" />
     </div>
   )
 }
