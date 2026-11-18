@@ -17,3 +17,13 @@ Choices
 - 38 "curve": the chart card stands in the middle alone, then moves left as the reasoning card arrives.
 - Chart values are read by eye from the picture (data.ts).
 - ctx.reduced: the kit's moves calm down; the scan band, typing wipe and ring still move.
+
+Second pass (18 Nov, after review)
+- 36: findings are spaced by their own height (two-line pills get more room; never less than 0.5u of air); statements are 22.6u wide; the one being read lifts off the table (scale 1.055, deeper shadow), the band has a trail and leaves a wash of the statement's colour, and the agent's line of light runs to it. The agent and the deal-in start earlier (0.15 s, 0.4 s).
+- 37 raw: GenAI's column holds its place (dim name, five dashed places) and the "100" box is already there with its 10 x 10 block.
+- 37 features: exactly 9,000 points (225 x 40) at the same whole-pixel pitch as the 100; the counter IS the number of points landed. Foot boxes are stacked (number over words) to give the field the room: this differs from the picture's layout.
+- Narration lines are set in Geist Mono (OFL), shipped in this folder (geist-mono-latin.woff2, Next's own copy), so hyphens are short and lines the same on every machine.
+- 39: the ring goes red, amber, green (the three statement tones); rows turn over from t + 0.45.
+- Chart: the area fill fades in from score 1 (no hard edge).
+- still-37.jpg re-shot again from 36's last rest.
+- NOT done here (outside this folder): public/keynote/pages/36..39.jpg and thumbs still show the retired slides.

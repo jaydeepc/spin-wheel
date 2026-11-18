@@ -31,8 +31,10 @@ export const READS_TEXT = [
 ]
 
 /* ------------------------------------------------------------------ slide 34 */
-/** pack/34 t14, t15 · data.json → agent */
-export const ABCD = { name: 'ABCD', role: 'AI-Based Credit Decisioning', photo: 'agent-abcd-face.jpg', px: 110 }
+/** pack/34 t14, t15 · data.json → agent. The mark is the owner's ABCD logo (public/keynote/brand/, cut from
+ *  abcd-agent-source.webp: trimmed to the speech bubble, nothing redrawn); it replaces the deck's robot face
+ *  (src/34/agent-abcd-face.jpg) on 34 and on 35. */
+export const ABCD = { name: 'ABCD', role: 'AI-Based Credit Decisioning', logo: '/keynote/brand/abcd-agent-512.png' }
 /** pack/34 t13 · data.json → pile */
 export const PILE_34 = 'The same mountain of documents'
 

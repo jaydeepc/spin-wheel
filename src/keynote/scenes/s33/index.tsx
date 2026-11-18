@@ -165,6 +165,9 @@ const HELMET_N = (() => {
   })
 })()
 
+/** ABCD's chip on slide 35, against its size where it is named on slide 34. */
+const ABCD_SMALL = 0.78
+
 const LAMP = { off: '#1f2f6c', amber: '#f6a823', green: '#23a566' }
 
 /** The shadows were cut with 40 pixels of room round the cut-out. */
@@ -201,7 +204,7 @@ const scene: SceneModule = {
     pic(33, 'illus-paper-stack.png'),
     gen(33, 'shadow-stack.png'),
     pic(33, D.SUSHIL.photo),
-    pic(34, D.ABCD.photo),
+    D.ABCD.logo,
     pic(34, 'illus-helmet.png'),
     gen(33, 'shadow-helmet.png'),
     pic(34, 'illus-helmet-mini.png'),
@@ -229,6 +232,9 @@ const scene: SceneModule = {
           <path className="s33-orange s33-box" d={`M72.8 ${37.05 - LT} V${40.3 - LT} H27.8 V${37.05 - LT}`} strokeWidth="0.5" />
           <path className="s33-white s33-tmark" d={`M25.4 ${CY - 5.2 - LT} V${CY + 5.2 - LT} M25.4 ${CY - LT} H27.9`} strokeWidth="0.44" />
           <path className="s33-white s33-tmark s33-tmark--far" d={`M75.2 ${CY - 5.2 - LT} V${CY + 5.2 - LT} M75.2 ${CY - LT} H72.7`} strokeWidth="0.44" />
+          {/* the light that runs out along the box's upper bracket as ABCD lands above it (slide 34) */}
+          <path className="s33-surge" d={`M${CX} ${21.95 - LT} H27.8 V${25.2 - LT}`} strokeWidth="0.5" pathLength={100} strokeDasharray="16 100" />
+          <path className="s33-surge" d={`M${CX} ${21.95 - LT} H72.8 V${25.2 - LT}`} strokeWidth="0.5" pathLength={100} strokeDasharray="16 100" />
           {/* quiet paint in the lower band: the fast lane's broken line */}
           <path className="s33-white s33-dash" d={`M-1 ${49.6 - LT} H101`} strokeWidth="0.3" strokeDasharray="3.2 2.4" />
           {/* the four air lines: from a coupling on each team's card to the gun at its wheel */}
@@ -349,7 +355,24 @@ const scene: SceneModule = {
 
       {/* ---------------------------------------------------------------- slide 34: the crew */}
       <div className="s33-chip s33-chip--abcd s33-ui">
-        <Person src={pic(34, D.ABCD.photo)} name={D.ABCD.name} role={D.ABCD.role} size={3.75} ring="flame" plate maxPx={D.ABCD.px} />
+        {/* ABCD is named: its own logo, whole (a speech bubble, not a circle), and its name large beside it */}
+        <span className="s33-abcd">
+          <span className="s33-abcd-plate" aria-hidden="true" />
+          <span className="s33-abcd-mark">
+            <i className="s33-abcd-ring" aria-hidden="true" />
+            <img src={D.ABCD.logo} alt="" draggable={false} decoding="async" />
+          </span>
+          <span className="s33-abcd-text">
+            <b className="s33-abcd-name" aria-label={D.ABCD.name}>
+              {D.ABCD.name.split('').map((ch, i) => (
+                <span className="s33-abcd-l" key={i} aria-hidden="true">
+                  {ch}
+                </span>
+              ))}
+            </b>
+            <small className="s33-abcd-role">{D.ABCD.role}</small>
+          </span>
+        </span>
       </div>
       <span className="s33-label s33-label--34 s33-ui">{D.PILE_34}</span>
       {D.TEAMS.map((t) => (
@@ -448,7 +471,7 @@ const scene: SceneModule = {
     const reads = $$('.s33-c--reads')
     const finds = $$('.s33-c--finds')
     const abcd = ctx.$('.s33-chip--abcd')
-    const abcdIn = abcd.querySelector('.kn-person') as Element
+    const abcdIn = ctx.$('.s33-abcd')
 
     // measured before anything is hidden or moved: where the small stacks of paper come from
     const top = ctx.loc(stacks[4])
@@ -579,16 +602,57 @@ const scene: SceneModule = {
     tl.addLabel('onhim', L3)
 
     /* ================================================================ 34 · the crew arrives */
-    const T4 = L3 + 0.05
-    a.retitle('.s33-h--33', '.s33-h--34', T4)
-    a.leave(reads, T4, { y: -1.4, stagger: 0.04 })
-    a.leave('.s33-held, .s33-seq, .s33-chip--sushil, .s33-label--33', T4)
-    tl.to(lights, { autoAlpha: 0, y: -1.4 * U * R, duration: 0.4, ease: 'power2.in' }, T4)
-    tl.to(poolAmber, { autoAlpha: 0, duration: 0.5 }, T4)
-    tl.to(stacks[4], { autoAlpha: 0, scale: 0.7, duration: 0.35, ease: 'power2.in' }, T4 + 0.5)
+    const TA = L3 + 0.05
+    a.retitle('.s33-h--33', '.s33-h--34', TA)
+    a.leave(reads, TA, { y: -1.4, stagger: 0.04 })
+    a.leave('.s33-held, .s33-seq, .s33-chip--sushil, .s33-label--33', TA)
+    tl.to(lights, { autoAlpha: 0, y: -1.4 * U * R, duration: 0.4, ease: 'power2.in' }, TA)
+    tl.to(poolAmber, { autoAlpha: 0, duration: 0.5 }, TA)
+    tl.to(stacks[4], { autoAlpha: 0, scale: 0.7, duration: 0.35, ease: 'power2.in' }, TA + 0.5)
 
-    gsap.set(abcdIn, { xPercent: -50 })
-    a.rise(abcd, T4 + 0.35, { y: -1.6 })
+    /* ABCD IS NAMED. Its logo comes down onto the head of the pit box and lands with weight; at the landing a
+       ring of light leaves it, a light runs out both ways along the box's bracket, its plate opens and the
+       name comes up large, letter by letter, with what it stands for. Only then does the crew move (T4). */
+    const mark = ctx.$('.s33-abcd-mark')
+    const ring = ctx.$('.s33-abcd-ring')
+    const plate = ctx.$('.s33-abcd-plate')
+    const letters = $$('.s33-abcd-l')
+    const role = ctx.$('.s33-abcd-role')
+    const surges = $$('.s33-surge')
+    const DROP = TA + 0.3
+    const HIT = DROP + (reduced ? 0.3 : 0.42)
+    gsap.set(abcdIn, { xPercent: -50, transformOrigin: '0% 50%' })
+    gsap.set(abcd, { autoAlpha: 0 })
+    gsap.set(ring, { autoAlpha: 0, scale: 0.8 })
+    gsap.set(surges, { autoAlpha: 0, strokeDashoffset: 16 })
+    gsap.set(role, { autoAlpha: 0, x: -0.8 * U * R })
+    tl.set(abcd, { autoAlpha: 1 }, DROP)
+    if (reduced) {
+      gsap.set([mark, plate, ...letters], { autoAlpha: 0 })
+      tl.to([mark, plate, ...letters], { autoAlpha: 1, duration: 0.4, ease: 'power1.out' }, DROP)
+    } else {
+      gsap.set(mark, { autoAlpha: 0, y: -4.2 * U, scale: 1.45, rotation: -9, transformOrigin: '50% 88%' })
+      gsap.set(plate, { scaleX: 0.12, autoAlpha: 0, transformOrigin: '0% 50%' })
+      gsap.set(letters, { yPercent: 115 })
+      tl.to(mark, { autoAlpha: 1, duration: 0.14, ease: 'none' }, DROP)
+      tl.to(mark, { y: 0, scale: 1, rotation: 0, duration: 0.42, ease: 'power3.in' }, DROP)
+      // the landing: it gives, and comes back up
+      tl.to(mark, { scaleY: 0.88, scaleX: 1.09, duration: 0.07, ease: 'power1.out' }, HIT)
+      tl.to(mark, { scaleY: 1, scaleX: 1, duration: 0.5, ease: 'elastic.out(1, 0.45)' }, HIT + 0.07)
+      tl.to(ring, { autoAlpha: 1, duration: 0.05, ease: 'none' }, HIT)
+      tl.to(ring, { scale: 2.5, duration: 0.75, ease: 'power2.out' }, HIT)
+      tl.to(ring, { autoAlpha: 0, duration: 0.5, ease: 'power1.in' }, HIT + 0.25)
+      // the light runs out along the bracket to both ends of the box
+      tl.set(surges, { autoAlpha: 1 }, HIT)
+      tl.to(surges, { strokeDashoffset: -100, duration: 0.7, ease: 'power2.out' }, HIT)
+      tl.to(surges, { autoAlpha: 0, duration: 0.2, ease: 'none' }, HIT + 0.5)
+      tl.to(plate, { autoAlpha: 1, duration: 0.12, ease: 'none' }, HIT)
+      tl.to(plate, { scaleX: 1, duration: 0.5, ease: 'power3.out' }, HIT)
+      tl.to(letters, { yPercent: 0, duration: 0.55, stagger: 0.055, ease: 'back.out(1.6)' }, HIT + 0.1)
+    }
+    tl.to(role, { autoAlpha: 1, x: 0, duration: 0.5, ease: ease.out }, HIT + 0.42)
+    /** The crew moves when ABCD has landed. */
+    const T4 = TA + 0.5
     a.rise('.s33-label--34', T4 + 0.55)
     a.rise('.s33-team', T4 + 0.5, { stagger: 0.06, y: 1.4 })
     // a share of the pile goes to each team
@@ -646,6 +710,12 @@ const scene: SceneModule = {
     tl.to(couplings, { autoAlpha: 1, scale: 1, duration: 0.35, ease: ease.snap }, T4 + 1.15)
     a.draw(hoses, T4 + 1.3, { duration: 0.8 })
     tl.to(guns, { autoAlpha: 1, scale: 1, duration: 0.3, ease: ease.snap }, T4 + 2.0)
+    // the lines are live: one pulse of light runs down all four, from the cards to the guns
+    if (!reduced) {
+      tl.set(pulses, { strokeDashoffset: 7, autoAlpha: 1 }, T4 + 2.12)
+      tl.to(pulses, { strokeDashoffset: -100, duration: 0.6, ease: 'power1.inOut' }, T4 + 2.13)
+      tl.set(pulses, { autoAlpha: 0 }, T4 + 2.75)
+    }
     // the fifteen agents, team by team, all four teams at once
     $$('.s33-agents').forEach((g) => {
       const left = g.classList.contains('s33-agents--documents') || g.classList.contains('s33-agents--collateral')
@@ -777,7 +847,8 @@ const scene: SceneModule = {
     // ABCD takes its place at the head of the lane, and only then do the lights come back
     const chip = ctx.loc(abcd)
     tl.to(abcd, { x: 4.4 * U - chip.x, duration: 0.7, ease: ease.inOut }, T6 + 0.05)
-    tl.to(abcdIn, { xPercent: 0, duration: 0.7, ease: ease.inOut }, T6 + 0.05)
+    // … as a nameplate: smaller, so that the verdict under it and the lights beside it lead (slide 35)
+    tl.to(abcdIn, { xPercent: 0, scale: ABCD_SMALL, duration: 0.7, ease: ease.inOut }, T6 + 0.05)
     tl.to(lights, { autoAlpha: 1, y: 0, duration: 0.55, ease: ease.out }, T6 + 0.72)
     tl.to(poolAmber, { autoAlpha: 0.7, duration: 0.55 }, T6 + 0.72)
     D.FIVE.forEach((_, k) => {

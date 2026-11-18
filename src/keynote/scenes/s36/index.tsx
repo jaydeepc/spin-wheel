@@ -41,12 +41,37 @@ const SLIDES = {
 const u = (v: number) => `calc(var(--u) * ${+v.toFixed(3)})`
 
 /* ------------------------------------------------------------------ 36: the statement's geometry, in --u */
-const COL_X = [5, 36.5, 68]
-const DOC = { top: 20.5, w: 21, h: 25.4, rows0: 9.5, rows1: 24.9, scan0: 3.6, scan1: 25.1, balance: 6.9 }
-/** the middle of finding i of n, from the statement's top */
-const slotY = (n: number, i: number) => DOC.rows0 + ((i + 0.5) * (DOC.rows1 - DOC.rows0)) / n
+const COL_X = [4.6, 35.9, 67.2]
+const DOC = { top: 20.7, w: 22.6, h: 25.5, rows0: 9.1, rows1: 25.1, scan0: 0.5, scan1: 25.0, balance: 6.9, trail: 5.4 }
+/** a finding's pill is 2.5u high on one line and 3.5u on two (the long ones wrap, as on the owner's slide) */
+const pillH = (f: string) => (f.length > 41 ? 3.5 : 2.5)
+/**
+ * Where the findings sit on the statement, from its top: each pill gets the room its own height
+ * needs and the air left over is shared out evenly, so no two pills ever touch.
+ * `mid` is the middle of each finding, `between` the quiet row after it.
+ */
+const slots = (findings: string[]) => {
+  const hs = findings.map(pillH)
+  const gap = (DOC.rows1 - DOC.rows0 - hs.reduce((a, b) => a + b, 0)) / hs.length
+  let y = DOC.rows0 + gap / 2
+  const mid: number[] = []
+  const between: number[] = []
+  for (const h of hs) {
+    mid.push(y + h / 2)
+    between.push(y + h + gap / 2)
+    y += h + gap
+  }
+  return { mid, between }
+}
 /** seconds the band takes to run down one statement */
 const SCAN = 3.0
+/** the balance paths are drawn in a 184-wide box; the statement shows them 200 wide */
+const widen = (d: string) => {
+  let k = 0
+  return d.replace(/-?\d+(\.\d+)?/g, (m) => (k++ % 2 === 0 ? String(+(parseFloat(m) * (200 / 184)).toFixed(1)) : m))
+}
+/** the agent's line of light to each statement (1 = 0.1u, on the whole stage) */
+const WIRES = ['M159 196 V206', 'M300 196 Q300 201 306 201 H466 Q472 201 472 206', 'M300 196 Q300 201 306 201 H779 Q785 201 785 206']
 
 /* ------------------------------------------------------------------ 38, 39: the chart's geometry (1 = 0.1u) */
 const CH = { w: 500, h: 222, x0: 40, x1: 494, y0: 176, y14: 26 }
@@ -65,18 +90,8 @@ const onCurve = (score: number) => {
 
 /** The agent's small robot mark, drawn (the pictures' own mark; no photograph). */
 function Robot() {
-  return (
-    <svg className="s36-robot" viewBox="0 0 40 40" aria-hidden="true">
-      <circle cx="20" cy="20" r="20" fill="#1b2f6e" />
-      <path d="M20 7.2v4.2" stroke="#f16443" strokeWidth="1.8" strokeLinecap="round" />
-      <circle cx="20" cy="6.6" r="1.9" fill="#f16443" />
-      <rect x="6.4" y="17.2" width="3.4" height="7.6" rx="1.7" fill="#fff" />
-      <rect x="30.2" y="17.2" width="3.4" height="7.6" rx="1.7" fill="#fff" />
-      <rect x="9.6" y="11.6" width="20.8" height="17.6" rx="6.2" fill="#fff" />
-      <path d="M14.2 22.4v-2.2M17 22.4v-3.6M23 22.4v-3.6M25.8 22.4v-5" stroke="#f16443" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M17.2 25.2l2 1.7 3.6-3.2" fill="none" stroke="#f16443" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  // the ABCD agent's own logo (owner, 18 Nov): shown whole, never cropped
+  return <img className="s36-robot" src="/keynote/brand/abcd-agent-512.png" alt="" draggable={false} />
 }
 
 const Chevron = ({ className }: { className: string }) => (
@@ -86,33 +101,34 @@ const Chevron = ({ className }: { className: string }) => (
 )
 
 function StatementCol({ s, k }: { s: D.Statement; k: number }) {
-  const n = s.findings.length
-  const pitch = (DOC.rows1 - DOC.rows0) / n
+  const at = slots(s.findings)
   const tone = D.TONE[s.tone]
   return (
     <div className={`s36-col s36-col--${k}`} style={{ left: u(COL_X[k]), ['--s36-ink' as string]: tone.ink, ['--s36-soft' as string]: tone.soft, ['--s36-line' as string]: tone.line }}>
       <div className="s36-doc">
+        <i className="s36-lift" aria-hidden="true" />
         <i className="s36-under s36-under--2" aria-hidden="true" />
         <i className="s36-under s36-under--1" aria-hidden="true" />
         <div className="s36-page">
+          <i className="s36-read" aria-hidden="true" />
           <i className="s36-logo" aria-hidden="true" />
           <i className="s36-bar s36-bar--a" aria-hidden="true" />
           <i className="s36-bar s36-bar--b" aria-hidden="true" />
           <span className="s36-dochead">{D.DOC_HEAD}</span>
           <span className="s36-balhead">{D.DOC_BALANCE}</span>
-          <svg className="s36-bal" viewBox="0 0 184 22" aria-hidden="true">
-            <path className="s36-bal-flat" d="M2 12 H182" />
-            <path className="s36-bal-line" d={s.balance} />
+          <svg className="s36-bal" viewBox="0 0 200 22" aria-hidden="true">
+            <path className="s36-bal-flat" d="M2 12 H198" />
+            <path className="s36-bal-line" d={widen(s.balance)} />
           </svg>
           <i className="s36-rule" aria-hidden="true" />
           {s.findings.map((_, i) => (
             <span key={i}>
-              <i className="s36-txn s36-txn--hit" data-y={slotY(n, i)} style={{ top: u(slotY(n, i)) }} aria-hidden="true">
+              <i className="s36-txn s36-txn--hit" data-y={at.mid[i]} style={{ top: u(at.mid[i]) }} aria-hidden="true">
                 <b />
                 <b />
                 <b />
               </i>
-              <i className="s36-txn" data-y={slotY(n, i) + pitch / 2} style={{ top: u(slotY(n, i) + pitch / 2) }} aria-hidden="true">
+              <i className="s36-txn" data-y={at.between[i]} style={{ top: u(at.between[i]) }} aria-hidden="true">
                 <b />
                 <b />
                 <b />
@@ -125,7 +141,7 @@ function StatementCol({ s, k }: { s: D.Statement; k: number }) {
         </i>
       </div>
       {s.findings.map((f, i) => (
-        <div key={i} className="s36-find" style={{ top: u(slotY(n, i)) }}>
+        <div key={i} className="s36-find" style={{ top: u(at.mid[i]) }}>
           <span className="s36-pill">
             <i aria-hidden="true" />
             {f}
@@ -188,6 +204,14 @@ function Chart() {
           <stop offset="0" stopColor="#f16443" stopOpacity="0.2" />
           <stop offset="1" stopColor="#f16443" stopOpacity="0" />
         </linearGradient>
+        {/* the fill has no hard edge at score 1: it comes in from the left */}
+        <linearGradient id="s36-areafade" gradientUnits="userSpaceOnUse" x1={PTS[0][0]} y1="0" x2={PTS[0][0] + 60} y2="0">
+          <stop offset="0" stopColor="#fff" stopOpacity="0" />
+          <stop offset="1" stopColor="#fff" stopOpacity="1" />
+        </linearGradient>
+        <mask id="s36-areamask" maskUnits="userSpaceOnUse" x="0" y="0" width={CH.w} height={CH.h}>
+          <rect x="0" y="0" width={CH.w} height={CH.h} fill="url(#s36-areafade)" />
+        </mask>
       </defs>
       <text className="s36-ch-name" x="2" y="9">
         {D.CHART.yName}
@@ -208,7 +232,7 @@ function Chart() {
       <text className="s36-ch-cap" x={(CH.x0 + CH.x1) / 2} y={CH.h - 4} textAnchor="middle">
         {D.CHART.caption}
       </text>
-      <path className="s36-ch-area" d={area} fill="url(#s36-area)" />
+      <path className="s36-ch-area" d={area} fill="url(#s36-area)" mask="url(#s36-areamask)" />
       <path className="s36-ch-line" d={line} />
       {PTS.map(([x, y], i) => (
         <circle key={i} className="s36-ch-dot" cx={x} cy={y} r="5.4" />
@@ -233,50 +257,55 @@ function Chart() {
   )
 }
 
-/* ------------------------------------------------------------------ 37: the field of points (a 2D canvas, drawn from one number) */
+/* ------------------------------------------------------------------ 37: the features, one point each (a 2D canvas, drawn from two numbers) */
+
+/** the nine thousand: 225 across, 40 down. The hundred: 10 by 10, at the same pitch. */
+const MANY = { cols: 225, rows: 40 }
 
 interface Field {
-  state: { p: number }
+  /** h: the hundred, 0 to 1. p: the nine thousand, 0 to 1. */
+  state: { h: number; p: number }
   paint(): void
 }
 
-function makeField(canvas: HTMLCanvasElement, W: number, H: number, U: number, sources: Box[], big: Box, small: Box): Field {
+function makeField(canvas: HTMLCanvasElement, W: number, H: number, U: number, sources: Box[], big: Box, small: Box, landed: (n: number) => void): Field {
   const dpr = Math.min(2, window.devicePixelRatio || 1)
   canvas.width = Math.round(W * dpr)
   canvas.height = Math.round(H * dpr)
   const g = canvas.getContext('2d')
-  const state = { p: 0 }
-  if (!g || !sources.length) return { state, paint() {} }
+  const state = { h: 0, p: 0 }
+  const { cols, rows } = MANY
+  const n = cols * rows
+  if (!g || !sources.length) return { state, paint: () => landed(Math.round(Math.min(1, state.p / 0.99) * n)) }
 
-  // the same pitch for both blocks, on whole pixels, so the two are to one scale and never shimmer
-  const pitch = Math.max(2, Math.round(0.16 * U * dpr))
-  const dot = Math.max(1, Math.round(pitch * 0.56))
+  // ONE pitch for both blocks, on whole pixels: the two are to one scale, every point is a crisp square
+  let pitch = Math.max(2, Math.round(0.215 * U * dpr))
+  while (pitch > 2 && (cols * pitch > big.w * dpr || rows * pitch > big.h * dpr)) pitch--
+  const dot = Math.max(1, pitch - 1)
+  const fly = Math.max(dot + 1, Math.round(0.3 * U * dpr))
   let seed = 36
   const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646
 
-  const cols = Math.floor((big.w * dpr) / pitch)
-  const rows = Math.floor((big.h * dpr) / pitch)
   const bx = Math.round(big.x * dpr + (big.w * dpr - cols * pitch) / 2)
   const by = Math.round(big.y * dpr + (big.h * dpr - rows * pitch) / 2)
-  const n = cols * rows
-  // per point: source x, y; control x, y; target x, y; delay; shade
+  // per point: source x, y; control x, y; target x, y; delay; unused
   const pts = new Float32Array(n * 8)
   for (let c = 0; c < cols; c++) {
     for (let r = 0; r < rows; r++) {
       const i = (c * rows + r) * 8
       const s = sources[Math.floor(rnd() * sources.length)]
-      const sx = (s.x + s.w * (0.15 + rnd() * 0.7)) * dpr
+      const sx = (s.x + s.w * (0.12 + rnd() * 0.76)) * dpr
       const sy = s.cy * dpr
       const tx = bx + c * pitch
       const ty = by + r * pitch
       pts[i] = sx
       pts[i + 1] = sy
-      pts[i + 2] = (sx + tx) / 2 + (rnd() - 0.5) * 22 * U * dpr
-      pts[i + 3] = Math.max(sy, ty) + (rnd() - 0.75) * 9 * U * dpr
+      // the way there bows out and down, and never crosses the words at the box's left
+      pts[i + 2] = Math.max(bx, (sx + tx) / 2 + (rnd() - 0.5) * 14 * U * dpr)
+      pts[i + 3] = sy + (ty - sy) * (0.25 + rnd() * 0.5)
       pts[i + 4] = tx
       pts[i + 5] = ty
       pts[i + 6] = (c / cols) * 0.5 + rnd() * 0.18
-      pts[i + 7] = rnd()
     }
   }
   // the hundred: ten by ten, in the middle of its slot
@@ -285,28 +314,37 @@ function makeField(canvas: HTMLCanvasElement, W: number, H: number, U: number, s
 
   const paint = () => {
     g.clearRect(0, 0, canvas.width, canvas.height)
-    const p = state.p
-    if (p <= 0) return
     // the 100, one by one
-    g.fillStyle = '#8c98b4'
-    const shown = Math.min(100, Math.floor((p / 0.28) * 100))
-    for (let k = 0; k < shown; k++) g.fillRect(sx0 + (k % 10) * pitch, sy0 + Math.floor(k / 10) * pitch, dot, dot)
-    // the many
-    for (let k = 0; k < n; k++) {
-      const i = k * 8
-      const t = (p - pts[i + 6] * 0.92) / 0.36
-      if (t <= 0) continue
-      const landed = t >= 1
-      const e = landed ? 1 : 1 - Math.pow(1 - t, 3)
-      const q = 1 - e
-      const x = landed ? pts[i + 4] : q * q * pts[i] + 2 * q * e * pts[i + 2] + e * e * pts[i + 4]
-      const y = landed ? pts[i + 5] : q * q * pts[i + 1] + 2 * q * e * pts[i + 3] + e * e * pts[i + 5]
-      g.globalAlpha = landed ? 1 : Math.min(1, t * 5)
-      g.fillStyle = pts[i + 7] < 0.24 ? '#f7a68f' : '#f16443'
-      const d = landed ? dot : dot + Math.round(q * dot * 1.4)
-      g.fillRect(Math.round(x), Math.round(y), d, d)
+    const shown = Math.min(100, Math.floor(state.h * 100 + 0.001))
+    if (shown > 0) {
+      g.fillStyle = '#6f7b98'
+      for (let k = 0; k < shown; k++) g.fillRect(sx0 + (k % 10) * pitch, sy0 + Math.floor(k / 10) * pitch, dot, dot)
     }
-    g.globalAlpha = 1
+    // the many: each leaves a category, crosses, and lands in its place
+    const p = state.p
+    let down = 0
+    if (p > 0) {
+      g.fillStyle = '#f16443'
+      for (let k = 0; k < n; k++) {
+        const i = k * 8
+        const t = (p - pts[i + 6] * 0.92) / 0.36
+        if (t <= 0) continue
+        if (t >= 1) {
+          down++
+          g.fillRect(pts[i + 4], pts[i + 5], dot, dot)
+          continue
+        }
+        const e = 1 - Math.pow(1 - t, 3)
+        const q = 1 - e
+        const x = q * q * pts[i] + 2 * q * e * pts[i + 2] + e * e * pts[i + 4]
+        const y = q * q * pts[i + 1] + 2 * q * e * pts[i + 3] + e * e * pts[i + 5]
+        g.globalAlpha = Math.min(1, t * 6)
+        const d = dot + Math.round((1 - t) * (fly - dot))
+        g.fillRect(Math.round(x), Math.round(y), d, d)
+        g.globalAlpha = 1
+      }
+    }
+    landed(down)
   }
   return { state, paint }
 }
@@ -336,6 +374,11 @@ const scene: SceneModule = {
 
       {/* ---------------- act one (36): three statements ---------------- */}
       <p className="s36-aside">{D.ASIDE}</p>
+      <svg className="s36-wire" viewBox="0 0 1000 562.5" aria-hidden="true">
+        {WIRES.map((d, k) => (
+          <path key={k} d={d} />
+        ))}
+      </svg>
       {D.STATEMENTS.map((s, k) => (
         <StatementCol key={k} s={s} k={k} />
       ))}
@@ -376,7 +419,7 @@ const scene: SceneModule = {
         </div>
         <canvas className="s36-field" aria-hidden="true" />
         {D.ROWS.map((r, i) => (
-          <div key={i} className="s36-row" style={{ top: u(22.9 + i * 4.06) }}>
+          <div key={i} className="s36-row" style={{ top: u(22.4 + i * 3.5) }}>
             <div className="s36-raw">
               <i className="s36-tab" aria-hidden="true" />
               <span className="s36-rawtext">
@@ -389,6 +432,7 @@ const scene: SceneModule = {
             <Chevron className="s36-chev s36-chev--old" />
             <span className="s36-old">{r.old}</span>
             <Chevron className="s36-chev s36-chev--new" />
+            <i className="s36-catslot" aria-hidden="true" />
             <span className="s36-cat">
               <span>{r.cat}</span>
             </span>
@@ -442,30 +486,45 @@ const scene: SceneModule = {
     const smallSlot = ctx.loc(ctx.$('.s36-slot--small'))
     const chartCard = ctx.$('.s36-card--chart')
     const chartBox = ctx.loc(chartCard)
-    const field = makeField(ctx.$<HTMLCanvasElement>('.s36-field'), ctx.W, ctx.H, U, cats, bigSlot, smallSlot)
+    // the counter is the number of points that have landed: the figure and the picture are one thing
+    const manyN = ctx.$('.s36-foot--abcd .kn-count-n')
+    let manyShown = -1
+    const landed = (n: number) => {
+      if (n === manyShown) return
+      manyShown = n
+      manyN.textContent = `${D.FOOT.abcd.prefix}${n.toLocaleString('en-US')}${D.FOOT.abcd.suffix}`
+    }
+    const field = makeField(ctx.$<HTMLCanvasElement>('.s36-field'), ctx.W, ctx.H, U, cats, bigSlot, smallSlot, landed)
+    field.paint()
     ctx.onSeek(field.paint)
 
     /* =================================================================== 36 · alike */
     a.words('.s36-h--36', 0.1)
-    a.rise('.s36-agent', 0.45, { y: 1 })
+    a.rise('.s36-agent', 0.15, { y: 1 })
     gsap.set(ctx.$('.s36-agentsub--comp'), { autoAlpha: 0 })
-    a.fade('.s36-aside', 0.9, { duration: 0.7 })
+    a.fade('.s36-aside', 0.7, { duration: 0.7 })
 
     const cols = ctx.$$('.s36-col')
     const docs = ctx.$$('.s36-doc')
     // dealt in from depth: lying back, turning, then standing flat (identity at rest: crisp type)
     gsap.set(docs, calm ? { autoAlpha: 0 } : { autoAlpha: 0, rotationX: 46, rotationY: (i) => [-26, 0, 26][i], z: -34 * U, y: 9 * U, transformOrigin: '50% 100%' })
-    tl.to(docs, { autoAlpha: 1, duration: 0.35, stagger: 0.16, ease: 'power1.out' }, 0.75)
-    tl.to(docs, { rotationX: 0, rotationY: 0, z: 0, y: 0, duration: 1.15, stagger: 0.16, ease: ease.out }, 0.75)
+    tl.to(docs, { autoAlpha: 1, duration: 0.35, stagger: 0.16, ease: 'power1.out' }, 0.4)
+    tl.to(docs, { rotationX: 0, rotationY: 0, z: 0, y: 0, duration: 1.15, stagger: 0.16, ease: ease.out }, 0.4)
     gsap.set(ctx.$$('.s36-under'), { x: 0, y: 0 })
-    tl.to(ctx.$$('.s36-under--1'), { x: 0.42 * U, y: 0.34 * U, duration: 0.6, ease: ease.out }, 1.5)
-    tl.to(ctx.$$('.s36-under--2'), { x: 0.84 * U, y: 0.68 * U, duration: 0.6, ease: ease.out }, 1.56)
+    tl.to(ctx.$$('.s36-under--1'), { x: 0.42 * U, y: 0.34 * U, duration: 0.6, ease: ease.out }, 1.15)
+    tl.to(ctx.$$('.s36-under--2'), { x: 0.84 * U, y: 0.68 * U, duration: 0.6, ease: ease.out }, 1.21)
     tl.to(fx, { glow: 0.2, focusY: 0.2, duration: 1.6 }, 0.6)
 
     gsap.set(ctx.$$('.s36-pill'), { autoAlpha: 0, x: -2.2 * U, scale: 0.9, transformOrigin: '0% 50%' })
     gsap.set(ctx.$$('.s36-verdict'), { autoAlpha: 0, scale: 1.2, y: -0.7 * U })
     gsap.set(ctx.$$('.s36-flash'), { autoAlpha: 0 })
     gsap.set(ctx.$$('.s36-scan'), { autoAlpha: 0, y: DOC.scan0 * U })
+    gsap.set(ctx.$$('.s36-scan i'), { scaleY: 0, transformOrigin: '50% 100%' })
+    gsap.set(ctx.$$('.s36-read'), { scaleY: 0, transformOrigin: '50% 0%' })
+    gsap.set(ctx.$$('.s36-lift'), { autoAlpha: 0 })
+    gsap.set(cols, { transformOrigin: (i) => ['35% 30%', '60% 30%', '100% 30%'][i] })
+    const wires = ctx.$$<SVGPathElement>('.s36-wire path')
+    gsap.set(wires, { autoAlpha: 0, drawSVG: '0% 0%' })
     gsap.set(ctx.$$('.s36-bal-line'), { drawSVG: '0%', autoAlpha: 0 })
     gsap.set(ctx.$('.s36-ping'), { autoAlpha: 0, scale: 1 })
     tl.addLabel('alike')
@@ -477,20 +536,38 @@ const scene: SceneModule = {
       const tone = D.TONE[D.STATEMENTS[k].tone]
       const q = <E extends Element = HTMLElement>(sel: string) => Array.from(col.querySelectorAll<E>(sel))
       const scan = q('.s36-scan')[0]
-      const when = (y: number) => t + 0.3 + ((y - DOC.scan0) / (DOC.scan1 - DOC.scan0)) * SCAN
+      /** the band starts down the page */
+      const t0 = t + 0.5
+      const when = (y: number) => t0 + ((y - DOC.scan0) / (DOC.scan1 - DOC.scan0)) * SCAN
 
       // the unread statements wait, dimmed; this one is read
       const waiting = cols.filter((_, i) => i > k)
       if (k === 0) tl.to(waiting, { opacity: 0.42, duration: 0.5 }, t)
       else tl.to(col, { opacity: 1, duration: 0.4 }, t)
       tl.to(fx, { focusX: [-0.62, 0, 0.62][k], glow: 0.42, warm: [-0.25, 0.15, 0.4][k], duration: 1.2, ease: ease.inOut }, t)
-      // the agent looks up
+      // the agent looks up, and its line of light runs to the statement
       tl.fromTo(ctx.$('.s36-ping'), { autoAlpha: 0.9, scale: 1 }, { autoAlpha: 0, scale: 1.9, duration: 0.7, ease: 'power2.out', immediateRender: false }, t)
+      const wd = k ? 0.4 : 0.2
+      tl.to(wires[k], { autoAlpha: 1, duration: 0.01, ease: 'none' }, t + 0.05)
+      tl.to(wires[k], { drawSVG: '0% 100%', duration: wd, ease: 'power1.inOut' }, t + 0.05)
+      tl.to(wires[k], { drawSVG: '100% 100%', duration: 0.3, ease: 'power1.in' }, t + 0.05 + wd)
+      tl.to(wires[k], { autoAlpha: 0, duration: 0.01, ease: 'none' }, t + 0.36 + wd)
 
-      // the band of light
-      tl.to(scan, { autoAlpha: 1, duration: 0.25 }, t + 0.05)
-      tl.to(scan, { y: DOC.scan1 * U, duration: SCAN, ease: 'none' }, t + 0.3)
-      tl.to(scan, { autoAlpha: 0, duration: 0.25 }, t + 0.3 + SCAN)
+      // it comes forward off the table while it is read, and is set down again as the verdict lands
+      if (!calm) {
+        tl.to(col, { scale: 1.055, duration: 0.6, ease: ease.out }, t + 0.1)
+        tl.to(q('.s36-lift'), { autoAlpha: 1, duration: 0.6, ease: ease.out }, t + 0.1)
+        tl.to(col, { scale: 1, duration: 0.5, ease: ease.inOut }, t0 + SCAN - 0.4)
+        tl.to(q('.s36-lift'), { autoAlpha: 0, duration: 0.5, ease: ease.inOut }, t0 + SCAN - 0.4)
+      }
+
+      // the band of light, its trail, and the wash of colour it leaves on what it has read
+      tl.to(scan, { autoAlpha: 1, duration: 0.2 }, t0 - 0.2)
+      tl.to(scan, { y: DOC.scan1 * U, duration: SCAN, ease: 'none' }, t0)
+      tl.to(q('.s36-scan i'), { scaleY: 1, duration: (DOC.trail / (DOC.scan1 - DOC.scan0)) * SCAN, ease: 'none' }, t0)
+      tl.to(q('.s36-read'), { scaleY: DOC.scan1 / DOC.h, duration: SCAN, ease: 'none' }, t0)
+      tl.to(q('.s36-read'), { scaleY: 1, duration: 0.25, ease: 'none' }, t0 + SCAN)
+      tl.to(scan, { autoAlpha: 0, duration: 0.25 }, t0 + SCAN)
 
       // the balance draws itself as the band crosses it
       const tb = when(DOC.balance) - 0.25
@@ -517,7 +594,7 @@ const scene: SceneModule = {
       }
 
       // the verdict is stamped at the foot
-      const tv = t + 0.3 + SCAN + 0.05
+      const tv = t0 + SCAN + 0.05
       tl.to(q('.s36-verdict'), { autoAlpha: 1, scale: 1, y: 0, duration: 0.3, ease: ease.slam }, tv)
       tl.fromTo(q('.s36-flash'), { autoAlpha: 0.75 }, { autoAlpha: 0, duration: 0.6, ease: 'power2.out', immediateRender: false }, tv + 0.28)
       if (!calm) {
@@ -559,6 +636,18 @@ const scene: SceneModule = {
     })
     const tOld = t + 2.25
     a.fade('.s36-head--1', tOld)
+    // GenAI's column keeps its place: its name waits dim, over five places still to be filled
+    const head2 = ctx.$('.s36-head--2')
+    const catSlots = ctx.$$('.s36-catslot')
+    gsap.set(head2, { autoAlpha: 0 })
+    tl.to(head2, { autoAlpha: 0.5, duration: 0.5 }, tOld + 0.45)
+    gsap.set(catSlots, { autoAlpha: 0 })
+    tl.to(catSlots, { autoAlpha: 1, duration: 0.4, stagger: 0.08 }, tOld + 0.5)
+    // … and the traditional way's whole harvest: a hundred features
+    a.rise('.s36-foot--old', tOld + 0.7, { y: 1.4 })
+    a.count('.s36-foot--old .kn-count-n', tOld + 0.9, { duration: 0.9 })
+    gsap.set(field.state, { h: 0, p: 0 })
+    tl.to(field.state, { h: 1, duration: 0.9, ease: 'power2.out', onUpdate: field.paint }, tOld + 0.9)
     a.fade('.s36-chev--old', tOld + 0.05, { stagger: 0.11, duration: 0.3 })
     const olds = ctx.$$('.s36-old')
     gsap.set(olds, calm ? { autoAlpha: 0 } : { autoAlpha: 0, scale: 1.25 })
@@ -567,7 +656,7 @@ const scene: SceneModule = {
 
     /* =================================================================== 37 · genai */
     t = tl.duration() + 0.02
-    a.fade('.s36-head--2', t)
+    tl.to(head2, { autoAlpha: 1, duration: 0.4 }, t)
     tl.to(steps[0], { scale: 1.035, duration: 0.22, ease: 'power2.out' }, t)
     tl.to(steps[0], { scale: 1, duration: 0.5, ease: ease.out }, t + 0.22)
     tl.to(fx, { focusX: 0.55, glow: 0.4, warm: 0.5, duration: 3.2, ease: ease.inOut }, t)
@@ -598,8 +687,10 @@ const scene: SceneModule = {
       gsap.set(gh, { x: frags[i].x, y: frags[i].y, autoAlpha: 0 })
       if (!calm) {
         tl.to(gh, { autoAlpha: 1, duration: 0.08 }, rf + 0.1)
-        tl.to(gh, { y: frags[i].y - 0.9 * U, duration: 0.28, ease: 'power2.out' }, rf + 0.1)
-        tl.to(gh, { x: cats[i].cx - frags[i].w / 2, y: cats[i].cy - frags[i].h / 2, duration: 0.55, ease: 'power2.inOut' }, rf + 0.3)
+        // up into the gap above its own row, across over nobody's words, then down into its category
+        tl.to(gh, { y: frags[i].y - 1.6 * U, duration: 0.28, ease: 'power2.out' }, rf + 0.1)
+        tl.to(gh, { x: cats[i].cx - frags[i].w / 2, duration: 0.55, ease: 'power2.inOut' }, rf + 0.3)
+        tl.to(gh, { y: cats[i].cy - frags[i].h / 2, duration: 0.22, ease: 'power2.in' }, rf + 0.63)
         tl.to(gh, { autoAlpha: 0, scale: 0.7, duration: 0.2 }, rf + 0.7)
       }
       const rc = rf + 0.62
@@ -608,19 +699,17 @@ const scene: SceneModule = {
       tl.to(one('.s36-chev--new'), { autoAlpha: 1, x: 0, duration: 0.35, ease: ease.snap }, rc - 0.08)
       tl.to(catEls[i], calm ? { autoAlpha: 1, duration: 0.4 } : { clipPath: 'inset(0% 0% 0% 0% round 99em)', duration: 0.5, ease: ease.out }, rc)
       tl.to(catEls[i].firstElementChild, { autoAlpha: 1, y: 0, duration: 0.4, ease: ease.out }, rc + 0.14)
+      tl.to(catSlots[i], { autoAlpha: 0, duration: 0.3 }, rc + 0.25)
     })
     tl.addLabel('genai')
 
     /* =================================================================== 37 · features */
     t = tl.duration() + 0.02
-    a.rise('.s36-foot', t, { y: 1.4, stagger: 0.14 })
-    a.count('.s36-foot--old .kn-count-n', t + 0.25, { duration: 0.8 })
-    a.count('.s36-foot--abcd .kn-count-n', t + 0.45, { duration: 2.3, ease: 'power1.inOut' })
+    a.rise('.s36-foot--abcd', t, { y: 1.4 })
     // every category gives up its features
     tl.to(catEls, { scale: 1.03, duration: 0.2, stagger: 0.07, ease: 'power2.out' }, t + 0.4)
     tl.to(catEls, { scale: 1, duration: 0.5, stagger: 0.07, ease: ease.out }, t + 0.6)
-    gsap.set(field.state, { p: 0 })
-    tl.to(field.state, { p: 1, duration: 2.6, ease: 'none', onUpdate: field.paint }, t + 0.35)
+    tl.to(field.state, { p: 1, duration: 3.0, ease: 'none', onUpdate: field.paint }, t + 0.35)
     tl.to(fx, { focusX: 0.45, focusY: 0.75, glow: 0.5, energy: 0.3, duration: 2.4, ease: ease.inOut }, t)
     tl.addLabel('features')
 
@@ -674,7 +763,8 @@ const scene: SceneModule = {
     const halo = cq<SVGCircleElement>('.s36-ch-halo')[0]
     const whyN = ctx.$('.s36-whyn')
     const scoreN = ctx.$('.s36-scoren')
-    const mix = gsap.utils.interpolate(D.TONE.bad.ink, D.TONE.good.ink)
+    // red, amber, green: the three colours of the three statements, never the brown between red and green
+    const mix = gsap.utils.interpolate([D.TONE.bad.ink, D.TONE.mid.ink, D.TONE.good.ink])
     const sc = { n: 0 }
     /** everything that follows the score: the ring's place and colour, both numerals */
     const paint = () => {
@@ -730,7 +820,7 @@ const scene: SceneModule = {
     tl.to(fx, { focusX: 0.5, warm: -0.35, glow: 0.45, duration: 1.8, ease: ease.inOut }, t)
     // the same four rows turn over: red out, green in
     reasons.forEach((_, i) => {
-      const r = t + 0.75 + i * 0.2
+      const r = t + 0.45 + i * 0.18
       if (calm) {
         tl.to(bad[i], { autoAlpha: 0, duration: 0.3 }, r)
         tl.to(good[i], { autoAlpha: 1, duration: 0.4 }, r + 0.2)

@@ -34,12 +34,15 @@ import './scene.css'
 const u = (v: number) => `calc(var(--u) * ${+v.toFixed(3)})`
 const box = (cx: number, cy: number, d: number) => ({ left: u(cx - d / 2), top: u(cy - d / 2), width: u(d), height: u(d) })
 
+/** A portrait's file: the deck's own (public/keynote/src/28/), or a brand file given by its path from the root (ABCD's logo). */
+const srcOf = (picture: string) => (picture.startsWith('/') ? picture : pic(28, picture))
+
 /** How present the many are while one agent is on stage (1 when all four stand together). */
 const QUIET = 0.46
 
 const scene: SceneModule = {
   beats: [...AGENTS.map((a) => a.key), 'together'],
-  preload: AGENTS.flatMap((a) => (a.picture ? [pic(28, a.picture)] : [])),
+  preload: AGENTS.flatMap((a) => (a.picture ? [srcOf(a.picture)] : [])),
 
   Scene: ({ slide }) => (
     <div className="s28">
@@ -100,7 +103,7 @@ const scene: SceneModule = {
       {AGENTS.map((a) => (
         <div className="s28-face" key={a.key} style={box(HERO.cx, HERO.cy, HERO.d)}>
           <span className="s28-halo" aria-hidden="true" />
-          {a.picture ? <img className={`s28-pic s28-pic--${a.key}`} src={pic(28, a.picture)} alt={a.name} draggable={false} decoding="async" /> : <NivaaranEmblem />}
+          {a.picture ? <img className={`s28-pic s28-pic--${a.key}`} src={srcOf(a.picture)} alt={a.name} draggable={false} decoding="async" /> : <NivaaranEmblem />}
         </div>
       ))}
     </div>

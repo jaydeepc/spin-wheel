@@ -43,3 +43,17 @@ export const TAKEAWAYS = [
 /** Where the five steps stand on the stage (centre x, in --u), and the four places between them. */
 export const X = [13, 32, 51, 70, 88.6]
 export const SEP = [22.5, 41.5, 60.5, 79.4]
+
+/**
+ * THE CALL (not from the pack: the owner's addition after the MD's review). A recording of a real
+ * cross-sell call made by the agent, played on demand from the slide, and the point the owner
+ * asked to add with it. `seconds` is the file's own length, shown until its metadata has loaded.
+ */
+export const CALL = {
+  src: '/keynote/audio/cross-sell-call.mp3',
+  seconds: 73.9,
+  kicker: 'Listen to the call',
+  title: ['PIA on a real', 'cross-sell call'],
+  point: 'The agent has to convince the customer, not just inform.',
+  pointFlame: 'convince the customer',
+} as const

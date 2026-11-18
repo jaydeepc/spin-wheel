@@ -13,7 +13,7 @@ export interface Agent {
   key: string
   /** the name, as slide 28 prints it */
   name: string
-  /** file in public/keynote/src/28/, or null: no portrait in the deck */
+  /** file in public/keynote/src/28/ (or a path from the site's root, beginning with "/"), or null: no portrait in the deck */
   picture: string | null
   px: [number, number] | null
   /** the lending function, as slide 29 heads the column that lists the agent */
@@ -36,7 +36,8 @@ export const AGENTS: Agent[] = [
   // name 28 t03 · function 29 t04 (the column that lists "ARYA") · does 43 t04
   { key: "arya", name: "Arya", picture: "agent-arya.png", px: [477, 483], fn: "SALES", does: "Employee digital assistant, coach and work friend" },
   // name 28 t04 · function 29 t05 · does 29 t20, after "★ ABCD "
-  { key: "abcd", name: "ABCD", picture: "agent-abcd.jpg", px: [477, 477], fn: "CREDIT", does: "AI credit decisioning" },
+  // picture: the owner's ABCD logo (public/keynote/brand/, a path from the site's root), in place of the deck's robot render agent-abcd.jpg
+  { key: "abcd", name: "ABCD", picture: "/keynote/brand/abcd-agent.png", px: [1024, 1024], fn: "CREDIT", does: "AI credit decisioning" },
   // name 28 t05 · function 29 t08 (the column that lists "Nivaaran") · does 41 t05
   { key: "nivaaran", name: "Nivaaran", picture: null, px: null, fn: "COLLECTIONS", does: "AI-powered collections" },
 ]

@@ -439,3 +439,229 @@
 .s44-take .kn-flame {
   color: var(--kn-flame-ink);
 }
+
+/* ---------------------------------------------------------------- the call itself (beat "listen") */
+.s44-call {
+  position: absolute;
+  left: calc(var(--u) * 8);
+  top: calc(var(--u) * 32.5);
+  width: calc(var(--u) * 84);
+  height: calc(var(--u) * 13.7);
+  border-radius: calc(var(--u) * 1.5);
+  background: linear-gradient(118deg, #10266a 0%, var(--kn-navy) 62%);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.08) rgba(255, 255, 255, 0.1),
+    0 calc(var(--u) * 1.1) calc(var(--u) * 3) rgba(7, 26, 80, 0.3);
+  color: #fff;
+  visibility: hidden;
+}
+/* it speaks from step 1: "AI makes the first call" */
+.s44-call-tail {
+  position: absolute;
+  left: calc(var(--u) * 4.1);
+  top: calc(var(--u) * -0.82);
+  width: calc(var(--u) * 1.8);
+  height: calc(var(--u) * 1.8);
+  border-radius: calc(var(--u) * 0.3);
+  background: #10266a;
+  transform: rotate(45deg);
+}
+.s44-audio {
+  display: none;
+}
+.s44-play {
+  position: absolute;
+  left: calc(var(--u) * 1.3);
+  top: calc(var(--u) * 3.15);
+  width: calc(var(--u) * 7.4);
+  height: calc(var(--u) * 7.4);
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: inherit;
+  color: #fff;
+  background: radial-gradient(circle at 34% 26%, #f88a66 0%, var(--kn-flame) 55%, var(--kn-flame-deep) 100%);
+  box-shadow:
+    0 0 0 calc(var(--u) * 0.28) rgba(255, 255, 255, 0.95),
+    0 calc(var(--u) * 0.6) calc(var(--u) * 1.8) rgba(241, 100, 67, 0.5);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  visibility: hidden;
+}
+.s44-play:focus-visible {
+  outline: calc(var(--u) * 0.16) solid var(--kn-sky);
+  outline-offset: calc(var(--u) * 0.5);
+}
+.s44-ico {
+  grid-area: 1 / 1;
+  width: calc(var(--u) * 3.7);
+  height: calc(var(--u) * 3.7);
+  display: block;
+}
+.s44-ico--play {
+  margin-left: calc(var(--u) * 0.3);
+}
+.s44-ico--pause,
+.s44-call.is-playing .s44-ico--play {
+  display: none;
+}
+.s44-call.is-playing .s44-ico--pause {
+  display: block;
+}
+/* a ring that breathes out of the button, only while the call plays */
+.s44-play-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 calc(var(--u) * 0.14) rgba(248, 138, 102, 0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+.s44-call.is-playing .s44-play-halo {
+  animation: s44-halo 1.9s ease-out infinite;
+}
+@keyframes s44-halo {
+  0% {
+    transform: scale(1.04);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+.s44-call-id {
+  position: absolute;
+  left: calc(var(--u) * 10.7);
+  top: 0;
+  bottom: 0;
+  width: calc(var(--u) * 21);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--u) * 0.7);
+}
+.s44-call-k {
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ffb39b;
+  visibility: hidden;
+}
+.s44-call-t {
+  font-size: calc(var(--u) * 2.5);
+  line-height: 1.12;
+  font-weight: 700;
+  color: #fff;
+}
+.s44-deck {
+  position: absolute;
+  left: calc(var(--u) * 33.2);
+  top: 0;
+  bottom: 0;
+  width: calc(var(--u) * 29.4);
+}
+/* the level bars: a low, still line at rest; they move only while the call plays */
+.s44-lv {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 1.7);
+  height: calc(var(--u) * 6.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  visibility: hidden;
+}
+.s44-lv i {
+  display: block;
+  width: calc(var(--u) * 0.3);
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #ffb39b 0%, #fff 50%, #ffb39b 100%);
+  transform: scaleY(var(--s44-r, 0.07));
+  will-change: transform;
+}
+.s44-seek {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 8.5);
+  height: calc(var(--u) * 2);
+  cursor: pointer;
+}
+.s44-seek-base,
+.s44-seek-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 0.82);
+  height: calc(var(--u) * 0.36);
+  border-radius: 999px;
+}
+.s44-seek-base {
+  background: rgba(255, 255, 255, 0.24);
+}
+.s44-seek-fill {
+  background: var(--kn-flame);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.s44-seek-knob {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 1);
+  width: 0;
+  height: 0;
+}
+.s44-seek-knob i {
+  position: absolute;
+  left: calc(var(--u) * -0.6);
+  top: calc(var(--u) * -0.6);
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 1.2);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 calc(var(--u) * 0.15) calc(var(--u) * 0.5) rgba(0, 0, 0, 0.35);
+  visibility: hidden;
+}
+.s44-time {
+  position: absolute;
+  top: calc(var(--u) * 10.45);
+  font-size: calc(var(--u) * 1.25);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.86);
+  visibility: hidden;
+}
+.s44-time--now {
+  left: 0;
+}
+.s44-time--total {
+  right: 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+.s44-point {
+  position: absolute;
+  left: calc(var(--u) * 65.6);
+  top: calc(var(--u) * 2);
+  bottom: calc(var(--u) * 2);
+  width: calc(var(--u) * 16.6);
+  padding-left: calc(var(--u) * 1.9);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  align-content: center;
+  border-left: calc(var(--u) * 0.1) solid rgba(255, 255, 255, 0.2);
+  font-size: calc(var(--u) * 1.75);
+  line-height: 1.2;
+  font-weight: 700;
+  color: #fff;
+}
+.s44-point .kn-flame {
+  color: #ff9675;
+}

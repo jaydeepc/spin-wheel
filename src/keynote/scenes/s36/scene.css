@@ -1,8 +1,19 @@
 /* Slides 36 to 39 · the ABCD Banking Agent. Everything is prefixed s36-, sizes in --u. */
+
+/* The narration lines of slide 37 are set in ONE monospace face that travels with the deck
+   (Geist Mono, SIL Open Font License; the file is Next's own copy), so the lines are as long
+   and the hyphens as short on every machine. */
+@font-face {
+  font-family: 's36-mono';
+  src: url('./geist-mono-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
 .s36 {
   position: absolute;
   inset: 0;
-  --s36-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  --s36-mono: 's36-mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
   --s36-grey: #e3e8f2;
 }
 .s36 i {
@@ -33,6 +44,7 @@
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 .s36-ping {
   position: absolute;
@@ -62,6 +74,22 @@
 }
 
 /* ---------------------------------------------------------------- 36: three statements */
+.s36-wire {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.s36-wire path {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  visibility: hidden;
+}
 .s36-aside {
   position: absolute;
   left: calc(var(--u) * 36.5);
@@ -75,9 +103,9 @@
 }
 .s36-col {
   position: absolute;
-  top: calc(var(--u) * 20.5);
-  width: calc(var(--u) * 21);
-  height: calc(var(--u) * 29.8);
+  top: calc(var(--u) * 20.7);
+  width: calc(var(--u) * 22.6);
+  height: calc(var(--u) * 29.7);
   perspective: calc(var(--u) * 70);
 }
 .s36-doc {
@@ -85,8 +113,23 @@
   left: 0;
   top: 0;
   width: 100%;
-  height: calc(var(--u) * 25.4);
+  height: calc(var(--u) * 25.5);
   visibility: hidden;
+}
+/* the deeper shadow of the statement that is lifted off the table while it is read */
+.s36-lift {
+  position: absolute;
+  inset: calc(var(--u) * 0.6) calc(var(--u) * 0.2) calc(var(--u) * -0.4);
+  border-radius: calc(var(--u) * 1);
+  box-shadow: 0 calc(var(--u) * 1.6) calc(var(--u) * 3.6) rgba(7, 26, 80, 0.3);
+  visibility: hidden;
+}
+/* what has been read takes a breath of the statement's colour */
+.s36-read {
+  position: absolute;
+  inset: 0;
+  background: var(--s36-soft);
+  opacity: 0.3;
 }
 .s36-under,
 .s36-page {
@@ -148,7 +191,7 @@
   position: absolute;
   left: calc(var(--u) * 1.3);
   top: calc(var(--u) * 5.8);
-  width: calc(var(--u) * 18.4);
+  width: calc(var(--u) * 20);
   height: calc(var(--u) * 2.2);
   overflow: visible;
 }
@@ -208,11 +251,13 @@
   left: calc(var(--u) * -0.55);
   right: calc(var(--u) * -0.55);
   top: 0;
-  height: calc(var(--u) * 0.4);
-  margin-top: calc(var(--u) * -0.2);
-  border-radius: calc(var(--u) * 0.2);
-  background: var(--kn-flame);
-  box-shadow: 0 0 calc(var(--u) * 1.3) rgba(241, 100, 67, 0.65);
+  height: calc(var(--u) * 0.5);
+  margin-top: calc(var(--u) * -0.25);
+  border-radius: calc(var(--u) * 0.25);
+  background: linear-gradient(90deg, #f58a6e, var(--kn-flame) 18%, #ff8e6f 50%, var(--kn-flame) 82%, #f58a6e);
+  box-shadow:
+    0 0 calc(var(--u) * 0.5) rgba(241, 100, 67, 0.9),
+    0 0 calc(var(--u) * 2.4) rgba(241, 100, 67, 0.6);
   visibility: hidden;
 }
 .s36-scan i {
@@ -220,13 +265,13 @@
   left: calc(var(--u) * 0.55);
   right: calc(var(--u) * 0.55);
   bottom: 100%;
-  height: calc(var(--u) * 3.6);
-  background: linear-gradient(to top, rgba(241, 100, 67, 0.26), rgba(241, 100, 67, 0));
+  height: calc(var(--u) * 5.4);
+  background: linear-gradient(to top, rgba(241, 100, 67, 0.4), rgba(241, 100, 67, 0.12) 45%, rgba(241, 100, 67, 0));
 }
 .s36-find {
   position: absolute;
-  left: calc(var(--u) * 3.4);
-  width: calc(var(--u) * 24.2);
+  left: calc(var(--u) * 3.8);
+  width: calc(var(--u) * 24.4);
   height: 0;
   display: flex;
   align-items: center;
@@ -258,9 +303,9 @@
 .s36-verdict {
   position: absolute;
   left: 0;
-  top: calc(var(--u) * 26.15);
-  width: calc(var(--u) * 24.5);
-  height: calc(var(--u) * 3.6);
+  top: calc(var(--u) * 26.25);
+  width: calc(var(--u) * 26.4);
+  height: calc(var(--u) * 3.45);
   border-radius: calc(var(--u) * 0.9);
   background: var(--s36-ink);
   box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.16);
@@ -364,7 +409,7 @@
 /* ---------------------------------------------------------------- 37: as the bank writes it */
 .s36-head {
   position: absolute;
-  top: calc(var(--u) * 21.05);
+  top: calc(var(--u) * 20.55);
   visibility: hidden;
 }
 .s36-head--0 {
@@ -385,7 +430,7 @@
   position: absolute;
   left: var(--kn-x0);
   width: calc(var(--u) * 91.6);
-  height: calc(var(--u) * 3.3);
+  height: calc(var(--u) * 3);
   z-index: 3;
 }
 .s36-raw {
@@ -416,7 +461,7 @@
   top: 0;
   font-family: var(--s36-mono);
   font-size: calc(var(--u) * 1.05);
-  line-height: calc(var(--u) * 3.2);
+  line-height: calc(var(--u) * 2.9);
   color: var(--kn-ink);
   white-space: pre;
 }
@@ -436,7 +481,7 @@
 }
 .s36-chev {
   position: absolute;
-  top: calc(var(--u) * 0.95);
+  top: calc(var(--u) * 0.8);
   width: calc(var(--u) * 1);
   height: calc(var(--u) * 1.4);
   fill: none;
@@ -458,9 +503,9 @@
   left: calc(var(--u) * 44.6);
   top: calc(var(--u) * 0.2);
   width: calc(var(--u) * 13.2);
-  height: calc(var(--u) * 2.9);
+  height: calc(var(--u) * 2.6);
   box-sizing: border-box;
-  border-radius: calc(var(--u) * 1.45);
+  border-radius: calc(var(--u) * 1.3);
   background: #f1f3f8;
   border: calc(var(--u) * 0.08) solid var(--kn-line);
   display: flex;
@@ -492,6 +537,19 @@
 .s36-cat > span {
   display: block;
 }
+/* the place GenAI has yet to fill */
+.s36-catslot {
+  position: absolute;
+  left: calc(var(--u) * 61.6);
+  top: 0;
+  width: calc(var(--u) * 30);
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: calc(var(--u) * 1.5);
+  border: calc(var(--u) * 0.12) dashed #f3b9a7;
+  background: rgba(253, 238, 232, 0.45);
+  visibility: hidden;
+}
 .s36-ghost {
   position: absolute;
   left: 0;
@@ -509,59 +567,68 @@
 }
 .s36-foot {
   position: absolute;
-  top: calc(var(--u) * 43.5);
-  height: calc(var(--u) * 6.7);
+  top: calc(var(--u) * 40.2);
+  height: calc(var(--u) * 10.1);
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 1.6);
-  padding: 0 calc(var(--u) * 1.8);
   border-radius: calc(var(--u) * 0.8);
   z-index: 1;
   visibility: hidden;
 }
 .s36-foot--old {
   left: var(--kn-x0);
-  width: calc(var(--u) * 39);
+  width: calc(var(--u) * 23);
   background: rgba(241, 243, 248, 0.92);
   border: calc(var(--u) * 0.08) solid var(--kn-line);
 }
 .s36-foot--abcd {
-  left: calc(var(--u) * 44.6);
-  width: calc(var(--u) * 51.2);
+  left: calc(var(--u) * 28.4);
+  width: calc(var(--u) * 67.4);
   background: #fdeee8;
   border: calc(var(--u) * 0.1) solid var(--kn-peach-line);
 }
 .s36-footn {
-  flex: none;
-  width: calc(var(--u) * 7.4);
+  position: absolute;
+  left: calc(var(--u) * 1.3);
+  top: calc(var(--u) * 1.15);
   font-size: calc(var(--u) * 4.4);
   line-height: 1;
   color: #46526f;
+  white-space: nowrap;
 }
 .s36-foot--abcd .s36-footn {
-  width: calc(var(--u) * 15.6);
-  font-size: calc(var(--u) * 4.7);
   color: var(--kn-flame-deep);
 }
 .s36-foot p {
-  flex: none;
+  position: absolute;
+  left: calc(var(--u) * 1.3);
+  top: calc(var(--u) * 5.95);
   margin: 0;
-  font-size: calc(var(--u) * 1.08);
+  font-size: calc(var(--u) * 1);
   line-height: 1.3;
   color: var(--kn-body);
   white-space: nowrap;
 }
 .s36-foot p strong {
   display: block;
-  font-size: calc(var(--u) * 1.45);
+  font-size: calc(var(--u) * 1.35);
   line-height: 1.2;
   color: var(--kn-ink);
 }
+/* where the points settle: the hundred beside its numeral, the nine thousand filling the box */
 .s36-slot {
-  flex: 1;
-  align-self: stretch;
-  margin: calc(var(--u) * 0.85) 0;
+  position: absolute;
+}
+.s36-slot--small {
+  left: calc(var(--u) * 9.4);
+  top: calc(var(--u) * 1.75);
+  width: calc(var(--u) * 3.2);
+  height: calc(var(--u) * 3.2);
+}
+.s36-slot--big {
+  left: calc(var(--u) * 16.8);
+  right: calc(var(--u) * 0.7);
+  top: calc(var(--u) * 0.5);
+  bottom: calc(var(--u) * 0.5);
 }
 .s36-field {
   position: absolute;

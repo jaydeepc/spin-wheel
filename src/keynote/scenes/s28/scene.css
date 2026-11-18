@@ -103,14 +103,12 @@
 .s28-pic {
   object-fit: contain;
 }
-/* ABCD is a square render: the deck shows it in a circle */
+/* ABCD is the owner's logo: a speech bubble, shown whole (never cut to a circle). Its round body is
+   94% of the file, so the file is drawn a little larger and the body is as large as the others' discs. */
 .s28-pic--abcd {
-  inset: 1.4%;
-  width: 97.2%;
-  height: 97.2%;
-  object-fit: cover;
-  border-radius: 50%;
-  box-shadow: 0 0 0 calc(var(--u) * 0.26) #fff;
+  inset: -3%;
+  width: 106%;
+  height: 106%;
 }
 /* the ring of light as a portrait lands */
 .s28-halo {
