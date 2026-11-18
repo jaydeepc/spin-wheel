@@ -30,3 +30,7 @@ npm run dev                  # http://localhost:5183
 Content saved from the admin page goes to Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set, otherwise to
 `data/showcase.json` beside the app. Until something is saved, the kiosk shows the built-in use cases in
 `src/data/seed.ts`, taken from the team's final BYOT and BYOA list.
+
+## PDF export
+
+With the app running, `npm run pdf` writes `exports/pdf/everyday-ai.pdf` and `exports/pdf/keynote.pdf` (one 16:9 page per rest of Everyday AI, one per keynote slide). `npm run pdf -- everyday` or `-- keynote` does one deck; `-- keynote --beats` adds a page for every build-up. Needs Google Chrome and Node 22+. See `scripts/export-pdf.mjs`.
