@@ -5,6 +5,7 @@ the wheel docks in the corner and the use case it landed on takes the screen: th
 the BYOT/BYOA solution, the new way, the impact and the people who built it.
 
 - `/` the kiosk. Space or Enter is the red button; Esc or the docked wheel goes back.
+- `/?case=3` opens the kiosk already docked on use case 3 (1 to the number on the wheel, in wheel order), for testing. Any other value shows the normal wheel.
 - `/admin` add, edit, reorder and hide use cases (up to 20). Locked behind a PIN.
 
 Built with Next.js (App Router), React and GSAP, on the Piramal.ai light theme.
@@ -26,5 +27,5 @@ npm run dev                  # http://localhost:5183
 | `BLOB_READ_WRITE_TOKEN` | Set by Vercel when a Blob store is connected. Content is then saved there. |
 
 Content saved from the admin page goes to Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set, otherwise to
-`data/showcase.json` beside the app. Until something is saved, the kiosk shows the built-in examples in
-`src/data/seed.ts`, which are illustrative placeholders.
+`data/showcase.json` beside the app. Until something is saved, the kiosk shows the built-in use cases in
+`src/data/seed.ts`, taken from the team's final BYOT and BYOA list.

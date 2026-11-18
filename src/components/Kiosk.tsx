@@ -258,7 +258,7 @@ export default function Kiosk() {
   /* ---------- wheel → use case ---------- */
 
   const reveal = useCallback(
-    (index: number) => {
+    (index: number, instant = false) => {
       const chosen = activeRef.current[index]
       if (!chosen) {
         motion.current.mode = 'drift'
@@ -266,7 +266,7 @@ export default function Kiosk() {
         setPhase('idle')
         return
       }
-      if (soundRef.current) playWin()
+      if (soundRef.current && !instant) playWin()
       busy.current = true
       // Mount the announcement and the detail page now so the timeline can address their elements.
       flushSync(() => {
@@ -338,9 +338,34 @@ export default function Kiosk() {
       const C = T + 0.8
       const introLength = playDetail(view, tl, C)
       tl.to(againRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, C + Math.max(introLength - 0.5, 0))
+      // A direct link skips the show: same timeline, run straight to its end state.
+      if (instant) tl.progress(1)
     },
     [setPhase],
   )
+
+  // Direct link for testing: /?case=3 opens already docked on the third use case in wheel order,
+  // as if the wheel had just landed on it. Anything out of range leaves the normal wheel.
+  const opened = useRef(false)
+  useEffect(() => {
+    if (!ready || opened.current) return
+    opened.current = true
+    const raw = new URLSearchParams(window.location.search).get('case') ?? ''
+    const count = activeRef.current.length
+    const n = /^\d+$/.test(raw) ? Number(raw) : 0
+    if (n < 1 || n > count || count < 2 || phaseRef.current !== 'idle') return
+    // After this effect, not inside it: reveal() flushes React synchronously, which an effect may not do.
+    queueMicrotask(() => {
+      if (phaseRef.current !== 'idle' || activeRef.current.length !== count) return
+      // Park the wheel with the pointer on the middle of that segment.
+      const m = motion.current
+      gsap.killTweensOf(m)
+      m.mode = 'tween'
+      m.vel = 0
+      m.rot = -(n - 0.5) * (360 / count)
+      reveal(n - 1, true)
+    })
+  }, [ready, reveal])
 
   const start = useCallback(() => {
     if (phaseRef.current !== 'idle' || activeRef.current.length < 2) return
