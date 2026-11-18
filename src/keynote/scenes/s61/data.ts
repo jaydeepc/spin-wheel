@@ -85,10 +85,10 @@ export const DELEGATES_TEXT = "The world's leading AI summit. Theme: “Back to 
 
 /**
  * 63, the judges' page (the owner's own document, public/keynote/owner/team/judges-panel.png): the
- * caption uses ONLY words printed on that page. The page does not name the award or its body: none is added.
+ * title is the award as the owner named it (19 Nov); the other lines are the words printed on that page.
  */
 export const JUDGES = {
-  title: '2026 Global Large Enterprises Judges',
+  title: 'Gartner - Eye of Innovation 2026' /* owner, 19 Nov: the award's name */,
   who: 'Jaydeep Chakrabarty',
   role: 'Senior Vice President - Head of AI',
   org: 'Piramal Finance',
