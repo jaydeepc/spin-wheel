@@ -66,8 +66,8 @@ export default function Moment({ product, module }: { product: Product; module: 
       {/* (version 2, ?v=2, shows it on every moment, with the detail line under it: everyday.css) */}
       <p className="ev-before-h">
         <Rise>{sentences(product.before.headline)}</Rise>
+        <span className="ev-before-d">{product.before.detail}</span>
       </p>
-      <p className="ev-before-d">{product.before.detail}</p>
 
       {/* ---------- THE NAME ---------- */}
       <i className="ev-flash" />

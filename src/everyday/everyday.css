@@ -2231,20 +2231,16 @@ html:has(.ev-root) body {
   letter-spacing: -0.03em;
 }
 .ev-root[data-v='2'] .ev-before-d {
+  /* the detail line: right under the headline */
   display: block;
-  text-wrap: balance;
-  position: absolute;
-  left: calc(var(--hx) * -1);
-  /* its foot stands clear of her bubble (three lines and her name tag) */
-  bottom: calc((var(--ev-vy) - var(--u) * 12.6) * -1);
-  width: calc(var(--ev-bw) - var(--u) * 6);
+  margin-top: calc(var(--u) * 1.1);
   font-size: calc(var(--u) * 1.9);
   font-weight: 600;
   line-height: 1.35;
+  letter-spacing: 0;
   color: var(--ev-body);
   opacity: 0;
   transition: opacity 0.2s;
-  pointer-events: none;
 }
 .ev-root[data-v='2'][data-step='before'] .ev-before-d {
   opacity: 1;
