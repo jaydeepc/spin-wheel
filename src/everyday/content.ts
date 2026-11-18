@@ -263,7 +263,7 @@ export const PRODUCTS: Product[] = [
       },
       shots: {
         before: {
-          src: '',
+          src: '/everyday/shots/smarthelp-before.jpg',
           label: 'Legacy support platform: the old ticket',
           want: 'One ticket open in the old support platform, a few replies back and forth, status still "Pending with backend team".',
         },

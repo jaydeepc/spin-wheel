@@ -102,6 +102,10 @@
   position: relative; /* over its ring */
 }
 .op-word--ai .op-ch {
+  /* the gradient is clipped to each letter's own box, and the A stands a little outside its box:
+     widen the box (and take the width back) so its foot is not cut */
+  padding: 0.04em 0.1em 0.06em;
+  margin: -0.04em -0.1em -0.06em;
   background: linear-gradient(180deg, #f4714d 10%, #eb542c 52%, #d6411a 92%);
   -webkit-background-clip: text;
   background-clip: text;
