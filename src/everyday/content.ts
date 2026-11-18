@@ -243,8 +243,8 @@ export type Product = SmartHelpProduct | ByotProduct | ByoaProduct | PrastutiPro
 export const SPEAKERS = {
   priya: { name: 'Shilpa', role: 'Branch Sales Manager, Bangalore', portrait: '/people/shilpa-t.jpg' },
   rohan: { name: 'Rohan', role: 'Field Collections Officer, Lucknow', portrait: '/people/rohan-deshmukh.jpg' },
-  /** BYOA's speaker. PLACEHOLDER name and photo: to be replaced by the real person. */
-  vikram: { name: 'Vikram', role: 'Area Collections Manager, Pune', portrait: '/people/arjun-menon.jpg' },
+  /** BYOA's speaker. A made-up name; the photo is a free stock portrait (Pexels, photo 7752846), not an employee. */
+  vikram: { name: 'Vikram', role: 'Area Collections Manager, Pune', portrait: '/people/vikram.jpg' },
   atul: { name: 'Atul', role: 'Software Engineer, Journey App Team', portrait: '/people/atul.jpg' },
 } satisfies Record<string, Speaker>
 
