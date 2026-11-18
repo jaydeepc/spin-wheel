@@ -536,8 +536,10 @@ function Stat({ product }: P) {
       <div className="prastuti-mini">
         <i className="prastuti-mini-card prastuti-mini-card--3" />
         <i className="prastuti-mini-card prastuti-mini-card--2" />
+        {/* the deck Prastuti built: the SAME real screen as the result (demo.shots.deck), so the two
+            change together; the drawn cover stands in only while there is no file */}
         <div className="prastuti-mini-card prastuti-mini-card--1">
-          <TitleFace slide={cover} />
+          {product.demo.shots.deck.src ? <Shot shot={product.demo.shots.deck} className="prastuti-mini-shot" /> : <TitleFace slide={cover} />}
         </div>
         <i className="prastuti-mini-check">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

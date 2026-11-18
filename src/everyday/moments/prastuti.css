@@ -1441,3 +1441,12 @@
 .ev-shot.prastuti-shot img {
   object-fit: contain;
 }
+
+/* the same real screen, small, on the deck inside the stopwatch */
+.ev-shot.prastuti-mini-shot {
+  border-radius: inherit;
+  background: #ffffff;
+}
+.ev-shot.prastuti-mini-shot img {
+  object-position: 0 0;
+}

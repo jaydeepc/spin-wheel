@@ -409,8 +409,8 @@ export const PRODUCTS: Product[] = [
       shots: {
         before: {
           src: '/everyday/shots/prastuti-before.jpg',
-          label: 'PowerPoint: a blank deck',
-          want: 'PowerPoint open on an empty slide ("Click to add title"), the full ribbon showing.',
+          label: 'PowerPoint: the chart, made by hand',
+          want: 'PowerPoint open on a hand-made chart slide: a crowded default chart, no takeaway.',
         },
         ask: {
           src: '/everyday/shots/prastuti-ask.jpg',
