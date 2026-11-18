@@ -216,9 +216,10 @@ export function prepareName(root: HTMLElement, stage: Stage, E: Eases): NameRig 
         if (kind === 'hindi' && deva && meaning) {
           // The Hindi word lands FIRST, with its meaning, and holds; then it turns into the name in
           // English, once. (Not English, Hindi, English again: the name is read one way, then the other.)
-          const tC = tN + 1.85 // turns into the English name
-          t.to(deva, { yPercent: 0, duration: 0.8 }, tN + 0.1)
-            .to(meaning, { autoAlpha: 1, y: openUnderY, duration: 0.45 }, tN + 0.55)
+          // (a short beat: long enough to see that it is Hindi, not long enough to feel like a wait)
+          const tC = tN + 1.0 // turns into the English name
+          t.to(deva, { yPercent: 0, duration: 0.5 }, tN + 0.05)
+            .to(meaning, { autoAlpha: 1, y: openUnderY, duration: 0.35 }, tN + 0.28)
             .to(deva, { yPercent: -102, duration: 0.32, ease: 'power3.in' }, tC)
             .to(meaning, { y: underY, duration: 0.6, ease: E.inOut }, tC + 0.2)
             .to(chars, { yPercent: 0, duration: 0.6, stagger: 0.02 }, tC + 0.25)
