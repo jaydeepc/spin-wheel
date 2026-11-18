@@ -647,8 +647,11 @@
   will-change: transform;
 }
 .ev-ch {
-  padding: 0.14em 0 0.3em;
-  margin: -0.14em 0 -0.3em;
+  /* the gradient is clipped to each letter's own box, and at this tight tracking a letter's ink
+     reaches into its neighbour's (the foot of a t, the bowl of an a): the box is wider than the
+     letter by 0.1em each side, and gives the width back, so nothing is cut */
+  padding: 0.14em 0.1em 0.3em;
+  margin: -0.14em -0.1em -0.3em;
 }
 .ev-devaMask {
   /* Devanagari hangs from its headline and reaches well below the Latin baseline:
@@ -2278,4 +2281,10 @@ html:has(.ev-root) body {
   font-size: calc(var(--u) * 1.6);
   font-weight: 500;
   color: var(--ev-body);
+}
+
+/* On the engineering pages the accent is navy, which is also the colour of the role beside it:
+   the speaker's name takes the brand blue there, so it still reads as a name. */
+.ev-root[data-accent='navy'] .ev-voice-who b {
+  color: #2d6ad1;
 }
