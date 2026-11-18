@@ -438,7 +438,7 @@ export const PRODUCTS: Product[] = [
     priya: {
       before: 'Someone asks to raise the personal-loan limit. Earlier, I had to hunt for where it is set, and who decided it.',
       tool: 'Now I just ask Piramal Mind.',
-      after: 'Where it is set, who decided it, what to change: one answer.',
+      after: 'It looked everywhere for me, and told me exactly what to change.',
     },
     after: 'It remembers every codebase and every ticket, and it connects them.',
     stat: { value: '80%', label: 'lower AI cost' },
@@ -463,7 +463,7 @@ export const PRODUCTS: Product[] = [
           { value: '5 years', label: 'Max tenure' },
         ],
         where: { k: 'Where it is set', v: 'In the DB config, not in the code' },
-        decided: { k: 'Decided in', refs: ['Meeting', 'Mail', 'Jira', 'Confluence'] },
+        decided: { k: 'I looked at', refs: ['Outlook', 'Jira', 'Confluence', 'DB'] },
         next: { k: 'To change it', v: 'Update the value in the DB config' },
       },
       talksBack: {
