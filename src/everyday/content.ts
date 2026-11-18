@@ -243,6 +243,8 @@ export type Product = SmartHelpProduct | ByotProduct | ByoaProduct | PrastutiPro
 export const SPEAKERS = {
   priya: { name: 'Shilpa', role: 'Branch Sales Manager, Bangalore', portrait: '/people/shilpa-t.jpg' },
   rohan: { name: 'Rohan', role: 'Field Collections Officer, Lucknow', portrait: '/people/arjun-menon.jpg' },
+  /** BYOA's speaker. PLACEHOLDER name and photo: to be replaced by the real person. */
+  vikram: { name: 'Vikram', role: 'Area Collections Manager, Lucknow', portrait: '/people/rohan-deshmukh.jpg' },
   atul: { name: 'Atul', role: 'Software Engineer, Journey App Team', portrait: '/people/atul.jpg' },
 } satisfies Record<string, Speaker>
 
@@ -367,7 +369,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     key: 'byoa',
-    speaker: SPEAKERS.rohan,
+    speaker: SPEAKERS.vikram,
     name: 'BYOA',
     expansion: ['Build', 'Your', 'Own', 'Agents'],
     promise: 'AI agents built by the person with the problem.',
