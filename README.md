@@ -1,4 +1,4 @@
-# BYOT · BYOA Showcase Wheel
+# BYOT · BYOA Showcase Wheel.
 
 A kiosk for Piramal Finance's Investor Day. Hit the red button to spin the wheel, hit it again to stop;
 the wheel docks in the corner and the use case it landed on takes the screen: the old way, the problem,
