@@ -325,7 +325,7 @@ export const PRODUCTS: Product[] = [
     stat: { value: '1,072', label: 'employees built their own tool' },
     track: 'day',
     demo: {
-      app: 'Collection Central',
+      app: 'Voice Disposition',
       builtBy: 'Built by the collections team, on BYOT',
       blocks: ['Voice disposition', 'Interaction result', 'Reason', 'Remarks'],
       spoken: 'He has lost his job. He expects an offer in two or three days, and will pay the EMI next month.',

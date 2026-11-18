@@ -155,6 +155,27 @@ export function buildMoment(
   gsap.set(mover, { autoAlpha: 0, x: home.x, y: home.y + 50 * U, rotation: deviceKind === 'phone' ? 5 : 0, scale: zoom })
   if (proof) gsap.set(proof, { autoAlpha: 0, y: 1 * U })
   gsap.set(statPic, { autoAlpha: 0 })
+  // THE NUMBER FITS ITS COLUMN, whatever it is: measured at its final text (1,072 is far wider
+  // than 15), and set smaller if it would reach the stat picture. Measured now, and again when
+  // the brand font is in (the fallback font is narrower, and would pass a number that does not
+  // fit). Its size is fixed here; it is never animated.
+  {
+    const numBox = numEl.parentElement as HTMLElement
+    const finalText = numEl.textContent ?? ''
+    const fitNumber = () => {
+      if (!numBox.isConnected) return
+      const shown = numEl.textContent
+      numEl.textContent = finalText
+      numBox.style.fontSize = ''
+      const picX = stage.loc(statPic).x
+      const box = stage.loc(numBox)
+      const room = picX - 2.5 * U - box.x
+      if (box.w > room && room > 0) numBox.style.fontSize = `calc(var(--ev-num) * ${(room / box.w).toFixed(3)})`
+      numEl.textContent = shown
+    }
+    fitNumber()
+    void document.fonts?.ready.then(fitNumber)
+  }
   gsap.set(numEl, { textContent: 0 })
 
   // ================================================================ BEFORE: the old way. ONE picture; Priya's bubble tells it.
