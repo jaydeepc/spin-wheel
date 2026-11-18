@@ -455,6 +455,9 @@ function Screen({ product }: P) {
           demo.shots.deck). It carries its own header, so it covers the whole screen; it comes up
           over the dealt-out slides as the run ends. */}
       <Shot shot={d.shots.deck} className="prastuti-shot" />
+      {/* the REAL chat (demo.shots.ask): it stands behind the voice bar from the demo rest, over
+          the drawn screen, until the real deck comes up over it */}
+      <Shot shot={d.shots.ask} className="prastuti-ask" />
     </div>
   )
 }

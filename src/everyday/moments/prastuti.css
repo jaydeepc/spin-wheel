@@ -1414,7 +1414,30 @@
 }
 
 /* the real screens keep their left edge (the app's name): what does not fit is cut on the right */
-.prastuti-b-shot img,
-.prastuti-shot img {
+.ev-shot.prastuti-b-shot img,
+.ev-shot.prastuti-shot img {
   object-position: 0 0;
+}
+
+/* The real chat, at the demo rest and through the run: over the drawn screen (its bar, the
+   "Speak in" card, the slides as they build and as they are dealt: z 2 to 22), under the voice
+   bar with the one control, and under the real deck. */
+.prastuti-ask {
+  --su: var(--a);
+  z-index: 25;
+}
+.ev-shot.prastuti-ask img {
+  object-position: 0 0;
+}
+.prastuti-app .prastuti-dock {
+  z-index: 26;
+}
+
+/* the finished deck is shown whole (nothing of the slide is cut): it fits the screen's width,
+   and what is left under it is the app's own page colour */
+.ev-shot.prastuti-shot {
+  background: #f8fafc;
+}
+.ev-shot.prastuti-shot img {
+  object-fit: contain;
 }

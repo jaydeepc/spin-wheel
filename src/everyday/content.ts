@@ -167,8 +167,8 @@ export interface PrastutiProduct extends ProductBase {
     ready: string
     readyEn: string
     beforeWhen: string
-    /** The real screens: the old way (a blank deck in PowerPoint); the deck Prastuti built. */
-    shots: { before: ShotSpec; deck: ShotSpec }
+    /** The real screens: the old way (a blank deck in PowerPoint); Prastuti's chat, where she talks; the deck it built. */
+    shots: { before: ShotSpec; ask: ShotSpec; deck: ShotSpec }
   }
 }
 export interface MindProduct extends ProductBase {
@@ -395,6 +395,11 @@ export const PRODUCTS: Product[] = [
           src: '/everyday/shots/prastuti-before.jpg',
           label: 'PowerPoint: a blank deck',
           want: 'PowerPoint open on an empty slide ("Click to add title"), the full ribbon showing.',
+        },
+        ask: {
+          src: '/everyday/shots/prastuti-ask.jpg',
+          label: 'Prastuti: the chat',
+          want: 'Prastuti on a desktop, close on the chat: its last message, and the box where she talks.',
         },
         deck: {
           src: '/everyday/shots/prastuti-deck.jpg',
