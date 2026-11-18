@@ -245,7 +245,8 @@ export function buildMoment(
   }
   t.to(statPic, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' }, tT + 0.2)
     .to(statRise[0], { yPercent: 0, duration: 0.6 }, tT + 0.3)
-    .to(numEl, { textContent: target, snap: { textContent: 1 }, duration: 0.95, ease: 'power2.out' }, tT + 0.35)
+    // (written with its thousands comma: 1,072)
+    .to(numEl, { textContent: target, duration: 0.95, ease: 'power2.out', modifiers: { textContent: (v: string) => Math.round(Number(v)).toLocaleString('en-IN') } }, tT + 0.35)
     .to(statRise[1], { yPercent: 0, duration: 0.55 }, tT + 0.75)
     .to('.ev-stat-num', { scale: 1.035, duration: 0.1, ease: 'power2.out' }, tT + 1.26)
     .to('.ev-stat-num', { scale: 1, duration: 0.14, ease: 'power2.inOut' }, tT + 1.36)

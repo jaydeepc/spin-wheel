@@ -16,7 +16,7 @@
  *          the clip stands a still of the listening screen, for a browser that cannot play it.
  *          Then the filled form (shots.done) and the stamp, Filed 10:42 am.
  * Result   the phone rests on the filled form, and the one stamp
- * Stat     634 tiles, one per employee-built tool; the phone flies into its own tile
+ * Stat     1,072 tiles, one per employee-built tool; the phone flies into its own tile
  *
  * Everything here is BYOT's own. The name, the phone, the headline, the number, Priya's
  * bubble, the hand-over and the touch invitation come from the shared frame.
@@ -30,11 +30,12 @@ import './byot.css'
 
 type P = PartProps<ByotProduct>
 
-const TILE_COUNT = 634
-const GRID_COLS = 32
+const TILE_COUNT = 1072
+/** (byot.css draws the grid this many across: keep the two together) */
+const GRID_COLS = 42
 const GRID_ROWS = Math.ceil(TILE_COUNT / GRID_COLS)
-/** Which of the 634 is this team's app. */
-const OUR_TILE = 7 * GRID_COLS + 20
+/** Which of them is this team's app (row 9, the 28th along: the callout in byot.css stands on it). */
+const OUR_TILE = 9 * GRID_COLS + 27
 
 /** "Built by the Lucknow sales team, on BYOT" → who built it: the line in the app's own header. */
 const builtByTeam = (builtBy: string) => builtBy.split(',')[0]
@@ -122,7 +123,7 @@ function OnDevice({ product }: P) {
 }
 
 // ====================================================================== STAT
-/** 634 tools built by employees. One of them is hers. */
+/** 1,072 tools built by employees. One of them is hers. */
 function Stat({ product }: P) {
   return (
     <div className="byot-grid">
@@ -229,7 +230,7 @@ function animate(env: MomentEnv<ByotProduct>) {
     .to(burst, { scale: 1.5, autoAlpha: 0, duration: 0.44, ease: 'power2.out' }, hit + 0.01)
   env.bump(run, hit, 3)
 
-  // ---------------------------------------------------------------- stat: one of 634
+  // ---------------------------------------------------------------- stat: one of 1,072
   const tiles = $$('.byot-tile')
   const callout = $('.byot-callout-in')
   gsap.set(tiles, { autoAlpha: 0, scale: 0.2 })

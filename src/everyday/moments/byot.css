@@ -278,15 +278,17 @@
   visibility: hidden;
 }
 
-/* ---------- STAT: 634 tools, one of them hers ---------- */
+/* ---------- STAT: 1,072 tools, one of them hers ----------
+   42 across and 26 down, in the stat picture's box (32 × 20 of the frame's pitch): --bp is this grid's own pitch. */
 .byot-grid {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(32, var(--ev-pitch));
-  grid-auto-rows: var(--ev-pitch);
+  --bp: calc(var(--ev-pitch) * 32 / 42);
+  grid-template-columns: repeat(42, var(--bp));
+  grid-auto-rows: var(--bp);
 }
 .byot-tile {
   width: 70%;
@@ -299,7 +301,8 @@
 .byot-tile:nth-child(5n + 2) {
   background: #f8b9a6;
 }
-.byot-tile:nth-child(7n + 4) {
+/* (11, not 7: the grid is 42 across, and a step that divides 42 draws stripes) */
+.byot-tile:nth-child(11n + 4) {
   background: #f16443;
 }
 .byot-tile:nth-child(9n + 1) {
@@ -311,9 +314,9 @@
 .byot-tile.byot-tile--ours {
   position: relative;
   z-index: 2;
-  width: 118%;
-  height: 118%;
-  margin: -9%;
+  width: 150%;
+  height: 150%;
+  margin: -25%;
   background: var(--ev-navy);
   box-shadow:
     0 0 0 calc(var(--u) * 0.22) #ffffff,
@@ -323,8 +326,8 @@
 .byot-callout {
   position: absolute;
   z-index: 3;
-  left: calc(var(--ev-pitch) * 20.5);
-  top: calc(var(--ev-pitch) * 7.5);
+  left: calc(var(--bp) * 27.5);
+  top: calc(var(--bp) * 9.5);
   width: 0;
   height: 0;
 }

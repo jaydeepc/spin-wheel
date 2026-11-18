@@ -322,7 +322,7 @@ export const PRODUCTS: Product[] = [
       after: 'Now I just speak after the visit, and the note fills itself.',
     },
     after: 'The note is spoken on the spot, in the team’s own app.',
-    stat: { value: '634', label: 'employees built their own tool' },
+    stat: { value: '1,072', label: 'employees built their own tool' },
     track: 'day',
     demo: {
       app: 'Collection Central',
@@ -375,7 +375,7 @@ export const PRODUCTS: Product[] = [
       after: 'It checks eligibility and documents, and tells me what to ask. I call only the ones who are ready.',
     },
     after: 'Her own agent pre-screens every lead before she picks up the phone.',
-    stat: { value: '623', label: 'agents built by the business' },
+    stat: { value: '701', label: 'agents built by the business' },
     track: 'day',
     demo: {
       agent: 'Lead Screener',

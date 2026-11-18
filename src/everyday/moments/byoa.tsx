@@ -17,7 +17,7 @@
  *          go into the agent in one sweep and come out sorted, one by one, the lights checking
  *          each: Ready to call (the names), Needs documents (the names, and the one thing to ask)
  * Result   the phone rests on the two lists, and ONE tag: 3 Ready to call
- * Stat     623 agents, each a small face; the phone flies into hers
+ * Stat     701 agents, each a small face; the phone flies into hers
  *
  * Everything here is BYOA's own. The name, the phone, the headline, the number, Priya's
  * bubble, the hand-over and the touch invitation come from the shared frame.
@@ -36,8 +36,8 @@ const BYOA = productByKey('byoa') as ByoaProduct
 /** What she checks by hand on every form: the same three things she will tell the agent. */
 const BY_HAND = ['Eligibility', 'Documents', 'What to ask']
 
-// ---------------------------------------------------------------- the 623: a field of small agents, packed like a honeycomb
-const BOT_COUNT = Number(BYOA.stat.value) || 623
+// ---------------------------------------------------------------- the 701: a field of small agents, packed like a honeycomb
+const BOT_COUNT = Number(BYOA.stat.value) || 701
 const BOT_COLS = 32
 const BOT_ROW_STEP = 0.87
 const BOT_TOP = 1.2
@@ -50,7 +50,7 @@ const BOTS = (() => {
   }
   return out
 })()
-/** Which of the 623 is Lead Screener: row 9, the eleventh along. */
+/** Which of them is Lead Screener: row 9, the eleventh along. */
 const OUR_BOT = 5 * BOT_COLS + 4 * (BOT_COLS - 1) + 10
 
 const at = (x: number, y: number) => ({ ['--x' as string]: x, ['--y' as string]: y }) as CSSProperties
@@ -298,7 +298,7 @@ function Extras({ product }: P) {
 }
 
 // ====================================================================== STAT
-/** 623 agents built by the business. One of them is hers. */
+/** 701 agents built by the business. One of them is hers. */
 function Stat({ product }: P) {
   const ours = BOTS[OUR_BOT]
   return (
@@ -541,7 +541,7 @@ function animate(env: MomentEnv<ByoaProduct>) {
     .to(burst, { scale: 1.3, autoAlpha: 0, duration: 0.44, ease: 'power2.out' }, hit + 0.01)
   env.bump(run, hit, 3)
 
-  // ---------------------------------------------------------------- stat: one of 623
+  // ---------------------------------------------------------------- stat: one of 701
   const bots = $$('.byoa-bot')
   const callout = $('.byoa-callout-in')
   const ours = BOTS[OUR_BOT]
