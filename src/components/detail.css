@@ -77,6 +77,10 @@
   justify-content: space-between;
   gap: calc(var(--d) * 1.5);
 }
+/* The maker's column stacks from the top, so the numbers sit right under the card instead of sinking to the bottom. */
+.d-side {
+  justify-content: flex-start;
+}
 
 .d-intro {
   container-type: inline-size;
