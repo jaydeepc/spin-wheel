@@ -2212,17 +2212,49 @@ html:has(.ev-root) body {
 }
 
 /* ============================================================
-   VERSION 2 (?v=2): a second layout, kept beside the first.
-   BEFORE: the old way gets a headline of its own and a detail line, top left: so the
-   empty top left is used; the picture and her bubble are as in version 1.
-   RESULT: one thing to read. The name steps down to a label, the statement is the headline, and
-   the supporting line and her bubble are quieter.
+   THE BEFORE HEADLINE, AND THE RESULT'S HIERARCHY
+   BEFORE: the old way has a headline of its own and a detail line, top left, over her bubble;
+   where a new person takes over the day they are introduced there ("Meet Rohan.").
+   RESULT: one thing to read. The name is a label, the statement is the headline, and the
+   supporting line and her bubble are quieter.
    ============================================================ */
-.ev-moment[data-before-h='0'] .ev-before-h,
-.ev-before-d {
-  display: none;
+/* "Meet Rohan.": where a new person takes over the day, they are introduced over the headline */
+.ev-root .ev-before-meet {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+  margin-bottom: calc(var(--u) * 1.5);
+  font-size: calc(var(--u) * 2.3);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
-.ev-root[data-v='2'] .ev-moment .ev-before-h {
+.ev-root[data-step='before'] .ev-before-meet {
+  opacity: 1;
+  transition: opacity 0.45s 0.25s;
+}
+.ev-before-meet img {
+  flex: none;
+  width: calc(var(--u) * 3.6);
+  height: calc(var(--u) * 3.6);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 max(1.5px, calc(var(--u) * 0.15)) var(--acc);
+}
+.ev-before-meet b {
+  flex: none;
+  white-space: nowrap;
+  font-weight: 800;
+  color: var(--acc-ink);
+}
+.ev-before-meet i {
+  font-style: normal;
+  font-size: calc(var(--u) * 1.7);
+  font-weight: 600;
+  color: var(--ev-body);
+}
+.ev-root .ev-moment .ev-before-h {
   display: block;
   top: calc(var(--ev-top) + var(--u) * 3.4);
   width: calc(var(--ev-bw) - var(--u) * 4);
@@ -2230,7 +2262,7 @@ html:has(.ev-root) body {
   line-height: 1.12;
   letter-spacing: -0.03em;
 }
-.ev-root[data-v='2'] .ev-before-d {
+.ev-root .ev-before-d {
   /* the detail line: right under the headline */
   display: block;
   margin-top: calc(var(--u) * 1.1);
@@ -2242,34 +2274,34 @@ html:has(.ev-root) body {
   opacity: 0;
   transition: opacity 0.2s;
 }
-.ev-root[data-v='2'][data-step='before'] .ev-before-d {
+.ev-root[data-step='before'] .ev-before-d {
   opacity: 1;
   transition: opacity 0.45s 0.5s;
 }
 /* the result: the statement is the one headline */
-.ev-root[data-v='2'] .ev-col {
+.ev-root .ev-col {
   top: calc(var(--u) * -6.6);
 }
-.ev-root[data-v='2'] .ev-sentence {
+.ev-root .ev-sentence {
   font-size: calc(var(--u) * 3.9);
   line-height: 1.12;
   letter-spacing: -0.03em;
 }
-.ev-root[data-v='2'] .ev-proof {
+.ev-root .ev-proof {
   margin-top: calc(var(--u) * 1.6);
   max-width: calc(var(--u) * 34);
   font-size: calc(var(--u) * 1.45);
   font-weight: 500;
   color: var(--ev-muted);
 }
-.ev-root[data-v='2'] .ev-proof b {
+.ev-root .ev-proof b {
   font-weight: 700;
   color: var(--ev-body);
 }
-.ev-root[data-v='2'] .ev-dockcap {
+.ev-root .ev-dockcap {
   top: calc(var(--u) * -7);
 }
-.ev-root[data-v='2'][data-step='result'] .ev-voice-text {
+.ev-root[data-step='result'] .ev-voice-text {
   font-size: calc(var(--u) * 1.6);
   font-weight: 500;
   color: var(--ev-body);
