@@ -1340,6 +1340,22 @@
    the canvas there, so that four branch names can still be read
    side by side.
    ============================================================ */
+/* ---------- REAL SCREENS (content.ts → demo.shots): a screenshot, or its placeholder ----------
+   Before: PowerPoint, over the drawn editor's body. Result: the deck Prastuti built, over the
+   dealt-out slides (it comes up as the run ends). */
+.prastuti-b-body {
+  position: relative;
+}
+.prastuti-b-shot {
+  z-index: 5;
+}
+.prastuti-shot {
+  --su: var(--a);
+  z-index: 40;
+  visibility: hidden;
+  will-change: opacity;
+}
+
 @media (max-height: 480px) {
   .ev-moment[data-key='prastuti'] {
     --pf: calc(var(--fl) * 9);

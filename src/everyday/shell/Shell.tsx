@@ -13,7 +13,7 @@
  */
 
 import { useState, type MouseEvent } from 'react'
-import { CLOSING, ENGINEERING, OPENING, PRIYA, PRODUCTS, PROMPTS, productByKey, type Product } from '../content'
+import { CLOSING, ENGINEERING, OPENING, PRIYA, PRODUCTS, PROMPTS, SPEAKERS, productByKey, type Product, type Speaker } from '../content'
 import { director } from '../core/director'
 import { CodeGlyph, withName } from '../moments/parts'
 import { SCENES, isEngineering, isProduct, stepIndex, useEveryday, type SceneId } from '../store'
@@ -97,6 +97,9 @@ interface Line {
   key: string
   text: string
   name: string
+  /** Who says it. In a product moment the bubble carries their name tag. */
+  who: Speaker
+  tag: boolean
 }
 
 /**
@@ -111,9 +114,9 @@ interface Line {
  */
 function lineFor(scene: SceneId, step: string, cue: string | null): Line | null {
   if (scene === 'intro') return null
-  if (scene === 'priya') return step === 'out' ? null : { key: 'priya', text: PRIYA.said, name: '' }
-  if (scene === 'engineering') return step === 'out' ? null : { key: 'engineering', text: ENGINEERING.said, name: '' }
-  if (scene === 'finale') return { key: 'finale', text: CLOSING.said, name: '' }
+  if (scene === 'priya') return step === 'out' ? null : { key: 'priya', text: PRIYA.said, name: '', who: SPEAKERS.priya, tag: false }
+  if (scene === 'engineering') return step === 'out' ? null : { key: 'engineering', text: ENGINEERING.said, name: '', who: SPEAKERS.priya, tag: false }
+  if (scene === 'finale') return { key: 'finale', text: CLOSING.said, name: '', who: SPEAKERS.priya, tag: false }
   if (!isProduct(scene)) return null
   if (step === 'done' || cue === 'off') return null
   const p = productByKey(scene)
@@ -121,7 +124,7 @@ function lineFor(scene: SceneId, step: string, cue: string | null): Line | null 
   // until the timeline has spoken, the step does
   const which = cue === 'before' || cue === 'tool' || cue === 'after' ? cue : i <= 0 ? 'before' : i === 2 ? 'tool' : i === 3 ? 'after' : null
   if (!which) return null
-  return { key: `${scene}:${which}`, text: p.priya[which], name: p.name }
+  return { key: `${scene}:${which}`, text: p.priya[which], name: p.name, who: p.speaker, tag: true }
 }
 
 /**
@@ -150,12 +153,18 @@ export function Voice() {
     <div className="ev-voice" data-on={line ? '1' : '0'} aria-live="polite">
       <div className="ev-voice-avatar" data-ev="avatar">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={PRIYA.portrait} alt="Priya" draggable={false} />
+        <img src={(cur?.who ?? SPEAKERS.priya).portrait} alt={(cur?.who ?? SPEAKERS.priya).name} draggable={false} />
       </div>
       <div className="ev-voice-bubble" aria-hidden={!line}>
         {cur ? (
-          <div className="ev-voice-card" key={cur.key}>
+          <div className="ev-voice-card" key={cur.key} data-who={cur.tag ? '1' : '0'}>
             <i className="ev-voice-tail" />
+            {cur.tag ? (
+              <span className="ev-voice-who">
+                <b>{cur.who.name}</b>
+                {cur.who.role}
+              </span>
+            ) : null}
             <p className="ev-voice-text">{cur.name ? withName(cur.text, cur.name) : cur.text}</p>
           </div>
         ) : null}

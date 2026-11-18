@@ -29,20 +29,20 @@ import './byot.css'
 
 type P = PartProps<ByotProduct>
 
-/** The words of the spoken note that fill each field: Customer, Property, Stage, Next step. */
+/** The words of the spoken note that fill each field: Customer, Met at, Disposition, Next step. */
 const PHRASES = [
   [1, 2],
   [5, 6],
   [8, 9, 10, 11],
-  [15, 16, 17, 18],
+  [12, 13, 14, 15],
 ]
-/** Field rows grouped into the parts her team assembled: Customer / Property (+ Stage) / Next step. */
+/** Field rows grouped into the parts the team assembled: Customer / Met at (+ Disposition) / Next step. */
 const FIELD_GROUPS = [[0], [1, 2], [3]]
 
 const TILE_COUNT = 634
 const GRID_COLS = 32
 const GRID_ROWS = Math.ceil(TILE_COUNT / GRID_COLS)
-/** Which of the 634 is Visit Notes. */
+/** Which of the 634 is this team's app. */
 const OUR_TILE = 7 * GRID_COLS + 20
 
 /** Her voice, either side of the mic: eight bars a side. */
@@ -58,10 +58,10 @@ const phraseText = (spoken: string, idx: number[]) =>
     .replace(/[.,]$/, '')
 
 // ====================================================================== BEFORE
-/** A notebook page, late at night: the four fields of the app, written from memory, with gaps. */
+/** A notebook page, late in the evening: the four fields of the app, written by hand after the visit, with gaps. */
 function Before({ product }: P) {
   const { fields, beforeWhen } = product.demo
-  // What she still remembers at 11:40 pm: the name, half the address, and then it goes.
+  // What is still remembered by the evening: the name, half the place, and then it goes.
   const kept = [fields[0].v, `${fields[1].v.split(',')[0]},`, '', '']
   return (
     <div className="byot-b">
@@ -105,7 +105,7 @@ function Before({ product }: P) {
 
 // ====================================================================== SCREEN
 /**
- * Visit Notes, the app her team built. Top to bottom: its name and who built it; the four
+ * The app the collections team built (demo.app). Top to bottom: its name and who built it; the four
  * fields; the voice dock, where her words appear above the one control.
  */
 function Screen({ product }: P) {

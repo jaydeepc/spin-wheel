@@ -4,194 +4,35 @@
    "smarthelp-". Sizes are in --u; colours come from the accent
    variables.
 
+   SmartHelp is a DESKTOP application, and its screens are REAL
+   SCREENSHOTS (content.ts → demo.shots). Until a file is
+   supplied, a labelled placeholder stands in its place.
+
    THE BUDGET (moments/README.md). What SmartHelp shows at rest:
-     before   ONE picture: the ticket, four messages to and fro,
-              "Still open" stamped on it
-     demo     the phone: the desk's name, her ticket, Raise ticket
-     result   the phone, five rows: the desk's name, her ticket
-              under its stamp, Understood, Found, Fixed (the
-              "safe, pre-approved" tag is inside it).
+     before   ONE picture: the old help desk in a desktop window
+              (a real screenshot), "Still open" stamped on it
+     demo     the laptop: SmartHelp with the issue typed in, and
+              the one control: Raise ticket
+     result   the laptop: the same chat, solved, under its stamp.
               Under the headline, the one supporting line.
      number   a hundred tickets, fifteen closed
    ============================================================ */
 
-/* ---------- BEFORE: the ticket is with the backend team. A to-and-fro, and it is still open. ----------
+/* ---------- BEFORE: the old help desk, and the ticket is still open ----------
    Laid out for the frame's 25u × 20u box, which is then enlarged whole (1.6× on a large screen). */
 .smarthelp-b {
   position: absolute;
   inset: 0;
 }
-.smarthelp-b-ticket {
+.smarthelp-b-win {
   position: absolute;
-  left: calc(var(--u) * 0.2);
-  top: calc(var(--u) * 0.5);
-  width: calc(var(--u) * 20.8);
-  /* the shadow follows the ticket's cut edge */
-  filter: drop-shadow(0 calc(var(--u) * 0.9) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.17)) drop-shadow(0 0 1px rgba(7, 26, 80, 0.18));
-  will-change: transform, opacity;
-}
-.smarthelp-b-paper {
-  position: relative;
-  padding: calc(var(--u) * 0.9) calc(var(--u) * 1.1) calc(var(--u) * 1.05) calc(var(--u) * 5);
-  border-radius: calc(var(--u) * 1.2);
-  background: #ffffff;
-  /* two bites out of the paper where the stub tears off */
-  -webkit-mask:
-    radial-gradient(circle at calc(var(--u) * 3.9) 0, transparent calc(var(--u) * 0.66), #000 calc(var(--u) * 0.66 + 0.6px)) 0 0 / 100% 51% no-repeat,
-    radial-gradient(circle at calc(var(--u) * 3.9) 100%, transparent calc(var(--u) * 0.66), #000 calc(var(--u) * 0.66 + 0.6px)) 0 100% / 100% 51% no-repeat;
-  mask:
-    radial-gradient(circle at calc(var(--u) * 3.9) 0, transparent calc(var(--u) * 0.66), #000 calc(var(--u) * 0.66 + 0.6px)) 0 0 / 100% 51% no-repeat,
-    radial-gradient(circle at calc(var(--u) * 3.9) 100%, transparent calc(var(--u) * 0.66), #000 calc(var(--u) * 0.66 + 0.6px)) 0 100% / 100% 51% no-repeat;
-}
-.smarthelp-b-stub {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: calc(var(--u) * 3.9);
-  display: grid;
-  place-items: center;
-  background: var(--acc-soft);
-}
-.smarthelp-b-stub svg {
-  width: calc(var(--u) * 2.3);
-  height: calc(var(--u) * 2.3);
-  stroke: var(--acc-ink);
-}
-.smarthelp-b-perf {
-  position: absolute;
-  left: calc(var(--u) * 3.9);
-  top: calc(var(--u) * 1.2);
-  bottom: calc(var(--u) * 1.2);
-  width: 0;
-  border-left: calc(var(--u) * 0.13) dashed #b7c9e2;
-}
-.smarthelp-b-id {
-  overflow: hidden;
-  font-size: calc(var(--u) * 2.5);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: var(--ev-navy);
-  font-variant-numeric: tabular-nums;
-}
-.smarthelp-b-id span {
-  display: block;
-}
-.smarthelp-b-status {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.55);
-  height: calc(var(--u) * 2.3);
-  margin-top: calc(var(--u) * 0.45);
-  padding: 0 calc(var(--u) * 0.95) 0 calc(var(--u) * 0.8);
-  border-radius: calc(var(--u) * 1.15);
-  background: var(--acc-soft);
-  border: 1px solid var(--acc-line);
-  font-size: calc(var(--u) * 1.1);
-  font-weight: 700;
-  color: var(--acc-text);
-  white-space: nowrap;
-}
-.smarthelp-b-dots {
-  display: inline-flex;
-  gap: calc(var(--u) * 0.22);
-}
-.smarthelp-b-dots i {
-  width: calc(var(--u) * 0.4);
-  height: calc(var(--u) * 0.4);
-  border-radius: 50%;
-  background: var(--acc);
-  animation: smarthelp-wait 1.3s ease-in-out infinite;
-}
-.smarthelp-b-dots i:nth-child(2) {
-  animation-delay: 0.16s;
-}
-.smarthelp-b-dots i:nth-child(3) {
-  animation-delay: 0.32s;
-}
-@keyframes smarthelp-wait {
-  0%,
-  55%,
-  100% {
-    opacity: 0.3;
-    transform: translateY(0);
-  }
-  28% {
-    opacity: 1;
-    transform: translateY(-28%);
-  }
-}
-.ev-root[data-hold='1'] .smarthelp-b-dots i {
-  animation: none;
-  opacity: 0.6;
-}
-/* the to-and-fro: the team on the left, Priya on the right, message after message */
-.smarthelp-b-thread {
-  position: absolute;
-  left: calc(var(--u) * 1.6);
-  right: calc(var(--u) * 0.2);
-  top: calc(var(--u) * 9.1);
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--u) * 0.34);
-}
-.smarthelp-b-msg {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.55);
-  will-change: transform, opacity;
-}
-.smarthelp-b-msg--team {
-  align-self: flex-start;
-}
-.smarthelp-b-msg--priya {
-  align-self: flex-end;
-}
-.smarthelp-b-msg span {
-  display: block;
-  height: calc(var(--u) * 2.45);
-  padding: 0 calc(var(--u) * 1.1);
-  font-size: calc(var(--u) * 1.1);
-  font-weight: 600;
-  line-height: calc(var(--u) * 2.45);
-  letter-spacing: -0.005em;
-  white-space: nowrap;
-}
-.smarthelp-b-msg--team span {
-  border-radius: calc(var(--u) * 0.35) calc(var(--u) * 1.22) calc(var(--u) * 1.22) calc(var(--u) * 1.22);
-  background: #ffffff;
-  color: var(--ev-ink);
-  box-shadow:
-    0 calc(var(--u) * 0.5) calc(var(--u) * 1.1) rgba(7, 26, 80, 0.13),
-    0 0 0 1px rgba(7, 26, 80, 0.08);
-}
-.smarthelp-b-msg--priya span {
-  border-radius: calc(var(--u) * 1.22) calc(var(--u) * 1.22) calc(var(--u) * 0.35) calc(var(--u) * 1.22);
-  /* deep enough for white text at 4.5:1 across the whole gradient */
-  background: linear-gradient(160deg, #3472d2 0%, #2a63c8 100%);
-  color: #ffffff;
-  box-shadow: 0 calc(var(--u) * 0.45) calc(var(--u) * 1) rgba(45, 106, 209, 0.28);
-}
-.smarthelp-b-av {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 2.2);
-  height: calc(var(--u) * 2.2);
-  border-radius: 50%;
-  background: #071a50;
-}
-.smarthelp-b-av svg {
-  width: 62%;
-  height: 62%;
-  stroke: #b9e2ff;
+  inset: calc(var(--u) * 1.3) calc(var(--u) * 0.3) calc(var(--u) * 0.6);
 }
 /* "Still open": stamped on the ticket's corner */
 .smarthelp-b-still {
   position: absolute;
-  right: calc(var(--u) * 0.1);
-  top: calc(var(--u) * 0.2);
+  right: calc(var(--u) * -0.3);
+  top: calc(var(--u) * 0.1);
   display: inline-flex;
   align-items: center;
   gap: calc(var(--u) * 0.55);
@@ -221,162 +62,56 @@
   stroke: #b9e2ff;
 }
 
-/* ---------- The app on the phone: the support desk ----------
-   The glass is 14.4u × 28.3u, and the frame enlarges the phone (1.28× at 16:9, 1.48× at 4:3).
-   Six rows at the most, in words large enough to be read from the back of the room. */
+
+/* ---------- The app on the laptop: SmartHelp ----------
+   The screen is 29u × 18.8u, and the frame enlarges the laptop to fill the picture area. A thin
+   bar with the product's name, and under it the real screen: first the issue typed in, then the
+   same chat, solved. */
+/* A desktop window as wide as the picture area, 3:2 (its screen, under the title bar, is 1.6:1:
+   the screenshots are cropped to that). No laptop round it: the real screen has to be read. */
+.ev-moment[data-key='smarthelp'][data-device='none'] .ev-deviceMover {
+  --ev-dw: var(--ev-pw);
+  --ev-dh: min(var(--ev-ph), calc(var(--ev-pw) / 1.5));
+}
+.ev-moment[data-key='smarthelp'] .ev-device-shadow {
+  display: none;
+}
 .smarthelp-app {
   position: absolute;
   inset: 0;
 }
-.smarthelp-bar {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.55);
-  height: calc(var(--u) * 2.6);
-  padding: 0 calc(var(--u) * 0.9);
-  border-bottom: 1px solid #e9eef5;
-}
-.smarthelp-icon {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 1.7);
-  height: calc(var(--u) * 1.7);
-  border-radius: calc(var(--u) * 0.5);
-  background: linear-gradient(145deg, #65a9f5 0%, #2d6ad1 100%);
-  box-shadow: 0 calc(var(--u) * 0.3) calc(var(--u) * 0.7) rgba(45, 106, 209, 0.35);
-}
-.smarthelp-icon svg {
-  width: 62%;
-  height: 62%;
-}
-.smarthelp-title {
-  font-size: calc(var(--u) * 1.16);
-  font-weight: 800;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-  color: var(--ev-navy);
-  white-space: nowrap;
-}
-
-/* her ticket. This is where it rests, at the top of the chat; at the demo rest the demo holds it
-   lower, just over the one control (animate). */
-.smarthelp-tkc {
-  position: absolute;
-  left: calc(var(--u) * 0.45);
-  right: calc(var(--u) * 0.45);
-  top: calc(var(--u) * 3.05);
-  padding: calc(var(--u) * 0.6) calc(var(--u) * 0.8) calc(var(--u) * 0.7);
-  border-radius: calc(var(--u) * 1.1);
-  background: #ffffff;
-  border: 1px solid var(--acc-line);
-  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.1);
-  will-change: transform;
-}
-.smarthelp-tkc-glow {
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  border: calc(var(--u) * 0.13) solid var(--acc);
-  box-shadow: 0 0 0 calc(var(--u) * 0.3) rgba(67, 132, 212, 0.16);
-  visibility: hidden;
-}
-.smarthelp-tkc-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: calc(var(--u) * 1.6);
-}
-.smarthelp-tkc-id {
-  font-size: calc(var(--u) * 1.34);
-  font-weight: 800;
-  letter-spacing: -0.015em;
-  line-height: 1;
-  color: var(--ev-navy);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-/* where the ticket is: New, then With SmartHelp */
-.smarthelp-pill {
-  position: relative;
-  flex: none;
-  width: 0;
-  height: calc(var(--u) * 1.5);
-}
-.smarthelp-pill > span {
-  position: absolute;
-  right: 0;
-  top: 0;
-  display: inline-flex;
-  align-items: center;
-  height: calc(var(--u) * 1.5);
-  padding: 0 calc(var(--u) * 0.55);
-  border-radius: calc(var(--u) * 0.75);
-  font-size: calc(var(--u) * 0.7);
-  font-weight: 800;
-  letter-spacing: 0;
-  white-space: nowrap;
-  will-change: transform, opacity;
-}
-.smarthelp-pill--new {
-  background: #eef2f7;
-  color: var(--ev-body);
-}
-.smarthelp-pill--with {
-  background: var(--acc-soft);
-  box-shadow: inset 0 0 0 1px var(--acc-line);
-  color: var(--acc-text);
-  visibility: hidden;
-}
-.smarthelp-tkc-body {
-  position: relative;
-  height: calc(var(--u) * 2.72);
-  margin-top: calc(var(--u) * 0.35);
-  overflow: hidden;
-}
-.smarthelp-tkc-text {
-  /* the same words on the same lines, in flight and in the ticket */
-  width: calc(var(--u) * 11.6);
-  font-size: calc(var(--u) * 1);
-  font-weight: 700;
-  line-height: 1.34;
-  letter-spacing: -0.005em;
-  color: var(--ev-navy);
-  visibility: hidden;
-}
-.smarthelp-tkc-skel {
-  position: absolute;
-  left: 0;
-  top: calc(var(--u) * 0.42);
-  width: 84%;
-  height: calc(var(--u) * 0.55);
-  border-radius: calc(var(--u) * 0.28);
-  background: #e9eef5;
-}
-.smarthelp-tkc-skel + .smarthelp-tkc-skel {
-  top: calc(var(--u) * 1.76);
-  width: 62%;
-}
-.smarthelp-tkc-scan {
+/* the real screen, edge to edge (it carries its own header): two pictures, one over the other */
+.smarthelp-view {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(67, 132, 212, 0) 0%, rgba(67, 132, 212, 0.2) 50%, rgba(67, 132, 212, 0) 100%);
+  overflow: hidden;
+}
+.smarthelp-shot--done {
+  visibility: hidden;
+  will-change: opacity;
+}
+/* SmartHelp reads the ticket: one sweep across the screen */
+.smarthelp-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(67, 132, 212, 0) 0%, rgba(67, 132, 212, 0.22) 50%, rgba(67, 132, 212, 0) 100%);
+  pointer-events: none;
 }
 
 /* the one control: Raise ticket */
 .smarthelp-raiseWrap {
   position: absolute;
-  left: calc(var(--u) * 0.45);
-  right: calc(var(--u) * 0.45);
-  top: calc(var(--u) * 15.6);
-  height: calc(var(--u) * 3.7);
+  right: calc(var(--u) * 1.6);
+  bottom: calc(var(--u) * 1.5);
+  width: calc(var(--u) * 13.5);
+  height: calc(var(--u) * 3.8);
   visibility: hidden;
   will-change: transform, opacity;
 }
 .ev-touch.smarthelp-raise {
   width: 100%;
   height: 100%;
-  border-radius: calc(var(--u) * 1.85);
+  border-radius: calc(var(--u) * 1.9);
 }
 /* a wide button breathes outwards evenly, not twice as wide */
 .ev-touch.smarthelp-raise[data-live='1'] .ev-touch-ring {
@@ -389,7 +124,7 @@
   }
   80%,
   100% {
-    transform: scale(1.13, 1.62);
+    transform: scale(1.1, 1.5);
     opacity: 0;
   }
 }
@@ -427,274 +162,13 @@
   stroke: #ffffff;
 }
 
-/* SmartHelp works the ticket, in the same chat: Understood, Found, Fixed */
-.smarthelp-card {
-  position: absolute;
-  left: calc(var(--u) * 0.45);
-  right: calc(var(--u) * 0.45);
-  top: calc(var(--u) * 9.5);
-  padding: 0 calc(var(--u) * 0.6);
-  border-radius: calc(var(--u) * 0.4) calc(var(--u) * 1.1) calc(var(--u) * 1.1) calc(var(--u) * 1.1);
-  background: #ffffff;
-  border: 1px solid var(--acc-line);
-  box-shadow: 0 calc(var(--u) * 0.5) calc(var(--u) * 1.3) rgba(45, 106, 209, 0.14);
-  overflow: hidden;
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.smarthelp-step {
-  position: relative;
-  padding: calc(var(--u) * 0.5) 0 calc(var(--u) * 0.5) calc(var(--u) * 1.7);
-}
-.smarthelp-step + .smarthelp-step {
-  border-top: 1px solid #e3eaf3;
-}
-/* the step's mark: waiting, working, done */
-.smarthelp-node {
-  position: absolute;
-  left: 0;
-  top: calc(var(--u) * 0.42);
-  width: calc(var(--u) * 1.16);
-  height: calc(var(--u) * 1.16);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 calc(var(--u) * 0.12) #b4c9e6;
-  background: #ffffff;
-  z-index: 1;
-}
-.smarthelp-node-spin {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: calc(var(--u) * 0.15) solid transparent;
-  border-top-color: var(--acc-deep);
-  border-right-color: var(--acc-deep);
-  animation: smarthelp-spin 0.7s linear infinite;
-  visibility: hidden;
-}
-@keyframes smarthelp-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-.ev-root[data-hold='1'] .smarthelp-node-spin {
-  animation: none;
-  transform: rotate(40deg);
-}
-.smarthelp-node-on {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--acc-deep);
-  visibility: hidden;
-}
-.smarthelp-node-on svg {
-  width: 62%;
-  height: 62%;
-}
-.smarthelp-link {
-  /* one step leads to the next */
-  position: absolute;
-  left: calc(var(--u) * 0.52);
-  top: calc(var(--u) * 1.74);
-  bottom: calc(var(--u) * -0.56);
-  width: calc(var(--u) * 0.12);
-  border-radius: calc(var(--u) * 0.06);
-  background: #dbe6f4;
-}
-.smarthelp-link i {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--acc);
-}
-.smarthelp-step-k {
-  position: relative;
-  width: max-content;
-  font-size: calc(var(--u) * 0.72);
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  line-height: 1.3;
-  color: var(--ev-muted);
-}
-.smarthelp-step-k b {
-  /* the same word, done: it wipes in over the first */
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-weight: 800;
-  color: var(--acc-ink);
-  background: #ffffff;
-}
-.smarthelp-step-v {
-  /* two lines, always: the row does not change height when its words arrive */
-  min-height: 2.52em;
-  font-size: calc(var(--u) * 0.95);
-  font-weight: 700;
-  line-height: 1.26;
-  letter-spacing: -0.012em;
-  color: var(--ev-navy);
-}
-.smarthelp-step-skel i {
-  position: absolute;
-  left: calc(var(--u) * 1.7);
-  top: calc(var(--u) * 1.86);
-  width: 64%;
-  height: calc(var(--u) * 0.5);
-  border-radius: calc(var(--u) * 0.25);
-  background: #e9eef5;
-}
-.smarthelp-step-skel i + i {
-  top: calc(var(--u) * 3.04);
-  width: 40%;
-}
-.smarthelp-step:nth-child(2) .smarthelp-step-skel i {
-  width: 70%;
-}
-.smarthelp-step:nth-child(2) .smarthelp-step-skel i + i {
-  width: 34%;
-}
-.smarthelp-step-sweep {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(67, 132, 212, 0) 0%, rgba(67, 132, 212, 0.18) 50%, rgba(67, 132, 212, 0) 100%);
-  pointer-events: none;
-}
-
-/* the hero: it runs a command itself. The typed command gives way to what it did; under it,
-   inside the same row, the tag that says it was a safe, pre-approved one. */
-.smarthelp-step--fix .smarthelp-step-skel i {
-  left: calc(var(--u) * -0.25);
-  right: calc(var(--u) * -0.25);
-  top: calc(var(--u) * 1.9);
-  bottom: calc(var(--u) * 0.55);
-  width: auto;
-  height: auto;
-  border-radius: calc(var(--u) * 0.75);
-  background: #f1f5fa;
-}
-.smarthelp-cmd {
-  position: relative;
-  /* a little wider than the rows above it: it reaches into the card's own padding */
-  margin: calc(var(--u) * 0.45) calc(var(--u) * -0.25) calc(var(--u) * 0.05) calc(var(--u) * -1.95);
-  padding: calc(var(--u) * 0.55) calc(var(--u) * 0.5) calc(var(--u) * 0.6);
-  border-radius: calc(var(--u) * 0.75);
-  background: linear-gradient(160deg, #15244b 0%, #071a50 70%);
-  box-shadow: 0 calc(var(--u) * 0.4) calc(var(--u) * 1) rgba(7, 26, 80, 0.3);
-  overflow: hidden;
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.smarthelp-cmd-code {
-  /* the command, typed by nobody: it stands where its result will */
-  position: absolute;
-  left: calc(var(--u) * 0.5);
-  top: calc(var(--u) * 0.55);
-  height: calc(var(--u) * 1.14);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.28);
-}
-.smarthelp-cmd-code > svg {
-  flex: none;
-  width: calc(var(--u) * 1);
-  height: calc(var(--u) * 1);
-  margin-right: calc(var(--u) * 0.1);
-  stroke: #65a9f5;
-}
-.smarthelp-cmd-code > i {
-  height: calc(var(--u) * 0.38);
-  width: calc(var(--u) * 1.8);
-  border-radius: calc(var(--u) * 0.19);
-  background: #b9e2ff;
-}
-.smarthelp-cmd-code > i:nth-of-type(2) {
-  width: calc(var(--u) * 2.7);
-  background: #65a9f5;
-}
-.smarthelp-cmd-code > i:nth-of-type(3) {
-  width: calc(var(--u) * 1.3);
-  background: #8fc3fb;
-}
-.smarthelp-cmd-code > i.smarthelp-cmd-caret {
-  width: calc(var(--u) * 0.3);
-  height: calc(var(--u) * 0.8);
-  border-radius: 1px;
-  background: #ffffff;
-  animation: smarthelp-caret 0.7s steps(1) infinite;
-}
-@keyframes smarthelp-caret {
-  50% {
-    opacity: 0;
-  }
-}
-.ev-root[data-hold='1'] .smarthelp-cmd-caret {
-  animation: none;
-}
-.smarthelp-cmd-out {
-  /* one line, always: the row keeps its height */
-  white-space: nowrap;
-  font-size: calc(var(--u) * 0.87);
-  font-weight: 700;
-  line-height: 1.26;
-  letter-spacing: -0.012em;
-  color: #ffffff;
-}
-/* safe: the tag on the fix, inside its row */
-.smarthelp-cmd-safe {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 0.28);
-  margin-top: calc(var(--u) * 0.3);
-  font-size: calc(var(--u) * 0.68);
-  white-space: nowrap;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1.2;
-  color: #b9e2ff;
-  visibility: hidden;
-}
-.smarthelp-cmd-shield {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: calc(var(--u) * 1);
-  height: calc(var(--u) * 1);
-}
-.smarthelp-cmd-shield svg {
-  width: 100%;
-  height: 100%;
-  stroke: #8fc3fb;
-  stroke-width: 2.3;
-}
-.smarthelp-cmd-bar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(var(--u) * 0.18);
-  background: rgba(255, 255, 255, 0.12);
-}
-.smarthelp-cmd-bar i {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #4384d4 0%, #65a9f5 100%);
-}
-.smarthelp-cmd-flash {
-  position: absolute;
-  inset: 0;
-  background: #b9e2ff;
-  pointer-events: none;
-}
-
 /* ---------- The ONE thing on the device at the result rest: Ticket closed. No human needed. ----------
-   Stamped across her ticket (the demo places it: animate), a little over the phone's edge. */
+   Stamped on the laptop's screen, high on the right: over the solved chat. */
 .smarthelp-stamp {
   position: absolute;
-  left: 0;
-  top: 0;
+  /* low on the right: on the empty part of the chat, clear of the answer */
+  right: calc(var(--u) * 2.4);
+  top: 55%;
   padding: calc(var(--u) * 0.48) calc(var(--u) * 0.95) calc(var(--u) * 0.52);
   border-radius: calc(var(--u) * 0.75);
   border: calc(var(--u) * 0.18) solid var(--acc-ink);
@@ -739,29 +213,6 @@
 }
 .smarthelp-two b {
   color: var(--acc-ink);
-}
-
-/* ---------- Out of "Help": her ticket. It flies into the support desk, on the same lines it will stand on. ---------- */
-.smarthelp-ask {
-  position: absolute;
-  left: 0;
-  top: 0;
-  padding: calc(var(--u) * 0.65) calc(var(--u) * 1) calc(var(--u) * 0.7);
-  border-radius: calc(var(--u) * 1.4);
-  background: #ffffff;
-  border: calc(var(--u) * 0.13) solid var(--acc);
-  box-shadow: 0 calc(var(--u) * 0.9) calc(var(--u) * 2.2) rgba(45, 106, 209, 0.26);
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-.smarthelp-ask-text {
-  /* the ticket's text, 1.6 times as large: it lands on it exactly */
-  width: calc(var(--u) * 11.6 * 1.6);
-  font-size: calc(var(--u) * 1 * 1.6);
-  font-weight: 700;
-  line-height: 1.34;
-  letter-spacing: -0.005em;
-  color: var(--ev-navy);
 }
 
 /* ---------- STAT: a hundred tickets, fifteen close themselves ---------- */
@@ -851,7 +302,7 @@
   pointer-events: none;
 }
 .smarthelp-land {
-  /* where the phone lands: the middle of her ticket */
+  /* where the laptop lands: the middle of her ticket */
   position: absolute;
   left: calc(var(--ev-pitch) * 3.2 * 5.5 - var(--u) * 0.7);
   top: calc(var(--ev-pitch) * 2 * 4.5 - var(--u) * 0.7);
@@ -861,163 +312,15 @@
 }
 
 /* ============================================================
-   A phone on its side. The phone in the film is drawn wider
-   there (18.4u: its glass is 17.4u × 28.3u) and enlarged 1.2×.
-   The same six rows, with their type held to its floors:
-   nothing on the glass under 9 px (--dt is that floor before
-   the enlargement), nothing of the old-way picture under 11 px.
+   A phone on its side: the same screens, with their type held
+   to its floors.
    ============================================================ */
 @media (max-height: 480px) {
-  .ev-moment[data-key='smarthelp'] {
-    /* the type of the desk: its small print, and what is read */
-    --sh-k: max(calc(var(--u) * 0.86), var(--dt));
-    --sh-v: max(calc(var(--u) * 1.04), var(--dt));
-    /* where the desk begins under the status bar: its own bar is 2.1u (none on the smaller phones: see below) */
-    --sh-top: calc(var(--u) * 2.1);
-    /* The old-way picture is not a device: its words are the story, so they keep the story's
-       floor, 11 px on the screen. The frame draws the picture 1.38× at the least: 8.2 px here. */
-    --sh-b: max(calc(var(--u) * 1.1), calc(var(--fl) * 8.2));
-  }
-
-  /* ----- before: the ticket grows to hold its status at that size ----- */
-  .smarthelp-b-ticket {
-    width: max-content;
-    min-width: calc(var(--u) * 20.8);
-  }
-  .smarthelp-b-status,
-  .smarthelp-b-msg span {
-    font-size: var(--sh-b);
-  }
   .smarthelp-b-still {
     font-size: max(calc(var(--u) * 1.2), calc(var(--fl) * 8.2));
   }
-
-  /* ----- the support desk on the phone ----- */
-  .smarthelp-bar {
-    height: calc(var(--u) * 2.1);
-    gap: calc(var(--u) * 0.5);
-    padding: 0 calc(var(--u) * 0.75);
-  }
-  .smarthelp-icon {
-    width: calc(var(--u) * 1.55);
-    height: calc(var(--u) * 1.55);
-  }
-  .smarthelp-title {
-    font-size: max(calc(var(--u) * 1.2), var(--dt));
-  }
-  .smarthelp-tkc {
-    top: calc(var(--sh-top) + var(--u) * 0.4);
-    padding: calc(var(--u) * 0.45) calc(var(--u) * 0.65) calc(var(--u) * 0.5);
-  }
-  .smarthelp-tkc-id {
-    font-size: max(calc(var(--u) * 1.3), var(--dt));
-  }
-  .smarthelp-pill > span {
-    font-size: var(--sh-k);
-  }
-  .smarthelp-tkc-body {
-    /* two lines of the ticket's words, whatever their floor makes them */
-    height: calc(var(--sh-v) * 2.6 + var(--u) * 0.1);
-    margin-top: calc(var(--u) * 0.25);
-  }
-  /* the same words on the same lines, in the ticket and in flight (13.6 em wide, both) */
-  .smarthelp-tkc-text {
-    width: 13.6em;
-    font-size: var(--sh-v);
-    line-height: 1.3;
-  }
-  .smarthelp-ask-text {
-    width: 13.6em;
-    font-size: calc(var(--sh-v) * 1.6);
-    line-height: 1.3;
-  }
-  .smarthelp-tkc-skel {
-    top: calc(var(--u) * 0.45);
-    height: calc(var(--u) * 0.6);
-  }
-  .smarthelp-tkc-skel + .smarthelp-tkc-skel {
-    top: calc(var(--u) * 1.85);
-  }
-  .smarthelp-raiseWrap {
-    top: calc(var(--sh-top) + var(--u) * 12.9);
-    height: calc(var(--u) * 4);
-  }
-  .ev-touch.smarthelp-raise {
-    border-radius: calc(var(--u) * 2);
-  }
   .smarthelp-raise-face {
-    font-size: max(calc(var(--u) * 1.4), calc(var(--fl) * 9.4));
-  }
-  .smarthelp-card {
-    /* under the ticket: its top, its padding, its head, its two lines, and a gap */
-    top: calc(var(--sh-top) + var(--u) * 3.7 + var(--sh-v) * 2.6);
-    padding: 0 calc(var(--u) * 0.55);
-  }
-  .smarthelp-step {
-    padding: calc(var(--u) * 0.32) 0 calc(var(--u) * 0.32) calc(var(--u) * 1.6);
-  }
-  .smarthelp-node {
-    top: calc(var(--u) * 0.36);
-  }
-  .smarthelp-link {
-    top: calc(var(--u) * 1.66);
-    bottom: calc(var(--u) * -0.45);
-  }
-  .smarthelp-step-k {
-    font-size: var(--sh-k);
-    letter-spacing: 0.08em;
-    line-height: 1.25;
-  }
-  .smarthelp-step-v {
-    min-height: 2.48em;
-    margin-top: 0;
-    font-size: var(--sh-v);
-    line-height: 1.24;
-    letter-spacing: -0.02em;
-  }
-  .smarthelp-step-skel i {
-    left: calc(var(--u) * 1.6);
-    top: calc(var(--u) * 1.95);
-    height: calc(var(--u) * 0.55);
-  }
-  .smarthelp-step-skel i + i {
-    top: calc(var(--u) * 3.2);
-  }
-  .smarthelp-step--fix .smarthelp-step-skel i {
-    left: calc(var(--u) * -0.2);
-    right: calc(var(--u) * -0.2);
-    top: calc(var(--u) * 1.8);
-    bottom: calc(var(--u) * 0.37);
-  }
-  .smarthelp-cmd {
-    margin: calc(var(--u) * 0.3) calc(var(--u) * -0.2) calc(var(--u) * 0.05) calc(var(--u) * -1.8);
-    padding: calc(var(--u) * 0.42) calc(var(--u) * 0.5) calc(var(--u) * 0.5);
-  }
-  .smarthelp-cmd-code {
-    left: calc(var(--u) * 0.5);
-    top: calc(var(--u) * 0.42);
-    height: calc(var(--sh-v) * 1.24);
-  }
-  .smarthelp-cmd-out {
-    font-size: var(--sh-v);
-    line-height: 1.24;
-    letter-spacing: -0.02em;
-  }
-  .smarthelp-cmd-safe {
-    /* two lines where its floor makes it too long for one: "Safe, pre-approved / command" */
-    align-items: flex-start;
-    margin-top: calc(var(--u) * 0.25);
-    font-size: var(--sh-k);
-    white-space: normal;
-  }
-  .smarthelp-cmd-shield {
-    width: calc(var(--sh-k) * 1.2);
-    height: calc(var(--sh-k) * 1.2);
-  }
-
-  /* ----- the stamp ----- */
-  .smarthelp-stamp {
-    padding: calc(var(--u) * 0.42) calc(var(--u) * 0.9) calc(var(--u) * 0.46);
+    font-size: max(calc(var(--u) * 1.28), calc(var(--fl) * 9.4));
   }
   .smarthelp-stamp b {
     font-size: max(calc(var(--u) * 1.15), calc(var(--fl) * 8.2));
@@ -1025,4 +328,9 @@
   .smarthelp-stamp span {
     font-size: max(calc(var(--u) * 1.02), calc(var(--fl) * 7.8));
   }
+}
+
+/* the placeholder keeps its words clear of the one control (bottom right) */
+.smarthelp-shot .ev-shot-ph {
+  padding-bottom: calc(var(--u) * 3.8);
 }

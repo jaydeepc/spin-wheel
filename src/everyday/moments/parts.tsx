@@ -5,6 +5,7 @@
  */
 
 import type { CSSProperties, ReactNode } from 'react'
+import type { ShotSpec } from '../content'
 import { director } from '../core/director'
 
 /**
@@ -181,5 +182,48 @@ export function CodeGlyph({ className }: { className?: string }) {
       <path d="M16 6.5 21.2 12 16 17.5" />
       <path d="M13.7 4.6 10.3 19.4" />
     </svg>
+  )
+}
+
+/**
+ * A REAL SCREENSHOT of a product (content.ts → shots). With a file (`shot.src`) it is that
+ * picture, filling its box from the top. Without one it is a placeholder that says what the
+ * picture is and what must be in it, so the film can be laid out before the screenshots arrive.
+ * It fills its parent (position it there); set --su on it for its type's unit.
+ */
+export function Shot({ shot, className }: { shot: ShotSpec; className?: string }) {
+  return (
+    <div className={className ? `ev-shot ${className}` : 'ev-shot'} data-empty={shot.src ? '0' : '1'} data-ev-solid>
+      {shot.src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={shot.src} alt={shot.label} draggable={false} />
+      ) : (
+        <div className="ev-shot-ph">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="4.5" width="18" height="15" rx="2.4" />
+            <circle cx="8.6" cy="10" r="1.7" />
+            <path d="M3.6 17.2l4.9-4.6 3.6 3.2 3.2-2.7 5.1 4.3" />
+          </svg>
+          <span className="ev-shot-k">Real screenshot to come</span>
+          <b>{shot.label}</b>
+          <span className="ev-shot-want">{shot.want}</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/** A desktop window: three dots and the app's name in its title bar; children fill the room under it. */
+export function DesktopWindow({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="ev-win">
+      <div className="ev-win-bar">
+        <i />
+        <i />
+        <i />
+        <span className="ev-win-title">{title}</span>
+      </div>
+      <div className="ev-win-body">{children}</div>
+    </div>
   )
 }

@@ -18,6 +18,19 @@ The owner's two complaints shaped everything below: **too much on every screen**
 line got lost among the text around it**. So: the film waits for the visitor, the frame is
 quiet, every screen keeps to a budget, and Priya's voice has a place of its own.
 
+## Who tells it, and real screens (`content.ts`)
+
+- **A moment is told by the person whose work it is** (`product.speaker`, from `SPEAKERS`):
+  Priya for SmartHelp, BYOA and Prastuti, a collections officer for BYOT, an engineer for Piramal
+  Mind. The voice block shows that person's face, and in a product moment the bubble carries a
+  small name tag on its top edge (`.ev-voice-who`: name and role). Where this file says "Priya's
+  bubble", read "the speaker's bubble". Names, roles and portraits are illustrative until confirmed.
+- **Real screenshots** (`demo.shots`, a `ShotSpec` each; `Shot` and `DesktopWindow` in
+  `parts.tsx`): SmartHelp (a desktop app: the old help desk, the issue typed in, the same chat
+  solved) and Prastuti (PowerPoint before, the finished deck after). While `src` is empty a
+  labelled placeholder stands there and says what the picture must show. To use a real one: save
+  it as 1600 x 1000 px PNG in `public/everyday/shots/` and set `src`.
+
 ## Manual first (`core/director.ts`, `store.ts`)
 
 **The film never starts and never moves on by itself.** Manual is the default mode. One clear

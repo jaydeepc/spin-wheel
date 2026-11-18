@@ -1376,15 +1376,17 @@
   visibility: hidden;
   will-change: transform, opacity;
 }
-.ev-before-tag {
+/* (.ev-root before the class: the frame's reset, `.ev-root p { padding: 0 }`, outweighs one class alone) */
+.ev-root .ev-before-tag {
   position: absolute;
   left: 0;
   top: 0;
   display: flex;
   align-items: center;
-  height: calc(var(--u) * 2.1);
-  padding: 0 calc(var(--u) * 0.85) 0 calc(var(--u) * 1.05);
-  border-radius: calc(var(--u) * 1.05);
+  height: calc(var(--u) * 2.5);
+  /* the tracking adds 0.26em after the last letter: the right padding is that much less */
+  padding: 0 calc(var(--u) * 1.3) 0 calc(var(--u) * 1.55);
+  border-radius: calc(var(--u) * 1.25);
   background: #ffffff;
   box-shadow:
     0 0 0 1px var(--ev-line),
@@ -1649,6 +1651,35 @@
     transform: none;
   }
 }
+/* WHO IS TALKING: a small name tag on the bubble's top edge, in a product moment (a moment is
+   told by the person whose work it is: content.ts → speaker). It rides on the card's border, so
+   the block grows by half the tag only. */
+.ev-voice-card[data-who='1'] {
+  padding-top: calc(var(--u) * 1.5);
+}
+.ev-voice-who {
+  position: absolute;
+  left: calc(var(--u) * 1.5);
+  top: calc(var(--u) * -1);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.45);
+  height: calc(var(--u) * 2);
+  padding: 0 calc(var(--u) * 0.9);
+  border-radius: calc(var(--u) * 1);
+  background: #ffffff;
+  box-shadow: 0 0 0 max(1.5px, calc(var(--u) * 0.11)) var(--acc-a40);
+  font-size: calc(var(--u) * 1.02);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ev-body);
+  white-space: nowrap;
+}
+.ev-voice-who b {
+  font-weight: 800;
+  color: var(--acc-ink);
+}
+
 /* the small tail, toward her */
 .ev-voice-tail {
   position: absolute;
@@ -1939,9 +1970,9 @@
   }
 
   /* ----- the stage's shared type, held to its floor ----- */
-  .ev-before-tag {
+  .ev-root .ev-before-tag {
     height: max(calc(var(--u) * 2.5), calc(var(--fl) * 20));
-    padding: 0 calc(var(--fl) * 8) 0 calc(var(--fl) * 10);
+    padding: 0 calc(var(--fl) * 11) 0 calc(var(--fl) * 13);
     border-radius: calc(var(--fl) * 12);
     font-size: max(calc(var(--u) * 1.3), calc(var(--fl) * 11.1));
     letter-spacing: 0.2em;
@@ -2039,5 +2070,143 @@ html:has(.ev-root) body {
   }
   .ev-touch-ring {
     background: color-mix(in srgb, var(--acc) 32%, transparent);
+  }
+}
+
+
+/* ============================================================
+   REAL SCREENS (moments/parts.tsx: Shot, DesktopWindow)
+   A place for a real screenshot of a product (content.ts →
+   shots). Until its file is supplied, a labelled placeholder
+   stands there and says what the picture must show.
+   Sizes are in --su, the unit of whatever it stands in: the
+   module sets it (default: --u).
+   ============================================================ */
+.ev-shot {
+  --su: var(--u);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #f3f6fb;
+}
+.ev-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+.ev-shot-ph {
+  position: absolute;
+  inset: calc(var(--su) * 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--su) * 0.45);
+  padding: calc(var(--su) * 1);
+  border-radius: calc(var(--su) * 0.8);
+  border: max(1.5px, calc(var(--su) * 0.13)) dashed var(--acc-a40, rgba(67, 132, 212, 0.4));
+  background:
+    repeating-linear-gradient(135deg, rgba(7, 26, 80, 0.025) 0 calc(var(--su) * 0.7), transparent calc(var(--su) * 0.7) calc(var(--su) * 1.4)),
+    #ffffff;
+  text-align: center;
+}
+.ev-shot-ph svg {
+  width: calc(var(--su) * 2.6);
+  height: calc(var(--su) * 2.6);
+  stroke: var(--acc);
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ev-shot-k {
+  font-size: calc(var(--su) * 0.7);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--acc-ink);
+}
+.ev-shot-ph b {
+  font-size: calc(var(--su) * 1.3);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--ev-navy);
+}
+.ev-shot-want {
+  max-width: 34em;
+  font-size: calc(var(--su) * 0.9);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ev-body);
+  text-wrap: balance;
+}
+
+/* A desktop window: a title bar (three dots, the app's name) and, under it, the app. */
+.ev-win {
+  --su: var(--u);
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--su) * 0.9);
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(7, 26, 80, 0.12),
+    0 calc(var(--su) * 1.4) calc(var(--su) * 3) rgba(7, 26, 80, 0.18);
+}
+.ev-win-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--su) * 1.9);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--su) * 0.36);
+  padding: 0 calc(var(--su) * 0.8);
+  background: #eef1f6;
+  border-bottom: 1px solid #dfe5ee;
+}
+.ev-win-bar i {
+  width: calc(var(--su) * 0.56);
+  height: calc(var(--su) * 0.56);
+  border-radius: 50%;
+  background: #c3cbda;
+}
+.ev-win-title {
+  margin-left: calc(var(--su) * 0.5);
+  font-size: calc(var(--su) * 0.86);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ev-body);
+  white-space: nowrap;
+}
+.ev-win-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--su) * 1.9);
+  bottom: 0;
+}
+@media (max-height: 480px) {
+  .ev-shot-k {
+    font-size: max(calc(var(--su) * 0.7), calc(var(--fl) * 6.5));
+  }
+  .ev-shot-ph b {
+    font-size: max(calc(var(--su) * 1.3), calc(var(--fl) * 8.2));
+  }
+  .ev-shot-want {
+    font-size: max(calc(var(--su) * 0.9), calc(var(--fl) * 7.2));
+  }
+  .ev-win-title {
+    font-size: max(calc(var(--su) * 0.86), calc(var(--fl) * 7));
+  }
+  .ev-voice-who {
+    height: max(calc(var(--u) * 2), calc(var(--fl) * 15));
+    font-size: max(calc(var(--u) * 1.02), calc(var(--fl) * 9));
   }
 }

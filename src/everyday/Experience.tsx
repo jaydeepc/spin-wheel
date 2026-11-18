@@ -14,7 +14,7 @@
 import { Component, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import gsap from 'gsap'
 import { brandFontsReady } from '@/brand/font'
-import { PRIYA, PROMPTS, productByKey } from './content'
+import { PRIYA, PROMPTS, SPEAKERS, productByKey } from './content'
 import { readDebug } from './core/debug'
 import { director } from './core/director'
 import { motion } from './core/motion'
@@ -207,7 +207,7 @@ export default function Experience() {
     // Every photograph is asked for now, not when its scene mounts. The film waits for the first
     // one it shows large (Priya, standing in the branch) as it waits for the fonts, but never
     // longer than two seconds: a slow picture must not hold the film.
-    if (!photos.length) fetchPhoto(PRIYA.portrait)
+    if (!photos.length) Object.values(SPEAKERS).forEach((who) => fetchPhoto(who.portrait))
     const hero = photos.find((img) => img.src.endsWith(PRIYA.photo)) ?? fetchPhoto(PRIYA.photo)
     const heroIn = new Promise<void>((done) => {
       const timer = setTimeout(done, 2000)

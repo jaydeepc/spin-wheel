@@ -16,6 +16,13 @@
  * line in her speech bubble, ONE picture. So not every field here is on screen: where one is
  * kept for the record only, its comment says so.
  *
+ * WHO TELLS IT. Priya's Tuesday is the thread, but a moment is told by the person whose work it
+ * is (`speaker`): BYOT by a collections officer, Piramal Mind by an engineer. The bubble carries
+ * a small name tag, so a visitor always knows who is talking.
+ *
+ * REAL SCREENS. Where a real screenshot is to come (`shots`), the film draws a labelled
+ * placeholder until its file is supplied.
+ *
  * Everything on screen comes from here, so the story reads the same everywhere.
  * The demo details (ticket numbers, customer names, file names) are illustrative.
  * The five headline numbers are from the Everyday AI narrative slide.
@@ -29,8 +36,31 @@ export type ProductKey = 'smarthelp' | 'byot' | 'byoa' | 'prastuti' | 'mind'
 export const STEPS = ['before', 'name', 'demo', 'result', 'stat'] as const
 export type Step = (typeof STEPS)[number]
 
+/** Who tells a moment: the face and the name tag on the speech bubble. */
+export interface Speaker {
+  name: string
+  /** A few words: what they do. Shown beside the name on the bubble's tag. */
+  role: string
+  portrait: string
+}
+
+/**
+ * A place for a REAL screenshot of the product. While `src` is empty the film draws a labelled
+ * placeholder there; put the file in public/everyday/shots/ and set `src` to show it.
+ * Every screenshot: 1600 x 1000 px (16:10), PNG, the app's window only (no browser tabs, no desktop).
+ */
+export interface ShotSpec {
+  src: string
+  /** What the picture is, in a few words. Shown on the placeholder, and read out as the image's label. */
+  label: string
+  /** What must be in the picture. Shown on the placeholder only. */
+  want: string
+}
+
 interface ProductBase {
   key: ProductKey
+  /** Who tells this moment. */
+  speaker: Speaker
   /** The product's name: the hero of its moment. */
   name: string
   /** What the name stands for, word by word, for acronyms (B·Y·O·T → Build Your Own Tech). */
@@ -47,7 +77,7 @@ interface ProductBase {
   photo?: string
   /** The old way. On screen: nothing of it at the before rest (Priya's line tells it), except Piramal Mind's headline. `detail` is not shown. */
   before: { headline: string; detail: string }
-  /** Priya, in her own words, at three points in the moment. */
+  /** The speaker (`speaker`), in their own words, at three points in the moment. */
   priya: { before: string; tool: string; after: string }
   /** The new way, in one sentence. */
   after: string
@@ -64,8 +94,10 @@ export interface SmartHelpProduct extends ProductBase {
     /** The app the problem is in. */
     app: string
     ticket: { id: string; text: string }
-    /** The old way: the same ticket going back and forth with the backend team. */
-    old: { status: string; thread: { from: 'team' | 'priya'; text: string }[]; still: string }
+    /** The old way: the ticket, still open on the old help desk. Only `still` is drawn (the stamp on the screenshot). */
+    old: { desk: string; status: string; thread: { from: 'team' | 'priya'; text: string }[]; still: string }
+    /** The real screens: the old help desk; SmartHelp with the issue typed in; the same chat, resolved. */
+    shots: { before: ShotSpec; ask: ShotSpec; done: ShotSpec }
     /** The label on the one control. */
     raise: string
     /** What SmartHelp does with the ticket, in order. The last one is the fix. */
@@ -135,6 +167,8 @@ export interface PrastutiProduct extends ProductBase {
     ready: string
     readyEn: string
     beforeWhen: string
+    /** The real screens: the old way (a blank deck in PowerPoint); the deck Prastuti built. */
+    shots: { before: ShotSpec; deck: ShotSpec }
   }
 }
 export interface MindProduct extends ProductBase {
@@ -144,7 +178,7 @@ export interface MindProduct extends ProductBase {
     ingests: string[]
     /** The small tag that says the memory fills by itself, all the time. */
     ingested: string
-    /** The change Priya's team asked for. */
+    /** The change the sales team asked for. */
     request: { id: string; from: string; text: string }
     developer: string
     /** What the developer types to the AI coding assistant. */
@@ -168,9 +202,20 @@ export interface MindProduct extends ProductBase {
 }
 export type Product = SmartHelpProduct | ByotProduct | ByoaProduct | PrastutiProduct | MindProduct
 
+/**
+ * The people who tell the film. Priya's Tuesday is the thread; a colleague tells the moment that
+ * is theirs. Names, roles and portraits are ILLUSTRATIVE until the real ones are confirmed.
+ */
+export const SPEAKERS = {
+  priya: { name: 'Priya', role: 'Home-loan sales, Lucknow', portrait: '/everyday/priya.jpg' },
+  rohan: { name: 'Rohan', role: 'Collections officer, Lucknow', portrait: '/people/arjun-menon.jpg' },
+  arjun: { name: 'Arjun', role: 'Engineer, journey apps', portrait: '/people/rohan-deshmukh.jpg' },
+} satisfies Record<string, Speaker>
+
 export const PRODUCTS: Product[] = [
   {
     key: 'smarthelp',
+    speaker: SPEAKERS.priya,
     name: 'SmartHelp',
     promise: 'Support tickets that solve themselves.',
     accent: 'azure',
@@ -179,17 +224,18 @@ export const PRODUCTS: Product[] = [
     track: 'day',
     before: { headline: 'A support ticket, a queue, a back-and-forth.', detail: 'The ticket goes back and forth. The customer waits.' },
     priya: {
-      before: 'The eKYC for my customer would not go through. Earlier, I raised a support ticket and waited for the backend team.',
+      before: 'My customer did not get the eSign link. Earlier, I raised a ticket on iHelp and waited for the backend team.',
       tool: 'Now I raise it on SmartHelp, our support desk.',
-      after: 'It found the problem and fixed it itself. No back-and-forth.',
+      after: 'It gave me the eSign links right there. No back-and-forth.',
     },
     after: 'The ticket is solved in the same chat. Nobody had to pick it up.',
     stat: { value: '~15%', label: 'of support tickets resolved with no human' },
     demo: {
       desk: 'Support desk',
       app: 'Sales Central',
-      ticket: { id: '#4821', text: 'Not able to complete eKYC for my customer.' },
+      ticket: { id: '#4821', text: 'Customer did not receive the eSign link.' },
       old: {
+        desk: 'iHelp',
         status: 'With the backend team',
         thread: [
           { from: 'team', text: 'Please share a screenshot.' },
@@ -199,14 +245,31 @@ export const PRODUCTS: Product[] = [
         ],
         still: 'Still open',
       },
-      raise: 'Raise ticket',
+      shots: {
+        before: {
+          src: '',
+          label: 'iHelp: the old ticket',
+          want: 'One ticket open in iHelp, a few replies back and forth, status still "Pending with backend team".',
+        },
+        ask: {
+          src: '/everyday/shots/smarthelp-ask.jpg',
+          label: 'SmartHelp: the issue, filled in',
+          want: 'SmartHelp on a desktop, the issue filled into the form, not sent yet.',
+        },
+        done: {
+          src: '/everyday/shots/smarthelp-done.jpg',
+          label: 'SmartHelp: solved in the same chat',
+          want: 'The same issue a moment later: the AI Assistant has answered it in the chat.',
+        },
+      },
+      raise: 'Create Ticket',
       steps: [
-        { k: 'Understood', v: 'eKYC is stuck for this customer' },
-        { k: 'Found', v: 'Verified, but the status did not update' },
-        { k: 'Fixed', v: 'Re-synced the eKYC status' },
+        { k: 'Understood', v: 'The customer did not get the eSign link' },
+        { k: 'Found', v: 'eSign is initiated, one retry so far' },
+        { k: 'Fixed', v: 'Shared the eSign links to retry' },
       ],
       safe: 'Safe, pre-approved command',
-      resolved: 'Resolved. Please try eKYC again.',
+      resolved: 'Resolved. Please share the eSign links.',
       closed: 'Ticket closed. No human needed.',
       ways: [
         { title: 'It guides', text: 'If it is a step she can take, it shows her where in Sales Central.' },
@@ -217,39 +280,41 @@ export const PRODUCTS: Product[] = [
   },
   {
     key: 'byot',
+    speaker: SPEAKERS.rohan,
     name: 'BYOT',
     expansion: ['Build', 'Your', 'Own', 'Tech'],
     promise: 'Apps built by the team that needs them. No code.',
     accent: 'flame',
     time: '10:30 am',
-    place: 'On a site visit',
+    place: 'On a field visit',
     photo: '/everyday/moment-visit.jpg',
-    before: { headline: 'Visit notes, written at night, from memory.', detail: 'Details slip. Follow-ups are late.' },
+    before: { headline: 'Disposition notes, written by hand after every visit.', detail: 'Details slip. Follow-ups are late.' },
     priya: {
-      before: 'I used to write my visit notes at night, from memory.',
+      before: 'After every customer visit, I used to write my disposition notes by hand.',
       tool: 'So my team built our own app, on BYOT. Nobody in my team writes code.',
-      after: 'Now I speak the note right after the visit, and it is filed.',
+      after: 'Now I just speak after the visit, and the note fills itself.',
     },
-    after: 'She speaks a note on the spot, in her team’s own app.',
+    after: 'The note is spoken on the spot, in the team’s own app.',
     stat: { value: '634', label: 'employees built their own tool' },
     track: 'day',
     demo: {
-      app: 'Visit Notes',
-      builtBy: 'Built by the Lucknow sales team, on BYOT',
-      blocks: ['Voice note', 'Customer', 'Property', 'Next step'],
-      spoken: 'Met Mr Verma at the Gomti Nagar site. Second-floor slab is done. He needs the next tranche by Friday.',
+      app: 'Nirman',
+      builtBy: 'Built by the collections team, on BYOT',
+      blocks: ['Voice note', 'Customer', 'Disposition', 'Next step'],
+      spoken: 'Met Mr Verma at his Aminabad shop. He will pay by Friday. Call again on Saturday.',
       fields: [
         { k: 'Customer', v: 'R. Verma' },
-        { k: 'Property', v: 'Gomti Nagar, Plot 14' },
-        { k: 'Stage', v: 'Second-floor slab done' },
-        { k: 'Next step', v: 'Tranche request by Friday' },
+        { k: 'Met at', v: 'Aminabad, his shop' },
+        { k: 'Disposition', v: 'Will pay by Friday' },
+        { k: 'Next step', v: 'Call again on Saturday' },
       ],
       filed: 'Filed 10:42 am',
-      beforeWhen: '11:40 pm',
+      beforeWhen: '9:40 pm',
     },
   },
   {
     key: 'byoa',
+    speaker: SPEAKERS.priya,
     name: 'BYOA',
     expansion: ['Build', 'Your', 'Own', 'Agents'],
     promise: 'AI agents built by the person with the problem.',
@@ -283,6 +348,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     key: 'prastuti',
+    speaker: SPEAKERS.priya,
     name: 'Prastuti',
     devanagari: 'प्रस्तुति',
     meaning: 'Hindi for “presentation”',
@@ -324,10 +390,23 @@ export const PRODUCTS: Product[] = [
       ready: 'प्रस्तुति तैयार',
       readyEn: 'Deck ready',
       beforeWhen: 'Sunday, 11 pm',
+      shots: {
+        before: {
+          src: '',
+          label: 'PowerPoint: a blank deck',
+          want: 'PowerPoint open on an empty slide ("Click to add title"), the full ribbon showing.',
+        },
+        deck: {
+          src: '',
+          label: 'Prastuti: the finished deck',
+          want: 'Prastuti on a desktop with a real deck it built, in Hindi: the slide list and one chart slide open.',
+        },
+      },
     },
   },
   {
     key: 'mind',
+    speaker: SPEAKERS.arjun,
     name: 'Piramal Mind',
     promise: 'The memory and the intelligence of our engineering.',
     accent: 'navy',
@@ -336,9 +415,9 @@ export const PRODUCTS: Product[] = [
     track: 'engineering',
     before: { headline: 'What was decided, and why, was scattered.', detail: 'It lived in old tickets, old code and people’s heads.' },
     priya: {
-      before: 'My team asked for a change in our Sales Central app. Someone in Engineering builds it.',
-      tool: 'The engineers who build my apps work with Piramal Mind.',
-      after: 'It remembered what had already been decided. The change came out right.',
+      before: 'A change request comes in for Sales Central. Earlier, I just picked up the ticket and built what it said.',
+      tool: 'Now I build with Piramal Mind beside me.',
+      after: 'It remembered what we had already decided. The change came out right.',
     },
     after: 'It remembers every codebase and every ticket, and it connects them.',
     stat: { value: '80%', label: 'lower AI cost' },
@@ -395,14 +474,14 @@ export const ENGINEERING = {
   eyebrow: 'Behind her Tuesday',
   headline: { lead: 'Someone builds the apps Priya works in. ', em: 'Our engineers', tail: ' have an Everyday AI of their own.' },
   /** Her own words on this screen (in her speech bubble). */
-  said: 'Every app I opened today was built by our engineering team.',
+  said: 'Big apps like Sales Central are built by our engineering team.',
 } as const
 
 /** 6 · The last screen: the five names once more. Short; the explanation was the first screen. */
 export const CLOSING = {
   eyebrow: 'That is Everyday AI',
   /** Her own words on this screen (in her speech bubble). */
-  said: 'That was my Tuesday.',
+  said: 'That is a Tuesday at Piramal Finance.',
 } as const
 
 /**

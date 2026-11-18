@@ -38,7 +38,7 @@
 import gsap from 'gsap'
 import type { ReactNode } from 'react'
 import type { PrastutiProduct, PrastutiSlide } from '../content'
-import { splitSentences, TouchControl } from './parts'
+import { Shot, splitSentences, TouchControl } from './parts'
 import type { MomentEnv, MomentModule, PartProps } from './types'
 import './prastuti.css'
 
@@ -172,6 +172,9 @@ function Before({ product }: P) {
               <i />
             </div>
           </div>
+          {/* the REAL screen of the old way lies over the drawn editor: a screenshot of PowerPoint
+              (content.ts → demo.shots.before), or its placeholder until the file is supplied */}
+          <Shot shot={product.demo.shots.before} className="prastuti-b-shot" />
         </div>
       </div>
     </div>
@@ -446,6 +449,10 @@ function Screen({ product }: P) {
             </div>
           )
         })}
+
+        {/* the REAL deck: a screenshot of Prastuti with the deck it built (content.ts →
+            demo.shots.deck), or its placeholder. It comes up over the dealt-out slides as the run ends. */}
+        <Shot shot={d.shots.deck} className="prastuti-shot" />
       </div>
     </div>
   )
@@ -891,6 +898,10 @@ function animate(env: MomentEnv<PrastutiProduct>) {
   gsap.set(stamp, { x: stampAt.x, y: stampAt.y, xPercent: -50, yPercent: -50, autoAlpha: 0, scale: 2.3, rotation: -22, transformOrigin: '80% 50%' })
   gsap.set(burst, { autoAlpha: 0 })
   const hit = tG + 0.4
+  // the real deck comes up over the dealt-out slides, under the stamp
+  const real = $('.prastuti-shot')
+  gsap.set(real, { autoAlpha: 0 })
+  run.to(real, { autoAlpha: 1, duration: 0.3, ease: 'power1.inOut' }, tG + 0.3)
   run
     .to(stamp, { autoAlpha: 1, duration: 0.1, ease: 'none' }, hit - 0.22)
     .to(stamp, { scale: 1, rotation: -6, duration: 0.22, ease: E.slam }, hit - 0.22)

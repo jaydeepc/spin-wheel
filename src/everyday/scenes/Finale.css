@@ -53,6 +53,9 @@
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+  /* the gradient is painted in this box only: it must reach under the baseline and past the last letter */
+  padding: 0 0.08em 0.24em 0;
+  margin: 0 -0.08em -0.24em 0;
 }
 
 /* ---------- the five names: one list, in the picture area ---------- */
@@ -148,8 +151,9 @@
 }
 .fin-name {
   flex: none;
-  padding: 0 0.08em 0.14em 0.04em;
-  margin: 0 -0.08em -0.14em -0.04em;
+  /* room for the descenders ("y") and for the last letter's overhang: nothing of a word is cut */
+  padding: 0 0.1em 0.26em 0.04em;
+  margin: 0 -0.1em -0.26em -0.04em;
 }
 .fin-name-t {
   display: block;
@@ -157,6 +161,9 @@
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.1;
+  /* the gradient is painted in this box only: room for the "p" of SmartHelp */
+  padding: 0 0.06em 0.16em 0;
+  margin: 0 -0.06em -0.16em 0;
   background: linear-gradient(180deg, var(--acc-g1) 6%, var(--acc-g2) 50%, var(--acc-g3) 94%);
   -webkit-background-clip: text;
   background-clip: text;
