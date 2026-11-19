@@ -1,6 +1,7 @@
 /**
  * Slides 36 to 39: every word and number on screen. Source: the owner's four pictures of
- * 18 Nov (they supersede the pack for these four slides: see PACK-FIXES.md). Nothing here
+ * 18 Nov and a fifth of 19 Nov, slide 38 (they supersede the pack for these four slides: see
+ * PACK-FIXES.md). Nothing here
  * comes from the pack, and no picture of public/keynote/src/36..39 is used.
  */
 
@@ -76,7 +77,29 @@ export const FOOT = {
   abcd: { n: 9000, prefix: '~', suffix: '+', title: 'features with ABCD', sub: 'Built by ML on these categories' },
 }
 
-/* ------------------------------------------------------------------ slides 38 and 39 */
+/* ------------------------------------------------------------------ slide 38 (the owner's fifth picture, 19 Nov) */
+export const ML = {
+  card: { n: 9000, prefix: '~', title: 'features', sub: 'built from the categories' },
+  /** six of the nine thousand; the grey rows above and below stand for the rest */
+  features: [
+    'Fintech loans in the last 3 months',
+    'Visa payment made in last 1m',
+    'Velocity in trading transactions',
+    'Non-business to business expense ratio',
+    'Percentage of Charges/Penalties',
+    'Frequency of non-business transactions',
+  ],
+  /** grey rows: one above the six, three below (widths in --u, as drawn in the picture) */
+  above: [14.7],
+  below: [9.5, 21, 20],
+  model: 'ML Model',
+  /** nodes per layer, input to output */
+  layers: [5, 6, 6, 4, 1],
+  score: { label: 'BANKING SCORE', n: 10, unit: 'bands' },
+  caption: ['One score for this customer,', 'with the agent\u2019s reasons'],
+}
+
+/* ------------------------------------------------------------------ slide 39 */
 export const CHART = {
   kicker: 'ABCD BANKING AGENT SCORE OUTPUT',
   title: 'The bad rate falls steadily as the score rises',
@@ -108,5 +131,6 @@ export const WHY = {
 export const FLAME = {
   36: ['Every bank statement tells a different story'],
   37: ['GenAI reads every transaction', 'granular, contextual categories'],
-  38: ['ranks customers by risk', 'explains every score'],
+  38: ['about 9,000 features', 'one score'],
+  39: ['ranks customers by risk', 'explains every score'],
 }

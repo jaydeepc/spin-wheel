@@ -93,12 +93,11 @@ const FALL = [NIM, OPEX, CREDIT]
 /** per period: the level the bar of each term starts from (its top) and ends at (its bottom) */
 const SPAN = PERIODS.map((_, j) => {
   const nim = NIM.values[j]
-  const afterOpex = nim - OPEX.values[j]
-  const afterCredit = afterOpex - CREDIT.values[j]
+  // every bar stands on the baseline, on the one common scale: 1.6% is always taller than 1.5%
   return [
     { top: nim, bottom: 0 },
-    { top: nim, bottom: afterOpex },
-    { top: afterOpex, bottom: afterCredit },
+    { top: OPEX.values[j], bottom: 0 },
+    { top: CREDIT.values[j], bottom: 0 },
   ]
 })
 /** the later period of each pair is set against the earlier one */
@@ -255,20 +254,8 @@ const scene: SceneModule = {
                 const sp = SPAN[j][g]
                 const x = P(bx(g, j))
                 const late = j % 2 === 1
-                const pair = g === 1 ? pairOf(j) : undefined
-                // how much less Opex/AUM takes than in the period before: the stretch it no longer reaches
-                const savedH = pair ? hOf(OPEX.values[pair.from] - OPEX.values[j]) : 0
                 return (
                   <g key={period}>
-                    {g === 1 || g === 2 ? (
-                      <rect className="ir04-ghost" data-g={g} data-j={j} x={x} y={P(yOf(sp.top))} width={P(WF.bw)} height={P(hOf(sp.top))} rx={2.4} />
-                    ) : null}
-                    {pair ? (
-                      <g className="ir04-saved" data-j={j}>
-                        <rect className="ir04-saved-box" x={x + 0.8} y={P(yOf(sp.bottom))} width={P(WF.bw) - 1.6} height={P(savedH)} />
-                        <line className="ir04-saved-tick" x1={x - 4} x2={x + P(WF.bw) + 4} y1={P(yOf(sp.bottom) + savedH)} y2={P(yOf(sp.bottom) + savedH)} />
-                      </g>
-                    ) : null}
                     <rect
                       className={`ir04-bar ir04-bar--${term.key} ${late ? 'ir04-bar--late' : 'ir04-bar--early'}`}
                       data-g={g}
@@ -553,23 +540,19 @@ const scene: SceneModule = {
     // earlier one did, then draws back to its own length: the stretch it no longer takes stays marked.
     const T3 = T2 + 3.0
     speak(1, T3 + 0.05)
-    ghosts(1, T3 + 0.1)
     const opexBars = $$('.ir04-bar[data-g="1"]')
     const HOLD = 1.05
     opexBars.forEach((bar, j) => {
       const pair = pairOf(j)
       const pairIndex = PAIRS.findIndex((pr) => pr.from === j || pr.to === j)
       const start = T3 + 0.6 + pairIndex * 0.45 + (pair ? 0.2 : 0)
-      const saved = $$(`.ir04-saved[data-j="${j}"]`)
-      set(saved, { autoAlpha: 0 })
       if (reduced) {
         gsap.set(bar, { autoAlpha: 0 })
         tl.to(bar, { autoAlpha: 1, duration: 0.5 }, start)
-        to(saved, { autoAlpha: 1, duration: 0.5 }, start + 0.3)
         figure(1, j, start + 0.2)
         return
       }
-      gsap.set(bar, { scaleY: 0, transformOrigin: '50% 0%' })
+      gsap.set(bar, { scaleY: 0, transformOrigin: '50% 100%' })
       if (!pair) {
         tl.to(bar, { scaleY: 1, duration: 0.95, ease: ease.out }, start)
         figure(1, j, start + 0.25)
@@ -578,7 +561,6 @@ const scene: SceneModule = {
       const reach = OPEX.values[pair.from] / OPEX.values[j]
       tl.to(bar, { scaleY: reach, duration: 0.85, ease: ease.out }, start)
       tl.to(bar, { scaleY: 1, duration: 0.8, ease: 'power2.inOut' }, start + HOLD)
-      to(saved, { autoAlpha: 1, duration: 0.5 }, start + HOLD + 0.15)
       figure(1, j, start + 0.2, { value: OPEX.values[pair.from], hold: HOLD - 0.2 })
     })
     tl.to(fx, { focusX: 0.3, warm: 0.25, glow: 0.2, duration: 1.4, ease: ease.inOut }, T3)
@@ -587,8 +569,7 @@ const scene: SceneModule = {
     /* ================================================================ 4 · credit */
     const T4 = T3 + 3.4
     speak(2, T4 + 0.05)
-    ghosts(2, T4 + 0.1)
-    grow(2, T4 + 0.55, 0.11, '50% 0%', 0.8)
+    grow(2, T4 + 0.55, 0.11, '50% 100%', 0.8)
     figures(2, T4 + 0.8, 0.11)
     tl.to(fx, { focusX: 0.5, warm: 0, duration: 1.2, ease: ease.inOut }, T4)
     tl.addLabel('credit', T4 + 2.1)
@@ -611,8 +592,7 @@ const scene: SceneModule = {
     const LAND: number[] = []
     movers.forEach((m, j) => {
       const tone = j % 2 === 1 ? FILL.late : FILL.early
-      // the last one leaves first: nothing crosses in front of a bar that is still standing
-      const go = T5 + 0.55 + (movers.length - 1 - j) * 0.13
+      const go = T5 + 0.3 + j * 0.13
       LAND[j] = go + 1.15
       if (reduced) {
         gsap.set(m, { autoAlpha: 0 })
@@ -620,17 +600,9 @@ const scene: SceneModule = {
         figure(3, j, go + 0.2)
         return
       }
-      gsap.set(m, {
-        autoAlpha: 0,
-        x: P(bx(2, j)) - P(pbx(j)),
-        scaleX: WF.bw / PN.bw,
-        scaleY: WF.scale / PN.scale,
-        transformOrigin: '0% 100%',
-        fill: tone[0],
-      })
-      tl.to(m, { autoAlpha: 1, duration: 0.3 }, T5 + 0.12)
-      tl.to(m, { x: 0, scaleX: 1, duration: 1.15, ease: ease.inOut }, go)
-      tl.to(m, { scaleY: 1, duration: 0.85, ease: 'power3.out' }, go + 0.55)
+      gsap.set(m, { autoAlpha: 0, scaleY: 0, transformOrigin: '50% 100%', fill: tone[0] })
+      tl.to(m, { autoAlpha: 1, duration: 0.2 }, go + 0.35)
+      tl.to(m, { scaleY: 1, duration: 0.95, ease: 'power3.out' }, go + 0.35)
       tl.to(m, { fill: tone[1], duration: 0.8, ease: 'power1.inOut' }, go + 0.35)
       figure(3, j, go + 0.75)
     })

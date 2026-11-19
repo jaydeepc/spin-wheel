@@ -1,6 +1,6 @@
 # Building a scene of /ir
 
-`/ir` is "Implications for Investors": eight slides, played by **the keynote's engine** (director,
+`/ir` is "Implications for Investors": seven slides, played by **the keynote's engine** (director,
 chrome, backdrop, kit). Nothing of the engine is copied: `src/keynote/Keynote.tsx` takes a deck,
 and `/ir` gives it `src/ir/irDeck.ts`.
 
@@ -16,14 +16,14 @@ keynote's Thank You).
 ```
 src/app/ir/page.tsx            the route
 src/ir/
-  deck.ts                      the 8 slides (n, id 'irNN', title, theme, crumb). No sections, no agenda.
+  deck.ts                      the 7 slides (n, id 'irNN', title, theme, crumb). No sections, no agenda.
   irDeck.ts  Ir.tsx            the deck handed to the engine; the client root
   kit.ts                       THE KIT FOR /ir: import from '../../kit' exactly as in the keynote
   pic.tsx                      pic(), gen(), <Pic> reading /ir's own pictures
   scenes/sNN/index.tsx         ONE SCENE PER SLIDE (+ scene.css, + data.ts, inside that folder)
-  scenes/_shared/stub.tsx      the stub (the page picture; the plain words for 7 and 8)
+  scenes/_shared/stub.tsx      the stub (the page picture; the plain words for 7)
 public/ir/pages/01…06.jpg      the six pages of the source deck, 2880 x 1620 (reference; a stub shows them)
-public/ir/thumbs/01…08.jpg     640 x 360, for the overview grid (07, 08 are pictures of the stubs: redo when built)
+public/ir/thumbs/01…07.jpg     640 x 360, for the overview grid (07 is a picture of the old stub: redo from the built slide)
 public/ir/src/NN/…             the deck's own pictures (below)
 public/ir/gen/NN/…             generated pictures of slide NN, if your brief allows any
 exports/_rig/ir-src/           THE SOURCE: deck-text.md (every word and number), pages/p-1…6.jpg, deck.pptx, deck.pdf
@@ -39,8 +39,20 @@ exports/_rig/ir-src/           THE SOURCE: deck-text.md (every word and number),
 | 4 | `s04` | light | …driven by improving operating leverage |
 | 5 | `s05` | light | What has AI delivered for us in the past 12 months? |
 | 6 | `s06` | light | We are working towards 20-25% AUM CAGR along with RoE of 15%+ |
-| 7 | `s07` | dark | Thank You! |
-| 8 | `s08` | dark | Q&A |
+| 7 | `s07` | dark | Thank You! (the one closing slide: it also holds "Q&A" and the contacts) |
+
+**Slide 7 is the close** (the owner folded the old slide 8, "Q&A", into it on 19 Nov). Two beats:
+`thanks` (slide 6 comes apart into points of light, which gather into an orb, burst and settle
+into "Thank You!") and `close` ("Q&A" and the contacts: the frame that stays up during the
+questions). Its points are one `THREE.Points` on a canvas that sits in the STAGE, under every
+layer, so that it is already behind slide 6 while slide 6 fades; it holds the backdrop's change
+of theme back with `fx.dark` and releases it from the orb. Both are exceptions made for this one
+hand-over and explained at the top of `scenes/s07/index.tsx`: do not copy them elsewhere. A
+third: its `scene.css` keeps the counter and the pills in their light dress while its page is
+still light (`.kn-root:has(.ir07[data-page='light'])`). Old links `?s=7&at=contacts`, `?s=7&at=qa`
+and `?s=8` now land on `thanks`; the last rest is `?s=7&at=close`. It
+measures slide 6's own markup (a hidden copy of `s06`'s `Scene`) for where its points begin, so
+slide 6 may change freely; only its `ai` rest must stay "everything but `.ir06-chart`".
 
 ## What differs from the keynote guide
 
@@ -59,7 +71,7 @@ exports/_rig/ir-src/           THE SOURCE: deck-text.md (every word and number),
   ids): `ctx.slide.id` is `'ir03'`. The keynote's scenes own `s03-…`.
 - **The chrome.** No section rail. On slides 2 to 6 the bar begins with the quiet breadcrumb
   "IMPLICATIONS FOR INVESTORS" (from `deck.ts`; do not draw it yourself), the logo is at the top
-  right, the counter and Back / Next at the bottom right. Slides 1, 7 and 8 have no breadcrumb.
+  right, the counter and Back / Next at the bottom right. Slides 1 and 7 have no breadcrumb.
   Switch parts off with `chrome: { logo: false, crumb: false, counter: false }` as in the keynote.
 - **The stage, the units and the safe area are the keynote's, unchanged**: 100u x 56.25u, `--u`;
   content inside x 4.2u … 95.8u, y 6.4u … 50.6u (`--kn-x0/x1/y0/y1`); keep x > 80u, y > 50.6u
@@ -81,7 +93,7 @@ exports/_rig/ir-src/           THE SOURCE: deck-text.md (every word and number),
 | File | px | What it is, what you may do |
 | --- | --- | --- |
 | `01/hero-dawn.jpg` | 5333 x 3000 | the title's ground: deep navy, an ember light top right, a blue one bottom right. The deck's own art, full-bleed. |
-| `01/hero-dawn-2880.jpg` | 2880 x 1620 | the same, at the size the stage needs (slide 1 uses this one; 7 and 8 may use it too) |
+| `01/hero-dawn-2880.jpg` | 2880 x 1620 | the same, at the size the stage needs (slide 1 uses this one) |
 | `01/logo-deck.png` | 1116 x 482 | the logo as the deck embeds it. Reference only: use the chrome's logo or `<Logo />`. |
 | `02/last-year-aum-growth.png` | 669 x 668 | **a picture of last year's slide** "We expect AUM growth momentum to sustain longer" (a bar chart, FY25A to FY30P). On the page it is at the TOP LEFT, 29.2u wide, its bottom 14.8% cropped away (`srcRect b=14773`), and the AUM-growth sentences stand to its right. A real document: show it as it is (its own pink and blue included), never redraw, never stretch, never wider than about 35u (it is 669 px). |
 | `02/last-year-opex-outlook.png` | 670 x 672 | **a picture of last year's slide** "Revising Retail Opex-AUM outlook lower" (a line chart, 6.5% down to 3.9%). On the page it is at the BOTTOM RIGHT, 29.6u wide, shown whole, and the opex sentences stand to its left. The same rule. (deck-text.md lists the sentences as "Left" and "Right": go by the page, `p-2.jpg`: AUM picture with AUM words, opex picture with opex words.) |
@@ -91,8 +103,8 @@ exports/_rig/ir-src/           THE SOURCE: deck-text.md (every word and number),
 | `_shared/bg-light.jpg` | 4800 x 2700 | the deck's light background, with a logo baked in. Reference only: the backdrop replaces it. |
 
 The charts of slides 4, 5 and 6 are chart objects in the file (their previews are EMF): their
-values are in `deck-text.md`, exact. Slides 7 and 8 have no source file: their words are in
-`deck-text.md`; the orange circuit lines of the owner's photograph are drawn as SVG (`a.draw`).
+values are in `deck-text.md`, exact. Slide 7 has no source file: its words are in
+`deck-text.md` ("SLIDE 7", and "Q&A" from "SLIDE 8").
 
 ## Checking
 
@@ -107,7 +119,7 @@ node shoot.mjs strip 3 --gpu --route ir              the move that leads to ever
 node shoot.mjs frame 3 <beat> 0.4 --gpu --route ir   one frame
 node shoot.mjs beats 3 --gpu --route ir --size 1366x768
 node press.mjs 2 --route ir                          a press in real time: out of slide 2, into slide 3 (--back, --at <beat>)
-node walk_all.mjs --gpu --route ir                   all 8 slides with real keys, forward and back
+node walk_all.mjs --gpu --route ir                   all 7 slides with real keys, forward and back
 node walk_all.mjs --gpu --route ir --from 2 --to 4   a stretch; must end "the walk is clean"
 cd <project> && npx tsc --noEmit -p . 2>&1 | grep "src/ir/scenes/s03/"     # must print nothing
 ```

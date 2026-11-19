@@ -291,7 +291,7 @@ What the director does with a span:
 
 Which runs are spans is decided by the lead, one builder per span (the pack's `index.json →
 groups` and each `notes.md` say which slides belong together). The continuous ones are
-**33 to 35** (pit lane), **36 to 38** (banking agent: same customer, statement, findings),
+**33 to 35** (pit lane), **36 to 39** (banking agent: statements, categories, the model, the score),
 **40 and 41** (the collection visit), **42 and 43** (the town map), **45 to 49** (the train),
 **51 to 54** (the wheel); **9 and 10** may be one move if their builder takes both.
 

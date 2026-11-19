@@ -16,10 +16,18 @@
  *                 flame, lifts out and flies across, and the category resolves. Row by row.
  *       features  100 beside ~9,000+: the features stream out of the five categories as points
  *                 and settle into a field (the 100 are a small grey block at the same scale).
- *   38  curve     step 2 lights. The chart: axes, the line from score 1 to 10, the two callouts.
+ *   38  build     step 2 lights. The nine thousand points leave their field and gather into a
+ *                 card: its "~9,000" is the count of points that have arrived. Below it the list
+ *                 runs past (a window on thousands) and six real features resolve out of it.
+ *       model     the six features feed the ML model: nodes land layer by layer, the links draw,
+ *                 and light runs left to right along the flame links to the one output node.
+ *       score     the output fires down the line, the ring closes in ten bands as "10" counts,
+ *                 and the caption resolves.
+ *   39  curve     the ring's ten bands fly out and become the chart's ten groups. The chart:
+ *                 axes, the line from score 1 to 10, the two callouts.
  *       two       this customer: the red ring closes on point 2, the score counts to 2, four
  *                 red reasons.
- *   39  ten       the SAME card: the ring runs along the curve to 10 and turns green, the score
+ *       ten       the SAME card: the ring runs along the curve to 10 and turns green, the score
  *                 counts on to 10, the title follows, the four reasons turn over to green.
  *
  * Everything is drawn (DOM, SVG, one 2D canvas for the points): no picture is used. The
@@ -34,8 +42,8 @@ import './scene.css'
 const SLIDES = {
   36: ['alike', 'healthy', 'average', 'fragile'],
   37: ['raw', 'genai', 'features'],
-  38: ['curve', 'two'],
-  39: ['ten'],
+  38: ['build', 'model', 'score'],
+  39: ['curve', 'two', 'ten'],
 }
 
 const u = (v: number) => `calc(var(--u) * ${+v.toFixed(3)})`
@@ -73,7 +81,52 @@ const widen = (d: string) => {
 /** the agent's line of light to each statement (1 = 0.1u, on the whole stage) */
 const WIRES = ['M159 196 V206', 'M300 196 Q300 201 306 201 H466 Q472 201 472 206', 'M300 196 Q300 201 306 201 H779 Q785 201 785 206']
 
-/* ------------------------------------------------------------------ 38, 39: the chart's geometry (1 = 0.1u) */
+/* ------------------------------------------------------------------ 38: the features' card, the model, the ring */
+/** the card, in --u; its list is a window of ten rows on a reel that has run past */
+const FC = { left: 4.2, top: 20.5, w: 28.4, list: 5.6, pitch: 2.38, extra: 12 }
+/** the grey rows that run past before the window comes to rest (widths in --u) */
+const REEL = [17, 11, 20.5, 14, 8.5, 19, 12.5, 21.5, 10, 16, 20, 13]
+/** the model, the line and the ring on the whole stage (1 = 0.1u) */
+const NET = { xs: [385, 452, 519, 586, 672], cy: 366, pitch: 38, r: 8.5 }
+const NODES = D.ML.layers.map((n, l) => Array.from({ length: n }, (_, i) => [NET.xs[l], NET.cy + (i - (n - 1) / 2) * NET.pitch] as const))
+/** every node is joined to every node of the next layer; `hot` ones are drawn in flame and carry the light */
+const LINKS = (() => {
+  let seed = 38
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646
+  const out: { g: number; a: number; b: number; hot: boolean }[] = []
+  for (let g = 0; g < NODES.length - 1; g++) {
+    const last = g === NODES.length - 2
+    for (let a = 0; a < NODES[g].length; a++) for (let b = 0; b < NODES[g + 1].length; b++) out.push({ g, a, b, hot: last || rnd() < 0.34 })
+    // no node is left out of the light: each has a flame link in and a flame link out
+    const of = (a: number, b: number) => out.find((k) => k.g === g && k.a === a && k.b === b) as (typeof out)[number]
+    for (let a = 0; a < NODES[g].length; a++) if (!out.some((k) => k.g === g && k.a === a && k.hot)) of(a, (a + g) % NODES[g + 1].length).hot = true
+    for (let b = 0; b < NODES[g + 1].length; b++) if (!out.some((k) => k.g === g && k.b === b && k.hot)) of((b + 1) % NODES[g].length, b).hot = true
+  }
+  return out.map((k) => ({ ...k, d: `M${NODES[k.g][k.a][0]} ${NODES[k.g][k.a][1]} L${NODES[k.g + 1][k.b][0]} ${NODES[k.g + 1][k.b][1]}` }))
+})()
+const HOT = LINKS.filter((k) => k.hot)
+const RING = { cx: 816, cy: 366, r: 72, w: 5 }
+/** the ring is ten bands: it closes clockwise from the point where the model's line meets it.
+ *  Between two bands a hairline (2 x GAP degrees): from the room the ring reads as closed, as on the owner's picture. */
+const GAP = 0.28
+const BANDS = Array.from({ length: 10 }, (_, i) => {
+  const at = (deg: number, r = RING.r) => [RING.cx + r * Math.cos((deg * Math.PI) / 180), RING.cy + r * Math.sin((deg * Math.PI) / 180)] as const
+  const a0 = 180 + i * 36 + GAP
+  const a1 = 180 + (i + 1) * 36 - GAP
+  const [x0, y0] = at(a0)
+  const [x1, y1] = at(a1)
+  return { d: `M${x0.toFixed(2)} ${y0.toFixed(2)} A${RING.r} ${RING.r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`, mid: at(180 + i * 36 + 18) }
+})
+/** where a feature's row sits on the stage (1 = 0.1u), and the input node it feeds */
+const FEED = D.ML.features.map((_, i) => {
+  const y = (FC.top + FC.list + (D.ML.above.length + i + 0.5) * FC.pitch) * 10
+  const [nx, ny] = NODES[0][Math.round((i * (NODES[0].length - 1)) / (D.ML.features.length - 1))]
+  const x0 = (FC.left + FC.w) * 10
+  const x1 = nx - NET.r
+  return `M${x0.toFixed(1)} ${y.toFixed(1)} C${((x0 + x1) / 2).toFixed(1)} ${y.toFixed(1)} ${((x0 + x1) / 2).toFixed(1)} ${ny} ${x1} ${ny}`
+})
+
+/* ------------------------------------------------------------------ 39: the chart's geometry (1 = 0.1u) */
 const CH = { w: 500, h: 222, x0: 40, x1: 494, y0: 176, y14: 26 }
 const px = (score: number) => 72 + (score - 1) * 45.4
 const py = (rate: number) => CH.y0 - (rate / 14) * (CH.y0 - CH.y14)
@@ -194,6 +247,60 @@ function Reason({ i }: { i: number }) {
   )
 }
 
+/** A grey row of the list: a feature that is not read out. */
+const Skel = ({ w }: { w: number }) => (
+  <div className="s36-frow" aria-hidden="true">
+    <i className="s36-fdot" />
+    <i className="s36-fbar" style={{ width: u(w) }} />
+  </div>
+)
+
+/** The model, its line to the ring, and the ring's ten bands: one SVG over the whole stage. */
+function Model() {
+  return (
+    <svg className="s36-net" viewBox="0 0 1000 562.5" aria-hidden="true">
+      {/* the model itself is one group: it leaves as one (39 curve) */}
+      <g className="s36-netbody">
+        {FEED.map((d, i) => (
+          <path key={i} className="s36-feed" d={d} />
+        ))}
+        {LINKS.map((k, i) => (
+          <path key={i} className="s36-link" data-g={k.g} d={k.d} />
+        ))}
+        {HOT.map((k, i) => (
+          <path key={i} className="s36-hot" data-g={k.g} d={k.d} />
+        ))}
+        {HOT.map((k, i) => (
+          <path key={i} className="s36-bead" data-g={k.g} d={k.d} />
+        ))}
+        {NODES.flatMap((layer, l) =>
+          layer.map(([x, y], i) => (
+            <g key={`${l}-${i}`} transform={`translate(${x} ${y})`}>
+              <circle className="s36-place" data-l={l} r="6.4" />
+              <circle className="s36-node" data-l={l} r={NET.r} />
+            </g>
+          )),
+        )}
+        <g transform={`translate(${NET.xs[4]} ${NET.cy})`}>
+          <circle className="s36-fire" r={NET.r} />
+        </g>
+      </g>
+      <path className="s36-conn" d={`M${NET.xs[4] + NET.r} ${NET.cy} H${RING.cx - RING.r - RING.w / 2}`} />
+      <path className="s36-bead s36-bead--conn" d={`M${NET.xs[4] + NET.r} ${NET.cy} H${RING.cx - RING.r - RING.w / 2}`} />
+      <circle className="s36-ringplace" cx={RING.cx} cy={RING.cy} r={RING.r} />
+      <g transform={`translate(${RING.cx} ${RING.cy})`}>
+        <circle className="s36-ringhalo" r={RING.r + 2} />
+      </g>
+      {BANDS.map((b, i) => (
+        <path key={i} className="s36-band" d={b.d} />
+      ))}
+      {BANDS.map((b, i) => (
+        <circle key={i} className="s36-group" cx={b.mid[0].toFixed(2)} cy={b.mid[1].toFixed(2)} r="5" />
+      ))}
+    </svg>
+  )
+}
+
 function Chart() {
   const line = PTS.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ')
   const area = `${line} L${PTS[9][0].toFixed(1)} ${CH.y0} L${PTS[0][0].toFixed(1)} ${CH.y0} Z`
@@ -263,20 +370,39 @@ function Chart() {
 const MANY = { cols: 225, rows: 40 }
 
 interface Field {
-  /** h: the hundred, 0 to 1. p: the nine thousand, 0 to 1. */
-  state: { h: number; p: number }
+  /** h: the hundred, 0 to 1. p: the nine thousand, 0 to 1. g: the nine thousand gathered into slide 38's card, 0 to 1. */
+  state: { h: number; p: number; g: number }
   paint(): void
 }
 
-function makeField(canvas: HTMLCanvasElement, W: number, H: number, U: number, sources: Box[], big: Box, small: Box, landed: (n: number) => void): Field {
+function makeField(
+  canvas: HTMLCanvasElement,
+  W: number,
+  H: number,
+  U: number,
+  sources: Box[],
+  big: Box,
+  small: Box,
+  landed: (n: number) => void,
+  /** slide 38: where the points gather (the free end of the card's header, clear of its numeral and words), and how many have arrived */
+  home: Box,
+  gathered: (n: number) => void,
+): Field {
   const dpr = Math.min(2, window.devicePixelRatio || 1)
   canvas.width = Math.round(W * dpr)
   canvas.height = Math.round(H * dpr)
   const g = canvas.getContext('2d')
-  const state = { h: 0, p: 0 }
+  const state = { h: 0, p: 0, g: 0 }
   const { cols, rows } = MANY
   const n = cols * rows
-  if (!g || !sources.length) return { state, paint: () => landed(Math.round(Math.min(1, state.p / 0.99) * n)) }
+  if (!g || !sources.length)
+    return {
+      state,
+      paint: () => {
+        landed(Math.round(Math.min(1, state.p / 0.99) * n))
+        gathered(Math.round(Math.min(1, state.g / 0.99) * n))
+      },
+    }
 
   // ONE pitch for both blocks, on whole pixels: the two are to one scale, every point is a crisp square
   let pitch = Math.max(2, Math.round(0.215 * U * dpr))
@@ -311,9 +437,65 @@ function makeField(canvas: HTMLCanvasElement, W: number, H: number, U: number, s
   // the hundred: ten by ten, in the middle of its slot
   const sx0 = Math.round(small.cx * dpr - 5 * pitch)
   const sy0 = Math.round(small.cy * dpr - 5 * pitch)
+  // slide 38, per point: when it leaves the field; control x, y; where in the numeral it arrives x, y.
+  // (Drawn from the same generator AFTER the field's own numbers, so the field of slide 37 is unchanged.)
+  const go = new Float32Array(n * 5)
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < rows; r++) {
+      const k = c * rows + r
+      const tx = pts[k * 8 + 4]
+      const ty = pts[k * 8 + 5]
+      const hx = (home.x + home.w * rnd()) * dpr
+      const hy = (home.cy + (rnd() - 0.5) * home.h * 0.72) * dpr
+      // the nearest leave first; the way bows up and over
+      go[k * 5] = (c / cols) * 0.5 + rnd() * 0.1
+      go[k * 5 + 1] = hx + (tx - hx) * (0.35 + rnd() * 0.3)
+      go[k * 5 + 2] = hy + (ty - hy) * (0.02 + rnd() * 0.5)
+      go[k * 5 + 3] = hx
+      go[k * 5 + 4] = hy
+    }
+  }
 
   const paint = () => {
     g.clearRect(0, 0, canvas.width, canvas.height)
+    // slide 38: the field has done its work. Its points leave for the card, the hundred fades with its box.
+    const out = state.g
+    if (out > 0) {
+      const fade = 1 - Math.min(1, out * 25)
+      if (fade > 0) {
+        g.globalAlpha = fade
+        g.fillStyle = '#6f7b98'
+        for (let k = 0; k < 100; k++) g.fillRect(sx0 + (k % 10) * pitch, sy0 + Math.floor(k / 10) * pitch, dot, dot)
+        g.globalAlpha = 1
+      }
+      let home = 0
+      g.fillStyle = '#f16443'
+      for (let k = 0; k < n; k++) {
+        const t = (out - go[k * 5]) / 0.4
+        const i = k * 8
+        if (t <= 0) {
+          g.fillRect(pts[i + 4], pts[i + 5], dot, dot)
+          continue
+        }
+        if (t >= 1) {
+          home++
+          continue
+        }
+        const e = t * t * (3 - 2 * t)
+        const q = 1 - e
+        const x = q * q * pts[i + 4] + 2 * q * e * go[k * 5 + 1] + e * e * go[k * 5 + 3]
+        const y = q * q * pts[i + 5] + 2 * q * e * go[k * 5 + 2] + e * e * go[k * 5 + 4]
+        // it melts into the card's header as it arrives: smaller, then gone
+        if (t > 0.78) g.globalAlpha = (1 - t) / 0.22
+        const d = t > 0.88 ? Math.max(1, dot - 1) : dot
+        g.fillRect(Math.round(x), Math.round(y), d, d)
+        g.globalAlpha = 1
+      }
+      landed(n)
+      gathered(home)
+      return
+    }
+    gathered(0)
     // the 100, one by one
     const shown = Math.min(100, Math.floor(state.h * 100 + 0.001))
     if (shown > 0) {
@@ -360,6 +542,7 @@ const scene: SceneModule = {
       <Headline className="s36-h s36-h--36" text={slideOf(36).title} flame={D.FLAME[36]} />
       <Headline className="s36-h s36-h--37" text={slideOf(37).title} flame={D.FLAME[37]} />
       <Headline className="s36-h s36-h--38" text={slideOf(38).title} flame={D.FLAME[38]} />
+      <Headline className="s36-h s36-h--39" text={slideOf(39).title} flame={D.FLAME[39]} />
 
       {/* the agent: on stage through all four slides */}
       <div className="s36-agent">
@@ -445,7 +628,54 @@ const scene: SceneModule = {
         ))}
       </div>
 
-      {/* ---------------- act three (38, 39): the score, and why ---------------- */}
+      {/* ---------------- act three (38): ML builds the features and the one score ---------------- */}
+      <div className="s36-fcard">
+        <div className="s36-fhead">
+          <b className="s36-fnum">
+            {D.ML.card.prefix}
+            {D.ML.card.n.toLocaleString('en-US')}
+          </b>
+          <p>
+            <strong>{D.ML.card.title}</strong>
+            {D.ML.card.sub}
+          </p>
+        </div>
+        <div className="s36-flist">
+          <div className="s36-reel">
+            {REEL.map((w, i) => (
+              <Skel key={`r${i}`} w={w} />
+            ))}
+            {D.ML.above.map((w, i) => (
+              <Skel key={`a${i}`} w={w} />
+            ))}
+            {D.ML.features.map((f, i) => (
+              <div key={i} className="s36-frow s36-frow--feat">
+                <i className="s36-fdot" aria-hidden="true" />
+                <i className="s36-fbar" style={{ width: u(REEL[i + 2]) }} aria-hidden="true" />
+                <span>{f}</span>
+              </div>
+            ))}
+            {D.ML.below.map((w, i) => (
+              <Skel key={`b${i}`} w={w} />
+            ))}
+          </div>
+        </div>
+      </div>
+      <span className="s36-mlname">{D.ML.model}</span>
+      <div className="s36-disc">
+        <span className="s36-disclabel">{D.ML.score.label}</span>
+        <span className="s36-bands">
+          <b className="s36-bandn">{D.ML.score.n}</b>
+          <span className="s36-bandu">{D.ML.score.unit}</span>
+        </span>
+      </div>
+      <p className="s36-ringcap">
+        <span>{D.ML.caption[0]}</span>
+        <span className="s36-ringcap--why">{D.ML.caption[1]}</span>
+      </p>
+      <Model />
+
+      {/* ---------------- act four (39): the score, and why ---------------- */}
       <div className="s36-card s36-card--chart">
         <Kicker tone="flame" block>
           {D.CHART.kicker}
@@ -494,7 +724,23 @@ const scene: SceneModule = {
       manyShown = n
       manyN.textContent = `${D.FOOT.abcd.prefix}${n.toLocaleString('en-US')}${D.FOOT.abcd.suffix}`
     }
-    const field = makeField(ctx.$<HTMLCanvasElement>('.s36-field'), ctx.W, ctx.H, U, cats, bigSlot, smallSlot, landed)
+    // slide 38: the card's numeral is the number of points that have come home to it
+    const fnum = ctx.$('.s36-fnum')
+    // they come home to the header's free right end: never across the numeral or the words beside it
+    const fheadBox = ctx.loc(ctx.$('.s36-fhead'))
+    const homeBox: Box = { ...fheadBox, x: fheadBox.x + fheadBox.w - 3.5 * U, w: 3.1 * U, cx: fheadBox.x + fheadBox.w - 1.95 * U }
+    let homeShown = -1
+    const gathered = (n: number) => {
+      if (n === homeShown) return
+      homeShown = n
+      fnum.textContent = `${D.ML.card.prefix}${n.toLocaleString('en-US')}`
+    }
+    // where the chart's ten groups will stand while its card is alone in the middle (1 = 0.1u)
+    const groupsAt = ctx.$$('.s36-ch-x').map((el) => {
+      const b = ctx.loc(el)
+      return [((b.cx + ctx.W / 2 - chartBox.cx) / U) * 10, (b.cy / U) * 10] as const
+    })
+    const field = makeField(ctx.$<HTMLCanvasElement>('.s36-field'), ctx.W, ctx.H, U, cats, bigSlot, smallSlot, landed, homeBox, gathered)
     field.paint()
     ctx.onSeek(field.paint)
 
@@ -646,7 +892,7 @@ const scene: SceneModule = {
     // … and the traditional way's whole harvest: a hundred features
     a.rise('.s36-foot--old', tOld + 0.7, { y: 1.4 })
     a.count('.s36-foot--old .kn-count-n', tOld + 0.9, { duration: 0.9 })
-    gsap.set(field.state, { h: 0, p: 0 })
+    gsap.set(field.state, { h: 0, p: 0, g: 0 })
     tl.to(field.state, { h: 1, duration: 0.9, ease: 'power2.out', onUpdate: field.paint }, tOld + 0.9)
     a.fade('.s36-chev--old', tOld + 0.05, { stagger: 0.11, duration: 0.3 })
     const olds = ctx.$$('.s36-old')
@@ -713,16 +959,219 @@ const scene: SceneModule = {
     tl.to(fx, { focusX: 0.45, focusY: 0.75, glow: 0.5, energy: 0.3, duration: 2.4, ease: ease.inOut }, t)
     tl.addLabel('features')
 
-    /* =================================================================== 38 · curve */
+    /* =================================================================== 38 · build */
     t = tl.duration() + 0.02
     a.retitle('.s36-h--37', '.s36-h--38', t)
-    tl.to(rows, { autoAlpha: 0, x: -1.6 * U, duration: 0.36, stagger: 0.045, ease: 'power2.in' }, t)
-    tl.to([...ctx.$$('.s36-head'), ...ctx.$$('.s36-foot'), ctx.$('.s36-field')], { autoAlpha: 0, duration: 0.36, ease: 'power2.in' }, t + 0.05)
-    tl.to(fx, { focusX: -0.2, focusY: 0.3, glow: 0.3, warm: 0.1, energy: 0, duration: 1.6, ease: ease.inOut }, t)
+    tl.to(rows, { autoAlpha: 0, x: -1.6 * U, duration: 0.3, stagger: 0.03, ease: 'power2.in' }, t)
+    // the field's box goes; its points stay, and leave for the card
+    tl.to([...ctx.$$('.s36-head'), ...ctx.$$('.s36-foot')], { autoAlpha: 0, duration: 0.36, ease: 'power2.in' }, t + 0.05)
+    tl.to(fx, { focusX: -0.6, focusY: 0.25, glow: 0.36, warm: 0.3, energy: 0.1, duration: 1.8, ease: ease.inOut }, t)
     // step 2 lights
     tl.to(lit[1], { autoAlpha: 1, duration: 0.5 }, t + 0.45)
     tl.to(steps[1], { scale: 1.04, duration: 0.22, ease: 'power2.out' }, t + 0.45)
     tl.to(steps[1], { scale: 1, duration: 0.55, ease: ease.out }, t + 0.67)
+
+    const net = ctx.$('.s36-net')
+    const nq = <E extends Element = SVGElement>(sel: string) => Array.from(net.querySelectorAll<E>(sel))
+    const byGap = <E extends Element>(list: E[], g: number) => list.filter((el) => el.getAttribute('data-g') === String(g))
+    const byLayer = <E extends Element>(list: E[], l: number) => list.filter((el) => el.getAttribute('data-l') === String(l))
+    const fcard = ctx.$('.s36-fcard')
+    const reel = ctx.$('.s36-reel')
+    const feats = ctx.$$('.s36-frow--feat')
+    const featDots = feats.map((f) => f.querySelector('.s36-fdot') as HTMLElement)
+    const featBars = feats.map((f) => f.querySelector('.s36-fbar') as HTMLElement)
+    const featText = feats.map((f) => f.querySelector('span') as HTMLElement)
+    const places = nq('.s36-place')
+    const nodes = nq('.s36-node')
+    const links = nq('.s36-link')
+    const hots = nq('.s36-hot')
+    const beads = nq('.s36-bead:not(.s36-bead--conn)')
+    const GAPS = NODES.length - 1
+
+    // the card rises where the narration stood, once the last of its rows has gone, as the points set out for it
+    a.rise(fcard, t + 0.5, { y: 1.6, duration: 0.7 })
+    tl.to(field.state, { g: 1, duration: 2.0, ease: 'power1.inOut', onUpdate: field.paint }, t + 0.15)
+    tl.to(fnum, { scale: 1.08, duration: 0.16, ease: 'power2.out' }, t + 2.1)
+    tl.to(fnum, { scale: 1, duration: 0.5, ease: ease.out }, t + 2.26)
+    // the list runs past, a window on thousands, and comes to rest on six of them
+    const tr = t + 0.75
+    gsap.set(featDots, { backgroundColor: '#d5dbe8' })
+    gsap.set(featBars, { autoAlpha: 1, transformOrigin: '100% 50%' })
+    gsap.set(featText, calm ? { autoAlpha: 0 } : { autoAlpha: 1, clipPath: 'inset(-10% 100% -10% 0%)' })
+    if (!calm) {
+      gsap.set(reel, { y: FC.extra * FC.pitch * U })
+      tl.to(reel, { y: 0, duration: 1.7, ease: 'power3.out' }, tr)
+    }
+    feats.forEach((_, i) => {
+      const r = tr + 1.05 + i * 0.2
+      tl.to(featDots[i], { backgroundColor: '#f16443', duration: 0.2 }, r)
+      if (!calm) {
+        tl.to(featDots[i], { scale: 1.5, duration: 0.14, ease: 'power2.out' }, r)
+        tl.to(featDots[i], { scale: 1, duration: 0.4, ease: ease.out }, r + 0.14)
+      }
+      // the grey bar gives way to the feature's own words
+      tl.to(featBars[i], calm ? { autoAlpha: 0, duration: 0.3 } : { scaleX: 0, duration: 0.4, ease: 'power2.inOut' }, r)
+      tl.to(featText[i], calm ? { autoAlpha: 1, duration: 0.4 } : { clipPath: 'inset(-10% 0% -10% 0%)', duration: 0.5, ease: 'power2.out' }, r + 0.04)
+    })
+    // what comes next keeps its place: the model's nodes and the score's ring, still empty
+    const mlname = ctx.$('.s36-mlname')
+    const ringPlace = nq('.s36-ringplace')
+    gsap.set(mlname, { autoAlpha: 0 })
+    tl.to(mlname, { autoAlpha: 0.5, duration: 0.5 }, t + 1.5)
+    gsap.set(places, { autoAlpha: 0, scale: calm ? 1 : 0.4, transformOrigin: '50% 50%' })
+    for (let l = 0; l < NODES.length; l++) tl.to(byLayer(places, l), { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.03, ease: ease.out }, t + 1.6 + l * 0.1)
+    gsap.set(ringPlace, { autoAlpha: 0 })
+    tl.to(ringPlace, { autoAlpha: 1, duration: 0.5 }, t + 2.1)
+    tl.addLabel('build', Math.max(tl.duration(), t + 3.4))
+
+    /* =================================================================== 38 · model */
+    t = tl.labels.build + 0.02
+    tl.to(mlname, { autoAlpha: 1, duration: 0.4 }, t)
+    tl.to(steps[1], { scale: 1.035, duration: 0.22, ease: 'power2.out' }, t)
+    tl.to(steps[1], { scale: 1, duration: 0.5, ease: ease.out }, t + 0.22)
+    tl.to(fx, { focusX: 0.05, focusY: 0.35, glow: 0.42, warm: 0.4, energy: 0.2, duration: 2.6, ease: ease.inOut }, t)
+    // the six features feed the model: a line of light from each to an input node
+    const feeds = nq<SVGPathElement>('.s36-feed')
+    gsap.set(feeds, { autoAlpha: 0, drawSVG: '0% 0%' })
+    feeds.forEach((f, i) => {
+      const r = t + 0.05 + i * 0.05
+      if (!calm) {
+        tl.to(featDots[i], { scale: 1.5, duration: 0.14, ease: 'power2.out' }, r)
+        tl.to(featDots[i], { scale: 1, duration: 0.4, ease: ease.out }, r + 0.14)
+      }
+      tl.to(f, { autoAlpha: 1, duration: 0.01, ease: 'none' }, r)
+      tl.to(f, { drawSVG: '0% 100%', duration: 0.32, ease: 'power1.inOut' }, r)
+      tl.to(f, { drawSVG: '100% 100%', duration: 0.32, ease: 'power1.in' }, r + 0.32)
+      tl.to(f, { autoAlpha: 0, duration: 0.01, ease: 'none' }, r + 0.65)
+    })
+    // nodes land layer by layer, and the links run on ahead of them
+    const STEP = 0.34
+    const tn = t + 0.42
+    gsap.set(nodes, { autoAlpha: 0, scale: calm ? 1 : 0, transformOrigin: '50% 50%' })
+    gsap.set(links, { autoAlpha: 0, drawSVG: '0%' })
+    gsap.set(hots, { autoAlpha: 0, drawSVG: '0%' })
+    for (let l = 0; l < NODES.length; l++) {
+      const r = tn + l * STEP
+      tl.to(byLayer(nodes, l), { autoAlpha: 1, scale: 1, duration: 0.45, stagger: 0.035, ease: ease.snap }, r)
+      tl.to(byLayer(places, l), { autoAlpha: 0, duration: 0.2 }, r + 0.1)
+      if (l === GAPS) break
+      const grey = byGap(links, l)
+      tl.to(grey, { autoAlpha: 1, duration: 0.01, ease: 'none' }, r + 0.12)
+      tl.to(grey, { drawSVG: '100%', duration: 0.42, stagger: 0.004, ease: 'power1.inOut' }, r + 0.12)
+      const hot = byGap(hots, l)
+      tl.to(hot, { autoAlpha: 1, duration: 0.01, ease: 'none' }, r + 0.3)
+      tl.to(hot, { drawSVG: '100%', duration: 0.5, stagger: 0.012, ease: 'power1.inOut' }, r + 0.3)
+    }
+    // light runs left to right along the flame links, and converges on the one output
+    gsap.set(nq('.s36-bead'), { autoAlpha: 0, drawSVG: '0% 0%' })
+    const fire = nq('.s36-fire')
+    gsap.set(fire, { autoAlpha: 0, scale: 1, transformOrigin: '50% 50%' })
+    const wave = (at: number, gap: number, run: number, from = 0) => {
+      for (let g = from; g < GAPS; g++) {
+        const r = at + (g - from) * gap
+        const b = byGap(beads, g)
+        tl.set(b, { autoAlpha: 1, drawSVG: '0% 0%' }, r)
+        tl.to(b, { drawSVG: '55% 100%', duration: run * 0.65, ease: 'power1.in' }, r)
+        tl.to(b, { drawSVG: '100% 100%', duration: run * 0.35, ease: 'none' }, r + run * 0.65)
+        tl.set(b, { autoAlpha: 0 }, r + run + 0.01)
+        // each layer answers as the light reaches it
+        if (!calm) {
+          tl.to(byLayer(nodes, g + 1), { scale: 1.22, duration: 0.12, ease: 'power2.out' }, r + run - 0.06)
+          tl.to(byLayer(nodes, g + 1), { scale: 1, duration: 0.4, ease: ease.out }, r + run + 0.06)
+        }
+      }
+      const end = at + (GAPS - 1 - from) * gap + run
+      tl.fromTo(fire, { autoAlpha: 0.5, scale: 1 }, { autoAlpha: 0, scale: 3.2, duration: 0.65, ease: 'power2.out', immediateRender: false }, end - 0.04)
+      return end
+    }
+    const tw = tn + GAPS * STEP + 0.35
+    if (!calm) wave(tw, 0.26, 0.42)
+    tl.addLabel('model', Math.max(tl.duration(), tw + 1.7))
+
+    /* =================================================================== 38 · score */
+    t = tl.labels.model + 0.02
+    tl.to(fx, { focusX: 0.62, focusY: 0.3, glow: 0.5, warm: 0.55, energy: 0.1, duration: 2.0, ease: ease.inOut }, t)
+    // the last of the model fires (only its last two gaps: the whole wave has just been seen), and out along the line
+    const tf = calm ? t + 0.1 : wave(t, 0.12, 0.28, GAPS - 2)
+    const conn = nq('.s36-conn')
+    const connBead = nq('.s36-bead--conn')
+    gsap.set(conn, { autoAlpha: 0, drawSVG: '0%' })
+    tl.to(conn, { autoAlpha: 1, duration: 0.01, ease: 'none' }, tf)
+    tl.to(conn, { drawSVG: '100%', duration: 0.25, ease: 'power1.in' }, tf)
+    if (!calm) {
+      tl.set(connBead, { autoAlpha: 1, drawSVG: '0% 0%' }, tf)
+      tl.to(connBead, { drawSVG: '50% 100%', duration: 0.25, ease: 'power1.in' }, tf)
+      tl.to(connBead, { drawSVG: '100% 100%', duration: 0.1, ease: 'none' }, tf + 0.25)
+      tl.set(connBead, { autoAlpha: 0 }, tf + 0.36)
+    }
+    // the ring closes in ten bands, and the score counts with them
+    const bandEls = nq<SVGPathElement>('.s36-band')
+    const disc = ctx.$('.s36-disc')
+    const bandN = ctx.$('.s36-bandn')
+    const bandU = ctx.$('.s36-bandu')
+    const discLabel = ctx.$('.s36-disclabel')
+    const ringHalo = nq('.s36-ringhalo')
+    const tb = tf + 0.22
+    const BAND = 0.085
+    gsap.set(disc, calm ? { autoAlpha: 0 } : { autoAlpha: 0, scale: 0.9 })
+    tl.to(disc, { autoAlpha: 1, scale: 1, duration: 0.55, ease: ease.out }, tb - 0.1)
+    tl.to(ringPlace, { autoAlpha: 0, duration: 0.4 }, tb)
+    gsap.set(bandEls, { autoAlpha: 0, drawSVG: '0%' })
+    bandEls.forEach((b, i) => {
+      tl.to(b, { autoAlpha: 1, duration: 0.01, ease: 'none' }, tb + i * BAND)
+      tl.to(b, { drawSVG: '100%', duration: BAND + 0.04, ease: 'none' }, tb + i * BAND)
+    })
+    a.fade(discLabel, tb + 0.1, { duration: 0.5 })
+    const band = { n: 0 }
+    const writeBand = () => {
+      const txt = String(Math.min(D.ML.score.n, Math.max(1, Math.ceil(band.n))))
+      if (bandN.textContent !== txt) bandN.textContent = txt
+    }
+    gsap.set(bandN, { autoAlpha: 0 })
+    tl.to(bandN, { autoAlpha: 1, duration: 0.2 }, tb)
+    tl.fromTo(band, { n: 0 }, { n: D.ML.score.n, duration: 10 * BAND, ease: 'none', onUpdate: writeBand, immediateRender: false }, tb)
+    ctx.onSeek(writeBand)
+    const te = tb + 10 * BAND + 0.04
+    gsap.set(ringHalo, { autoAlpha: 0, scale: 1, transformOrigin: '50% 50%' })
+    tl.fromTo(ringHalo, { autoAlpha: 0.45, scale: 1 }, { autoAlpha: 0, scale: 1.32, duration: 0.9, ease: 'power2.out', immediateRender: false }, te)
+    if (!calm) {
+      tl.to(bandN, { scale: 1.14, duration: 0.16, ease: 'power2.out' }, te - 0.04)
+      tl.to(bandN, { scale: 1, duration: 0.5, ease: ease.out }, te + 0.12)
+    }
+    a.rise(bandU, te + 0.05, { y: 0, x: -0.8, duration: 0.5 })
+    const cap = ctx.$$('.s36-ringcap span')
+    a.rise(cap, te + 0.35, { y: 0.8, stagger: 0.22, duration: 0.6 })
+    tl.addLabel('score', Math.max(tl.duration(), te + 1.3))
+
+    /* =================================================================== 39 · curve */
+    t = tl.labels.score + 0.02
+    a.retitle('.s36-h--38', '.s36-h--39', t)
+    // slide 38 leaves: the card, the model from its inputs to its output, the line into the ring
+    tl.to(fcard, { autoAlpha: 0, x: calm ? 0 : -1.6 * U, duration: 0.38, ease: 'power2.in' }, t)
+    tl.to([mlname, ...cap], { autoAlpha: 0, duration: 0.3, ease: 'power2.in' }, t)
+    tl.to([...links, ...hots], { autoAlpha: 0, duration: 0.3, ease: 'power1.in' }, t)
+    // the model does not vanish in place: it leaves to the left, after the card
+    if (!calm) tl.to(nq('.s36-netbody'), { x: -18, duration: 0.42, ease: 'power2.in' }, t)
+    for (let l = 0; l < NODES.length; l++) tl.to(byLayer(nodes, l), { autoAlpha: 0, scale: calm ? 1 : 0, duration: 0.26, ease: 'power2.in' }, t + 0.04 + l * 0.05)
+    tl.to(conn, { drawSVG: '100% 100%', duration: 0.26, ease: 'power1.in' }, t + 0.2)
+    tl.to(conn, { autoAlpha: 0, duration: 0.01, ease: 'none' }, t + 0.47)
+    // the ring's ten bands become the chart's ten groups: each flies out to its place on the axis
+    const groups = nq<SVGCircleElement>('.s36-group')
+    gsap.set(groups, { autoAlpha: 0, attr: { r: 0 } })
+    tl.to(disc, { autoAlpha: 0, scale: calm ? 1 : 0.8, duration: 0.28, ease: 'power2.in' }, t + 0.08)
+    // the bands are gone before the chart's card is half there
+    tl.to(bandEls, { autoAlpha: 0, duration: 0.2, stagger: 0.012, ease: 'power1.in' }, t + 0.16)
+    if (!calm) {
+      tl.to(groups, { autoAlpha: 1, attr: { r: 5 }, duration: 0.3, stagger: 0.012, ease: ease.snap }, t + 0.12)
+      groups.forEach((gEl, i) => {
+        const r = t + 0.38 + i * 0.04
+        const [x, y] = groupsAt[i]
+        tl.to(gEl, { attr: { cx: +x.toFixed(2) }, duration: 0.72, ease: 'power2.inOut' }, r)
+        tl.to(gEl, { attr: { cy: +y.toFixed(2) }, duration: 0.72, ease: 'power3.inOut' }, r)
+        tl.to(gEl, { autoAlpha: 0, duration: 0.26, ease: 'power1.in' }, r + 0.7)
+      })
+    }
+    tl.to(fx, { focusX: -0.2, focusY: 0.3, glow: 0.3, warm: 0.1, energy: 0, duration: 1.6, ease: ease.inOut }, t)
 
     // the chart's card stands in the middle while it is alone
     const mid = ctx.W / 2 - chartBox.cx
@@ -757,7 +1206,7 @@ const scene: SceneModule = {
     tl.to(calls[1], { autoAlpha: 1, scale: 1, duration: 0.5, ease: ease.snap }, tc + 0.7 + LINE + 0.1)
     tl.addLabel('curve')
 
-    /* =================================================================== 38 · two, 39 · ten: one card, one number */
+    /* =================================================================== 39 · two, ten: one card, one number */
     const at = cq<SVGGElement>('.s36-ch-at')[0]
     const ring = cq<SVGCircleElement>('.s36-ch-ring')[0]
     const halo = cq<SVGCircleElement>('.s36-ch-halo')[0]

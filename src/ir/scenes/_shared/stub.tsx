@@ -2,7 +2,7 @@
 
 /**
  * THE STUB OF /ir. Until a slide's scene is built its folder holds this. For slides 1 to 6: the
- * deck's own page of the slide on a card (public/ir/pages/NN.jpg). For 7 and 8, which the source
+ * deck's own page of the slide on a card (public/ir/pages/NN.jpg). For 7, which the source
  * deck does not have: the slide's words on the dark ground. It is also what a slide shows if its
  * scene fails to load, to render or to build.
  *

@@ -639,7 +639,265 @@
   pointer-events: none;
 }
 
-/* ---------------------------------------------------------------- 38, 39: the score, and why */
+/* ---------------------------------------------------------------- 38: ML builds the features and the one score */
+.s36-fcard {
+  position: absolute;
+  left: var(--kn-x0);
+  top: calc(var(--u) * 20.5);
+  width: calc(var(--u) * 28.4);
+  height: calc(var(--u) * 29.8);
+  border-radius: calc(var(--u) * 1);
+  background: #fff;
+  box-shadow: var(--kn-shadow);
+  overflow: hidden;
+  z-index: 1;
+  visibility: hidden;
+}
+.s36-fhead {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--u) * 5.2);
+  background: var(--kn-navy);
+}
+.s36-fnum {
+  position: absolute;
+  left: calc(var(--u) * 1.5);
+  top: calc(var(--u) * 1.05);
+  display: inline-block;
+  font-size: calc(var(--u) * 3.1);
+  line-height: 1;
+  color: #ff9d78;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transform-origin: 0% 60%;
+}
+.s36-fhead p {
+  position: absolute;
+  left: calc(var(--u) * 13.6);
+  top: calc(var(--u) * 1.05);
+  margin: 0;
+  font-size: calc(var(--u) * 1);
+  line-height: 1.3;
+  color: #dfe5f3;
+  white-space: nowrap;
+}
+.s36-fhead p strong {
+  display: block;
+  font-size: calc(var(--u) * 1.55);
+  line-height: 1.15;
+  color: #fff;
+}
+/* a window of ten rows; the reel above it has run past */
+.s36-flist {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 5.6);
+  height: calc(var(--u) * 23.8);
+  overflow: hidden;
+}
+.s36-reel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.s36-frow {
+  position: relative;
+  height: calc(var(--u) * 2.38);
+}
+.s36-fdot {
+  position: absolute;
+  left: calc(var(--u) * 1.7);
+  top: 50%;
+  width: calc(var(--u) * 0.9);
+  height: calc(var(--u) * 0.9);
+  margin-top: calc(var(--u) * -0.45);
+  border-radius: 50%;
+  background: #d5dbe8;
+}
+.s36-frow--feat .s36-fdot {
+  background: var(--kn-flame);
+}
+.s36-fbar {
+  position: absolute;
+  left: calc(var(--u) * 3.5);
+  top: 50%;
+  height: calc(var(--u) * 0.62);
+  margin-top: calc(var(--u) * -0.31);
+  border-radius: calc(var(--u) * 0.31);
+  background: var(--s36-grey);
+}
+.s36-frow--feat .s36-fbar {
+  visibility: hidden;
+}
+.s36-frow span {
+  position: absolute;
+  left: calc(var(--u) * 3.5);
+  top: 0;
+  font-size: calc(var(--u) * 1.14);
+  font-weight: 700;
+  line-height: calc(var(--u) * 2.38);
+  color: var(--kn-ink);
+  white-space: nowrap;
+}
+.s36-mlname {
+  position: absolute;
+  left: calc(var(--u) * 38.5);
+  width: calc(var(--u) * 20.1);
+  top: calc(var(--u) * 21.3);
+  text-align: center;
+  font-size: calc(var(--u) * 1.5);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  color: #8a94ad;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s36-net {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+  overflow: visible;
+}
+.s36-net path {
+  fill: none;
+  stroke-linecap: round;
+}
+.s36-net path,
+.s36-net circle {
+  visibility: hidden;
+}
+.s36-feed {
+  stroke: var(--kn-flame);
+  stroke-width: 2.2;
+}
+.s36-link {
+  stroke: #e3e7f0;
+  stroke-width: 0.8;
+}
+.s36-hot {
+  stroke: var(--kn-flame);
+  stroke-width: 1.3;
+}
+.s36-bead {
+  stroke: #c93a12;
+  stroke-width: 4.4;
+}
+.s36-place {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: #c5cde0;
+  stroke-width: 1.4;
+}
+.s36-node,
+.s36-fire {
+  fill: var(--kn-flame);
+}
+.s36-conn {
+  stroke: var(--kn-flame);
+  stroke-width: 2.6;
+}
+.s36-ringplace {
+  fill: rgba(255, 255, 255, 0.55);
+  stroke: #c5cde0;
+  stroke-width: 1.6;
+  stroke-dasharray: 5 6;
+}
+.s36-ringhalo {
+  fill: none;
+  stroke: var(--kn-flame);
+  stroke-width: 5;
+}
+.s36-net .s36-band {
+  stroke: var(--kn-flame);
+  stroke-width: 5;
+  stroke-linecap: butt;
+}
+.s36-group {
+  fill: var(--kn-flame);
+  stroke: #fff;
+  stroke-width: 1.4;
+}
+.s36-disc {
+  position: absolute;
+  left: calc(var(--u) * 74.6);
+  top: calc(var(--u) * 29.6);
+  width: calc(var(--u) * 14);
+  height: calc(var(--u) * 14);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 calc(var(--u) * 0.7) calc(var(--u) * 2) rgba(235, 84, 44, 0.2);
+  visibility: hidden;
+}
+.s36-disclabel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 2.75);
+  text-align: center;
+  font-size: calc(var(--u) * 0.88);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  color: var(--kn-muted);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.s36-bands {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 4.7);
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: calc(var(--u) * 0.2);
+  color: var(--kn-navy);
+  white-space: nowrap;
+}
+.s36-bandn {
+  display: inline-block;
+  min-width: 1.16em;
+  text-align: right;
+  font-size: calc(var(--u) * 5.2);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transform-origin: 70% 60%;
+}
+.s36-bandu {
+  display: inline-block;
+  font-size: calc(var(--u) * 2.15);
+  font-weight: 700;
+  line-height: 1;
+}
+.s36-ringcap {
+  position: absolute;
+  left: calc(var(--u) * 69.6);
+  width: calc(var(--u) * 24);
+  top: calc(var(--u) * 45.2);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--u) * 1.25);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--kn-ink);
+}
+.s36-ringcap span {
+  display: block;
+  visibility: hidden;
+}
+.s36-ringcap .s36-ringcap--why {
+  color: var(--kn-flame-ink);
+}
+
+/* ---------------------------------------------------------------- 39: the score, and why */
 .s36-card {
   position: absolute;
   top: calc(var(--u) * 20.5);

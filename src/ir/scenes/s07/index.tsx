@@ -1,241 +1,265 @@
 'use client'
 
 /**
- * /ir slides 07 and 08 · THE CLOSE: "Thank You!" and "Q&A". Dark. ONE scene that spans both
- * slides (scenes/s08/index.tsx re-exports this one), because the two are one ground: the same
- * circuit lines, in the same places, never leave the stage at the change of slide.
+ * /ir slide 07 · THE CLOSE: "Thank You!", the invitation to questions, the contacts. Dark. The
+ * last slide of the deck, and the frame that stays on the wall for the whole question session.
  *
- *   thanks    (7) the circuit draws itself in from the edges of the stage, its dots light as the
- *                 drawing reaches them, a first pulse of light runs down every line; "Thank You!"
- *                 rises with weight, a line of first light under it
- *   contacts  (7) "Thank You!" lifts and makes room: "For Investors:", the address, the two names
- *   qa        (8) the words of slide 7 leave, the lines stay; a surge of light runs through them
- *                 and "Q&A" arrives large. The last rest of the session: after it only slow pulses
- *                 travel the lines and the light behind the letters breathes.
+ *   thanks   slide 6 comes apart. Its last rest (the big AI line, the tiles, the RoE track) is
+ *            there once more as sixteen thousand points, in its own colours, on its own light
+ *            page; they come loose, spiral into one orb at the middle of the stage; the orb takes
+ *            light (an ember's warm halo while the page is still light) and the dark opens from
+ *            it across the page; a held breath; it bursts, and the
+ *            points fly out past their places and settle into the letters "Thank You!". As they
+ *            settle the real headline takes over exactly in place: sharp type, a few points still
+ *            drifting off it.                                               (plays on arrival)
+ *   close    "Thank You!" lifts and makes room; the points leave the letters and flow as a slow
+ *            ribbon behind everything; half of them gather once more, into "Q&A", and the real
+ *            letters take over; a line of first light, and the contacts settle under it. THE LAST
+ *            REST: only the ribbon moves, slowly.
  *
- * The lines are SVG (circuit.tsx). What the timeline moves: the drawing, the pulses it sends
- * (stroke-dashoffset on paths of pathLength 100), the dots. What idles is CSS only (scene.css),
- * switched off by `ir07--still` when the frame is held or the visitor asked for less motion.
+ * THE HAND-OVER FROM SLIDE 6, as the engine runs it (core/director.ts) and what this scene does
+ * with it:
+ *
+ *   1. Next on slide 6's last rest. This scene is mounted AT ONCE, unseen (its layer waits), and
+ *      slide 6's layer fades for 0.36 s. The points live on a canvas that is NOT in this scene's
+ *      layer but in the stage, under every layer (field.ts): so while slide 6 fades, the same
+ *      picture made of points is already standing behind it, and slide 6 turns into them.
+ *   2. Slide 6 has gone; the engine now lets the theme change (light to dark: the backdrop's own
+ *      directed move, the new theme opening from the middle of the stage) and plays this timeline
+ *      from 0. This scene holds that move back with its own `fx.dark` (−1: the backdrop's
+ *      darkness is base + fx, so the page stays light, the real one, not a copy of it), and
+ *      gives it back on the timeline when the orb takes light: so it is the backdrop's own iris,
+ *      from the orb's place, that carries the stage into the dark. No cover, no second ground.
+ *      While the page is still light the counter and the pills keep the light page's dress
+ *      (`data-page` on `.ir07`, set on the timeline; the rule is in scene.css), and the backdrop
+ *      follows the timeline's wish for the dark no faster than a third of a second: a second
+ *      press of Next in mid-move is then still an iris, not a cut.
+ *   3. Arriving any other way the picture is the same from the first rest on: a hold URL shows
+ *      the move exactly as Next plays it; a jump from a dark slide keeps the page dark and lets
+ *      the points arrive as light.
+ *
+ * The points are drawn by one shader from plain numbers the timeline tweens (field.ts); where
+ * they stand is measured from laid-out DOM (sample.ts): from this scene's own headline and "Q&A",
+ * and from slide 6's own markup, set once more, hidden, in `.ir07-ghost` (never seen: only
+ * measured, so whatever slide 6 becomes, its points stand where it does).
+ *
+ * Without WebGL, and for a visitor who asked for less motion: the same two rests, cross-faded.
  */
 
 import gsap from 'gsap'
-import { anim, slide as slideOf, spanBeats, Words, type SceneModule } from '../../kit'
-import { Circuit, PARK, TRACES, offsets } from './circuit'
-import { FOR, MAIL, PEOPLE } from './data'
+import { anim, slide as slideOf, type SceneModule } from '../../kit'
+import s06 from '../s06'
+import { FOR, MAIL, PEOPLE, QA } from './data'
+import { createField, N, type Field, type FieldU } from './field'
+import { paint, pick, rng, sheet } from './sample'
 import './scene.css'
 
-const SLIDES = { 7: ['thanks', 'contacts'], 8: ['qa'] }
+const Six = s06.Scene
 
 const scene: SceneModule = {
-  slides: SLIDES,
-  beats: spanBeats(SLIDES),
+  beats: ['thanks', 'close'],
   chrome: { crumb: false },
 
   Scene: ({ slide }) => (
     <div className="ir07">
-      <span className="ir07-glow" aria-hidden="true">
-        <i />
-      </span>
-      <Circuit />
-
-      {/* slide 7 */}
-      <div className="ir07-hero">
-        <h1 className="ir07-thanks">
-          <Words text={slide.title} />
-        </h1>
-        <span className="ir07-dawn" aria-hidden="true" />
+      {/* slide 6's last rest, laid out and never shown: where the points begin (see three()) */}
+      <div className="ir07-ghost" aria-hidden="true">
+        <Six slide={slideOf(6)} />
       </div>
+
+      <h1 className="ir07-thanks">{slide.title}</h1>
+
+      <p className="ir07-qa" aria-label={QA}>
+        {[...QA].map((ch, i) => (
+          <span key={i} className={ch === '&' ? 'ir07-amp' : undefined} aria-hidden="true">
+            {ch}
+          </span>
+        ))}
+      </p>
+      <span className="ir07-dawn" aria-hidden="true" />
+
       <div className="ir07-contact">
-        <p className="ir07-for">{FOR}</p>
-        <p className="ir07-mail">{MAIL}</p>
-        <span className="ir07-sep" aria-hidden="true" />
-        {PEOPLE.map((p, i) => (
-          <div key={p.name} className={`ir07-person ir07-person--${i}`}>
+        <div className="ir07-col ir07-col--for">
+          <p className="ir07-for">{FOR}</p>
+          <p className="ir07-mail">{MAIL}</p>
+        </div>
+        {PEOPLE.map((p) => (
+          <div key={p.name} className="ir07-col ir07-person">
             <b>{p.name}</b>
             <span>{p.role}</span>
           </div>
         ))}
       </div>
-
-      {/* slide 8 */}
-      <div className="ir07-qa">
-        <h1 className="ir07-qa-word" aria-label={slideOf(8).title}>
-          {[...slideOf(8).title].map((ch, i) => (
-            <span key={i} className="ir07-qa-mask" aria-hidden="true">
-              <span className={`ir07-qa-l${ch === '&' ? ' ir07-qa-l--amp' : ''}`}>{ch}</span>
-            </span>
-          ))}
-        </h1>
-        <span className="ir07-qa-rule" aria-hidden="true" />
-      </div>
     </div>
   ),
+
+  three(ctx) {
+    if (ctx.reduced) return
+    const stage = ctx.root.closest<HTMLElement>('.kn-stage')
+    if (!stage) return
+    const box = stage.getBoundingClientRect()
+    const rand = rng(20261119)
+
+    // slide 6's last rest: everything of its markup but the chart, which has left by then.
+    // (Its SVG ids would be in the document twice: the copy needs none of them.)
+    const ghost = ctx.$('.ir07-ghost')
+    ghost.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'))
+    const page = sheet(box, 12)
+    const words = sheet(box, 16)
+    const letters = sheet(box, 16)
+    if (!page || !words || !letters) return
+    paint(page, ghost, { skip: (el) => el.classList.contains('ir06-chart') })
+    // the white tiles are large and white on white: a thin dust, so the points go to what is read
+    const seed = pick(page, N, rand, (r, g, b) => (r > 238 && g > 238 && b > 238 ? 0.14 : 1))
+    paint(words, ctx.$('.ir07-thanks'), { letters: true })
+    const text = pick(words, N, rand)
+    paint(letters, ctx.$('.ir07-qa'), { letters: true })
+    const qa = pick(letters, N, rand)
+    if (!seed || !text || !qa) return
+
+    // The page the points begin on. Light: slide 6 is leaving (or a held frame shows that move).
+    // Dark: a jump from a dark slide, or a rebuild at a rest: the page stays as it is.
+    const root = ctx.root.closest('.kn-root')
+    const ink = ctx.held || root?.getAttribute('data-theme') === 'light'
+    const behind = ink && !ctx.held && !!stage.querySelector('.kn-scene.kn-ir06')
+    ctx.bag.field = createField(ctx, stage, { seed, text, qa }, behind)
+    ctx.bag.ink = ink
+    ctx.bag.behind = behind
+    return (ctx.bag.field as Field).dispose
+  },
 
   build(ctx) {
     const { U, ease, reduced } = ctx
     const tl = ctx.timeline()
     const a = anim(ctx, tl)
     const fx = ctx.backdrop.fx
+    const field = ctx.bag.field as Field | undefined
+    const hero = ctx.$('.ir07-thanks')
+    const qa = ctx.$('.ir07-qa')
+    const own = ctx.$('.ir07')
+    gsap.set(hero, { autoAlpha: 0, transformOrigin: '50% 50%' })
+    gsap.set(qa, { autoAlpha: 0, transformOrigin: '50% 56%' })
 
-    // what idles is CSS: not while a frame is held, not for a visitor who asked for less motion
-    ctx.$('.ir07').classList.toggle('ir07--still', ctx.held || reduced)
+    /** "Thank You!" at the close: smaller, at the head of the stage */
+    const small = { y: -13.3 * U, scale: 0.66 }
+    const WAVE = -0.3
+    let C: number
 
-    const lines = ctx.$$('.ir07-line')
-    const pulsesOf = (i: number) => ctx.$$(`.ir07-p${i}`)
-    const dotsOf = (i: number) =>
-      ctx.$$(`.ir07-d${i}`).map((g) => ({
-        f: Number((g as HTMLElement | SVGElement).dataset.f),
-        base: g.querySelector('.ir07-dot-base') as Element,
-        lit: g.querySelector('.ir07-lit') as Element,
-      }))
+    if (field) {
+      const u = field.u
+      const to = (k: keyof FieldU, value: number, duration: number, at: number, e = 'power1.inOut') => tl.to(u[k], { value, duration, ease: e }, at)
+      const ink = !!ctx.bag.ink
 
-    /** A dot flares as light reaches it, and settles. */
-    const flare = (lit: Element, at: number, hold = 0.6) => {
-      tl.fromTo(lit, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: 'power1.out', immediateRender: false }, Math.max(0, at - 0.07))
-      tl.to(lit, { opacity: 0, duration: hold, ease: 'power2.out' }, at + 0.07)
-    }
-    /**
-     * One pulse of light along trace i: its head is at the edge of the stage at `at`, and it takes
-     * `duration` to cross what of the trace is on the stage (it then runs on, off the stage, to be
-     * parked beyond the trace's end). Its dots flare as it passes.
-     */
-    const pulse = (i: number, at: number, duration: number) => {
-      if (reduced) return
-      const els = pulsesOf(i)
-      if (!els.length) return
-      const o = offsets(TRACES[i], TRACES[i].pl)
-      const per = duration / (o.enter - o.gone) // seconds per hundredth of the trace
-      tl.fromTo(els, { strokeDashoffset: o.enter }, { strokeDashoffset: o.gone, duration, ease: 'none', immediateRender: false }, at)
-      // what is left of the trace lies off the stage (seen only on a screen that is not 16:9): quickly
-      tl.to(els, { strokeDashoffset: PARK, duration: 0.2, ease: 'none' }, at + duration)
-      dotsOf(i).forEach((d) => flare(d.lit, at + per * (o.enter - o.over(d.f))))
-    }
-
-    // ---------------------------------------------------------------- thanks (slide 7)
-    // THE ROOM: from further back and darker, to the close's own look
-    gsap.set(fx, { travel: reduced ? 0 : -46, wave: -0.5, glow: -0.35, energy: -0.3 })
-    tl.to(fx, { travel: 0, duration: 3, ease: 'power3.out' }, 0)
-    tl.to(fx, { wave: 0.1, glow: 0.05, energy: 0.1, duration: 2.4, ease: 'power2.out' }, 0.2)
-
-    // THE CIRCUIT draws itself in from the edges; each dot lights as the drawing reaches it
-    gsap.set(ctx.$$('.ir07-pulse'), { strokeDashoffset: PARK })
-    gsap.set(ctx.$$('.ir07-lit'), { opacity: 0 })
-    const drawEase = gsap.parseEase('power2.out')
-    /** the time (0 … 1) at which the drawing has reached the fraction f of its trace */
-    const reach = (f: number) => {
-      let lo = 0
-      let hi = 1
-      for (let k = 0; k < 22; k++) {
-        const mid = (lo + hi) / 2
-        if (drawEase(mid) < f) lo = mid
-        else hi = mid
+      // ============================================================== thanks
+      // What the timeline asks of the page: −1 the light page held, 0 the slide's own dark. The
+      // backdrop follows it on every frame, at once when the playhead is PUT somewhere, but never
+      // faster than a third of a second for the whole way: so a second press of Next during the
+      // move (the engine then jumps to the rest) is still an iris, not a cut from white to navy.
+      const page = { dark: 0 }
+      if (ink) {
+        // the page stays light until the orb takes light (see "the hand-over", 2.)
+        page.dark = -1
+        gsap.set(fx, { dark: -1 })
+        ctx.onSeek(() => {
+          fx.dark = page.dark
+        })
+        field.gl.onFrame((_time, dt) => {
+          const step = ctx.held ? 2 : dt / 0.34
+          fx.dark += Math.max(-step, Math.min(step, page.dark - fx.dark))
+        })
+        // … and the chrome keeps its light dress until the dark has reached it (scene.css)
+        gsap.set(own, { attr: { 'data-page': 'light' } })
+        // … and as quiet as a light page is, while the engine's look glides to the close's
+        const quiet = { wave: -0.64, energy: -0.43, glow: -0.15 }
+        if (ctx.held) gsap.set(fx, quiet)
+        else tl.to(fx, { ...quiet, duration: 0.9, ease: 'power2.out' }, 0)
+        // slide 6 is not there to turn into points (a jump): they arrive
+        if (!ctx.bag.behind && !ctx.held) {
+          u.uIn.value = 0
+          to('uIn', 1, 0.5, 0.05, 'power1.out')
+        }
+      } else {
+        u.uHeat.value = 1
+        u.uIn.value = 0
+        to('uIn', 1, 0.6, 0.05, 'power1.out')
       }
-      return hi
-    }
-    TRACES.forEach((t, i) => {
-      const line = lines[i]
-      const t0 = i * 0.07
-      // what is drawn is the part ON the stage (f0 to f1): the line is already at the stage's edge
-      // when the move begins, so flame enters the frame at once
-      const dur = 1.25 + (t.length * (t.f1 - t.f0)) / 70
-      const dots = dotsOf(i)
-      if (reduced) {
-        gsap.set([line, ...dots.map((d) => d.base)], { autoAlpha: 0 })
-        tl.to([line, ...dots.map((d) => d.base)], { autoAlpha: 1, duration: 0.6, ease: 'power1.out' }, 0.2)
-        return
+
+      // loose from slide 6's shapes, and into the orb
+      to('uLift', 1, 0.55, 0, 'power2.out')
+      to('uGather', 1, 1.2, 0.04, 'none')
+      to('uSpin', 5.6, 2.6, 0, 'power2.in')
+
+      // the orb takes light as the last points reach it (on the light page: an ember's warm halo
+      // and the orb drawing tighter), and the dark opens from it
+      const IGN = 1.0
+      if (ink) {
+        to('uHalo', 1, 0.55, 0.55, 'power2.out')
+        to('uHalo', 0, 0.5, IGN + 0.15, 'power1.in')
       }
-      gsap.set(line, { drawSVG: `0% ${(t.f0 * 100).toFixed(3)}%`, autoAlpha: 0 })
-      tl.to(line, { autoAlpha: 1, duration: 0.12, ease: 'none' }, t0)
-      tl.to(line, { drawSVG: `0% ${(t.f1 * 100).toFixed(3)}%`, duration: dur, ease: 'power2.out' }, t0)
-      // a trace that leaves the stage again runs on to the window's edge
-      if (t.f1 < 1) tl.to(line, { drawSVG: '0% 100%', duration: 0.5, ease: 'none' }, t0 + dur)
-      dots.forEach((d) => {
-        const at = t0 + dur * reach((d.f - t.f0) / (t.f1 - t.f0))
-        gsap.set(d.base, { scale: 0, autoAlpha: 0, transformOrigin: '50% 50%' })
-        tl.to(d.base, { scale: 1, autoAlpha: 1, duration: 0.55, ease: 'back.out(2.6)' }, at - 0.05)
-        flare(d.lit, at + 0.05, 0.7)
-      })
-    })
+      to('uOrbR', 3.0, 0.5, 0.8, 'power2.inOut')
+      to('uHeat', 1, 0.36, IGN + 0.2, 'power1.in')
+      to('uGlow', 1, 0.6, IGN, 'power2.out')
+      if (ink) {
+        tl.to(page, { dark: 0, duration: 1.05, ease: 'power1.out' }, IGN)
+        tl.set(own, { attr: { 'data-page': 'dark' } }, IGN + 0.72)
+        tl.to(fx, { wave: 0, energy: 0, glow: 0.1, duration: 1.2, ease: 'power1.inOut' }, IGN + 0.15)
+      } else tl.to(fx, { glow: 0.1, duration: 1.2, ease: 'power1.inOut' }, IGN + 0.15)
 
-    // "Thank You!" rises with weight: the block comes forward and settles while the words come up
-    const hero = ctx.$('.ir07-hero')
-    gsap.set(hero, { transformOrigin: '50% 0%' })
-    if (!reduced) {
-      gsap.set(hero, { scale: 1.07 })
-      tl.to(hero, { scale: 1, duration: 2.3, ease: 'power3.out' }, 0.35)
-    }
-    a.words('.ir07-thanks', 0.45, { stagger: 0.18, duration: 1.05 })
-    a.rule('.ir07-dawn', 1.25, { from: 'center', duration: 1.2 })
-    const glow = ctx.$('.ir07-glow')
-    gsap.set(glow, { autoAlpha: 0, scale: 0.7 })
-    tl.to(glow, { autoAlpha: 0.55, scale: 0.85, duration: 2, ease: 'power2.out' }, 1.1)
+      // a held breath: the orb draws in
+      to('uOrbR', 2.2, 0.45, 2.15)
+      to('uGlow', 0.72, 0.45, 2.15)
 
-    // a first pulse of light down every line, one after another
-    TRACES.forEach((t, i) => pulse(i, 2.0 + i * 0.08, 0.75 + (t.length * (t.f1 - t.f0)) / 70))
+      // it bursts: a ring of light leaves it, the points fly out and settle into the letters
+      const BURST = 2.6
+      to('uBurst', 1, 1.7, BURST, 'power1.out')
+      to('uGlow', 1.6, 0.1, BURST, 'power2.out')
+      to('uGlow', 0, 1.3, BURST + 0.1, 'power2.out')
+      to('uRingA', 0.9, 0.06, BURST, 'none')
+      to('uRing', 1, 1.2, BURST, 'power2.out')
+      to('uRingA', 0, 1.05, BURST + 0.1, 'power2.out')
+      tl.to(fx, { travel: 26, duration: 2.0, ease: 'power3.out' }, BURST)
+      tl.to(fx, { glow: 0.02, duration: 1.6, ease: 'power2.out' }, BURST + 0.3)
 
-    // from here on the lines idle (CSS), softly
-    const idle = ctx.$$('.ir07-idle')
-    gsap.set(idle, { autoAlpha: 0 })
-    tl.to(idle, { autoAlpha: 1, duration: 0.8, ease: 'power1.inOut' }, 3.0)
-    tl.addLabel('thanks')
+      // the real headline takes over, exactly in place; a few points drift off it
+      tl.to(hero, { autoAlpha: 1, duration: 0.55, ease: 'power1.inOut' }, 3.85)
+      to('uTextFade', 1, 0.7, 3.95)
+      to('uDrift', 1, 0.75, 3.9, 'power1.out')
+      tl.addLabel('thanks', 4.7)
 
-    // ---------------------------------------------------------------- contacts (slide 7)
-    const C = tl.duration()
-    if (reduced) tl.to(hero, { y: -9.4 * U, scale: 0.66, duration: 0.01 }, C)
-    else tl.to(hero, { y: -9.4 * U, scale: 0.66, duration: 0.95, ease: ease.inOut }, C)
-    a.rise('.ir07-for', C + 0.45, { y: 1.2 })
-    a.rise('.ir07-mail', C + 0.6, { y: 1.4 })
-    a.rule('.ir07-sep', C + 0.95, { from: 'center', duration: 0.7 })
-    a.rise('.ir07-person--0', C + 1.0, { x: 1.4, y: 0 })
-    a.rise('.ir07-person--1', C + 1.1, { x: -1.4, y: 0 })
-    pulse(1, C + 0.2, 1.3)
-    pulse(4, C + 0.35, 1.4)
-    pulse(2, C + 0.6, 1.3)
-    tl.addLabel('contacts')
-
-    // ---------------------------------------------------------------- qa (slide 8)
-    const Q = tl.duration()
-    // the words of slide 7 leave; the lines stay where they are
-    tl.to(hero, { autoAlpha: 0, y: (reduced ? -9.4 : -11) * U, duration: 0.45, ease: 'power2.in' }, Q)
-    a.leave('.ir07-contact', Q + 0.05, { y: 1.4, duration: 0.45 })
-
-    // a surge of light through every line, then a slower second wave
-    TRACES.forEach((t, i) => pulse(i, Q + 0.15 + (i % 4) * 0.07, 0.65 + (t.length * (t.f1 - t.f0)) / 80))
-    TRACES.forEach((t, i) => pulse(i, Q + 1.6 + (i % 4) * 0.12, 1.0 + (t.length * (t.f1 - t.f0)) / 65))
-
-    // "Q&A", large: its letters rise through their masks while the word comes forward and settles
-    const word = ctx.$('.ir07-qa-word')
-    const letters = ctx.$$('.ir07-qa-l')
-    if (reduced) {
-      gsap.set(letters, { autoAlpha: 0 })
-      tl.to(letters, { autoAlpha: 1, duration: 0.6, ease: 'power1.out' }, Q + 0.5)
+      // ============================================================== close
+      C = 4.7
+      // the headline makes room; each point shows again as it leaves the place its letter had
+      tl.to(hero, { ...small, duration: 1.15, ease: ease.inOut }, C + 0.05)
+      to('uRibbon', 1, 1.7, C + 0.1)
+      // half of them gather once more
+      to('uQa', 1, 1.5, C + 1.15)
+      gsap.set(qa, { scale: 1.035 })
+      tl.to(qa, { autoAlpha: 1, duration: 0.6, ease: 'power1.inOut' }, C + 2.3)
+      tl.to(qa, { scale: 1, duration: 1.6, ease: 'power3.out' }, C + 2.3)
+      to('uQaFade', 1, 0.65, C + 2.4)
+      tl.to(fx, { travel: 40, glow: 0.08, duration: 3, ease: 'power3.out' }, C + 0.2)
+      // the last rest is read for a whole question session: the backdrop's field of points lies low
+      tl.to(fx, { wave: WAVE, duration: 2.4, ease: 'power1.inOut' }, C + 0.2)
+      C += 2.55
     } else {
-      gsap.set(letters, { yPercent: 112 })
-      gsap.set(word, { scale: 1.12, transformOrigin: '50% 55%' })
-      tl.to(letters, { yPercent: 0, duration: 1.15, stagger: 0.14, ease: ease.out }, Q + 0.5)
-      tl.to(word, { scale: 1, duration: 2.6, ease: 'power3.out' }, Q + 0.5)
+      // ============================================================== the calm version
+      tl.to(hero, { autoAlpha: 1, duration: 0.8, ease: 'power1.inOut' }, 0.25)
+      tl.addLabel('thanks', 1.3)
+      C = 1.3
+      if (reduced) {
+        tl.to(hero, { autoAlpha: 0, duration: 0.3, ease: 'power1.in' }, C)
+        tl.set(hero, small, C + 0.3)
+        tl.to(hero, { autoAlpha: 1, duration: 0.45, ease: 'power1.out' }, C + 0.3)
+      } else tl.to(hero, { ...small, duration: 1.0, ease: ease.inOut }, C)
+      tl.to(qa, { autoAlpha: 1, duration: 0.7, ease: 'power1.inOut' }, C + 0.55)
+      tl.to(fx, { wave: WAVE, duration: 0.9, ease: 'power1.inOut' }, C)
+      C += 0.9
     }
-    a.rule('.ir07-qa-rule', Q + 1.35, { from: 'center', duration: 1.3 })
-    // the light behind the letters opens; the room moves forward a little and comes to rest
-    tl.to(glow, { autoAlpha: 1, scale: 1, duration: 2.2, ease: 'power2.out' }, Q + 0.4)
-    if (!reduced) tl.to(fx, { travel: 26, duration: 3, ease: 'power3.out' }, Q + 0.1)
-    tl.to(fx, { glow: 0.22, wave: 0.25, duration: 2.4, ease: 'power2.out' }, Q + 0.3)
-    tl.addLabel('qa')
 
-    // Back runs the timeline fast in reverse: every pulse and flare would flash at once. While the
-    // playhead moves backwards they are not shown (scene.css, ir07--back).
-    const root = ctx.$('.ir07')
-    let seen = 0
-    tl.to({ v: 0 }, {
-      v: 1,
-      duration: tl.duration(),
-      ease: 'none',
-      onUpdate: () => {
-        const now = tl.time()
-        if (now !== seen) root.classList.toggle('ir07--back', now < seen)
-        seen = now
-      },
-    }, 0)
+    // a line of first light, and the contacts settle under it
+    a.rule('.ir07-dawn', C, { from: 'center', duration: 1.1 })
+    a.rise('.ir07-col', C + 0.15, { y: 1.2, stagger: 0.12 })
+    tl.addLabel('close', C + 1.15)
     return tl
   },
 }

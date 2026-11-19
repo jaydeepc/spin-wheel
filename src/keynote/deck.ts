@@ -133,7 +133,7 @@ const ROWS: Row[] = [
   /* 35 */ ['ABCD recommends, with its reasons on all five Cs, and Sushil makes the call.', [PAI, 'CREDIT.AI'], { crumbSep: ['|'] }],
   /* 36 */ ['Every bank statement tells a different story, and the ABCD Banking Agent tells them apart.', [PAI, 'UNDERWRITE BETTER'], { crumbSep: ['|'] }],
   /* 37 */ ['GenAI reads every transaction and replaces generic labels with granular, contextual categories.', [PAI, 'UNDERWRITE BETTER'], { crumbSep: ['|'] }],
-  /* 38 */ ['The banking score ranks customers by risk, and the agent explains every score in plain words.', [PAI, 'UNDERWRITE BETTER'], { crumbSep: ['|'] }],
+  /* 38 */ ['ML builds about 9,000 features from these categories and turns them into one score.', [PAI, 'UNDERWRITE BETTER'], { crumbSep: ['|'] }],
   /* 39 */ ['The banking score ranks customers by risk, and the agent explains every score in plain words.', [PAI, 'UNDERWRITE BETTER'], { crumbSep: ['|'] }],
   /* 40 */ [
     'Traditionally, every collection visit starts fresh, records one fixed outcome and follows a fixed calendar.',

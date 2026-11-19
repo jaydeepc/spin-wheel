@@ -76,7 +76,7 @@ export const STEPS: Step[] = [
     strong: ['Proprietary', 'proprietary data', 'proprietary software'],
     at: 0,
   },
-  { title: 'Evolving & Compounding assets', flame: ['Evolving & Compounding'], lines: ['Built in house for the long run'], at: 0.34 },
+  { title: 'Compounding Assets', flame: ['Compounding'], lines: ['Built in house for the long run'], at: 0.34 },
   { title: 'Creating Capability,', flame: ['Creating Capability'], lines: ['not just capacity'], at: 0.7 },
 ]
 
