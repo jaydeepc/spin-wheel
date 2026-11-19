@@ -33,4 +33,4 @@ Content saved from the admin page goes to Vercel Blob when `BLOB_READ_WRITE_TOKE
 
 ## PDF export
 
-With the app running, `npm run pdf` writes `exports/pdf/everyday-ai.pdf` and `exports/pdf/keynote.pdf` (one 16:9 page per rest of Everyday AI, one per keynote slide). `npm run pdf -- everyday` or `-- keynote` does one deck; `-- keynote --beats` adds a page for every build-up. Needs Google Chrome and Node 22+. See `scripts/export-pdf.mjs`.
+With the app running, `npm run pdf` writes `exports/pdf/everyday-ai.pdf`, `keynote.pdf` and `ir.pdf` (one 16:9 page per rest of Everyday AI, one per slide of the Keynote and of Implications for Investors). `npm run pdf -- everyday`, `-- keynote` or `-- ir` does one deck; `-- keynote --beats` adds a page for every build-up. Needs Google Chrome and Node 22+. See `scripts/export-pdf.mjs`.

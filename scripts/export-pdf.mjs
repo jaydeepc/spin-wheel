@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 /**
- * PDF EXPORT of the two films: Everyday AI (/everyday-ai) and the Keynote (/keynote).
+ * PDF EXPORT of the decks: Everyday AI (/everyday-ai), the Keynote (/keynote) and Implications
+ * for Investors (/ir).
  *
- *   npm run pdf                    both decks
+ *   npm run pdf                    all three decks
+ *   npm run pdf -- ir              Implications for Investors only
  *   npm run pdf -- everyday        Everyday AI only
  *   npm run pdf -- keynote         the Keynote only
  *   npm run pdf -- keynote --beats one page for EVERY beat of every slide (the build-ups), not
@@ -14,7 +16,7 @@
  * URLs: ?scene=…&at=… and ?s=…&at=…&chrome=0&still=1), takes a picture of it, and prints the
  * pictures as one PDF, one page each, 16:9. Nothing in the app is changed.
  *
- * Output: exports/pdf/everyday-ai.pdf and exports/pdf/keynote.pdf (git-ignored).
+ * Output: exports/pdf/everyday-ai.pdf, keynote.pdf and ir.pdf (git-ignored).
  *
  * Options (environment):
  *   BASE=http://localhost:5183   where the app is
@@ -45,7 +47,8 @@ const value = (name, fallback) => {
   const i = args.indexOf(`--${name}`)
   return i >= 0 && args[i + 1] ? Number(args[i + 1]) : fallback
 }
-const wants = (deck) => !args.some((a) => a === 'everyday' || a === 'keynote') || args.includes(deck)
+const DECKS = ['everyday', 'keynote', 'ir']
+const wants = (deck) => !args.some((a) => DECKS.includes(a)) || args.includes(deck)
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
@@ -143,10 +146,11 @@ async function shootEveryday(b) {
   return pages
 }
 
-async function shootKeynote(b) {
+/** A deck played by the keynote engine: /keynote, and /ir (the same hold URLs, the same window.__kn). */
+async function shootKeynote(b, path = 'keynote') {
   const pages = []
   const root = `document.querySelector('[data-slide]')`
-  const url = (n, at) => `${BASE}/keynote?s=${n}${at ? `&at=${encodeURIComponent(at)}` : ''}&chrome=0&still=1&warm=0`
+  const url = (n, at) => `${BASE}/${path}?s=${n}${at ? `&at=${encodeURIComponent(at)}` : ''}&chrome=0&still=1&warm=0`
   const settle = async (beat) => {
     const ok = await b.until(`${root}?.dataset.ready === '1' && ${root}.dataset.resting === '1'${beat ? ` && ${root}.dataset.beat === ${JSON.stringify(beat)}` : ''}`, 15000)
     await sleep(700)
@@ -174,7 +178,7 @@ async function shootKeynote(b) {
       const ok = await settle(beat)
       if (!ok) console.warn(`  (slide ${n}${beat ? `, ${beat}` : ''}: did not report its rest; shot anyway)`)
       pages.push(await b.shot())
-      console.log(`  keynote ${String(n).padStart(2)}/${count}${beat ? `  ${beat}` : ''}`)
+      console.log(`  ${path} ${String(n).padStart(2)}/${count}${beat ? `  ${beat}` : ''}`)
     }
   }
   return pages
@@ -238,6 +242,10 @@ try {
   if (wants('keynote')) {
     console.log('Keynote')
     await printPdf(b, 'keynote', await shootKeynote(b))
+  }
+  if (wants('ir')) {
+    console.log('Implications for Investors (/ir)')
+    await printPdf(b, 'ir', await shootKeynote(b, 'ir'))
   }
 } finally {
   b.close()
