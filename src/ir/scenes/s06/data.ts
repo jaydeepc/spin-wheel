@@ -39,7 +39,7 @@ export const PEERS = {
   rows: [
     // lo/hi: the ends of the unlabelled track (the RoE one reaches down far enough to hold today's reading)
     { label: 'AUM growth', peer: 20, peerText: '20%', decimals: 0, ours: '20-25%', from: 20, to: 25, lo: 10, hi: 30 },
-    { label: 'RoE', peer: 15.6, peerText: '15.6%', decimals: 1, ours: '15%+', from: 15, to: null, lo: 5, hi: 20 },
+    { label: 'RoE', peer: 15.3, peerText: '15.3%', decimals: 1, ours: '15%+', from: 15, to: null, lo: 5, hi: 20 },
   ],
 }
 

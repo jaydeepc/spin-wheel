@@ -12,7 +12,7 @@
  *   roe      "…along with 15%+ RoE": the formula assembles: ~3% RoAUM, the sign, ~5x Leverage,
  *            the sign, and 15%+ ROE lands in flame; under each, the reading the page prints
  *   peers    the FY26 average of the diversified upper layer NBFCs is set as a tick on two
- *            tracks (20%, 15.6%), and our own ambition runs along them in flame (20-25%, 15%+)
+ *            tracks (20%, 15.3%), and our own ambition runs along them in flame (20-25%, 15%+)
  *   ai       the close. The chart has said its part and leaves; where it stood the driver is
  *            said large: "AI to drive maximum impact across operating efficiencies and credit
  *            costs". On the RoE track the way there is travelled: 7.7% today, the next stop
