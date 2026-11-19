@@ -167,7 +167,7 @@
 .ir07-for {
   top: calc(var(--u) * 24.2);
   font-size: calc(var(--u) * 1.6);
-  line-height: 1.2;
+  line-height: 1.3;
   color: var(--kn-fg-soft);
 }
 .ir07-mail {
@@ -209,9 +209,10 @@
 }
 .ir07-person span {
   display: block;
+  white-space: pre-line; /* owner, 19 Nov: the title and the team on two lines */
   margin-top: calc(var(--u) * 0.5);
   font-size: calc(var(--u) * 1.4);
-  line-height: 1.2;
+  line-height: 1.3;
   color: var(--kn-fg-soft);
 }
 
