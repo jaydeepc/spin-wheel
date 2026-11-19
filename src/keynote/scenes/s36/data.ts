@@ -64,7 +64,7 @@ export const HEADS = ['AS THE BANK WRITES IT', 'THE TRADITIONAL WAY', 'ABCD, WIT
 
 /** [before, what GenAI picks out, after], the traditional label, ABCD's category */
 export const ROWS: { raw: [string, string, string]; old: string; cat: string }[] = [
-  { raw: ['NEFT/P2M/367276705881/', 'TATACAPITAL', ''], old: 'Expense', cat: 'Loans' },
+  { raw: ['NEFT/P2M/367276705881/', 'FINTECH', ''], old: 'Expense', cat: 'Loans' },
   { raw: ['UPI-', 'SAI OM DAIRY', '-PAYTMQR5EH3YT@PTYS-YESB0PTMU'], old: 'No Category', cat: 'Groceries & Essentials' },
   { raw: ['UPI/DR/430208222489/', 'Lovely Hair Cutting Saloon', '/okbi/gpay-112'], old: 'Expense', cat: 'Personal care & Services (non-business)' },
   { raw: ['UPI/767280097900/DR/', 'VFS', '/ICIC/vfsglobal@icici'], old: 'No Category', cat: 'Visa' },

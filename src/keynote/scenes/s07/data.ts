@@ -28,10 +28,10 @@ export const YEARS: Year[] = [
 ]
 
 /** data.json → charts[0].guidance.label (text.json t15), .tag (t16) */
-export const GUIDANCE = '2,200-2,300'
+export const GUIDANCE = '~2,250' // owner, 19 Nov (was 2,200-2,300)
 export const GUIDANCE_TAG = '<< Guidance*'
 /** The range the label names, for the height of the dashed box (the deck draws its top at 2,300 on the bars' own scale). */
-export const GUIDANCE_RANGE = [2200, 2300] as const
+export const GUIDANCE_RANGE = [2250, 2250] as const
 /**
  * data.json → charts[0].fy27pBarTag (text.json t19). AS THE DECK PRINTS IT: the tag beside the
  * solid FY27P bar reads "H1 FY26A" (the pack's notes: "possibly meant as H1 FY27"). Kept, and
@@ -52,4 +52,4 @@ export const CALLOUTS: { at: number; on: 'pat' | 'pbt'; text: string; lines: str
 /** data.json → charts[0].underChart (text.json t22) */
 export const UNDER = 'Excluding POCI recovery related profits'
 /** data.json → charts[0].footnote (text.json t26 + t27) */
-export const FOOTNOTE = 'Note: (*) Guidance of FY27 total PAT of ₹ 2,200-2,300 Cr led primarily by Growth business PBT'
+export const FOOTNOTE = 'Note: (*) Guidance of FY27 total PAT of ~₹ 2,250 Cr led primarily by Growth business PBT'

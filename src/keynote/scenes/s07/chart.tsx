@@ -17,7 +17,7 @@ export const G = {
    * 2,300 (the top of the guidance) stands 206 high: every bar and the box are on this one scale.
    * It leaves 6u between the card's title and the box, for the figure the slide is about.
    */
-  perUnit: 206 / GUIDANCE_RANGE[1],
+  perUnit: 206 / 2300, // the bars' scale stays where it was when the guidance was a range up to 2,300
   barW: 70,
   xs: [170, 309, 448, 587, 727],
   axis: [96, 800] as const,

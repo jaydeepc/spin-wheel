@@ -52,7 +52,7 @@ export interface Section {
 
 /** The agenda as slide 2 of the deck prints it, A to G, word for word. */
 export const AGENDA_DECK: { letter: string; name: string }[] = [
-  { letter: 'A', name: 'Piramal & AI the Context' },
+  { letter: 'A', name: 'Setting the context: Piramal and AI' },
   { letter: 'B', name: 'Introduction of our theme for 2026 AI day' },
   { letter: 'C', name: 'AI – Year in Retrospect' },
   { letter: 'D', name: 'Piramal.AI' },
