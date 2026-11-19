@@ -5,6 +5,7 @@
   --s45-navy: #071a50;
   --s45-flame: #f16443;
   --s45-soft: #566481;
+  --s45-ink: #33426f; /* body text of 46: navy at 80%, for the projector */
 }
 .s45-hid {
   visibility: hidden;
@@ -29,14 +30,20 @@
   top: calc(var(--u) * 14.25);
   width: calc(var(--u) * 100);
   height: calc(var(--u) * 20.1);
-  overflow: hidden;
+  /* its clip-path (set in build) keeps the picture to the band; 46's drone shot opens it to the sides */
   visibility: hidden;
 }
+/* the picture reaches 41u past the stage on each side: seen only in 46's wide shot */
 .s45-win {
   position: absolute;
-  left: 0;
-  width: 100%;
+  left: calc(var(--u) * -41);
+  width: calc(var(--u) * 182);
   overflow: hidden;
+}
+.s45-far {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
 }
 .s45-win--sky {
   top: 0;
@@ -48,7 +55,7 @@
 }
 .s45-strip {
   position: absolute;
-  left: 0;
+  left: calc(var(--u) * 41);
   top: 0;
   width: calc(var(--u) * 300);
   height: calc(var(--u) * 20.1);
@@ -96,10 +103,11 @@
   line-height: 1.15;
 }
 .s45-banner--46 {
-  left: calc(var(--u) * 4.5);
-  top: calc(var(--u) * 14.85);
-  width: calc(var(--u) * 39);
+  left: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 14.75);
+  width: calc(var(--u) * 30.6);
   padding: calc(var(--u) * 0.6) 0 calc(var(--u) * 0.7);
+  background: #fff;
   display: flex;
   flex-direction: column;
   gap: calc(var(--u) * 0.1);
@@ -112,40 +120,24 @@
   line-height: 1.15;
 }
 .s45-banner-line {
-  font-size: calc(var(--u) * 1.15);
+  font-size: calc(var(--u) * 1.3);
   line-height: 1.15;
-  color: var(--s45-soft);
-}
-.s45-slot {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
-  border-radius: calc(var(--u) * 0.8);
-  border: calc(var(--u) * 0.07) dashed rgba(7, 26, 80, 0.2);
-}
-.s45-slot--agents {
-  top: calc(var(--u) * 6.3);
-  height: calc(var(--u) * 5.05);
-  border-color: rgba(241, 100, 67, 0.4);
-}
-.s45-slot--people {
-  top: calc(var(--u) * 11.6);
-  height: calc(var(--u) * 3.6);
+  font-weight: 600;
+  color: var(--s45-ink);
 }
 .s45-agents-pill {
   position: absolute;
-  right: calc(var(--u) * 4.5);
-  top: calc(var(--u) * 15.4);
-  padding: calc(var(--u) * 0.62) calc(var(--u) * 1.6);
-  background: rgba(255, 255, 255, 0.95);
+  right: calc(var(--u) * 4.2);
+  top: calc(var(--u) * 15.55);
+  padding: calc(var(--u) * 0.72) calc(var(--u) * 1.5);
+  background: #fff;
   border-radius: calc(var(--u) * 1.4);
   box-shadow:
     inset 0 0 0 calc(var(--u) * 0.07) rgba(241, 100, 67, 0.55),
     0 calc(var(--u) * 0.3) calc(var(--u) * 1.2) rgba(7, 26, 80, 0.14);
   color: var(--s45-navy);
   font-weight: 700;
-  font-size: calc(var(--u) * 1.1);
+  font-size: calc(var(--u) * 1.45);
   line-height: 1.15;
   white-space: nowrap;
   z-index: 6;
@@ -163,10 +155,11 @@
   box-shadow: 0 0 0 calc(var(--u) * 0.2) #fff;
   z-index: 7;
 }
+/* 46: the stations and the light stand on the small track of the wide shot (index.tsx sets their top: TRACK_Y) */
 .s45-pulse {
   position: absolute;
   left: 0;
-  top: calc(var(--u) * 34.35);
+  top: calc(var(--u) * 24.805);
   width: calc(var(--u) * 3.4);
   height: calc(var(--u) * 3.4);
   margin: calc(var(--u) * -1.7) 0 0 calc(var(--u) * -1.7);
@@ -227,114 +220,159 @@
 }
 
 /* ------------------------------------------------------------ 46: the seven stations */
+/* Two rows under the wide shot: stations 1, 3, 5, 7 above, 2, 4, 6 below. Nothing here is under 1.3u. */
+.s45-link {
+  position: absolute;
+  top: calc(var(--u) * 24.805);
+  width: calc(var(--u) * 0.24);
+  margin-left: calc(var(--u) * -0.12);
+  border-radius: calc(var(--u) * 0.12);
+  background: var(--s45-flame);
+  z-index: 3;
+}
+.s45-link--top {
+  height: calc(var(--u) * 1.75);
+}
+.s45-link--low {
+  height: calc(var(--u) * 14.05);
+}
 .s45-stop {
   position: absolute;
-  top: calc(var(--u) * 35.3);
-  width: calc(var(--u) * 12.4);
-}
-.s45-tile {
+  top: calc(var(--u) * 26.5);
+  width: calc(var(--u) * 21.25);
+  height: calc(var(--u) * 11.7);
   box-sizing: border-box;
-  width: 100%;
-  border-radius: calc(var(--u) * 0.8);
-  margin-bottom: calc(var(--u) * 0.25);
-}
-.s45-tile--ai {
-  position: relative;
-  height: calc(var(--u) * 6.05);
-  padding: calc(var(--u) * 0.55) calc(var(--u) * 0.6) 0;
   background: #fff;
-  box-shadow: var(--kn-shadow);
+  border-radius: calc(var(--u) * 1);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 0.06) rgba(7, 26, 80, 0.12),
+    var(--kn-shadow);
+  z-index: 4;
+}
+.s45-stop--low {
+  top: calc(var(--u) * 38.8);
+  width: calc(var(--u) * 29.067);
 }
 .s45-stop-head {
+  position: absolute;
+  left: calc(var(--u) * 0.7);
+  top: calc(var(--u) * 0.55);
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 0.5);
-  height: calc(var(--u) * 1.6);
+  gap: calc(var(--u) * 0.55);
+  height: calc(var(--u) * 1.9);
 }
 .s45-stop-head i {
   flex: none;
-  width: calc(var(--u) * 1.55);
-  height: calc(var(--u) * 1.55);
+  width: calc(var(--u) * 1.9);
+  height: calc(var(--u) * 1.9);
   border-radius: 50%;
-  background: var(--s45-flame);
+  background: var(--kn-flame-deep);
   color: #fff;
   font-weight: 700;
-  font-size: calc(var(--u) * 0.95);
-  line-height: calc(var(--u) * 1.55);
+  font-size: calc(var(--u) * 1.3);
+  line-height: calc(var(--u) * 1.9);
   text-align: center;
 }
 .s45-stop-head b {
-  font-size: calc(var(--u) * 1.22);
+  font-size: calc(var(--u) * 1.6);
   color: var(--s45-navy);
   white-space: nowrap;
   letter-spacing: -0.005em;
 }
-.s45-tile--ai p {
-  margin-top: calc(var(--u) * 0.4);
-  font-size: calc(var(--u) * 0.88);
-  line-height: 1.16;
-  color: var(--s45-soft);
-}
-.s45-tile--ai p b {
-  color: var(--s45-navy);
-}
 .s45-tile-label {
   display: block;
-  font-size: calc(var(--u) * 0.85);
+  font-size: calc(var(--u) * 1.3);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   line-height: 1.1;
+  white-space: nowrap;
 }
-.s45-tile--agents {
-  position: relative;
-  height: calc(var(--u) * 5.05);
-  padding: calc(var(--u) * 0.42) calc(var(--u) * 0.45) 0;
-  background: #ffece4;
-  box-shadow: inset 0 0 0 calc(var(--u) * 0.06) rgba(241, 100, 67, 0.28);
-}
-.s45-tile--agents .s45-tile-label {
+.s45-tile-label--agents {
+  position: absolute;
+  right: calc(var(--u) * 0.85);
+  top: calc(var(--u) * 0.55);
+  line-height: calc(var(--u) * 1.9);
   color: var(--kn-flame-ink);
 }
+/* what AI does at this station: the first rest */
+.s45-ai {
+  position: absolute;
+  left: calc(var(--u) * 0.8);
+  right: calc(var(--u) * 0.8);
+  top: calc(var(--u) * 2.7);
+  bottom: calc(var(--u) * 0.7);
+  display: flex;
+  align-items: center;
+  font-size: calc(var(--u) * 1.6);
+  line-height: 1.22;
+  font-weight: 600;
+  color: var(--s45-ink);
+}
+.s45-ai b {
+  color: var(--s45-navy);
+}
+/* the agents' names: the second rest */
 .s45-chips {
-  margin-top: calc(var(--u) * 0.32);
+  position: absolute;
+  left: calc(var(--u) * 0.55);
+  right: calc(var(--u) * 0.55);
+  top: calc(var(--u) * 2.75);
+  height: calc(var(--u) * 4.55);
+  box-sizing: border-box;
+  padding: calc(var(--u) * 0.25);
   display: flex;
   flex-direction: column;
-  gap: calc(var(--u) * 0.2);
-  height: calc(var(--u) * 3.2);
+  gap: calc(var(--u) * 0.25);
+  border-radius: calc(var(--u) * 0.7);
+  background: #ffe3d8;
 }
 .s45-chips--one {
   justify-content: center;
 }
 .s45-chip {
   display: block;
-  height: calc(var(--u) * 1.5);
-  line-height: calc(var(--u) * 1.5);
-  border-radius: calc(var(--u) * 0.45);
+  height: calc(var(--u) * 1.9);
+  line-height: calc(var(--u) * 1.9);
+  border-radius: calc(var(--u) * 0.5);
   background: #fff;
-  box-shadow: inset 0 0 0 calc(var(--u) * 0.05) rgba(241, 100, 67, 0.45);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.07) rgba(235, 84, 44, 0.6);
   color: var(--s45-navy);
-  font-size: calc(var(--u) * 0.87);
+  font-size: calc(var(--u) * 1.5);
   letter-spacing: -0.012em;
   text-align: center;
   white-space: nowrap;
 }
-.s45-tile--people {
-  position: relative;
-  height: calc(var(--u) * 3.6);
-  padding: calc(var(--u) * 0.38) calc(var(--u) * 0.55) 0;
-  margin-bottom: 0;
+/* our people: the third rest, navy, in the place the dashed slot kept for it */
+.s45-slot,
+.s45-people {
+  position: absolute;
+  left: calc(var(--u) * 0.55);
+  right: calc(var(--u) * 0.55);
+  top: calc(var(--u) * 7.55);
+  height: calc(var(--u) * 3.7);
+  box-sizing: border-box;
+  border-radius: calc(var(--u) * 0.7);
+}
+.s45-slot {
+  border: calc(var(--u) * 0.08) dashed rgba(7, 26, 80, 0.3);
+}
+.s45-people {
+  padding: calc(var(--u) * 0.38) calc(var(--u) * 0.75) 0;
   background: var(--s45-navy);
   color: #fff;
   box-shadow: 0 calc(var(--u) * 0.25) calc(var(--u) * 0.8) rgba(7, 26, 80, 0.25);
 }
-.s45-tile--people .s45-tile-label {
-  color: #9db9ee;
+.s45-people .s45-tile-label {
+  color: #a9c4f5;
 }
-.s45-tile--people b {
+.s45-people b {
   display: block;
-  margin-top: calc(var(--u) * 0.12);
-  font-size: calc(var(--u) * 0.97);
-  line-height: 1.04;
+  margin-top: calc(var(--u) * 0.08);
+  font-size: calc(var(--u) * 1.35);
+  line-height: 1.1;
+  white-space: nowrap;
+  letter-spacing: -0.008em;
 }
 
 /* ------------------------------------------------------------ 47: the workshop */

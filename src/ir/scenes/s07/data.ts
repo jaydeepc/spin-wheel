@@ -11,6 +11,6 @@ export const MAIL = 'investor.relations@piramal.com'
 
 /** SLIDE 7: "Ruchika Jain" "VP – IR and Sustainability" | "Ashish Raj" "Senior Manager – IR and Strategy" */
 export const PEOPLE = [
-  { name: 'Ruchika Jain', role: 'Vice President\nIR & Sustainability' },
+  { name: 'Ruchika Jain', role: 'Vice President\nIR and Sustainability' },
   { name: 'Ashish Raj', role: 'Senior Manager\nIR and Strategy' },
 ]

@@ -19,6 +19,12 @@ export interface RailFx {
   streak: { phase: number; amt: number; len: number }
   /** The train's body in --u: the streaks keep off it. */
   body: { x0: number; x1: number; y0: number; y1: number }
+  /**
+   * The camera of slide 46 (the drone shot): the band is drawn `s` times its size about its top
+   * edge and lifted by `y` --u. The streaks keep their places across the stage, and follow the
+   * band in height, length and thickness; `body.x0` / `x1` are then given as they stand on the stage.
+   */
+  view: { s: number; y: number }
   dispose(): void
 }
 
@@ -71,19 +77,21 @@ const STREAK_VERT = /* glsl */ `
   uniform float uAmt;
   uniform vec2 uBand;       // the band's top and height, in --u
   uniform vec4 uBody;       // the train's body: left, right, top, bottom in --u (the air goes round it)
+  uniform vec3 uView;       // the camera: scale, the band's top edge (the scale's origin) and lift, in --u
   varying vec2 vUv;
   varying float vA;
   void main() {
     float x = mod(aSeed.x * ${SPAN.toFixed(1)} - uPhase * aSeed.z, ${SPAN.toFixed(1)}) - 12.0;
     float y = uBand.x + aSeed.y * uBand.y;
-    float L = 0.5 + uLen * 22.0 * aSeed.w * aSeed.z;
-    float th = 0.03 + 0.045 * fract(aSeed.w * 7.31);
+    float L = (0.5 + uLen * 22.0 * aSeed.w * aSeed.z) * uView.x;
+    float th = (0.03 + 0.045 * fract(aSeed.w * 7.31)) * mix(1.0, uView.x, 0.6);
     vec2 p = vec2(x + aCorner.x * 0.5 * L, y + aCorner.y * th);
     vUv = aCorner;
     float inBody = smoothstep(uBody.x - 3.0, uBody.x + 1.0, p.x) * (1.0 - smoothstep(uBody.y - 2.0, uBody.y + 6.0, p.x))
       * smoothstep(uBody.z - 0.6, uBody.z + 0.6, y) * (1.0 - smoothstep(uBody.w - 0.5, uBody.w + 0.3, y));
     vA = uAmt * (0.25 + 0.55 * fract(aSeed.x * 13.7 + aSeed.y * 5.1)) * (1.0 - 0.94 * inBody);
-    gl_Position = uAmt > 0.002 ? projectionMatrix * modelViewMatrix * vec4(p.x - 50.0, 28.125 - p.y, 0.0, 1.0) : vec4(2.0, 2.0, 2.0, 1.0);
+    float py = uView.y + (p.y - uView.y) * uView.x + uView.z;
+    gl_Position = uAmt > 0.002 ? projectionMatrix * modelViewMatrix * vec4(p.x - 50.0, 28.125 - py, 0.0, 1.0) : vec4(2.0, 2.0, 2.0, 1.0);
   }
 `
 const STREAK_FRAG = /* glsl */ `
@@ -97,7 +105,7 @@ const STREAK_FRAG = /* glsl */ `
   }
 `
 
-export function createRailFx(ctx: SceneCtx, band: { top: number; height: number }): RailFx {
+export function createRailFx(ctx: SceneCtx, band: { top: number; height: number; origin: number }): RailFx {
   const gl = createSceneCanvas(ctx, { above: true, lights: false, antialias: false })
   const px = gl.renderer.getPixelRatio() * ctx.U
 
@@ -158,6 +166,7 @@ export function createRailFx(ctx: SceneCtx, band: { top: number; height: number 
       uAmt: { value: 0 },
       uBand: { value: new THREE.Vector2(band.top, band.height) },
       uBody: { value: new THREE.Vector4(-200, -200, 0, 0) },
+      uView: { value: new THREE.Vector3(1, band.origin, 0) },
     },
     transparent: true,
     depthTest: false,
@@ -173,6 +182,7 @@ export function createRailFx(ctx: SceneCtx, band: { top: number; height: number 
     chimney: () => [-50, -50],
     streak: { phase: 0, amt: 0, len: 0 },
     body: { x0: -200, x1: -200, y0: 0, y1: 0 },
+    view: { s: 1, y: 0 },
     dispose: gl.dispose,
   }
 
@@ -206,6 +216,7 @@ export function createRailFx(ctx: SceneCtx, band: { top: number; height: number 
     streakMat.uniforms.uLen.value = fx.streak.len
     streakMat.uniforms.uAmt.value = fx.streak.amt
     streakMat.uniforms.uBody.value.set(fx.body.x0, fx.body.x1, fx.body.y0, fx.body.y1)
+    streakMat.uniforms.uView.value.set(fx.view.s, band.origin, fx.view.y)
     streaks.visible = fx.streak.amt > 0.002
   })
 

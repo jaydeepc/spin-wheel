@@ -5,8 +5,9 @@
  *
  *   45  the generations come through the same place, one at a time, each faster than the last:
  *       the older engine clears the track as the new one chases in (steam and air in three.js)
- *   46  the whole high-speed train: the camera tracks it, the landscape runs under it, and the
- *       seven stations open in three layers: what AI does, the agents, and last our people
+ *   46  the whole high-speed train: the camera tracks it, then rises and pulls back (a drone shot):
+ *       the railway becomes a strip across the top and the seven stations open large under it,
+ *       in three layers: what AI does, the agents' names, and last our people
  *   47  the window closes to the workshop where the engines are built
  *   48  inside the coach: a ticket for every seat, then our own coach
  *   49  at the station, on time: the days at each stage, 55 to 60%, three colleagues
@@ -54,6 +55,21 @@ const BAND = { top: 14.25, height: 20.1 }
 const SPLIT = 0.815
 /** The seven stations' centres on the track, in --u (the deck's dots). */
 const STOPS = [10.6, 23.72, 36.84, 49.96, 63.08, 76.2, 89.32]
+/**
+ * 46, the drone shot: the camera rises and pulls back, the band shrinks to PULL of its size about
+ * its top centre and lifts by LIFT; the track then runs the whole width of the stage, and the
+ * seven stations stand on it in a row, each straight above its own card (SX, in --u).
+ */
+const PULL = 0.55
+const LIFT = -0.5
+/** How far the band's picture reaches past the stage on each side in the small picture, in --u. */
+const WIDE = 41
+/** The track in the wide shot, in --u: the stations' dots stand on it (scene.css has the same 24.805). */
+const TRACK_Y = BAND.top + LIFT + BAND.height * PULL
+const CARD = { w: 21.25, gap: 2.2, wide: 29.067 }
+const SX = STOPS.map((_, i) => 4.2 + CARD.w / 2 + (i * (CARD.w + CARD.gap)) / 2)
+/** Stations 1, 3, 5, 7 in the upper row; 2, 4, 6 in the lower one (their connectors come down between the upper cards). */
+const cardLeft = (i: number) => (i % 2 === 0 ? 4.2 + (i / 2) * (CARD.w + CARD.gap) : 4.2 + ((i - 1) / 2) * (CARD.wide + CARD.gap))
 /** The four generations' dots on the track, in --u. */
 const DOTS = [15.4, 38.5, 61.55, 84.6]
 /** One day of work in --u, and where the bars begin inside the chart card. */
@@ -94,16 +110,18 @@ const scene: SceneModule = {
       {/* ------------------------------------------------ the railway: 45 and 46 */}
       <div className="s45-band">
         <div className="s45-win s45-win--sky">
-          <div className="s45-strip s45-strip--sky">
-            {[0, 1, 2].map((i) => (
-              <img key={i} className={i === 1 ? 's45-flip' : ''} style={{ left: u(i * 100) }} src={pic(LANDSCAPE.n, LANDSCAPE.file)} alt="" draggable={false} />
-            ))}
+          <div className="s45-far">
+            <div className="s45-strip s45-strip--sky">
+              {[-1, 0, 1, 2, 3].map((i) => (
+                <img key={i} className={i % 2 ? 's45-flip' : ''} style={{ left: u(i * 100) }} src={pic(LANDSCAPE.n, LANDSCAPE.file)} alt="" draggable={false} />
+              ))}
+            </div>
           </div>
         </div>
         <div className="s45-win s45-win--track">
           <div className="s45-strip s45-strip--track">
-            {[0, 1, 2].map((i) => (
-              <img key={i} className={i === 1 ? 's45-flip' : ''} style={{ left: u(i * 100) }} src={pic(LANDSCAPE.n, LANDSCAPE.file)} alt="" draggable={false} />
+            {[-1, 0, 1, 2, 3].map((i) => (
+              <img key={i} className={i % 2 ? 's45-flip' : ''} style={{ left: u(i * 100) }} src={pic(LANDSCAPE.n, LANDSCAPE.file)} alt="" draggable={false} />
             ))}
           </div>
         </div>
@@ -163,20 +181,22 @@ const scene: SceneModule = {
       ))}
 
       {/* 46: seven stations, three layers each */}
-      <i className="s45-pulse s45-hid" />
+      <i className="s45-pulse s45-hid" style={{ top: u(TRACK_Y) }} />
       {STAGES.map((s, i) => (
-        <i key={s.n} className="s45-dot s45-dot--stop s45-hid" style={{ left: u(STOPS[i]) }} />
+        <i key={s.n} className="s45-dot s45-dot--stop s45-hid" style={{ left: u(SX[i]), top: u(TRACK_Y) }} />
       ))}
       {STAGES.map((s, i) => (
-        <div key={s.n} className="s45-stop" style={{ left: u(STOPS[i] - 6.2) }}>
-          <i className="s45-slot s45-slot--agents s45-hid" />
-          <i className="s45-slot s45-slot--people s45-hid" />
-          <div className="s45-tile s45-tile--ai s45-hid">
-            <div className="s45-stop-head">
-              <i>{s.n}</i>
-              <b>{s.stage}</b>
-            </div>
-            <p>
+        <i key={s.n} className={`s45-link s45-link--${i % 2 ? 'low' : 'top'} s45-hid`} style={{ left: u(SX[i]), top: u(TRACK_Y) }} />
+      ))}
+      {STAGES.map((s, i) => (
+        <div key={s.n} className={`s45-stop s45-stop--${i % 2 ? 'low' : 'top'} s45-hid`} style={{ left: u(cardLeft(i)) }}>
+          <div className="s45-stop-head">
+            <i>{s.n}</i>
+            <b>{s.stage}</b>
+          </div>
+          <span className="s45-tile-label s45-tile-label--agents s45-hid">{LABELS_46.agents}</span>
+          <p className="s45-ai">
+            <span>
               {s.bold ? (
                 <>
                   <b>{s.bold[0]}</b>
@@ -185,19 +205,17 @@ const scene: SceneModule = {
               ) : (
                 s.ai
               )}
-            </p>
+            </span>
+          </p>
+          <div className={`s45-chips s45-hid ${s.agents.length === 1 ? 's45-chips--one' : ''}`}>
+            {s.agents.map((a) => (
+              <b key={a} className="s45-chip">
+                {a}
+              </b>
+            ))}
           </div>
-          <div className="s45-tile s45-tile--agents s45-hid">
-            <span className="s45-tile-label">{LABELS_46.agents}</span>
-            <div className={`s45-chips ${s.agents.length === 1 ? 's45-chips--one' : ''}`}>
-              {s.agents.map((a) => (
-                <b key={a} className="s45-chip">
-                  {a}
-                </b>
-              ))}
-            </div>
-          </div>
-          <div className="s45-tile s45-tile--people s45-hid">
+          <i className="s45-slot s45-hid" />
+          <div className="s45-people s45-hid">
             <span className="s45-tile-label">{LABELS_46.people}</span>
             <b>{s.people}</b>
           </div>
@@ -331,7 +349,7 @@ const scene: SceneModule = {
   ),
 
   three(ctx) {
-    const fx = createRailFx(ctx, { top: BAND.top + 0.6, height: BAND.height - 1.2 })
+    const fx = createRailFx(ctx, { top: BAND.top + 0.6, height: BAND.height - 1.2, origin: BAND.top })
     ctx.bag.fx = fx
     return fx.dispose
   },
@@ -355,6 +373,7 @@ const scene: SceneModule = {
     const band = $('.s45-band')
     const sky = $('.s45-strip--sky')
     const track = $('.s45-strip--track')
+    const far = $('.s45-far')
     const engines = {
       trolley: $('.s45-engine--trolley'),
       steam: $('.s45-engine--steam'),
@@ -388,8 +407,9 @@ const scene: SceneModule = {
     const body = () => {
       if (!fx) return
       const x = (Number(gsap.getProperty(engines.train, 'x')) || 0) / U
-      fx.body.x0 = left.train + 0.5 + x
-      fx.body.x1 = left.train + width.train - 1 + x
+      const k = fx.view.s
+      fx.body.x0 = 50 + (left.train + 0.5 + x - 50) * k
+      fx.body.x1 = 50 + (left.train + width.train - 1 + x - 50) * k
       fx.body.y0 = 21.6
       fx.body.y1 = 31.2
     }
@@ -416,6 +436,8 @@ const scene: SceneModule = {
 
     /* =================================================== 45 · trolley */
     a.words('.s45-h--45', 0.1)
+    gsap.set(band, { transformOrigin: '50% 0%' })
+    gsap.set(far, { transformOrigin: '50% 100%' })
     gsap.set(band, { clipPath: calm ? 'inset(0px 0px 0px 0px round 0px)' : `inset(0px ${W}px 0px 0px round 0px)`, autoAlpha: calm ? 0 : 1 })
     tl.to(band, { clipPath: 'inset(0px 0px 0px 0px round 0px)', autoAlpha: 1, duration: 1.0, ease: 'power3.out' }, 0.04)
     a.rise('.s45-banner--45', 0.95, { y: -1 })
@@ -476,59 +498,90 @@ const scene: SceneModule = {
     tl.addLabel('aidlc', now())
 
     /* =================================================== 46 · stations */
+    // the train runs as before; then the DRONE SHOT: the camera rises and pulls back, the railway
+    // becomes a strip across the top of the stage and the lower half is given to the seven stations
     t = now()
     a.retitle('.s45-h--45', '.s45-h--46', t)
     a.leave('.s45-gen', t, { y: -1.2 })
     a.leave('.s45-dot--gen', t)
     a.leave('.s45-banner--45', t)
-    a.rise('.s45-banner--46', t + 0.5, { y: -1 })
-    a.rise('.s45-agents-pill', t + 0.7, { y: -1 })
     runTo(100, t + 0.4, 2.8)
-    a.pop('.s45-dot--stop', t + 0.9, { stagger: 0.14 })
-    a.rise('.s45-tile--ai', t + 1.0, { stagger: 0.14, y: 1.4 })
-    a.fade('.s45-slot', t + 1.9, { stagger: 0.04, duration: 0.6 })
+    const wideClip = `inset(0px ${-WIDE * U}px 0px ${-WIDE * U}px round 0px)`
+    const flatClip = 'inset(0px 0px 0px 0px round 0px)'
+    /** The camera of slide 46: `to` 1 is the drone's wide shot, 0 the tracking shot of 45 and 47. */
+    const camera = (to: 0 | 1, at: number, duration: number, e: string) => {
+      const d = calm ? 0.01 : duration
+      const k = to ? PULL : 1
+      tl.to(band, { scale: k, y: to ? LIFT * U : 0, duration: d, ease: e }, at)
+      // the far hills answer less than the track and the train: they stay a little larger, and settle later
+      tl.to(far, { scale: to ? 1.09 : 1, duration: calm ? 0.01 : duration * (to ? 1.18 : 1), ease: to ? 'sine.inOut' : e }, at)
+      if (fx) tl.to(fx.view, { s: k, y: to ? LIFT : 0, duration: d, ease: e, onUpdate: body }, at)
+    }
+    // the three older engines wait off the stage to the right, where the wide shot would find them
+    tl.to([engines.trolley, engines.steam, engines.electric], { autoAlpha: 0, duration: 0.02, ease: 'none' }, t + 0.02)
+    const tPull = t + 0.8
+    tl.to(band, { clipPath: wideClip, duration: 0.02, ease: 'none' }, tPull)
+    camera(1, tPull, 2.1, 'power2.inOut')
+    a.rise('.s45-banner--46', t + 2.3, { y: -1 })
+    a.rise('.s45-agents-pill', t + 2.5, { y: -1 })
+    const stops = $$('.s45-dot--stop')
+    const links = $$('.s45-link')
+    a.pop(stops, t + 2.4, { stagger: 0.09 })
+    gsap.set(links, { autoAlpha: 0, scaleY: calm ? 1 : 0, transformOrigin: '50% 0%' })
+    links.forEach((l, i) => tl.to(l, { autoAlpha: 1, scaleY: 1, duration: i % 2 ? 0.7 : 0.3, ease: 'power2.out' }, t + 2.5 + i * 0.09))
+    a.rise('.s45-stop', t + 2.65, { stagger: 0.09, y: 1.6 })
     tl.to(back, { focusX: 0, glow: 0.2, warm: 0, duration: 1.6, ease: ease.inOut }, t + 0.4)
     tl.addLabel('stations', now())
 
     /* =================================================== 46 · agents */
+    // a light runs along the track from station to station: what AI does gives way to the agents' names
     t = now()
     runTo(300, t, 4.0, 'power2.inOut', 1)
     const pulse = $('.s45-pulse')
-    const agentTiles = $$('.s45-tile--agents')
-    gsap.set(pulse, { x: STOPS[0] * U, autoAlpha: 0, scale: 0.4 })
-    gsap.set(agentTiles, { autoAlpha: 0, y: -1.2 * U })
-    $$('.s45-chip').forEach((c) => gsap.set(c, { autoAlpha: 0, scale: 0.7 }))
-    tl.to(pulse, { autoAlpha: 1, scale: 1, duration: 0.3 }, t + 0.35)
+    const aiLines = $$('.s45-ai')
+    const agentLabels = $$('.s45-tile-label--agents')
+    const chipRows = $$('.s45-chips')
+    const slots = $$('.s45-slot')
+    gsap.set(pulse, { x: SX[0] * U, autoAlpha: 0, scale: 0.4 })
+    gsap.set([...agentLabels, ...chipRows, ...slots], { autoAlpha: 0 })
+    $$('.s45-chip').forEach((c) => gsap.set(c, { autoAlpha: 0, scale: calm ? 1 : 0.7 }))
+    tl.to(pulse, { autoAlpha: 1, scale: 1, duration: 0.3 }, t + 0.25)
     const hop = 0.42
-    tl.to(pulse, { x: STOPS[6] * U, duration: hop * 6, ease: 'none' }, t + 0.6)
-    agentTiles.forEach((tile, i) => {
-      const at = t + 0.6 + i * hop
-      tl.to(tile, { autoAlpha: 1, y: 0, duration: 0.6, ease: ease.out }, at)
-      tl.to(tile.querySelectorAll('.s45-chip'), { autoAlpha: 1, scale: 1, duration: 0.45, stagger: 0.12, ease: ease.snap }, at + 0.22)
+    tl.to(pulse, { x: SX[6] * U, duration: hop * 6, ease: 'none' }, t + 0.5)
+    chipRows.forEach((row, i) => {
+      const at = t + 0.5 + i * hop
+      tl.to(aiLines[i], { autoAlpha: 0, y: calm ? 0 : -0.6 * U, duration: 0.3, ease: 'power2.in' }, at - 0.1)
+      tl.to(agentLabels[i], { autoAlpha: 1, duration: 0.4, ease: 'power1.out' }, at + 0.2)
+      tl.to(row, { autoAlpha: 1, duration: 0.35, ease: 'power1.out' }, at + 0.2)
+      tl.to(row.querySelectorAll('.s45-chip'), { autoAlpha: 1, scale: 1, duration: 0.45, stagger: 0.12, ease: ease.snap }, at + 0.3)
+      tl.to(slots[i], { autoAlpha: 1, duration: 0.5, ease: 'power1.out' }, at + 0.5)
     })
-    tl.to(pulse, { autoAlpha: 0, scale: 1.8, duration: 0.5, ease: 'power1.out' }, t + 0.6 + hop * 6)
+    tl.to(pulse, { autoAlpha: 0, scale: 1.8, duration: 0.5, ease: 'power1.out' }, t + 0.5 + hop * 6)
     tl.addLabel('agents', now())
 
     /* =================================================== 46 · people */
     t = now()
     runTo(400, t, 3.0, 'power2.inOut', 0.7)
-    const peopleTiles = $$('.s45-tile--people')
-    const stops = $$('.s45-dot--stop')
-    gsap.set(peopleTiles, { autoAlpha: 0, y: -1.6 * U, scale: 0.94 })
+    const peopleTiles = $$('.s45-people')
+    gsap.set(peopleTiles, { autoAlpha: 0, y: calm ? 0 : -1.6 * U, scale: calm ? 1 : 0.94 })
     peopleTiles.forEach((tile, i) => {
       const at = t + 0.5 + i * 0.3
       tl.to(tile, { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, ease: ease.snap }, at)
       tl.to(stops[i], { scale: 1.35, duration: 0.18, ease: 'power2.out' }, at + 0.1)
       tl.to(stops[i], { scale: 1, backgroundColor: '#071a50', duration: 0.4, ease: 'power2.out' }, at + 0.28)
+      tl.to(links[i], { backgroundColor: '#071a50', duration: 0.4, ease: 'power2.out' }, at + 0.28)
     })
     tl.addLabel('people', now())
 
     /* =================================================== 47 · engines */
     t = now()
     a.retitle('.s45-h--46', '.s45-h--47', t)
-    a.leave('.s45-tile', t, { stagger: 0.012, y: -1 })
-    tl.to($$('.s45-slot'), { autoAlpha: 0, duration: 0.2 }, t)
-    a.leave('.s45-dot--stop', t)
+    a.leave('.s45-stop', t, { stagger: 0.01, y: -1, duration: 0.26 })
+    a.leave('.s45-dot--stop', t, { duration: 0.15, stagger: 0 })
+    tl.to(links, { autoAlpha: 0, duration: 0.2 }, t)
+    // the drone comes back down to the track as the train pulls away (45 and 47 see the railway at its full size)
+    camera(0, t + 0.08, 0.44, 'power2.out')
+    tl.to(band, { clipPath: flatClip, duration: 0.02, ease: 'none' }, t + 0.52)
     a.leave(['.s45-banner--46', '.s45-agents-pill'].map((s) => $(s)), t)
     depart('train', t + 0.1, 1.15)
     runTo(480, t + 0.1, 1.5, 'power2.in', 0.9)
