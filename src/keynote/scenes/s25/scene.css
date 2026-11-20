@@ -89,6 +89,31 @@
   white-space: nowrap;
 }
 
+/* the period the figure is for ("Monthly"): a small pill beside the figure */
+.s25-tag {
+  align-self: center;
+  flex: none;
+  margin-left: calc(var(--u) * 0.8);
+  font-variant-numeric: normal;
+  padding: calc(var(--u) * 0.2) calc(var(--u) * 0.7);
+  border-radius: 999px;
+  font-size: calc(var(--u) * 0.82);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: var(--kn-flame-ink);
+  background: rgba(241, 100, 67, 0.12);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.06) rgba(241, 100, 67, 0.4);
+  white-space: nowrap;
+}
+
+/* the figure keeps its own width beside the pill (its mask must not be squeezed) */
+.s25-fig > .s25-mask,
+.s25-fig > .s25-from {
+  flex: none;
+}
+
 /* ---- the figures ---- */
 .s25-stats {
   position: absolute;

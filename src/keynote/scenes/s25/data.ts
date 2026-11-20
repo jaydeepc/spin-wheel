@@ -31,6 +31,8 @@ export interface LinkCard {
   /** images.json → placements[].rotation of the card's thumbnail: the card's own tilt, in degrees. */
   tilt: number
   sub?: string
+  /** A small tag beside the card's first figure: the period the figure is for (asked for by the presenter, not in the pack). */
+  tag?: string
   stats: Stat[]
   /** The words under the figure, where a card has one figure. */
   line?: string
@@ -45,6 +47,7 @@ export const CARDS: LinkCard[] = [
     thumb: 'thumb-paper-plane.jpg',
     tape: 'flame',
     tilt: -0.8,
+    tag: 'Monthly',
     stats: [
       { value: "80k → 800K+", tone: 'flame' },
     ],
@@ -105,6 +108,7 @@ export const CARDS: LinkCard[] = [
     thumb: 'thumb-grandmother-phone.jpg',
     tape: 'flame',
     tilt: 0.8,
+    tag: 'Monthly',
     stats: [
       { value: "3.62 lakh", tone: 'flame' },
     ],

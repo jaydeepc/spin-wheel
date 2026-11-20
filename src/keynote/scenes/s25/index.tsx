@@ -54,7 +54,8 @@ const Whole = ({ text, word }: { text: string; word?: boolean }) => (
 )
 
 /** One figure: a pair (a stands, b arrives whole), a tally that counts up, or a ratio or word that arrives whole. */
-function Figure({ stat }: { stat: Stat }) {
+function Figure({ stat, tag }: { stat: Stat; tag?: string }) {
+  const pill = tag ? <span className="s25-tag">{tag}</span> : null
   const [a, b] = stat.value.split(' → ')
   if (b) {
     return (
@@ -62,6 +63,7 @@ function Figure({ stat }: { stat: Stat }) {
         <span className="s25-from">{a}</span>
         <Arrow />
         <Whole text={b} />
+        {pill}
       </b>
     )
   }
@@ -70,6 +72,7 @@ function Figure({ stat }: { stat: Stat }) {
   return (
     <b className={`s25-fig s25-fig--${stat.tone}`}>
       {tally ? <Count className="s25-to" to={n.to} decimals={n.decimals} prefix={n.prefix} suffix={n.suffix} /> : <Whole text={a} word={!n} />}
+      {pill}
     </b>
   )
 }
@@ -93,7 +96,7 @@ function LinkCardView({ card, i }: { card: LinkCard; i: number }) {
           {card.stats.map((s, k) => (
             <div className="s25-stat" key={k}>
               {many && card.stats.length === 3 && k > 0 ? <Arrow /> : null}
-              <Figure stat={s} />
+              <Figure stat={s} tag={k === 0 ? card.tag : undefined} />
               {s.line ? (
                 <p className="s25-line">
                   <Words text={s.line} bold={s.bold ? [s.bold] : []} />

@@ -30,7 +30,7 @@
 
 import gsap from 'gsap'
 import { spanBeats, type SceneModule } from '../../kit'
-import { ALT, CLIP, PX, STILL, STOP } from './data'
+import { ALT, CLIP, FACE, FPS, PX, STILL, STOP } from './data'
 import { createPlayer, type Plan, type Player } from './player'
 import './scene.css'
 
@@ -53,7 +53,7 @@ const scene: SceneModule = {
   // the picture is the tool's own page: its own logo, its own title, no breadcrumb in the deck either
   chrome: { rail: false, crumb: false, logo: false },
   // the stills of the rests; coast / touch / dock are only ever seen under a held frame and load by themselves
-  preload: [STILL.wheel0, STILL.wheel1, STILL.loop0, STILL.landed, STILL.page],
+  preload: [STILL.wheel0, STILL.wheel1, STILL.loop0, STILL.landed, STILL.page, FACE.src],
 
   Scene: () => (
     <div className="s51">
@@ -74,6 +74,8 @@ const scene: SceneModule = {
             <video className="s51-clip" data-clip="up" src={CLIP.up.src} muted playsInline preload="auto" disablePictureInPicture tabIndex={-1} />
             <video className="s51-clip" data-clip="loop" src={CLIP.loop.src} muted playsInline preload="auto" loop disablePictureInPicture tabIndex={-1} />
             <video className="s51-clip" data-clip="stop" src={CLIP.stop.src} muted playsInline preload="auto" disablePictureInPicture tabIndex={-1} />
+            {/* 54: the builder's own photograph, laid over the page's empty portrait once the card has settled */}
+            <img className="s51-face" src={FACE.src} alt={FACE.alt} draggable={false} />
           </div>
         </div>
       </div>
@@ -133,6 +135,10 @@ const scene: SceneModule = {
     // 54: the page opens; the room goes quiet so the page can be read
     tl.to(warm, { autoAlpha: 0, duration: 1.6, ease: 'power2.inOut' }, C1 + 0.1)
     tl.to(fx, { glow: 0.14, warm: 0, focusX: 0, focusY: 0, duration: 2.4, ease: ease.inOut }, C1 + 0.1)
+    // the builder's photograph comes in once his card stands still (frame 620 of the clip)
+    const face = ctx.$('.s51-face')
+    gsap.set(face, { autoAlpha: 0 })
+    tl.to(face, { autoAlpha: 1, duration: 0.55, ease: 'power2.out' }, C1 + (FACE.frame / FPS - STOP.landed))
     tl.addLabel('page', D1)
 
     const near = (a: number, b: number) => Math.abs(a - b) < 1e-4

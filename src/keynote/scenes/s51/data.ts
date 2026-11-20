@@ -58,5 +58,18 @@ export const STILL = {
   page: at('page.png'),
 }
 
+/**
+ * The builder's photograph on the use case page (slide 54). The recording has the page's empty
+ * portrait there; the photograph is laid over it. `box` is the portrait's inner square in the
+ * picture's own pixels (measured on page.png); `frame` is the clip frame of 04-stop from which
+ * the card stands still. The file is a square cut of the photograph he gave, made smaller only.
+ */
+export const FACE = {
+  src: at('builder-01.jpg'),
+  alt: 'Praveen Ostwal',
+  box: { x: 1199.5, y: 194.5, size: 181, radius: 22 },
+  frame: 620,
+}
+
 /** What the screen shows, for those who cannot see it (the words are the wheel app's own, from the take's manifest). */
 export const ALT = 'The BYOT | BYOA wheel of this site, recorded: it spins and stops on 01, LI & GI Surrender Verification, built by Praveen Ostwal.'
